@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ssoca ssh agent | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  <div class="columns">
+    <div class="column is-four-fifths">
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/service/ssh/agent-cmd.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="ssoca-ssh-agent"><code>ssoca ssh agent ...</code></h1>
+
+<p>Start an SSH agent</p>
+
+<pre><code>Usage:
+  ssoca [OPTIONS] ssh [ssh-OPTIONS] agent [agent-OPTIONS]
+
+Application Options:
+      --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
+  -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
+      --log-level=           Log level (default: WARN) [$SSOCA_LOG_LEVEL]
+
+Help Options:
+  -h, --help                 Show this help message
+
+[ssh command options]
+
+    Establish SSH connections to remote servers:
+      -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
+
+[agent command options]
+          --skip-auth-retry  Skip interactive authentication retries when logged out
+          --foreground       Stay in foreground
+          --socket=          Socket path (ensure the directory has restricted permissions)
+</code></pre>
+
+<h2 id="usage-details">Usage Details</h2>
+
+<p>This agent follows the <code>ssh-agent</code> protocol to dynamically sign a certificate when public keys are requested. Callers can then use that signed certificate for authentication and signing.</p>
+
+<p>You can use this like a regular <code>ssh-agent</code> and execute the output with <code>eval</code> (which will reconfigure <code>SSH_AUTH_SOCK</code>). For example&hellip;</p>
+
+<pre><code>$ eval `ssoca ssh agent`
+ssoca ssh agent pid 12345
+</code></pre>
+
+<p>Once a key is added, each request to list keys will request a signed certificate from the ssoca server.</p>
+
+<pre><code>$ ssh-add -l
+4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (RSA)
+4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (ssoca agent) (RSA-CERT)
+</code></pre>
+
+<p>If you <a href="/ssoca/reference/service/ssh/external-configuration/#debugging">debug</a> the extra certificate, you&rsquo;ll see it is short-lived and changes every time.</p>
+
+<pre><code>$ ssh-keygen -L -f &lt;( ssh-add -L | grep 'ssoca agent' ) | grep Valid
+        Valid: from 2017-03-28T22:47:40 to 2017-03-28T22:49:45
+</code></pre>
+
+<p>If you pass a command as an extra argument, it will be executed with <code>SSH_AUTH_SOCK</code> and the agent will terminate when the subprocess exits.</p>
+
+<pre><code>$ ssoca ssh agent -- env | grep SSH_AUTH_SOCK &amp;&amp; env | grep SSH_AUTH_SOCK
+SSH_AUTH_SOCK=/var/folders/hd/981tq6w92ll4qhy5s2wjffy40000gn/T/ssoca-ssh-agent170802401/agent.sock
+SSH_AUTH_SOCK=/private/tmp/com.apple.launchd.QhrzaIS6vh/Listeners
+</code></pre>
+
+<h2 id="client-configuration">Client Configuration</h2>
+
+<p>If the <code>SSH_AUTH_SOCK</code> environment variable is defined, key and signing operations will be delegated to that process. If <code>SSH_AUTH_SOCK</code> is not configured, key and certificate management will be handled within the process.</p>
+
+<p>You may find the following SSH client options useful&hellip;</p>
+
+<ul>
+<li><code>IdentityAgent</code> &ndash; configure a specific path to the agent socket</li>
+<li><code>PasswordAuthentication</code> &ndash; disable password authentication</li>
+</ul>
+
+<p>To use an agent for a specific VM, you could use the following configuration&hellip;</p>
+
+<pre><code>Host jumpbox.example.com
+  # mkdir ~/.ssh/agent &amp;&amp; chmod 0700 ~/.ssh/agent
+  IdentityAgent ~/.ssh/agent/%h
+
+  # buggy; this tries to automatically start a one-off agent. it currently fails if the socket already exists
+  ProxyCommand ssoca ssh agent --socket=~/.ssh/agent/%h -- nc %h %p
+</code></pre>
+
+<h2 id="workflow">Workflow</h2>
+
+<p>The general workflow between this agent, <code>ssh</code>, <code>ssh-agent</code>, the remote SSH server, and remote ssoca server looks something like this&hellip;</p>
+
+<div class="wsd" wsd_style="roundgreen"><pre>
+  ssh->ssh-server: hello
+  ssh-server->ssh: pubkey plz
+  ssh->ssoca-ssh-agent: list identities
+  ssoca-ssh-agent->ssh-agent: list identities
+  ssh-agent->ssoca-ssh-agent: public keys
+  ssoca-ssh-agent->ssoca: sign public key
+  ssoca->ssoca-ssh-agent: short-lived certificate
+  ssoca-ssh-agent->ssoca-ssh-agent: add certs to list
+  ssoca-ssh-agent->ssh: pubkeys + certs
+  ssh->ssh-server: pubkey
+  ssh-server->ssh: more plz
+  ssh->ssh-server: pubkey-cert
+  ssh-server->ssh: prove it
+  ssh->ssoca-ssh-agent: sign proof
+  ssoca-ssh-agent->ssh-agent: sign proof
+  ssh-agent->ssoca-ssh-agent: signature
+  ssoca-ssh-agent->ssh: signature
+  ssh->ssh-server: signature
+  ssh-server->ssh: you win
+  ssh->ssh-server: gimme a shell
+  note over ssh,ssh-server: ssh session
+  ssh-server<->ssh: disconnect
+</pre></div>
+
+<h2 id="notes">Notes</h2>
+
+<p>Keep in mind that when forwarding any SSH agent (<code>-A</code> or <code>-o ForwardAgent=yes</code>), remote systems can access and initiate keyring operations on your local workstation. In the case of this agent, it means requests will locally be sent to the ssoca server to dynamically generate a signed certificate.</p>
+
+<script type="text/javascript" src="https://www.websequencediagrams.com/service.js"></script>
+</article>
+</div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#ssoca-ssh-agent"><code>ssoca ssh agent ...</code></a>
+<ul>
+<li><a href="#usage-details">Usage Details</a></li>
+<li><a href="#client-configuration">Client Configuration</a></li>
+<li><a href="#workflow">Workflow</a></li>
+<li><a href="#notes">Notes</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

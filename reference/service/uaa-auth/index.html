@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud Foundry UAA Authentication (uaa-auth) | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a class="is-active" href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  
+  <div class="columns">
+    <div class="column is-four-fifths">
+      
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/service/uaa-auth/_index.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="cloud-foundry-uaa-authentication-uaa-auth">Cloud Foundry UAA Authentication (<code>uaa-auth</code>)</h1>
+
+<p>Cloud Foundry UAA authenticates users from an external UAA server. Users authenticate via CLI prompts or are redirected to UAA and given a token for their CLI usage.</p>
+
+<h2 id="server-configuration-options">Server Configuration Options</h2>
+
+<ul>
+<li><strong><code>url</code></strong> &ndash; the address of the UAA server</li>
+<li><strong><code>public_key</code></strong> &ndash; a PEM-formatted public key for verifying JWT tokens</li>
+<li><strong><code>client_id</code></strong> &ndash; the Client ID for authenticating users</li>
+<li><code>client_secret</code> &ndash; the Client secret for authenticating users</li>
+<li><code>ca_certificate</code> &ndash; a PEM-formatted certificate for trusting HTTPS connections to the UAA server</li>
+<li><code>prompts</code> &ndash; a list of prompts to show the user when they are authenticating</li>
+</ul>
+
+<article class="message is-warning"><div class="message-body">
+    Client ID and Secret are provided to <code>ssoca-client</code> in order for it to communicate with UAA during authentication. Because these tokens are available prior to authentication, they should not be considered secret.
+  </div>
+</article>
+
+
+<h2 id="authentication-scopes">Authentication Scopes</h2>
+
+<p>All scopes propagated by the UAA server will be available in the user&rsquo;s authentication token.</p>
+
+<h2 id="uaa-client-configuration">UAA Client Configuration</h2>
+
+<p>In order for <code>ssoca-client</code> to connect to UAA, you will need to configure a UAA client for it to use. The following configures <a href="https://bosh.io/jobs/uaa?source=github.com/cloudfoundry/uaa-release&amp;version=67.0#p%3duaa.clients"><code>uaa</code></a> with a <code>ssoca_client</code> ID (no secret), which is allowed to propagate scopes named <code>env.*</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">uaa:
+  clients:
+    ssoca_client:
+      override: <span style="color:#66d9ef">true</span>
+      authorized-grant-types: <span style="color:#e6db74">&#34;password,refresh_token&#34;</span>
+      scope: <span style="color:#e6db74">&#34;openid,env.*&#34;</span>
+      authorities: <span style="color:#e6db74">&#34;uaa.none&#34;</span>
+      access-token-validity: <span style="color:#ae81ff">120</span> <span style="color:#75715e"># 2 min</span>
+      refresh-token-validity: <span style="color:#ae81ff">86400</span> <span style="color:#75715e"># 1 day</span>
+      secret: <span style="color:#e6db74">&#34;&#34;</span></code></pre></div></article>
+
+
+      
+      
+        
+      
+
+      
+    </div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#cloud-foundry-uaa-authentication-uaa-auth">Cloud Foundry UAA Authentication (<code>uaa-auth</code>)</a>
+<ul>
+<li><a href="#server-configuration-options">Server Configuration Options</a></li>
+<li><a href="#authentication-scopes">Authentication Scopes</a></li>
+<li><a href="#uaa-client-configuration">UAA Client Configuration</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

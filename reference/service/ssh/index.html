@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+    SSH (ssh) | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a class="is-active" href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  
+  <div class="columns">
+    <div class="column is-four-fifths">
+      
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/service/ssh/_index.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="ssh-ssh">SSH (<code>ssh</code>)</h1>
+
+<p>The SSH service is used to sign a user&rsquo;s public key for accessing an intentionally-configured SSH servers.</p>
+
+<h2 id="client-commands">Client Commands</h2>
+
+<p>The SSH workflows can be managed through <code>ssh</code> subcommands.</p>
+
+<ul>
+<li><code>agent</code> (<a href="https://dpb587.github.io/ssoca/reference/service/ssh/agent-cmd/">details</a>) &ndash; start an SSH agent</li>
+<li><code>exec</code> (<a href="https://dpb587.github.io/ssoca/reference/service/ssh/exec-cmd/">details</a>) &ndash; connect to a remote SSH server</li>
+<li><code>sign-public-key</code> (<a href="https://dpb587.github.io/ssoca/reference/service/ssh/sign-public-key-cmd/">details</a>) &ndash; create a certificate for a specific public key</li>
+</ul>
+
+<h2 id="server-configuration-options">Server Configuration Options</h2>
+
+<p>The following may be configured in the <code>options</code> section when configuring an <code>ssh</code> <a href="https://dpb587.github.io/ssoca/reference/server/configuration/#services">service</a>.</p>
+
+<ul>
+<li><strong><code>principals</code></strong> &ndash; an array of usernames to allow SSH sessions for (<a href="/ssoca/reference/server/templating/">templatized</a>)</li>
+<li><code>certauth</code> &ndash; the name of a configured certificate authority (default <code>default</code>)</li>
+<li><code>validity</code> &ndash; a <a href="https://golang.org/pkg/time/#ParseDuration">duration</a> of time for which certificates are signed for (default <code>2m</code>)</li>
+<li><code>critical_options</code> &ndash; a <em>hash</em> of specific settings further restricting connections to the SSH server
+
+<ul>
+<li><code>force-command</code> &ndash; a command which is forcefully executed on the SSH server (<a href="/ssoca/reference/server/templating/">templatized</a>)</li>
+<li><code>source-address</code> &ndash; a CSV list of source addresses in CIDR format which certificates can come from for authentication (<a href="/ssoca/reference/server/templating/">templatized</a>)</li>
+</ul></li>
+<li><code>extensions</code> &ndash; an <em>array</em> of session features for the server to enforce on the connection (default all)
+
+<ul>
+<li><code>permit-X11-forwarding</code></li>
+<li><code>permit-agent-forwarding</code></li>
+<li><code>permit-port-forwarding</code></li>
+<li><code>permit-pty</code></li>
+<li><code>permit-user-rc</code></li>
+</ul></li>
+</ul>
+
+<p><strong>Propagated Client Options</strong></p>
+
+<ul>
+<li><code>client</code> &ndash; a hash of settings influencing client behavior
+
+<ul>
+<li><code>host</code> &ndash; the remote host of the SSH server</li>
+<li><code>port</code> &ndash; the remote port of the SSH server (default <code>22</code>)</li>
+<li><code>user</code> &ndash; the remote user to authenticate as (<a href="/ssoca/reference/server/templating/">templatized</a>)</li>
+<li><code>public_key</code> &ndash; the public key of the remote SSH server (requires <code>host</code>)</li>
+</ul></li>
+</ul>
+
+<article class="message is-info"><div class="message-body">
+    The SSH server must be configured to trust certificates signed by ssoca (<a href="https://dpb587.github.io/ssoca/reference/service/ssh/external-configuration/">learn more</a>).
+  </div>
+</article>
+
+
+<h2 id="general-notes">General Notes</h2>
+
+<ul>
+<li>certificates are only used for authentication (sessions are not disconnected once the certificates expire)</li>
+</ul>
+
+<h2 id="known-issues">Known Issues</h2>
+
+<ul>
+<li>A recent OS X update introduces a new version of <code>ssh</code> which does not correctly check for supported algorithms. Using <code>brew install openssh</code> to install a newer version seems to fix the issue (<a href="https://bugs.launchpad.net/ubuntu/+source/openssh/+bug/1790963">related</a> <a href="http://bugzilla.mindrot.org/show_bug.cgi?id=2799">bug</a>).</li>
+</ul>
+</article>
+
+
+      
+      
+        
+      
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#ssh-ssh">SSH (<code>ssh</code>)</a>
+<ul>
+<li><a href="#client-commands">Client Commands</a></li>
+<li><a href="#server-configuration-options">Server Configuration Options</a></li>
+<li><a href="#general-notes">General Notes</a></li>
+<li><a href="#known-issues">Known Issues</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

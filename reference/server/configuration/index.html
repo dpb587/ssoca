@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a class="is-active" href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  <div class="columns">
+    <div class="column is-four-fifths">
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/server/configuration.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="configuration">Configuration</h1>
+
+<p>The server is configured through a YAML file with several top-level sections.</p>
+
+<p>For a more full example, refer to the <a href="https://github.com/dpb587/ssoca-bosh-release/blob/master/jobs/ssoca/templates/etc/server.conf.erb">server.conf</a> from the BOSH release.</p>
+
+<h2 id="server"><code>server</code></h2>
+
+<p>The first section is <code>server</code> which configures the HTTPS listener&hellip;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">server:
+  <span style="color:#75715e"># tls configuration</span>
+  certificate_path: ~ <span style="color:#75715e"># PEM-formatted certificate; required</span>
+  private_key_path: ~ <span style="color:#75715e"># PEM-formatted private key; required</span>
+
+  <span style="color:#75715e"># bind settings</span>
+  host: <span style="color:#e6db74">&#34;0.0.0.0&#34;</span> <span style="color:#75715e"># default</span>
+  port: <span style="color:#ae81ff">18705</span>     <span style="color:#75715e"># default</span>
+
+  <span style="color:#75715e"># optional redirects</span>
+  redirects:
+    root: ~         <span style="color:#75715e"># redirect of /; optional</span>
+    auth_failure: ~ <span style="color:#75715e"># optional</span>
+    auth_success: ~ <span style="color:#75715e"># optional</span>
+
+  <span style="color:#75715e"># optionally configure upstream proxies (used for remote IP reporting)</span>
+  trusted_proxies:
+  - <span style="color:#e6db74">&#34;127.0.0.1/8&#34;</span>
+  - <span style="color:#e6db74">&#34;::1&#34;</span>
+
+  <span style="color:#75715e"># optionally configure a robots.txt response (the following is default)</span>
+  robotstxt: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">    User-agent: *
+</span><span style="color:#e6db74">    Disallow: /</span></code></pre></div>
+<h2 id="certauths"><code>certauths</code></h2>
+
+<p>Certificate authorities can be defined in the <code>certauths</code> field which is an array of CA providers referencing a <a href="/ssoca/reference/certauth/">CA type</a> and the CA options. Services may later reference CAs by their name&hellip;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">certauths:
+  - type: <span style="color:#e6db74">&#34;fs&#34;</span> <span style="color:#75715e"># one of the available CA types</span>
+    name: ~    <span style="color:#75715e"># defaults to `default`</span>
+    options:   <span style="color:#75715e"># CA-specific options</span>
+      private_key_path: <span style="color:#e6db74">&#34;/some/path.crt&#34;</span></code></pre></div>
+<h2 id="services"><code>services</code></h2>
+
+<p>The last section is <code>services</code> which is an array of service configurations referencing a service type and the service options. You will typically configure at least one authentication server and one user service&hellip;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">services:
+  - type: <span style="color:#e6db74">&#34;ssh&#34;</span> <span style="color:#75715e"># one of the available service types</span>
+    name: ~     <span style="color:#75715e"># defaults to the value of `type`</span>
+    options:    <span style="color:#75715e"># service-specific options</span>
+      host: <span style="color:#e6db74">&#34;192.0.2.1&#34;</span>
+      user: <span style="color:#e6db74">&#34;vcap&#34;</span>
+  - type: <span style="color:#e6db74">&#34;github-auth&#34;</span>
+    name: <span style="color:#e6db74">&#34;auth&#34;</span>
+    options: <span style="color:#75715e"># ...</span></code></pre></div>
+<h2 id="env"><code>env</code></h2>
+
+<p>Optionally, an <code>env</code> section can be configured with some end user-oriented details. Options are documented <a href="/ssoca/reference/service/env/#server-configuration-options">here</a>.</p>
+</article>
+</div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#configuration">Configuration</a>
+<ul>
+<li><a href="#server"><code>server</code></a></li>
+<li><a href="#certauths"><code>certauths</code></a></li>
+<li><a href="#services"><code>services</code></a></li>
+<li><a href="#env"><code>env</code></a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+    Overview | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a class="is-active" href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  
+  <div class="columns">
+    <div class="column is-four-fifths">
+      
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/_index.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="overview">Overview</h1>
+
+<p>Single Sign On for services that use Certificate Authority-based authentication.</p>
+
+<h2 id="architecture">Architecture</h2>
+
+<p>There are three components which <code>ssoca</code> brings together, and each component can be configured with at least one of several backends.</p>
+
+<ol>
+<li><strong>Certificate Authority / Provider</strong> &ndash; responsible for signing certificates which <code>ssoca</code> has created/reviewed and approved. The certificates it generates will typically be very short-lived (e.g. expire within a minute) and restricted to the user&rsquo;s session (e.g. username, IP address). <a href="/ssoca/reference/certauth/">Learn more</a>.</li>
+<li><strong>Identity Provider</strong> &ndash; responsible for authenticating users and providing authorization details for their session. This may be handled through browser interaction or CLI prompts, but once completed the client will typically retain a medium-lived token (e.g. one day) with their authorization details. <a href="/ssoca/reference/service/auth/">Learn more</a>.</li>
+<li><strong>Service Provider</strong> &ndash; responsible for accepting certificates signed by a trusted CA as a form of authentication. Once authenticated, the original, authenticating certificate should no longer be needed.</li>
+</ol>
+
+<p>The following diagram demonstrates the high-level interactions which occur between the components.</p>
+
+<div class="wsd" wsd_style="roundgreen"><pre>
+  note over ssoca-cli,ssoca,cert-provider,identity-provider,service-provider
+    Authentication
+  end note
+
+  ssoca-cli->ssoca: check authentication method
+  ssoca->ssoca-cli: authentication method
+  ssoca-cli->identity-provider: authenticate (via browser, token, ...)
+  identity-provider->ssoca-cli: authentication token (24h)
+
+  note over ssoca-cli,ssoca,cert-provider,identity-provider,service-provider
+    Services
+  end note
+
+  ssoca-cli->ssoca: certificate signing request
+  ssoca->ssoca: authn/authz verification
+  ssoca->cert-provider: certificate signing request
+  cert-provider->ssoca: certificate (2m)
+  ssoca->ssoca-cli: certificate + service config
+  ssoca-cli->service-provider: certificate-based connection
+</pre></div>
+
+<script type="text/javascript" src="https://www.websequencediagrams.com/service.js"></script>
+
+<h2 id="related-articles">Related Articles</h2>
+
+<ul>
+<li><a href="https://code.fb.com/security/scalable-and-secure-access-with-ssh/">Scalable and secure access with SSH</a> &ndash; Facebook discussing some of the technical architecture behind a CA-based approach and how they use it for SSH authentication in their environments.</li>
+</ul>
+</article>
+
+
+      
+      
+        
+      
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#related-articles">Related Articles</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

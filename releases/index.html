@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+    Releases | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a class="is-active" href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  
+  <div class="columns">
+    <div class="column is-four-fifths">
+      
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/releases/_index.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="official-releases">Official Releases</h1>
+
+<p>You can find the following information from <a href="https://github.com/dpb587/ssoca/releases">GitHub Releases</a> as well.</p>
+</article>
+
+
+      
+      
+        
+          
+        
+      
+
+      
+        
+  
+  
+    
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-19-2"><a href="https://dpb587.github.io/ssoca/releases/v0.19.2/">v0.19.2</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2020-07-16T16:39:50-07:00" title="2020-07-16T16:39:50-07:00">July 16, 2020</strong></time>
+                </p>
+              </div>
+            
+            
+              <div class="level-item">
+                <span class="tag is-primary is-medium">latest</span>
+              </div>
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Bug Fix</strong></p>
+
+<ul>
+<li>Re-release without <code>+dirty</code> version annotation.</li>
+</ul>
+</article>
+
+            <h3 id="v0-19-2-artifacts">Artifacts</h3>
+
+            
+
+
+
+
+  <pre><code>                                                          sha256  file
+d1989a9ab588928ffb3d7721a5711ce99e83ab98d6e2b5c5dab114f102dee3ba  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-client-0.19.2-darwin-amd64">ssoca-client-0.19.2-darwin-amd64</a>
+ee6ee19b2aadc00b69b2db13f66555ebd33de7d3bced23ab97b42679732a9caf  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-client-0.19.2-linux-amd64">ssoca-client-0.19.2-linux-amd64</a>
+035ad5b64cbfff175c95e51383618b23b4f455c5a5d8e14581ae6d8c8ec5022f  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-client-0.19.2-windows-amd64.exe">ssoca-client-0.19.2-windows-amd64.exe</a>
+4c7aa8ea3f1973f86e219d35e4e7399d0c1de9d51c77aaa69f58d70a56f442b0  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-server-0.19.2-darwin-amd64">ssoca-server-0.19.2-darwin-amd64</a>
+d45685e014e7c17a77fb8e59c63bcf1a04a88e311db5f565f80122ba384f34c6  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-server-0.19.2-linux-amd64">ssoca-server-0.19.2-linux-amd64</a>
+69502342a076e00b501ca6caf17f838df5bf29f94fe050756a9563bc0f49e96e  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.19.2/ssoca-server-0.19.2-windows-amd64.exe">ssoca-server-0.19.2-windows-amd64.exe</a></code></pre>
+
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-19-1"><a href="https://dpb587.github.io/ssoca/releases/v0.19.1/">v0.19.1</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2020-07-16T10:25:06-07:00" title="2020-07-16T10:25:06-07:00">July 16, 2020</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Internal</strong></p>
+
+<ul>
+<li>Update to go/1.14.5.</li>
+<li>Update go module dependencies.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-19-0"><a href="https://dpb587.github.io/ssoca/releases/v0.19.0/">v0.19.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2020-01-10T19:25:54-08:00" title="2020-01-10T19:25:54-08:00">January 10, 2020</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Internal</strong></p>
+
+<ul>
+<li>Web server now includes the server version in the <code>server</code> response header.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Switch to Go modules.</li>
+<li>Update numerous dependencies.</li>
+<li>Update to go/1.13.6.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-18-1"><a href="https://dpb587.github.io/ssoca/releases/v0.18.1/">v0.18.1</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-10-21T07:52:19-07:00" title="2019-10-21T07:52:19-07:00">October 21, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Enhancements</strong></p>
+
+<ul>
+<li>Automatically restart OpenVPN client when static certificates fail (<a href="https://github.com/dpb587/ssoca/issues/16">#16</a>).</li>
+<li>Improve logging of static certificate fallback and handling of the deprecated CLI flag.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Update to go/1.13.3.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-18-0"><a href="https://dpb587.github.io/ssoca/releases/v0.18.0/">v0.18.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-10-01T06:50:53-07:00" title="2019-10-01T06:50:53-07:00">October 1, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Enhancements</strong></p>
+
+<ul>
+<li>Add internal workaround of errors when executing <code>openvpn</code> with recent versions of <code>openssl</code> (avoids need for using <code>--static-certificates</code>; <a href="https://github.com/dpb587/ssoca/issues/13">#13</a>).</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Configure default HTTP timeouts for clients.</li>
+<li>Update to go/1.13.1.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-17-0"><a href="https://dpb587.github.io/ssoca/releases/v0.17.0/">v0.17.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-09-01T11:04:06-07:00" title="2019-09-01T11:04:06-07:00">September 1, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Enhancements</strong></p>
+
+<ul>
+<li>Rename the <code>download</code> service to <code>file</code> service to clarify it as a resource rather than an action (<code>download</code> currently remains as an alias).</li>
+<li>Support using simple globs in file names with <code>file get</code>.</li>
+<li>Add <code>file exec</code> command to temporarily download and then execute a file.</li>
+<li>Improve interactive browser login prompts for Linux and Windows.</li>
+<li>Require all server services to have at least one access requirement defined in order to avoid accidental, public services.</li>
+<li>Support multiple authentication providers within a single environment.</li>
+<li>Updated server configuration file format (<code>auth</code> services should now be configured in the <code>services</code> section).</li>
+<li>Client <code>auth login</code> operations will now timeout with an error after no activity (default 15 minutes).</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Fix case where invalid OpenVPN static configuration files were generated after the user was automatically reauthenticated.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Significant refactoring of authentication providers and endpoints. The changes should be compatible with both old/new and new/old client/server configurations.</li>
+<li>Switch errors and log messages to consistently use lower case.</li>
+<li>Update to go/1.12.9.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-16-0"><a href="https://dpb587.github.io/ssoca/releases/v0.16.0/">v0.16.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-04-21T17:22:21-07:00" title="2019-04-21T17:22:21-07:00">April 21, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Add <code>/usr/sbin</code> to fallback search path for <code>openvpn</code> (<a href="https://github.com/dpb587/ssoca/pull/11">#11</a>).</li>
+<li>Use password authentication for <code>openvpn</code> management interface (<a href="https://github.com/dpb587/ssoca/issues/14">#14</a>).</li>
+<li>Improve <code>openvpn</code> reconnection behavior to request a new certificate upon rapid connection failures.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Update to go/1.12.4.</li>
+<li>Improve the <a href="https://dpb587.github.io/ssoca">documentation site</a> theme.</li>
+<li>Add <a href="https://concourse-ci.org/resources.html#resource-icon">resource icons</a> to Concourse pipeline.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-15-0"><a href="https://dpb587.github.io/ssoca/releases/v0.15.0/">v0.15.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-01-30T18:10:01-08:00" title="2019-01-30T18:10:01-08:00">January 30, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Build binaries with <code>CGO_ENABLED=0</code> for improved compatibility.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-14-1"><a href="https://dpb587.github.io/ssoca/releases/v0.14.1/">v0.14.1</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-01-23T21:02:16-08:00" title="2019-01-23T21:02:16-08:00">January 23, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Development</strong></p>
+
+<ul>
+<li>Update to go/1.11.5</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-14-0"><a href="https://dpb587.github.io/ssoca/releases/v0.14.0/">v0.14.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2019-01-16T08:42:34-08:00" title="2019-01-16T08:42:34-08:00">January 16, 2019</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Log additional request data for environments running behind proxies (<a href="https://github.com/dpb587/ssoca/issues/6">#6</a>). To enable detection of proxied client IPs, you must explicitly configure your proxy server IPs or CIDRs with the <code>server.trusted_proxies</code> list.</li>
+<li>When executing <code>openvpn</code>, add <code>/usr/local/sbin</code> to the list of fallback paths to search (<a href="https://github.com/dpb587/ssoca/issues/9">#9</a>).</li>
+<li>Improve the <code>get</code> command of downloads to support sending the file to <code>STDOUT</code> after a successful download.</li>
+<li>Improve CLI options handling of the <code>--service</code> flag so it can be passed next to the service rather than its subcommand.</li>
+<li>Improve the <a href="https://dpb587.github.io/ssoca">documentation site</a> and switch to <a href="https://gohugo.io/">hugo</a>.</li>
+<li>Configurable <a href="https://moz.com/learn/seo/robotstxt"><code>robots.txt</code></a> setting via <code>server.robotstxt</code> (defaults to disallowing all crawlers).</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Fix <code>sudo</code> passwords being ignored after authentication interrupts a service command (<a href="https://github.com/dpb587/ssoca/issues/8">#8</a>).</li>
+<li>When executing Tunnelblick&rsquo;s <code>openvpn</code> executable on macOS, avoid using older, unsupported versions.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Switch to <a href="https://github.com/pkg/errors"><code>github.com/pkg/errors</code></a> for internal error wrapping.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-13-0"><a href="https://dpb587.github.io/ssoca/releases/v0.13.0/">v0.13.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-12-18T06:09:55-08:00" title="2018-12-18T06:09:55-08:00">December 18, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Support overriding which UAA client prompts are required to authenticate</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Fix UAA client used for authentication to be configurable</li>
+<li>Fix templating of Critical Options for SSH</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-12-0"><a href="https://dpb587.github.io/ssoca/releases/v0.12.0/">v0.12.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-12-15T19:50:33-08:00" title="2018-12-15T19:50:33-08:00">December 15, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Support creating launchd services for OpenVPN services</li>
+<li>Support creating <a href="https://chromium.googlesource.com/chromium/src/+/master/components/onc/docs/onc_spec.md">ONC</a> profiles for OpenVPN services</li>
+<li>Support configuring auth callback bind addresses with <code>auth.bind</code> environment option</li>
+<li>Add <code>Contains</code> and <code>Matches</code> helpers for checking groups in templatized configuration values</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Restore UAA authentication support</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Update to go1.11</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-11-0"><a href="https://dpb587.github.io/ssoca/releases/v0.11.0/">v0.11.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-06-03T20:06:26-07:00" title="2018-06-03T20:06:26-07:00">June 3, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Support running the server behind SSL-terminating proxy servers.</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-10-0"><a href="https://dpb587.github.io/ssoca/releases/v0.10.0/">v0.10.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-03-06T22:50:41-08:00" title="2018-03-06T22:50:41-08:00">March 6, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Add <code>env rename</code> command to change the name of an environment</li>
+<li>Build linux binaries using glibc instead of musl</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Add sanity check in openvpn Tunnelblick profile generation to possibly avoid empty files</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Switch to go/1.10</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-9-0"><a href="https://dpb587.github.io/ssoca/releases/v0.9.0/">v0.9.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-02-11T23:55:56-08:00" title="2018-02-11T23:55:56-08:00">February 11, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>Automatically validate the connection and CA certificate to an environment when configuring it, and show confirmation to the user</li>
+<li>Automatically prefix environment URLs with <code>https://</code> if it is not already specified for slightly shorter commands</li>
+<li>Show slightly more descriptive HTTP error messages when requests fail (e.g. show <code>403 Forbidden</code> instead of <code>403</code>)</li>
+<li>Rename <code>env add</code> to <code>env set</code> to clarify it can be used for updating settings as well (<code>env add</code> currently remains as an alias)</li>
+<li>Rename <code>env info</code> to <code>env services</code>, and add <code>env info</code> for showing the environment name, URL, and banner</li>
+<li>Improved <code>auth info</code> behaviors:
+
+<ul>
+<li>Additional options to show only specific pieces of data (i.e. <code>--authenticated</code>, <code>--id</code>, and <code>--groups</code>)</li>
+<li>Now exit with an error if the user is not authenticated</li>
+</ul></li>
+<li>Improved <code>openvpn create-tunnelblick-profile --install</code> behaviors:
+
+<ul>
+<li>Create and secure Tunnelblick directories, if necessary, to avoid Tunnelblick needing to be installed/run beforehand</li>
+<li>Preset connection profile options to: ensure automatic reconnect on certificate expiration; and avoid automatic IP change detection and prompts</li>
+<li>Require Tunnelblick to not be running during install to ensure settings are applied and avoid confusion about new profiles not immediately appearing</li>
+</ul></li>
+<li>Show new, updated client version confirmation after using <code>env update-client</code></li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Fix <code>or</code> authorization filter to error with specific error type (avoids generic <code>500</code> internal server errors and enables automatic re-login attempts)</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-8-0"><a href="https://dpb587.github.io/ssoca/releases/v0.8.0/">v0.8.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2018-01-07T22:40:00-08:00" title="2018-01-07T22:40:00-08:00">January 7, 2018</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>show a warning message on authentication result pages if an outdated client is detected</li>
+<li>easier installation of Tunnelblick profiles with the <code>--install</code> option</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+
+<ul>
+<li>Tunnelblick profiles use the correct user home directory (caused errors when user did not match home path)</li>
+<li>Tunnelblick re-authentication prompts should not become detached from desktop interactions (caused hanging processes)</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>switch to vendoring with <a href="https://github.com/golang/dep">dep</a></li>
+<li>update some vendored dependencies</li>
+<li>refactor ssh client for easier imports</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-7-1"><a href="https://dpb587.github.io/ssoca/releases/v0.7.1/">v0.7.1</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-09-21T00:22:35-07:00" title="2017-09-21T00:22:35-07:00">September 21, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>redirect authentication requests to canonical hostname</li>
+<li>set authentication cookies with domain, path, and secure attributes</li>
+<li>improve error messages when temporary authentication cookies are incorrect</li>
+<li>avoid caching API responses in browser UI</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-7-0"><a href="https://dpb587.github.io/ssoca/releases/v0.7.0/">v0.7.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-09-13T23:31:10-07:00" title="2017-09-13T23:31:10-07:00">September 13, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"><p><strong>Features</strong></p>
+
+<ul>
+<li>client can now upgrade itself from remote servers running 0.7.0+ (<code>ssoca-client env update-client</code>)</li>
+<li>cleanup default browser UI for better download/configuration/usage instructions</li>
+<li>embed version information in client (<code>ssoca-client version</code>)</li>
+<li>the server <code>certauth</code> setting for services is now optional, defaulting to certauth named <code>default</code></li>
+<li>add Shimo and Viscosity to list of OS X paths used for finding an <code>openvpn</code> binary</li>
+<li>rename <code>ssoca-client openvpn connect</code> to <code>ssoca-client openvpn exec</code> (<code>connect</code> remains as an alias for now)</li>
+<li>Tunnelblick profiles are now named after environment (rather than generic <code>openvpn</code>, by default)</li>
+<li>restart openvpn connections if there are frequent, repeated authentications via management service (for cases where server has rotated credentials)</li>
+<li>client version is now reported in API requests for easier investigations from server logs</li>
+</ul>
+
+<p><strong>Fixes</strong></p>
+
+<ul>
+<li>server API now returns correct Content-Type header for JSON</li>
+<li>custom auth success/failure pages now work correctly</li>
+<li>improved authentication vs authorization error handling - now using HTTP 401 Unauthorized when auth tokens are invalid (previously 403 Forbidden was used; this may break automatic reauthentication attempts in older clients)</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>automate builds of binaries and publishing of releases</li>
+<li>continue improving test coverage</li>
+</ul>
+</article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-6-0"><a href="https://dpb587.github.io/ssoca/releases/v0.6.0/">v0.6.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-08-07T00:04:45-07:00" title="2017-08-07T00:04:45-07:00">August 7, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-5-0"><a href="https://dpb587.github.io/ssoca/releases/v0.5.0/">v0.5.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-08-03T01:42:42-07:00" title="2017-08-03T01:42:42-07:00">August 3, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-4-0"><a href="https://dpb587.github.io/ssoca/releases/v0.4.0/">v0.4.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-07-25T23:49:49-07:00" title="2017-07-25T23:49:49-07:00">July 25, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-3-0"><a href="https://dpb587.github.io/ssoca/releases/v0.3.0/">v0.3.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-07-20T23:20:04-07:00" title="2017-07-20T23:20:04-07:00">July 20, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-2-0"><a href="https://dpb587.github.io/ssoca/releases/v0.2.0/">v0.2.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-04-29T21:13:44-07:00" title="2017-04-29T21:13:44-07:00">April 29, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+        
+  
+  
+  <div class="content">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <h2 id="v0-1-0"><a href="https://dpb587.github.io/ssoca/releases/v0.1.0/">v0.1.0</a></h2>
+      </div>
+      <div class="column">
+        <nav class="level">
+          <div class="level-left">
+            
+              <div class="level-item">
+                <p class="subtitle is-5">
+                  <strong><time datetime="2017-03-14T21:12:19-07:00" title="2017-03-14T21:12:19-07:00">March 14, 2017</strong></time>
+                </p>
+              </div>
+            
+            
+          </div>
+        </nav>
+
+        <div><article class="content"></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      
+    </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+    Authentication (auth) | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a class="is-active" href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  
+  <div class="columns">
+    <div class="column is-four-fifths">
+      
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/service/auth/_index.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="authentication-auth">Authentication (<code>auth</code>)</h1>
+
+<p>Several different types of authentication are supported and the server will configure whichever is appropriate for the environment.</p>
+
+<ul>
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul>
+
+<h2 id="client-commands">Client Commands</h2>
+
+<p>Authentication workflows can be managed through <code>auth</code> subcommands.</p>
+
+<ul>
+<li><code>info</code> (<a href="https://dpb587.github.io/ssoca/reference/service/auth/info-cmd/">details</a>) &ndash; show current authentication information</li>
+<li><code>login</code> (<a href="https://dpb587.github.io/ssoca/reference/service/auth/login-cmd/">details</a>) &ndash; authenticate for a new token</li>
+<li><code>logout</code> (<a href="https://dpb587.github.io/ssoca/reference/service/auth/logout-cmd/">details</a>) &ndash; revoke an authentication token</li>
+</ul>
+
+<h2 id="client-options">Client Options</h2>
+
+<p>For advanced customization, the following options may be configured for an environment to influence how authentication workflows operate.</p>
+
+<h3 id="bind-web-based-bind-address"><code>bind</code> (Web-based Bind Address)</h3>
+
+<p>If the authentication service needs to start a local web server during authentication, by default, a random port will be bound on <code>localhost</code>. This behavior can be overridden with the <code>bind</code> option to specify a specific IP or port.</p>
+
+<p>For example, to force binding to port <code>8085</code> to enable static tunneling configuration, you might use&hellip;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssoca env set-option auth.bind <span style="color:#e6db74">&#34;localhost:8085&#34;</span></code></pre></div>
+<h3 id="open-command-interactive-login"><code>open_command</code> (Interactive Login)</h3>
+
+<p>If the user needs to visit a URL during authentication, the CLI will attempt to open the URL automatically. By default, the system&rsquo;s open command is invoked, but this can be overridden with the <code>open_command</code> option if advanced usage is required. The URL will be appended to the command.</p>
+
+<p>For example, to open the URL in Google Chrome with a specific profile for the user, you might use&hellip;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssoca env set-option auth.open_command <span style="color:#e6db74">&#34;[ sudo, -u, </span>$USER<span style="color:#e6db74">, /Applications/Google Chrome.app/Contents/MacOS/Google Chrome, --profile-directory=Default, --disable-gpu ]&#34;</span></code></pre></div>
+<article class="message is-info"><div class="message-body">
+    Shell environment variables are not interpolated by the client at runtime (i.e. <code>$USER</code> is parsed by shell here). The <code>sudo</code> usage allows the process to interact with the user&rsquo;s console UI if the command is run as <code>root</code>. The <code>--disable-gpu</code> suppresses a seemingly innocuous warning message.
+  </div>
+</article>
+
+</article>
+
+
+      
+      
+        
+      
+
+      
+        
+      
+        
+      
+        
+      
+    </div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#authentication-auth">Authentication (<code>auth</code>)</a>
+<ul>
+<li><a href="#client-commands">Client Commands</a></li>
+<li><a href="#client-options">Client Options</a>
+<ul>
+<li><a href="#bind-web-based-bind-address"><code>bind</code> (Web-based Bind Address)</a></li>
+<li><a href="#open-command-interactive-login"><code>open_command</code> (Interactive Login)</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

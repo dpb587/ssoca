@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>External OpenVPN Server Configuration | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  <div class="columns">
+    <div class="column is-four-fifths">
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/reference/service/openvpn/external-configuration.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+
+<h1 id="external-openvpn-server-configuration">External OpenVPN Server Configuration</h1>
+
+<p>OpenVPN is often deployed with CA-based authentication, which is a prerequisite for this service. Ensure the following directives are configured on the OpenVPN server.</p>
+
+<pre><code>ca_crt ...
+crl_pem ...
+</code></pre>
+
+<h2 id="renegotiation-disconnects">Renegotiation &amp; Disconnects</h2>
+
+<p>By default, OpenVPN attempts to renegotiate the data channel once every hour. Using short-lived certificates will cause the server to terminate the connection when renegotiation occurs (because the certificate has expired). Some clients may attempt to reconnect automatically, however there will typically be a brief interruption in network connectivity.</p>
+
+<p>This behavior is due to OpenVPN not using TLS session renegotiation. Instead, when renegotiating, a full handshake is performed from scratch. Two workarounds are presented below, but you may want to review OpenVPN&rsquo;s technical overview of the <a href="https://openvpn.net/index.php/open-source/documentation/security-overview.html">cryptographic layer</a> before making a decision.</p>
+
+<h3 id="extended-certificate-lifetime">Extended Certificate Lifetime</h3>
+
+<p>To retain the default renegotiation behavior of OpenVPN (recommended), you can increase the lifetime that certificates are signed for. For example, setting <code>validity</code> to <code>24h</code> would allow renegotiations for a day before the connection would fail.</p>
+
+<article class="message is-info"><div class="message-body">
+    This goes against a core principal of <code>ssoca</code> which heavily promotes short-lived tokens. A <code>24h</code> certificate signed at 09:00 could still be used to connect at 21:00. However, the risk of these extended certificates can be reduced by configuring the OpenVPN server with additional verification checks (mentioned below).
+  </div>
+</article>
+
+
+<h4 id="extended-certificate-verification">Extended Certificate Verification</h4>
+
+<p>OpenVPN supports a <code>tls-verify {cmd}</code> directive which executes external command <code>{cmd}</code> to perform final verifications of a peer before it becomes trusted. A script could be used to verify that initial connections occur within 2 minutes from when the certificate was issued (emulating a short-lived token). When renegotiations occur, a script can check whether the client is already trusted and skip the validity checks. An example script is available in the <a href="https://github.com/dpb587/ssoca-bosh-release/tree/src/ssoca-openvpn-verify.go"><code>ssoca-openvpn-verify</code></a> BOSH job, and OpenVPN could be configured to use it with the following.</p>
+
+<pre><code>script-security 2
+tls-verify &quot;/var/vcap/packages/ssoca-openvpn-verify/bin/tls-verify 2m&quot;
+tls-export-cert /var/vcap/data/ssoca-openvpn-verify/certs
+</code></pre>
+
+<h3 id="disable-increase-renegotiation-timeframe">Disable / Increase Renegotiation Timeframe</h3>
+
+<p>The renegotiation time is configured with the <code>reneg-sec {s}</code> directive where <code>{s}</code> is number of seconds and the default is <code>3600</code>. This can be increased (for example, <code>86400</code> to attempt and renegotiate once per day), which will delay the server from realizing a short-lived certificate was used. Alternatively, the time-based renegotiation can be disabled by setting the value to <code>0</code>.</p>
+
+<article class="message is-danger"><div class="message-body">
+    Disabling or increasing the renegotiation time may impact the security of your VPN connection.
+  </div>
+</article>
+
+</article>
+</div>
+
+  <div class="column table-of-contents is-hidden-mobile">
+    <div class="content is-size-7">
+      <nav id="TableOfContents">
+<ul>
+<li><a href="#external-openvpn-server-configuration">External OpenVPN Server Configuration</a>
+<ul>
+<li><a href="#renegotiation-disconnects">Renegotiation &amp; Disconnects</a>
+<ul>
+<li><a href="#extended-certificate-lifetime">Extended Certificate Lifetime</a>
+<ul>
+<li><a href="#extended-certificate-verification">Extended Certificate Verification</a></li>
+</ul></li>
+<li><a href="#disable-increase-renegotiation-timeframe">Disable / Increase Renegotiation Timeframe</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+  </div>
+
+</div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

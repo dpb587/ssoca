@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v0.18.1 | ssoca</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-37464314-3', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    <style type="text/css">
+      body > .section {
+        padding-top: 1.75rem;
+      }
+      nav#TableOfContents > ul,
+      nav#TableOfContents > ul > li > ul {
+        list-style: none;
+        margin-left: 0;
+      }
+      nav#TableOfContents > ul > li > a {
+        display: none;
+      }
+    </style>
+  </head>
+  <body><nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://dpb587.github.io/ssoca">
+      
+        <img height="28" src="https://github.com/dpb587.png" style="border-radius:4px;margin-right:0.5rem">
+      
+      ssoca
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarExpanded">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarExpanded" class="navbar-menu">
+    <div class="navbar-start">
+      
+        <a class="navbar-item" href="/ssoca/">docs</a>
+      
+        <a class="navbar-item" href="/ssoca/releases/">releases</a>
+      
+        <a class="navbar-item" href="https://github.com/dpb587/ssoca">github</a>
+      
+    </div>
+
+    <div class="navbar-end"></div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+
+<section class="section">
+      <div class="columns">
+        <div class="column">
+  
+  <aside class="menu">
+    <ul class="menu-list">
+<li><a href="/ssoca/reference/">Overview</a></li>
+<li><a href="/ssoca/reference/installation/">Client Installation</a></li>
+<li><a href="/ssoca/releases/">Official Releases</a></li>
+</ul>
+
+<p class="menu-label">Services</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/docroot/">Document Root</a></li>
+<li><a href="/ssoca/reference/service/env/">Environment</a></li>
+<li><a href="/ssoca/reference/service/file/">File</a></li>
+<li><a href="/ssoca/reference/service/openvpn/">OpenVPN</a></li>
+<li><a href="/ssoca/reference/service/ssh/">SSH</a></li>
+<li><a href="/ssoca/reference/service/auth/">Authentication</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/service/uaa-auth/">Cloud Foundry UAA</a></li>
+<li><a href="/ssoca/reference/service/github-auth/">GitHub</a></li>
+<li><a href="/ssoca/reference/service/google-auth/">Google</a></li>
+</ul></li>
+</ul>
+
+<p class="menu-label">Server Usage</p>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/server/configuration/">Configuration</a></li>
+<li><a href="/ssoca/reference/auth/authz/">Authorization</a></li>
+<li><a href="/ssoca/reference/certauth/">Certificate Authorities</a>
+
+<ul class="menu-list">
+<li><a href="/ssoca/reference/certauth/memory/">In-Memory</a></li>
+<li><a href="/ssoca/reference/certauth/fs/">Local Filesystem</a></li>
+</ul></li>
+<li><a href="/ssoca/reference/server/logging/">Logging</a></li>
+<li><a href="/ssoca/reference/server/ui/">Frontend UI</a></li>
+<li><a href="/ssoca/reference/server/deployment/">Deployment</a></li>
+</ul>
+
+  </aside>
+
+</div>
+        <div class="column is-four-fifths">
+          
+  <div class="columns">
+    <div class="column is-four-fifths">
+  
+  
+
+  
+
+  
+    
+    
+    
+      
+    
+
+    <div class="is-size-5 is-pulled-right">
+      <a href="https://github.com/dpb587/ssoca/blob/master/docs/releases/v0.18.1.md" rel="noopener" target="_blank" title="Contribute changes to this page" style="opacity:0.7">
+        <i class="fas fa-pencil-alt"></i>
+      </a>
+    </div>
+  
+
+<article class="content">
+        <h1 id="overview">v0.18.1</h1>
+
+        
+          <p>Released <time datetime="2019-10-21T07:52:19-07:00" title="2019-10-21T07:52:19-07:00">October 21, 2019</time></p>
+        
+
+        
+          <h2 id="notes">Release Notes</h2><p><strong>Enhancements</strong></p>
+
+<ul>
+<li>Automatically restart OpenVPN client when static certificates fail (<a href="https://github.com/dpb587/ssoca/issues/16">#16</a>).</li>
+<li>Improve logging of static certificate fallback and handling of the deprecated CLI flag.</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<ul>
+<li>Update to go/1.13.3.</li>
+</ul>
+
+
+        <h2 id="artifacts">Artifacts</h2>
+
+        
+
+
+
+
+  <pre><code>                                                          sha256  file
+4ec0432ca5acf60334ad62a752c2a23de5d6e110fdcb324d5f8de7156b2316a0  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-darwin-amd64">ssoca-client-0.18.1-darwin-amd64</a>
+379b1adcade7124cdbefa8d0e26337f33a3ec1e8e35ffb194a5c2ab3d94b5f3b  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-linux-amd64">ssoca-client-0.18.1-linux-amd64</a>
+55f249022148b543a3698e8aee4ea591653a31c65e277c8ba81710c241ae33ee  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-windows-amd64.exe">ssoca-client-0.18.1-windows-amd64.exe</a>
+bd17a7ca1d5ceaffe9947d54b0c2c983c14d766a3c49812b5fa13d237853395f  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-darwin-amd64">ssoca-server-0.18.1-darwin-amd64</a>
+a6e9fc9f60a3b20775ca5e49496ccf19580211238f9e323774c340b45a621b42  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-linux-amd64">ssoca-server-0.18.1-linux-amd64</a>
+791ec0c47cba4b1ee0f5bc35fd7e1ea592243aa375c5368cc21971f834ef2dd2  <a href="https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-windows-amd64.exe">ssoca-server-0.18.1-windows-amd64.exe</a></code></pre>
+
+
+      </article>
+    </div>
+    
+      <div class="column table-of-contents is-hidden-mobile">
+        <div class="content is-size-7">
+          <nav id="TableOfContents">
+            <ul>
+              <li>
+                <a href="#overview">/</a>
+                <ul>
+                  
+                    <li><a href="#notes">Release Notes</a></li>
+                  
+                  <li><a href="#artifacts">Artifacts</a></li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    
+  </div>
+
+        </div>
+      </div>
+    </section><footer class="footer">
+  <div class="content has-text-centered">
+    
+  </div>
+</footer>
+</body>
+</html>

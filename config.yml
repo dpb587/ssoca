@@ -1,0 +1,18 @@
+title: ssoca
+theme:
+- balmy-release
+- balmy
+params:
+  ThemeBrandIcon: https://github.com/dpb587.png
+  ThemeIncludeMenu: "/_menu"
+  ThemeNavBadges: []
+  ThemeNavItems:
+  - title: docs
+    url: /
+  - title: releases
+    url: /releases/
+  - title: github
+    url: "https://github.com/dpb587/ssoca"
+  GitRepo: "https://github.com/dpb587/ssoca"
+  GitEditPath: blob/master/docs
+  GitCommitPath: commit
