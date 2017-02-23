@@ -1,0 +1,17 @@
+# `ssoca openvpn base-profile ...`
+
+Show the base connection profile of the OpenVPN server
+
+    Usage:
+      ssoca [OPTIONS] openvpn base-profile [base-profile-OPTIONS]
+    
+    Application Options:
+          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+      -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
+    
+    Help Options:
+      -h, --help         Show this help message
+    
+    [base-profile command options]
+          -s, --service= Service name (default: openvpn) [$SSOCA_SERVICE]
+    

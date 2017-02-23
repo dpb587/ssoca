@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ssoca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="tachyons.min.css">
+    <style>.ci{color:inherit}</style>
+    <script src="zepto.min.js" type="text/javascript"></script>
+  </head>
+  <body class="w-100 sans-serif">
+    <article class="mw7 center mb5 ph3-ns dn">
+      <header class="tc pv4 bb mb4-ns">
+        <h1 id="env_title" class="fw6 f3 f2-ns lh-title mt0 mb3">
+          &hellip;loading&hellip;
+        </h1>
+        <h2 id="env_banner" class="fw2 f4 lh-copy mt0 mb3">
+          &hellip;loading&hellip;
+        </h2>
+
+        <p id="env_metadata_links" class="fw2 f6 lh-copy pa0 ma0">
+          &hellip;loading&hellip;
+
+          <a class="ci" href="#">Support</a>
+          &ndash;
+          <a class="ci" href="#">Docs</a>
+        </p>
+      </header>
+
+      <section>
+        <div class="tc cf ph2-ns mv4-ns">
+          <div class="fw6 f3 lh-copy">
+            &raquo;&nbsp; Authentication failed &nbsp;&laquo;
+          </div>
+          <div class="fw2 f4 lh-copy mt2">
+            You may close this and return to your terminal to continue
+          </div>
+        </div>
+      </section>
+
+      <footer class="pv4 bt">
+        <p class="tc fw2 f6 lh-copy pa0 ma0">
+          ssoca/<span id="version">loading</span>
+        </p>
+      </footer>
+    </article>
+    <script type="text/javascript">
+      (function () {
+        var waiting = 1;
+
+        function done() {
+          waiting -= 1;
+
+          if (waiting == 0) {
+            $('article').removeClass('dn');
+          }
+        }
+
+        $.getJSON('../env/info', function(data) {
+          var dom;
+
+          $('#version').text(data['version']);
+
+          if (data['env']) {
+            if (data['env']['url']) {
+              $('#env_url').text(data['env']['url']);
+            }
+
+            dom = $('#env_name');
+            if (data['env']['name']) {
+              dom.text(data['env']['name']);
+            }
+
+            dom = $('#env_title');
+            if (data['env']['title']) {
+              dom.text(data['env']['title']);
+              $('title').text(data['env']['title'] + ' // ssoca')
+            } else {
+              dom.remove();
+            }
+
+            dom = $('#env_banner');
+            if (data['env']['banner']) {
+              dom.text(data['env']['banner']);
+            } else {
+              dom.remove();
+            }
+
+            // metadata
+
+            if (data['env']['metadata']) {
+              if (data['env']['metadata']['ui.color']) {
+                $('body').addClass('bg-' + data['env']['metadata']['ui.color']);
+              }
+
+              var links = 0;
+              dom = $('#env_metadata_links').empty();
+              $.each(data['env']['metadata'], function (key, value) {
+                if (key.substring(0, 8) != 'ui.link.') {
+                  return;
+                }
+
+                if (links) {
+                  dom.append('&nbsp;&ndash;&nbsp;');
+                }
+
+                dom.append('<a class="ci" href="' + value + '">' + key.substring(8) + '</a>');
+
+                links += 1;
+              });
+
+              if (links == 0) {
+                dom.remove();
+              }
+            }
+          }
+
+          done();
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+/tmp
+
+# jekyll pages fails due to bad symlink
+/vendor/github.com/bmatcuk/doublestar/test/broken-symlink
+
+# funky dependencies
+/vendor/github.com/cloudfoundry/bosh-cli/vendor
+/vendor/github.com/cloudfoundry/bosh-utils/vendor

@@ -1,0 +1,74 @@
+jobs:
+  - name: "default-image"
+    serial: true
+    plan:
+      - get: "repo"
+        resource: "repo-ci-images"
+        trigger: true
+      - aggregate:
+          - put: "unit-ci-docker-image"
+            params:
+              build: "repo/ci/images/unit"
+            get_params:
+              skip_download: true
+  - name: unit-tests
+    plan:
+      - get: repo
+        trigger: true
+      - put: unit-tests-github-status
+        params:
+          state: pending
+          commit: repo
+      - task: unit-tests
+        file: repo/ci/tasks/unit-tests/config.yml
+        on_failure:
+          put: unit-tests-github-status
+          params:
+            state: failure
+            commit: repo
+        on_success:
+          put: unit-tests-github-status
+          params:
+            state: success
+            commit: repo
+  - name: unit-coverage
+    plan:
+      - get: repo
+        trigger: true
+      - task: unit-coverage
+        file: repo/ci/tasks/unit-coverage/config.yml
+        params:
+          COVERALLS_TOKEN: {{coveralls_token}}
+resources:
+  - name: repo
+    type: git
+    source:
+      uri: git@github.com:dpb587/ssoca.git
+      private_key: {{git_private_key}}
+  - name: "repo-ci-images"
+    type: "git"
+    source:
+      uri: git@github.com:dpb587/ssoca.git
+      private_key: {{git_private_key}}
+      paths:
+        - "ci/images/*"
+        - "ci/images/**/*"
+  - name: unit-tests-github-status
+    type: github-status
+    source:
+      repository: dpb587/ssoca
+      access_token: {{repo_github_token}}
+      context: unit-tests
+  - name: "unit-ci-docker-image"
+    type: "docker-image"
+    source:
+      repository: dpb587/ssoca
+      tag: ci-unit
+      username: {{docker_username}}
+      password: {{docker_password}}
+resource_types:
+  - name: github-status
+    type: docker-image
+    source:
+      repository: dpb587/github-status-resource
+      tag: master

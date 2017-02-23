@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -u
+
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+
+_packages="$( go list ./... | grep -v /vendor/ )"
+packages() { echo "$_packages" | xargs -n1 -- "$@" ; }
+exit=""
+
+find . -not -path '*/vendor/*' -path '*fakes/fake_*.go' | xargs rm
+
+for package in $_packages; do
+  if [[ "$package" =~ fakes$ ]]; then
+    true # no tests
+  else
+    if [ ! -e $GOPATH/src/$package/*_suite_test.go ]; then
+      ( cd $GOPATH/src/$package ; ginkgo bootstrap )
+    fi
+
+    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/*_suite_test.go
+  fi
+
+  go generate $package
+  exit="$?$exit"
+
+  go fmt $package
+  exit="$?$exit"
+done
+
+ginkgo -r
+exit="$?$exit"
+
+bin/build 0.0.0
+exit="$?$exit"
+
+alias ssoca=tmp/ssoca-client-0.0.0-darwin-amd64
+
+for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
+  mkdir -p docs/service/$cmd
+  rm -fr docs/service/$cmd/*-cmd.md
+
+  for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
+    (
+      echo '# `ssoca' $cmd $subcmd '...`'
+      echo
+      ssoca $cmd --help | grep "^  $subcmd " | sed -E 's/^ +[^ ]+ +//'
+      echo
+      ssoca $cmd $subcmd --help | sed 's/^/    /'
+
+      codemd="service/$cmd/client/cmd/$( echo "$subcmd" | sed "s/-/_/g" ).md"
+
+      if [ -e "$codemd" ]; then
+        echo
+        cat "$codemd"
+      fi
+    ) > docs/service/$cmd/$subcmd-cmd.md
+  done
+done
+
+if [[ "$( echo "$exit" | sed 's/0//' )" != "" ]] ; then
+  exit 1
+fi

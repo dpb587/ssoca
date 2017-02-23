@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# args: [version]
+
+set -eu
+
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+version="${1:-0.0.0}"
+
+mkdir -p tmp
+
+for cli in $( ls cli ); do
+  for os in darwin linux ; do
+    for arch in amd64 ; do
+      name=ssoca-$cli-$version-$os-$arch
+
+      echo "$name"
+      GOOS=$os GOARCH=$arch go build -o tmp/$name cli/$cli/$cli.go
+    done
+  done
+done

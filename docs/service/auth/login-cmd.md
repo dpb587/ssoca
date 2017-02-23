@@ -1,0 +1,17 @@
+# `ssoca auth login ...`
+
+Authenticate for a new token
+
+    Usage:
+      ssoca [OPTIONS] auth login [login-OPTIONS]
+    
+    Application Options:
+          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+      -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
+    
+    Help Options:
+      -h, --help         Show this help message
+    
+    [login command options]
+          -s, --service= Service name (default: auth) [$SSOCA_SERVICE]
+    

@@ -1,0 +1,49 @@
+package remote_ip
+
+import (
+	"errors"
+	"fmt"
+	"net"
+	"strings"
+
+	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+
+	"github.com/dpb587/ssoca/authz/filter"
+	"github.com/dpb587/ssoca/config"
+)
+
+type Filter struct{}
+
+func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
+	requirement := Requirement{}
+
+	err := config.RemarshalYAML(cfg, &requirement)
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Loading config")
+	}
+
+	if requirement.WithinRaw == "" {
+		return nil, errors.New("Property must be configured: within")
+	}
+
+	netmask := requirement.WithinRaw
+
+	if !strings.Contains(netmask, "/") {
+		ip := net.ParseIP(netmask)
+
+		if ip.To4() != nil {
+			netmask = fmt.Sprintf("%s/32", netmask)
+		} else {
+			netmask = fmt.Sprintf("%s/128", netmask)
+		}
+	}
+
+	_, cidr, err := net.ParseCIDR(netmask)
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Parsing CIDR")
+	}
+
+	requirement.Within = *cidr
+
+	return requirement, nil
+}

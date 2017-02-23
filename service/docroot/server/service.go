@@ -1,0 +1,49 @@
+package server
+
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/server/service/req"
+	svc "github.com/dpb587/ssoca/service/docroot"
+	svcconfig "github.com/dpb587/ssoca/service/docroot/config"
+
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+)
+
+type Service struct {
+	svc.Service
+
+	name   string
+	config svcconfig.Config
+
+	fs boshsys.FileSystem
+}
+
+func NewService(name string, config svcconfig.Config, fs boshsys.FileSystem) Service {
+	return Service{
+		name:   name,
+		config: config,
+	}
+}
+
+func (s Service) Name() string {
+	return s.name
+}
+
+func (s Service) Metadata() interface{} {
+	return nil
+}
+
+func (s Service) GetRoutes() []req.RouteHandler {
+	return []req.RouteHandler{
+		req.RouteHandlerFunc{
+			Func: http.StripPrefix(fmt.Sprintf("/%s/", s.Name()), http.FileServer(http.Dir(s.config.AbsPath))).ServeHTTP,
+		},
+	}
+}
+
+func (s Service) IsAuthorized(_ http.Request, _ auth.Token) (bool, error) {
+	return true, nil
+}

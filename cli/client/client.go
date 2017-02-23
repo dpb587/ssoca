@@ -1,0 +1,65 @@
+package main
+
+import (
+	"os"
+
+	"github.com/jessevdk/go-flags"
+
+	boshui "github.com/cloudfoundry/bosh-cli/ui"
+	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+
+	"github.com/dpb587/ssoca/client"
+	"github.com/dpb587/ssoca/client/service"
+
+	// srv_download "github.com/dpb587/ssoca/service/download/client"
+	srv_github_auth "github.com/dpb587/ssoca/authn/github/client"
+	srv_google_auth "github.com/dpb587/ssoca/authn/google/client"
+	srv_http_auth "github.com/dpb587/ssoca/authn/http/client"
+	srv_auth "github.com/dpb587/ssoca/service/auth/client"
+	srv_env "github.com/dpb587/ssoca/service/env/client"
+	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
+	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
+	// srv_uaa_auth "github.com/dpb587/ssoca/authn/uaa/client"
+	// srv_uaa_auth_helper "github.com/dpb587/ssoca/authn/uaa/helper"
+)
+
+func main() {
+	logger := boshlog.NewLogger(boshlog.LevelError)
+	fs := boshsys.NewOsFileSystem(logger)
+	cmdRunner := boshsys.NewExecCmdRunner(logger)
+	ui := boshui.NewConfUI(logger)
+	serviceManager := service.NewDefaultManager()
+
+	runtime := client.NewFlagsRuntime(serviceManager, ui, os.Stdout, os.Stdin, fs, logger)
+	var parser = flags.NewParser(&runtime, flags.Default)
+
+	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))
+	serviceManager.Add(srv_env.NewService(&runtime, fs))
+	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
+	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
+	serviceManager.Add(srv_http_auth.NewService(&runtime))
+	serviceManager.Add(srv_openvpn.NewService(&runtime, fs, cmdRunner))
+	serviceManager.Add(srv_ssh.NewService(&runtime, fs, cmdRunner))
+	// serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
+
+	for _, name := range serviceManager.Services() {
+		service, err := serviceManager.Get(name)
+		if err != nil {
+			panic(err)
+		}
+
+		command := service.GetCommand()
+		if command != nil {
+			parser.AddCommand(name, service.Description(), service.Description(), command)
+		}
+	}
+
+	if _, err := parser.Parse(); err != nil {
+		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+			os.Exit(0)
+		} else {
+			os.Exit(1)
+		}
+	}
+}
