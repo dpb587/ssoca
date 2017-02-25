@@ -149,8 +149,9 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 				Expect(w.Header()["Content-Type"]).To(HaveLen(1))
 				Expect(w.Header()["Content-Type"][0]).To(Equal("text/plain"))
 
-				Expect(w.Header()["Set-Cookie"]).To(HaveLen(1))
+				Expect(w.Header()["Set-Cookie"]).To(HaveLen(2))
 				Expect(w.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
+				Expect(w.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
 
 				claims := parseClaims(w.Body.String())
 
@@ -176,8 +177,9 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 					Expect(w.Header()["Content-Type"]).To(HaveLen(1))
 					Expect(w.Header()["Content-Type"][0]).To(Equal("text/html"))
 
-					Expect(w.Header()["Set-Cookie"]).To(HaveLen(2))
-					Expect(w.Header()["Set-Cookie"][1]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
+					Expect(w.Header()["Set-Cookie"]).To(HaveLen(3))
+					Expect(w.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
+					Expect(w.Header()["Set-Cookie"][2]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
 
 					body := w.Body.String()
 

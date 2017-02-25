@@ -15,6 +15,7 @@ import (
 	"github.com/dpb587/ssoca/authn/support/oauth2/config"
 	oauth2supportreq "github.com/dpb587/ssoca/authn/support/oauth2/req"
 	"github.com/dpb587/ssoca/authn/support/selfsignedjwt"
+	"github.com/dpb587/ssoca/server"
 	"github.com/dpb587/ssoca/server/service/req"
 )
 
@@ -37,33 +38,39 @@ func NewBackend(origin string, config oauth2.Config, oauthContext context.Contex
 }
 
 func (b Backend) ParseRequestAuth(req http.Request) (auth.Token, error) {
-	authHeader := req.Header.Get("Authorization")
-	if authHeader == "" {
-		return nil, nil
+	authValue := req.Header.Get("Authorization")
+	if authValue == "" {
+		authCookie, _ := req.Cookie("Authorization")
+
+		if authCookie == nil {
+			return nil, nil
+		}
+
+		authValue = authCookie.Value
 	}
 
-	authHeaderPieces := strings.SplitN(authHeader, " ", 2)
-	if len(authHeaderPieces) != 2 {
-		return nil, errors.New("Invalid Authorization header format")
-	} else if strings.ToLower(authHeaderPieces[0]) != "bearer" {
-		return nil, errors.New("Invalid Authorization method")
+	authValuePieces := strings.SplitN(authValue, " ", 2)
+	if len(authValuePieces) != 2 {
+		return nil, server.NewAPIError(errors.New("Invalid Authorization format"), http.StatusForbidden, "")
+	} else if strings.ToLower(authValuePieces[0]) != "bearer" {
+		return nil, server.NewAPIError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
 	}
 
 	intTok := selfsignedjwt.NewOriginToken(b.origin)
 
 	_, err := jwt.ParseWithClaims(
-		authHeaderPieces[1],
+		authValuePieces[1],
 		&intTok,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method != config.JWTSigningMethod {
-				return nil, errors.New("Invalid signing method")
+				return nil, server.NewAPIError(errors.New("Invalid signing method"), http.StatusForbidden, "")
 			}
 
 			return &b.jwtConfig.PrivateKey.PublicKey, nil
 		},
 	)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing claims")
+		return nil, server.NewAPIError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
 	attributes := map[string]interface{}{}

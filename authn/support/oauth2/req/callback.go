@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -102,6 +103,17 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 		&http.Cookie{
 			Name:   state.Name,
 			MaxAge: -1,
+		},
+	)
+
+	// ui cookie
+	// @todo configurable
+	http.SetCookie(
+		w,
+		&http.Cookie{
+			Name:  "Authorization",
+			Value: fmt.Sprintf("bearer %s", tokenString),
+			Path:  "/",
 		},
 	)
 
