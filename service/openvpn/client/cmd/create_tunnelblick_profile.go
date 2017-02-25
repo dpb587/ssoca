@@ -15,7 +15,7 @@ import (
 
 var tunnelblickConnectionScript = template.Must(template.New("script").Parse(`#!/bin/bash
 
-set -eu
+set -u
 
 name="$( basename "$( dirname "$( dirname "$( dirname "$0" )" )" )" )"
 shadow="$( dirname "$0" )/config.ovpn"
@@ -24,6 +24,16 @@ file="/Users/$USER/Library/Application Support/Tunnelblick/Configurations/$name/
 
 echo "generating profile"
 {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
+exit=$?
+
+if [[ "0" != "$?" ]]; then
+  rm "$file.tmp"
+
+  exit $exit
+fi
+
+set -e
+
 mv "$file.tmp" "$file"
 
 echo "updating shadow copy"g
