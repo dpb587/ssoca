@@ -34,7 +34,7 @@ The following fields will be present on messages related to a specific service.
 
 The following fields will be present on messages which were being performed by an authenticated user.
 
- * `auth.id` - the authenticated user (e.g. `somebody@example.com`)
+ * `auth.user_id` - the authenticated user (e.g. `somebody@example.com`)
 
 
 ## Certificate Authority

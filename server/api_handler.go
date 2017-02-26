@@ -164,7 +164,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if token != nil {
-		loggerContext["auth.id"] = token.ID
+		loggerContext["auth.user_id"] = token.ID
 
 		r = r.WithContext(context.WithValue(r.Context(), auth.RequestToken, token))
 		r = r.WithContext(context.WithValue(r.Context(), "loggerContext", loggerContext))
