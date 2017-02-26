@@ -116,6 +116,10 @@ func (p Provider) GetCertificatePEM() (string, error) {
 	return p.fs.ReadFileString(p.config.CertificatePath)
 }
 
+func (p Provider) GetPrivateKeyPEM() (string, error) {
+	return p.fs.ReadFileString(p.config.PrivateKeyPath)
+}
+
 func (p Provider) getPrivateKey() (interface{}, error) {
 	str, err := p.fs.ReadFileString(p.config.PrivateKeyPath)
 	if err != nil {

@@ -86,3 +86,7 @@ func (p Provider) GetCertificate() (*x509.Certificate, error) {
 func (p Provider) GetCertificatePEM() (string, error) {
 	return p.config.CertificateString, nil
 }
+
+func (p Provider) GetPrivateKeyPEM() (string, error) {
+	return p.config.PrivateKeyString, nil
+}
