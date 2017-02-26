@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
-	"github.com/dpb587/ssoca/auth/authfakes"
 	"github.com/dpb587/ssoca/authz/filter/filterfakes"
 	. "github.com/dpb587/ssoca/authz/service"
 	"github.com/dpb587/ssoca/server/service/req"
@@ -71,11 +70,11 @@ var _ = Describe("Service", func() {
 
 	Describe("IsAuthorized", func() {
 		var req http.Request
-		var token auth.Token
+		var token *auth.Token
 
 		BeforeEach(func() {
 			req = http.Request{}
-			token = &authfakes.FakeToken{}
+			token = &auth.Token{}
 		})
 
 		Context("requirement fails", func() {

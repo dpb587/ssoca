@@ -42,7 +42,7 @@ var _ = Describe("SignPublicKey", func() {
 				"custom": "fake",
 			}
 
-			token = auth.NewSimpleToken("fake-user", map[string]interface{}{"attr1": "value1"})
+			token = auth.Token{ID: "fake-user"}
 			fakecertauth = certauthfakes.FakeProvider{}
 			realcertauth = memoryfakes.CreateMock1()
 

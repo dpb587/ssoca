@@ -30,9 +30,11 @@ var _ = Describe("Requirement", func() {
 			It("satisfies when present", func() {
 				satisfied, err := subject.IsSatisfied(
 					&request,
-					auth.NewSimpleToken("test", map[string]interface{}{
-						"scope1": true,
-					}),
+					&auth.Token{
+						Groups: []string{
+							"scope1",
+						},
+					},
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -42,10 +44,12 @@ var _ = Describe("Requirement", func() {
 			It("satisfies when more are present", func() {
 				satisfied, err := subject.IsSatisfied(
 					&request,
-					auth.NewSimpleToken("test", map[string]interface{}{
-						"scope1": true,
-						"scope2": true,
-					}),
+					&auth.Token{
+						Groups: []string{
+							"scope1",
+							"scope2",
+						},
+					},
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -55,9 +59,11 @@ var _ = Describe("Requirement", func() {
 			It("does not satisfy when not present", func() {
 				satisfied, err := subject.IsSatisfied(
 					&request,
-					auth.NewSimpleToken("test", map[string]interface{}{
-						"scope2": true,
-					}),
+					&auth.Token{
+						Groups: []string{
+							"scope2",
+						},
+					},
 				)
 
 				Expect(err).ToNot(HaveOccurred())

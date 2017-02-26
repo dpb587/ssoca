@@ -49,7 +49,7 @@ func (s Service) GetRoutes() []req.RouteHandler {
 	}
 }
 
-func (s Service) IsAuthorized(_ http.Request, _ auth.Token) (bool, error) {
+func (s Service) IsAuthorized(_ http.Request, _ *auth.Token) (bool, error) {
 	return true, nil
 }
 

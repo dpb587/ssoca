@@ -28,7 +28,7 @@ for package in $_packages; do
   exit="$?$exit"
 done
 
-ginkgo -r
+ginkgo -r -keepGoing
 exit="$?$exit"
 
 bin/build 0.0.0

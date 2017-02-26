@@ -72,9 +72,9 @@ var _ = Describe("ApiHandler", func() {
 
 			Context("auth.Token", func() {
 				It("works", func() {
-					var authToken = auth.NewSimpleToken("fake-user", map[string]interface{}{})
+					var authToken = auth.Token{ID: "fake-id"}
 
-					authService.ParseRequestAuthReturns(authToken, nil)
+					authService.ParseRequestAuthReturns(&authToken, nil)
 
 					handler := &internalfakes.FakeFakeInAuthToken{}
 
@@ -85,7 +85,7 @@ var _ = Describe("ApiHandler", func() {
 					wrapper.ServeHTTP(&res, req)
 
 					Expect(handler.ExecuteCallCount()).To(Equal(1))
-					Expect(handler.ExecuteArgsForCall(0)).To(Equal(authToken))
+					Expect(handler.ExecuteArgsForCall(0)).To(Equal(&authToken))
 				})
 
 				Context("missing token", func() {

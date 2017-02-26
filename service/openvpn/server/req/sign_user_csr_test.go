@@ -66,7 +66,7 @@ vqQ=
 				"custom": "fake",
 			}
 
-			token = auth.NewSimpleToken("fake-user", map[string]interface{}{"attr1": "value1"})
+			token = auth.Token{ID: "fake-user"}
 			fakecertauth = certauthfakes.FakeProvider{}
 			realcertauth = memoryfakes.CreateMock1()
 
@@ -81,7 +81,7 @@ vqQ=
 			fakecertauth.SignCertificateStub = realcertauth.SignCertificate
 
 			res, err := subject.Execute(
-				token,
+				&token,
 				api.SignUserCSRRequest{
 					CSR: usr1csrStr,
 				},
@@ -117,7 +117,7 @@ vqQ=
 			Context("invalid format", func() {
 				It("errors", func() {
 					_, err := subject.Execute(
-						token,
+						&token,
 						api.SignUserCSRRequest{
 							CSR: "invalid",
 						},
@@ -138,7 +138,7 @@ vqQ=
 			Context("invalid data", func() {
 				It("errors", func() {
 					_, err := subject.Execute(
-						token,
+						&token,
 						api.SignUserCSRRequest{
 							CSR: `-----BEGIN CERTIFICATE REQUEST-----
 MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
@@ -165,7 +165,7 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 					fakecertauth.SignCertificateReturns([]byte{}, errors.New("fake-err"))
 
 					_, err := subject.Execute(
-						token,
+						&token,
 						api.SignUserCSRRequest{
 							CSR: usr1csrStr,
 						},
@@ -184,7 +184,7 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 					fakecertauth.GetCertificatePEMReturns("", errors.New("fake-err"))
 
 					_, err := subject.Execute(
-						token,
+						&token,
 						api.SignUserCSRRequest{
 							CSR: usr1csrStr,
 						},

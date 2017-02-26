@@ -22,13 +22,22 @@ func (h Info) Execute(req *http.Request) (api.InfoResponse, error) {
 		return res, nil
 	}
 
-	token, ok := rawToken.(auth.Token)
+	token, ok := rawToken.(*auth.Token)
 	if !ok {
-		panic("Invalid request authentication token")
+		panic("invalid token in request context")
 	}
 
-	res.Username = token.Username()
-	res.Attributes = token.Attributes()
+	res.ID = token.ID
+	res.Groups = token.Groups
+	res.Attributes = map[string]string{}
+
+	for k, v := range token.Attributes {
+		if v == nil {
+			continue
+		}
+
+		res.Attributes[string(k)] = *v
+	}
 
 	return res, nil
 }

@@ -29,12 +29,12 @@ func (h Info) Execute(req *http.Request) (api.InfoResponse, error) {
 		},
 	}
 
-	var token auth.Token
+	var token *auth.Token
 	rawToken := req.Context().Value(auth.RequestToken)
 
 	if rawToken != nil {
 		var ok bool
-		token, ok = rawToken.(auth.Token)
+		token, ok = rawToken.(*auth.Token)
 		if !ok {
 			panic("invalid token in request context")
 		}

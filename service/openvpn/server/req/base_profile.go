@@ -20,7 +20,7 @@ func (h BaseProfile) Route() string {
 	return "base-profile"
 }
 
-func (h BaseProfile) Execute(_ auth.Token, w http.ResponseWriter) error {
+func (h BaseProfile) Execute(_ *auth.Token, w http.ResponseWriter) error {
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
 		return bosherr.WrapError(err, "Loading CA certificate")

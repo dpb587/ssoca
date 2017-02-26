@@ -19,7 +19,7 @@ type internalToken struct {
 	Scopes   []string `json:"scope"`
 }
 
-func (s Service) ParseRequestAuth(req http.Request) (auth.Token, error) {
+func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	authHeader := req.Header.Get("Authorization")
 	if authHeader == "" {
 		return nil, nil
@@ -49,11 +49,13 @@ func (s Service) ParseRequestAuth(req http.Request) (auth.Token, error) {
 		return nil, bosherr.WrapError(err, "Parsing claims")
 	}
 
-	attributes := map[string]interface{}{}
+	token := auth.Token{}
+	token.ID = intTok.Username
+	token.Attributes[auth.TokenUsernameAttribute] = &intTok.Username
 
 	for _, scope := range intTok.Scopes {
-		attributes[scope] = true
+		token.Groups = append(token.Groups, scope)
 	}
 
-	return auth.NewSimpleToken(intTok.Username, attributes), nil
+	return &token, nil
 }

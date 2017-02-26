@@ -5,15 +5,15 @@ import (
 	"fmt"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dpb587/ssoca/auth"
 )
 
 type Token struct {
 	jwt.StandardClaims
 
-	// @todo extra attributes are signed?
-	Username   string            `json:"username,omitempty"`
-	Scopes     []string          `json:"scope,omitempty"`
-	Attributes map[string]string `json:"attributes,omitempty"`
+	ID         string                          `json:"scid,omitempty"`
+	Groups     []string                        `json:"scgr,omitempty"`
+	Attributes map[auth.TokenAttribute]*string `json:"scat,omitempty"`
 
 	origin string
 }

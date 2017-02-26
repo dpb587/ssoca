@@ -37,7 +37,7 @@ func NewBackend(origin string, config oauth2.Config, oauthContext context.Contex
 	}
 }
 
-func (b Backend) ParseRequestAuth(req http.Request) (auth.Token, error) {
+func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	authValue := req.Header.Get("Authorization")
 	if authValue == "" {
 		authCookie, _ := req.Cookie("Authorization")
@@ -73,17 +73,13 @@ func (b Backend) ParseRequestAuth(req http.Request) (auth.Token, error) {
 		return nil, server.NewAPIError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
-	attributes := map[string]interface{}{}
-
-	for attrKey, attrValue := range intTok.Attributes {
-		attributes[attrKey] = attrValue
+	authToken := auth.Token{
+		ID:         intTok.ID,
+		Groups:     intTok.Groups,
+		Attributes: intTok.Attributes,
 	}
 
-	for _, scope := range intTok.Scopes {
-		attributes[scope] = true
-	}
-
-	return auth.NewSimpleToken(intTok.Username, attributes), nil
+	return &authToken, nil
 }
 
 func (b Backend) GetRoutes(userProfileLoader config.UserProfileLoader) []req.RouteHandler {

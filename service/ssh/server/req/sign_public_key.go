@@ -53,7 +53,7 @@ func (h SignPublicKey) Execute(token auth.Token, payload api.SignPublicKeyReques
 	certificate := ssh.Certificate{
 		// https://github.com/openssh/openssh-portable/blob/master/PROTOCOL.certkeys
 		Key:             publicKey,
-		KeyId:           token.Username(),
+		KeyId:           token.ID,
 		CertType:        ssh.UserCert,
 		ValidAfter:      uint64(now.Add(-5 * time.Second).UTC().Unix()),
 		ValidBefore:     uint64(now.Add(h.Validity).UTC().Unix()),

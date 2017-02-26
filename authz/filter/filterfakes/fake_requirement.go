@@ -10,11 +10,11 @@ import (
 )
 
 type FakeRequirement struct {
-	IsSatisfiedStub        func(*http.Request, auth.Token) (bool, error)
+	IsSatisfiedStub        func(*http.Request, *auth.Token) (bool, error)
 	isSatisfiedMutex       sync.RWMutex
 	isSatisfiedArgsForCall []struct {
 		arg1 *http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}
 	isSatisfiedReturns struct {
 		result1 bool
@@ -24,11 +24,11 @@ type FakeRequirement struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeRequirement) IsSatisfied(arg1 *http.Request, arg2 auth.Token) (bool, error) {
+func (fake *FakeRequirement) IsSatisfied(arg1 *http.Request, arg2 *auth.Token) (bool, error) {
 	fake.isSatisfiedMutex.Lock()
 	fake.isSatisfiedArgsForCall = append(fake.isSatisfiedArgsForCall, struct {
 		arg1 *http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}{arg1, arg2})
 	fake.recordInvocation("IsSatisfied", []interface{}{arg1, arg2})
 	fake.isSatisfiedMutex.Unlock()
@@ -44,7 +44,7 @@ func (fake *FakeRequirement) IsSatisfiedCallCount() int {
 	return len(fake.isSatisfiedArgsForCall)
 }
 
-func (fake *FakeRequirement) IsSatisfiedArgsForCall(i int) (*http.Request, auth.Token) {
+func (fake *FakeRequirement) IsSatisfiedArgsForCall(i int) (*http.Request, *auth.Token) {
 	fake.isSatisfiedMutex.RLock()
 	defer fake.isSatisfiedMutex.RUnlock()
 	return fake.isSatisfiedArgsForCall[i].arg1, fake.isSatisfiedArgsForCall[i].arg2

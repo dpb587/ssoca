@@ -56,7 +56,7 @@ func CreateAPIHandler(authService service.AuthService, apiService service.Servic
 			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
 				return reflect.ValueOf(r.Context().Value("loggerContext")), nil
 			}
-		} else if handlerArg.String() == "auth.Token" {
+		} else if handlerArg.String() == "*auth.Token" {
 			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
 				token := r.Context().Value(auth.RequestToken)
 				if token == nil {
@@ -164,7 +164,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if token != nil {
-		loggerContext["auth.username"] = token.Username()
+		loggerContext["auth.id"] = token.ID
 
 		r = r.WithContext(context.WithValue(r.Context(), auth.RequestToken, token))
 		r = r.WithContext(context.WithValue(r.Context(), "loggerContext", loggerContext))
@@ -175,7 +175,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for argTransformIdx, argTransform := range h.handlerIn {
 		argValue, err1 := argTransform(w, r)
 		if err1 != nil {
-			h.sendGenericErrorResponse(w, r, WrapErrorf(err1, "Converting argument %d", argTransformIdx))
+			h.sendGenericErrorResponse(w, r, WrapErrorf(err1, "Converting argument %d", argTransformIdx+1))
 
 			return
 		}

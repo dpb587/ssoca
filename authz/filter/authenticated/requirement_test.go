@@ -27,7 +27,7 @@ var _ = Describe("Requirement", func() {
 		It("satisfies with token", func() {
 			satisfied, err := subject.IsSatisfied(
 				&request,
-				auth.NewSimpleToken("test", map[string]interface{}{}),
+				&auth.Token{ID: "test"},
 			)
 
 			Expect(err).ToNot(HaveOccurred())

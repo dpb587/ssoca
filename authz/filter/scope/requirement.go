@@ -10,12 +10,18 @@ type Requirement struct {
 	Present string `yaml:"present"`
 }
 
-func (r Requirement) IsSatisfied(_ *http.Request, token auth.Token) (bool, error) {
+func (r Requirement) IsSatisfied(_ *http.Request, token *auth.Token) (bool, error) {
 	if token == nil {
-		return false, nil
-	} else if !token.HasAttribute(r.Present) {
 		return false, nil
 	}
 
-	return true, nil
+	for _, scope := range token.Groups {
+		if scope != r.Present {
+			continue
+		}
+
+		return true, nil
+	}
+
+	return false, nil
 }

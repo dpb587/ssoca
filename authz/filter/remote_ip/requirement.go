@@ -13,7 +13,7 @@ type Requirement struct {
 	Within    net.IPNet `yaml:"-"`
 }
 
-func (r Requirement) IsSatisfied(req *http.Request, _ auth.Token) (bool, error) {
+func (r Requirement) IsSatisfied(req *http.Request, _ *auth.Token) (bool, error) {
 	host, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
 		return false, bosherr.WrapError(err, "Parsing remote address")

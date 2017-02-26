@@ -39,10 +39,10 @@ func (s Service) GetRoutes() []req.RouteHandler {
 	return append(s.auth.GetRoutes(), svcreq.Info{})
 }
 
-func (s Service) ParseRequestAuth(r http.Request) (auth.Token, error) {
+func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
 	return s.auth.ParseRequestAuth(r)
 }
 
-func (s Service) IsAuthorized(req http.Request, token auth.Token) (bool, error) {
+func (s Service) IsAuthorized(req http.Request, token *auth.Token) (bool, error) {
 	return s.auth.IsAuthorized(req, token)
 }

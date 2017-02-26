@@ -41,7 +41,7 @@ func (s Service) GetRoutes() []req.RouteHandler {
 	return s.service.GetRoutes()
 }
 
-func (s Service) IsAuthorized(req http.Request, token auth.Token) (bool, error) {
+func (s Service) IsAuthorized(req http.Request, token *auth.Token) (bool, error) {
 	is, err := s.requirement.IsSatisfied(&req, token)
 	if !is || err != nil {
 		return is, err

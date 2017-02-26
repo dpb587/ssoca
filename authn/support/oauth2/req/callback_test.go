@@ -11,7 +11,9 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dpb587/ssoca/auth"
 	oauth2supportconfig "github.com/dpb587/ssoca/authn/support/oauth2/config"
+	internaltests "github.com/dpb587/ssoca/authn/support/oauth2/internal/tests"
 	. "github.com/dpb587/ssoca/authn/support/oauth2/req"
 	"golang.org/x/oauth2"
 
@@ -49,15 +51,7 @@ var _ = Describe("Callback", func() {
 
 		BeforeEach(func() {
 			var err error
-			privateKey, err = jwt.ParseRSAPrivateKeyFromPEM([]byte(`-----BEGIN RSA PRIVATE KEY-----
-MIIBOwIBAAJBALx3tjO/le0iinRqpdMa3/+4lbYuPQOsJROsDo9D4gN3rvnqOiuI
-MIydz3VZ+ErHf5+LCQa4elzMK6mGpIVrewcCAwEAAQJBAJfHZPHZ6fkWpyBIPxF7
-BEhiNBeKt1J80UM9fmA8UAlvd3m003ANZAIe6/GEYCTVp49jJ0e66Fwhd+LOsFN2
-cPkCIQDKSnqE8QKg45S/QosRuCpM2EKwscp0855wdRAyQFYeWwIhAO6BrRRbAriQ
-8tafNqIeKBaKBLZlen0ataAPiKAEqo3FAiAR1bMrmVwT9zycCC/ephAEqmRm06X3
-3aqwW4HMDGQLVQIgUZL6rp6eJKA23l8gIXys+2CDUhsNNOLAwhjuAsT1zH0CIQC/
-Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
------END RSA PRIVATE KEY-----`))
+			privateKey, err = jwt.ParseRSAPrivateKeyFromPEM([]byte(internaltests.SharedPrivateKey))
 			if err != nil {
 				panic(err)
 			}
@@ -82,18 +76,18 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 		}
 
 		BeforeEach(func() {
+			user := "fake-user"
 			subject = Callback{
 				Origin: "fake-origin",
-				UserProfileLoader: func(_ *http.Client) (oauth2supportconfig.UserProfile, error) {
-					return oauth2supportconfig.UserProfile{
-						Username: "fake-user",
-						Attributes: map[string]string{
-							"attr1": "value1",
-							"attr2": "value2",
-						},
-						Scopes: []string{
+				UserProfileLoader: func(_ *http.Client) (auth.Token, error) {
+					return auth.Token{
+						ID: "fake-id",
+						Groups: []string{
 							"scope1",
 							"scope2",
+						},
+						Attributes: map[auth.TokenAttribute]*string{
+							auth.TokenUsernameAttribute: &user,
 						},
 					}, nil
 				},
@@ -155,11 +149,10 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 
 				claims := parseClaims(w.Body.String())
 
-				Expect(claims["username"]).To(Equal("fake-user"))
-				Expect(claims["attributes"].(map[string]interface{})["attr1"]).To(Equal("value1"))
-				Expect(claims["attributes"].(map[string]interface{})["attr2"]).To(Equal("value2"))
-				Expect(claims["scope"].([]interface{})).To(ContainElement("scope1"))
-				Expect(claims["scope"].([]interface{})).To(ContainElement("scope2"))
+				Expect(claims["scid"]).To(Equal("fake-id"))
+				Expect(claims["scat"]).To(Equal(map[string]interface{}{"username": "fake-user"}))
+				Expect(claims["scgr"].([]interface{})).To(ContainElement("scope1"))
+				Expect(claims["scgr"].([]interface{})).To(ContainElement("scope2"))
 
 				Expect(claims["aud"]).To(Equal("fake-origin"))
 				Expect(claims["iss"]).To(Equal("fake-origin"))
@@ -191,7 +184,7 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 
 					claims := parseClaims(tokenMatch[1])
 
-					Expect(claims["username"]).To(Equal("fake-user"))
+					Expect(claims["scid"]).To(Equal("fake-id"))
 				})
 			})
 		})
@@ -267,8 +260,8 @@ Y5S1jt/4jLs8Xfh6zPs15EuvQKpUGYKAIHofIp0T3Q==
 					}, nil
 				}
 
-				subject.UserProfileLoader = func(_ *http.Client) (oauth2supportconfig.UserProfile, error) {
-					return oauth2supportconfig.UserProfile{}, errors.New("fake-err")
+				subject.UserProfileLoader = func(_ *http.Client) (auth.Token, error) {
+					return auth.Token{}, errors.New("fake-err")
 				}
 
 				err := subject.Execute(r, &w)

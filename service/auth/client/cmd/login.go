@@ -92,11 +92,11 @@ func (c *Login) Execute(args []string) error {
 		return bosherr.WrapError(err, "Getting remote authentication info")
 	}
 
-	if authInfo.Username == "" {
+	if authInfo.ID == "" {
 		return errors.New("Failed to use authentication credentials")
 	}
 
-	ui.PrintBlock(fmt.Sprintf("Successfully logged in as %s\n", authInfo.Username))
+	ui.PrintBlock(fmt.Sprintf("Successfully logged in as %s\n", authInfo.ID))
 
 	return nil
 }

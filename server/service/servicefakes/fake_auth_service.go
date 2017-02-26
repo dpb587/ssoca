@@ -41,23 +41,23 @@ type FakeAuthService struct {
 	getRoutesReturns     struct {
 		result1 []req.RouteHandler
 	}
-	IsAuthorizedStub        func(http.Request, auth.Token) (bool, error)
+	IsAuthorizedStub        func(http.Request, *auth.Token) (bool, error)
 	isAuthorizedMutex       sync.RWMutex
 	isAuthorizedArgsForCall []struct {
 		arg1 http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}
 	isAuthorizedReturns struct {
 		result1 bool
 		result2 error
 	}
-	ParseRequestAuthStub        func(http.Request) (auth.Token, error)
+	ParseRequestAuthStub        func(http.Request) (*auth.Token, error)
 	parseRequestAuthMutex       sync.RWMutex
 	parseRequestAuthArgsForCall []struct {
 		arg1 http.Request
 	}
 	parseRequestAuthReturns struct {
-		result1 auth.Token
+		result1 *auth.Token
 		result2 error
 	}
 	invocations      map[string][][]interface{}
@@ -184,11 +184,11 @@ func (fake *FakeAuthService) GetRoutesReturns(result1 []req.RouteHandler) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) IsAuthorized(arg1 http.Request, arg2 auth.Token) (bool, error) {
+func (fake *FakeAuthService) IsAuthorized(arg1 http.Request, arg2 *auth.Token) (bool, error) {
 	fake.isAuthorizedMutex.Lock()
 	fake.isAuthorizedArgsForCall = append(fake.isAuthorizedArgsForCall, struct {
 		arg1 http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}{arg1, arg2})
 	fake.recordInvocation("IsAuthorized", []interface{}{arg1, arg2})
 	fake.isAuthorizedMutex.Unlock()
@@ -204,7 +204,7 @@ func (fake *FakeAuthService) IsAuthorizedCallCount() int {
 	return len(fake.isAuthorizedArgsForCall)
 }
 
-func (fake *FakeAuthService) IsAuthorizedArgsForCall(i int) (http.Request, auth.Token) {
+func (fake *FakeAuthService) IsAuthorizedArgsForCall(i int) (http.Request, *auth.Token) {
 	fake.isAuthorizedMutex.RLock()
 	defer fake.isAuthorizedMutex.RUnlock()
 	return fake.isAuthorizedArgsForCall[i].arg1, fake.isAuthorizedArgsForCall[i].arg2
@@ -218,7 +218,7 @@ func (fake *FakeAuthService) IsAuthorizedReturns(result1 bool, result2 error) {
 	}{result1, result2}
 }
 
-func (fake *FakeAuthService) ParseRequestAuth(arg1 http.Request) (auth.Token, error) {
+func (fake *FakeAuthService) ParseRequestAuth(arg1 http.Request) (*auth.Token, error) {
 	fake.parseRequestAuthMutex.Lock()
 	fake.parseRequestAuthArgsForCall = append(fake.parseRequestAuthArgsForCall, struct {
 		arg1 http.Request
@@ -243,10 +243,10 @@ func (fake *FakeAuthService) ParseRequestAuthArgsForCall(i int) http.Request {
 	return fake.parseRequestAuthArgsForCall[i].arg1
 }
 
-func (fake *FakeAuthService) ParseRequestAuthReturns(result1 auth.Token, result2 error) {
+func (fake *FakeAuthService) ParseRequestAuthReturns(result1 *auth.Token, result2 error) {
 	fake.ParseRequestAuthStub = nil
 	fake.parseRequestAuthReturns = struct {
-		result1 auth.Token
+		result1 *auth.Token
 		result2 error
 	}{result1, result2}
 }

@@ -16,7 +16,7 @@ import (
 
 var _ = Describe("Requirement", func() {
 	var request http.Request
-	var token auth.Token
+	var token *auth.Token
 	var subject Requirement
 
 	satisfyRequirement := &filterfakes.FakeRequirement{}
@@ -30,7 +30,7 @@ var _ = Describe("Requirement", func() {
 
 	BeforeEach(func() {
 		request = http.Request{}
-		token = auth.NewSimpleToken("test", map[string]interface{}{})
+		token = &auth.Token{ID: "test"}
 	})
 
 	Describe("IsSatisfied", func() {

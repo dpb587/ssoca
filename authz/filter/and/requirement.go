@@ -12,7 +12,7 @@ type Requirement struct {
 	Requirements []filter.Requirement
 }
 
-func (r Requirement) IsSatisfied(req *http.Request, token auth.Token) (bool, error) {
+func (r Requirement) IsSatisfied(req *http.Request, token *auth.Token) (bool, error) {
 	for _, requirement := range r.Requirements {
 		satisfied, err := requirement.IsSatisfied(req, token)
 		if err != nil {

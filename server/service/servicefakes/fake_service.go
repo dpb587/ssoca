@@ -41,11 +41,11 @@ type FakeService struct {
 	getRoutesReturns     struct {
 		result1 []req.RouteHandler
 	}
-	IsAuthorizedStub        func(http.Request, auth.Token) (bool, error)
+	IsAuthorizedStub        func(http.Request, *auth.Token) (bool, error)
 	isAuthorizedMutex       sync.RWMutex
 	isAuthorizedArgsForCall []struct {
 		arg1 http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}
 	isAuthorizedReturns struct {
 		result1 bool
@@ -175,11 +175,11 @@ func (fake *FakeService) GetRoutesReturns(result1 []req.RouteHandler) {
 	}{result1}
 }
 
-func (fake *FakeService) IsAuthorized(arg1 http.Request, arg2 auth.Token) (bool, error) {
+func (fake *FakeService) IsAuthorized(arg1 http.Request, arg2 *auth.Token) (bool, error) {
 	fake.isAuthorizedMutex.Lock()
 	fake.isAuthorizedArgsForCall = append(fake.isAuthorizedArgsForCall, struct {
 		arg1 http.Request
-		arg2 auth.Token
+		arg2 *auth.Token
 	}{arg1, arg2})
 	fake.recordInvocation("IsAuthorized", []interface{}{arg1, arg2})
 	fake.isAuthorizedMutex.Unlock()
@@ -195,7 +195,7 @@ func (fake *FakeService) IsAuthorizedCallCount() int {
 	return len(fake.isAuthorizedArgsForCall)
 }
 
-func (fake *FakeService) IsAuthorizedArgsForCall(i int) (http.Request, auth.Token) {
+func (fake *FakeService) IsAuthorizedArgsForCall(i int) (http.Request, *auth.Token) {
 	fake.isAuthorizedMutex.RLock()
 	defer fake.isAuthorizedMutex.RUnlock()
 	return fake.isAuthorizedArgsForCall[i].arg1, fake.isAuthorizedArgsForCall[i].arg2

@@ -8,6 +8,12 @@ import (
 
 type Requirement struct{}
 
-func (r Requirement) IsSatisfied(_ *http.Request, token auth.Token) (bool, error) {
-	return token != nil, nil
+func (r Requirement) IsSatisfied(_ *http.Request, token *auth.Token) (bool, error) {
+	if token == nil {
+		return false, nil
+	} else if token.ID == "" {
+		return false, nil
+	}
+
+	return true, nil
 }

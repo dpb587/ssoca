@@ -6,14 +6,11 @@ import (
 
 	. "github.com/dpb587/ssoca/authz/filter/remote_ip"
 
-	"github.com/dpb587/ssoca/auth"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Requirement", func() {
-	var token auth.Token
 	var subject Requirement
 
 	createRequirement := func(netmask string) Requirement {
@@ -27,10 +24,6 @@ var _ = Describe("Requirement", func() {
 		}
 	}
 
-	BeforeEach(func() {
-		token = auth.NewSimpleToken("test", map[string]interface{}{})
-	})
-
 	Describe("IsSatisfied", func() {
 		Context("IP matching", func() {
 			BeforeEach(func() {
@@ -42,7 +35,7 @@ var _ = Describe("Requirement", func() {
 					&http.Request{
 						RemoteAddr: "192.0.2.29:1234",
 					},
-					token,
+					nil,
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -54,7 +47,7 @@ var _ = Describe("Requirement", func() {
 					&http.Request{
 						RemoteAddr: "192.0.2.28:1234",
 					},
-					token,
+					nil,
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -72,7 +65,7 @@ var _ = Describe("Requirement", func() {
 					&http.Request{
 						RemoteAddr: "192.0.2.27:1234",
 					},
-					token,
+					nil,
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -84,7 +77,7 @@ var _ = Describe("Requirement", func() {
 					&http.Request{
 						RemoteAddr: "192.0.3.27:1234",
 					},
-					token,
+					nil,
 				)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -98,7 +91,7 @@ var _ = Describe("Requirement", func() {
 					&http.Request{
 						RemoteAddr: "impractical",
 					},
-					token,
+					nil,
 				)
 
 				Expect(err).To(HaveOccurred())

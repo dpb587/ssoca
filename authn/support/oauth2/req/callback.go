@@ -79,8 +79,8 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 	}
 
 	token := jwt.NewWithClaims(config.JWTSigningMethod, selfsignedjwt.Token{
-		Username:   userProfile.Username,
-		Scopes:     userProfile.Scopes,
+		ID:         userProfile.ID,
+		Groups:     userProfile.Groups,
 		Attributes: userProfile.Attributes,
 		StandardClaims: jwt.StandardClaims{
 			Audience:  h.Origin,

@@ -15,10 +15,10 @@ type FakeFakeInAuthToken struct {
 	routeReturns     struct {
 		result1 string
 	}
-	ExecuteStub        func(auth.Token)
+	ExecuteStub        func(*auth.Token)
 	executeMutex       sync.RWMutex
 	executeArgsForCall []struct {
-		arg1 auth.Token
+		arg1 *auth.Token
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -48,10 +48,10 @@ func (fake *FakeFakeInAuthToken) RouteReturns(result1 string) {
 	}{result1}
 }
 
-func (fake *FakeFakeInAuthToken) Execute(arg1 auth.Token) {
+func (fake *FakeFakeInAuthToken) Execute(arg1 *auth.Token) {
 	fake.executeMutex.Lock()
 	fake.executeArgsForCall = append(fake.executeArgsForCall, struct {
-		arg1 auth.Token
+		arg1 *auth.Token
 	}{arg1})
 	fake.recordInvocation("Execute", []interface{}{arg1})
 	fake.executeMutex.Unlock()
@@ -66,7 +66,7 @@ func (fake *FakeFakeInAuthToken) ExecuteCallCount() int {
 	return len(fake.executeArgsForCall)
 }
 
-func (fake *FakeFakeInAuthToken) ExecuteArgsForCall(i int) auth.Token {
+func (fake *FakeFakeInAuthToken) ExecuteArgsForCall(i int) *auth.Token {
 	fake.executeMutex.RLock()
 	defer fake.executeMutex.RUnlock()
 	return fake.executeArgsForCall[i].arg1

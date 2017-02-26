@@ -3,6 +3,7 @@ package server_test
 import (
 	"net/http"
 
+	"github.com/dpb587/ssoca/auth"
 	. "github.com/dpb587/ssoca/authn/http/server"
 
 	. "github.com/onsi/ginkgo"
@@ -17,6 +18,7 @@ var _ = Describe("Auth", func() {
 		request = http.Request{
 			Header: http.Header{},
 		}
+		name := "test 1"
 
 		service = NewService(
 			"auth",
@@ -25,8 +27,11 @@ var _ = Describe("Auth", func() {
 					{
 						Username: "user1",
 						Password: "pass1",
-						Attributes: map[string]interface{}{
-							"scope1": true,
+						Groups: []string{
+							"scope1",
+						},
+						Attributes: map[auth.TokenAttribute]*string{
+							auth.TokenNameAttribute: &name,
 						},
 					},
 				},
@@ -43,9 +48,11 @@ var _ = Describe("Auth", func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(token).ToNot(BeNil())
+			Expect(token.ID).To(Equal("user1"))
 			Expect(token.Username()).To(Equal("user1"))
-			Expect(token.Attributes()).To(HaveLen(1))
-			Expect(token.Attributes()["scope1"]).To(BeTrue())
+			Expect(token.Name()).To(Equal("test 1"))
+			Expect(token.Groups).To(HaveLen(1))
+			Expect(token.Groups).To(ContainElement("scope1"))
 		})
 
 		Context("without authentication", func() {

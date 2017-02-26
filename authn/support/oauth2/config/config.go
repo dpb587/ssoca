@@ -6,6 +6,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dpb587/ssoca/auth"
 )
 
 var JWTSigningMethod = jwt.SigningMethodRS256
@@ -13,13 +14,7 @@ var JWTSigningMethod = jwt.SigningMethodRS256
 const CookieStateName = "ssoca_oauth_state"
 const CookieClientPortName = "ssoca_oauth_clientport"
 
-type UserProfileLoader func(*http.Client) (UserProfile, error)
-
-type UserProfile struct {
-	Username   string
-	Scopes     []string
-	Attributes map[string]string
-}
+type UserProfileLoader func(*http.Client) (auth.Token, error)
 
 type JWT struct {
 	PrivateKey   rsa.PrivateKey

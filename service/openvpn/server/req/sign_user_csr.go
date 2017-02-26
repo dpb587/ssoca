@@ -32,7 +32,7 @@ func (h SignUserCSR) Route() string {
 	return "sign-user-csr"
 }
 
-func (h SignUserCSR) Execute(token auth.Token, payload api.SignUserCSRRequest, loggerContext logrus.Fields) (api.SignUserCSRResponse, error) {
+func (h SignUserCSR) Execute(token *auth.Token, payload api.SignUserCSRRequest, loggerContext logrus.Fields) (api.SignUserCSRResponse, error) {
 	res := api.SignUserCSRResponse{}
 
 	csrPEM, _ := pem.Decode([]byte(payload.CSR))
@@ -56,7 +56,7 @@ func (h SignUserCSR) Execute(token auth.Token, payload api.SignUserCSRRequest, l
 		Subject: pkix.Name{
 			Country:      []string{"US"},
 			Organization: []string{fmt.Sprintf("ssoca/%s", svc.Service{}.Version())},
-			CommonName:   token.Username(),
+			CommonName:   token.ID,
 		},
 		EmailAddresses:        csr.EmailAddresses,
 		NotBefore:             now.Add(-5 * time.Second).UTC(),

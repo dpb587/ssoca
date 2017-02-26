@@ -34,7 +34,7 @@ type FakeInHttpRequest interface {
 //go:generate counterfeiter . FakeInAuthToken
 type FakeInAuthToken interface {
 	FakeRouteHandler
-	Execute(auth.Token)
+	Execute(*auth.Token)
 }
 
 //go:generate counterfeiter . FakeInApiPayload

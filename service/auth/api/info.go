@@ -1,6 +1,7 @@
 package api
 
 type InfoResponse struct {
-	Username   string                 `json:"username"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	ID         string            `json:"id"`
+	Groups     []string          `json:"groups"`
+	Attributes map[string]string `json:"attributes,omitempty"`
 }

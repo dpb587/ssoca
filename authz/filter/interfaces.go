@@ -8,7 +8,7 @@ import (
 
 //go:generate counterfeiter . Requirement
 type Requirement interface {
-	IsSatisfied(*http.Request, auth.Token) (bool, error)
+	IsSatisfied(*http.Request, *auth.Token) (bool, error)
 }
 
 //go:generate counterfeiter . Manager

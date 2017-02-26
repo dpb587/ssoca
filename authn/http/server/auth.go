@@ -7,7 +7,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 )
 
-func (s Service) ParseRequestAuth(req http.Request) (auth.Token, error) {
+func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	username, password, ok := req.BasicAuth()
 	if !ok {
 		return nil, nil
@@ -20,7 +20,13 @@ func (s Service) ParseRequestAuth(req http.Request) (auth.Token, error) {
 			continue
 		}
 
-		return auth.NewSimpleToken(username, user.Attributes), nil
+		token := auth.Token{}
+		token.ID = username
+		token.Groups = user.Groups
+		token.Attributes = user.Attributes
+		token.Attributes[auth.TokenUsernameAttribute] = &username
+
+		return &token, nil
 	}
 
 	return nil, errors.New("Invalid authentication")

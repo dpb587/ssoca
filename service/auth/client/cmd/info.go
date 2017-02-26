@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
-
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
@@ -29,7 +27,7 @@ func (c *Info) Execute(args []string) error {
 	// Rows: [][]boshtbl.Value{},
 	}
 
-	if info.Username != "" {
+	if info.ID != "" {
 		table.Rows = append(
 			table.Rows,
 			[]boshtbl.Value{
@@ -41,23 +39,29 @@ func (c *Info) Execute(args []string) error {
 		table.Rows = append(
 			table.Rows,
 			[]boshtbl.Value{
-				boshtbl.NewValueString("Username"),
-				boshtbl.NewValueString(info.Username),
+				boshtbl.NewValueString("ID"),
+				boshtbl.NewValueString(info.ID),
 			},
 		)
 
-		for k, v := range info.Attributes {
-			marshal, err := json.Marshal(v)
-			if err != nil {
-				return bosherr.WrapErrorf(err, "Marshalling attribute %s", k)
-			}
+		for _, k := range info.Groups {
+			table.Rows = append(
+				table.Rows,
+				[]boshtbl.Value{
+					boshtbl.NewValueString("Group"),
+					boshtbl.NewValueString(k),
+					boshtbl.NewValueInterface(nil),
+				},
+			)
+		}
 
+		for k, v := range info.Attributes {
 			table.Rows = append(
 				table.Rows,
 				[]boshtbl.Value{
 					boshtbl.NewValueString("Attribute"),
 					boshtbl.NewValueString(k),
-					boshtbl.NewValueString(string(marshal)),
+					boshtbl.NewValueString(v),
 				},
 			)
 		}
