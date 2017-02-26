@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Factory", func() {
+var _ = Describe("ServiceFactory", func() {
 	var subject ServiceFactory
 
 	Describe("Type", func() {
