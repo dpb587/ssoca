@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 )
 
 type configCriticalOption string
@@ -48,15 +49,16 @@ var ExtensionDefaults = Extensions{
 type Config struct {
 	CertAuthName   string   `yaml:"certauth,omitempty"`
 	ValidityString string   `yaml:"validity,omitempty"`
-	Principals     []string `yaml:"principals,omitempty"`
+	RawPrincipals  []string `yaml:"principals,omitempty"`
 
 	Target Target `yaml:"target,omitempty"`
 
 	CriticalOptions CriticalOptions `yaml:"critical_options,omitempty"`
 	Extensions      Extensions      `yaml:"extensions,omitempty"`
 
-	CertAuth certauth.Provider `yaml:"-"`
-	Validity time.Duration     `yaml:"-"`
+	CertAuth   certauth.Provider    `yaml:"-"`
+	Validity   time.Duration        `yaml:"-"`
+	Principals []dynamicvalue.Value `yaml:"-"`
 }
 
 type CriticalOptions map[configCriticalOption]string
@@ -64,13 +66,15 @@ type CriticalOptions map[configCriticalOption]string
 type Extensions []configExtension
 
 type Target struct {
-	Host string `yaml:"host,omitempty" json:"host,omitempty"`
-	User string `yaml:"user,omitempty" json:"user,omitempty"`
-	Port int    `yaml:"port,omitempty" json:"port,omitempty"`
+	Host    string `yaml:"host,omitempty" json:"host,omitempty"`
+	RawUser string `yaml:"user,omitempty" json:"user,omitempty"`
+	Port    int    `yaml:"port,omitempty" json:"port,omitempty"`
+
+	User dynamicvalue.Value `yaml:"-"`
 }
 
 func (c Target) Configured() bool {
-	return c.Host != "" || c.User != "" || c.Port != 0
+	return c.Host != "" || c.RawUser != "" || c.Port != 0
 }
 
 // ApplyDefaults provides some static default values.

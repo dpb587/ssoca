@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -31,7 +32,7 @@ func (h SignPublicKey) Route() string {
 	return "sign-public-key"
 }
 
-func (h SignPublicKey) Execute(token auth.Token, payload api.SignPublicKeyRequest, loggerContext logrus.Fields) (api.SignPublicKeyResponse, error) {
+func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api.SignPublicKeyRequest, loggerContext logrus.Fields) (api.SignPublicKeyResponse, error) {
 	res := api.SignPublicKeyResponse{}
 
 	parts := strings.SplitN(payload.PublicKey, " ", 3)
@@ -86,8 +87,16 @@ func (h SignPublicKey) Execute(token auth.Token, payload api.SignPublicKeyReques
 	if h.Target.Configured() {
 		res.Target = &api.SignPublicKeyTargetResponse{
 			Host: h.Target.Host,
-			User: h.Target.User,
 			Port: h.Target.Port,
+		}
+
+		if h.Target.User != nil {
+			user, err := h.Target.User.Evaluate(req, token)
+			if err != nil {
+				return res, bosherr.WrapError(err, "Evaluting target.user")
+			}
+
+			res.Target.User = user
 		}
 	}
 

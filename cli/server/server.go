@@ -8,6 +8,7 @@ import (
 	"github.com/dpb587/ssoca/server"
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
+	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 
 	certauth_fs "github.com/dpb587/ssoca/certauth/fs"
 	certauth_memory "github.com/dpb587/ssoca/certauth/memory"
@@ -59,6 +60,8 @@ func main() {
 
 	cfg.ApplyDefaults()
 
+	cfgval := dynamicvalue.DefaultFactory{}
+
 	certauthManager := certauth.NewDefaultManager()
 
 	certauthFactory := certauth.NewDefaultFactory()
@@ -81,7 +84,7 @@ func main() {
 	serviceFactory.Register(srv_uaa_authn.NewServiceFactory())
 
 	serviceFactory.Register(srv_download.NewServiceFactory(fs))
-	serviceFactory.Register(srv_ssh.NewServiceFactory(certauthManager))
+	serviceFactory.Register(srv_ssh.NewServiceFactory(cfgval, certauthManager))
 	serviceFactory.Register(srv_docroot.NewServiceFactory(fs))
 	serviceFactory.Register(srv_openvpn.NewServiceFactory(certauthManager))
 

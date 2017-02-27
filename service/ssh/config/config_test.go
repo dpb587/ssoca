@@ -49,7 +49,7 @@ var _ = Describe("Config", func() {
 
 				Context("user", func() {
 					It("is configured", func() {
-						subject.Target.User = "vcap"
+						subject.Target.RawUser = "vcap"
 
 						Expect(subject.Target.Configured()).To(BeTrue())
 					})

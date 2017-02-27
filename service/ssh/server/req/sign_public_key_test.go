@@ -2,6 +2,8 @@ package req_test
 
 import (
 	"errors"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"time"
 
@@ -34,15 +36,17 @@ var _ = Describe("SignPublicKey", func() {
 	Describe("Execute", func() {
 		var fakecertauth certauthfakes.FakeProvider
 		var realcertauth certauth.Provider
-		var token auth.Token
+		var token *auth.Token
 		var loggerContext logrus.Fields
+		var req *http.Request
 
 		BeforeEach(func() {
 			loggerContext = logrus.Fields{
 				"custom": "fake",
 			}
 
-			token = auth.Token{ID: "fake-user"}
+			token = &auth.Token{ID: "fake-user"}
+			req = httptest.NewRequest("GET", "/sign-public-key", nil)
 			fakecertauth = certauthfakes.FakeProvider{}
 			realcertauth = memoryfakes.CreateMock1()
 
@@ -66,6 +70,7 @@ var _ = Describe("SignPublicKey", func() {
 			fakecertauth.SignSSHCertificateStub = realcertauth.SignSSHCertificate
 
 			res, err := subject.Execute(
+				req,
 				token,
 				api.SignPublicKeyRequest{
 					PublicKey: publicKey,
@@ -105,6 +110,7 @@ var _ = Describe("SignPublicKey", func() {
 			Context("invalid format", func() {
 				It("errors", func() {
 					_, err := subject.Execute(
+						req,
 						token,
 						api.SignPublicKeyRequest{
 							PublicKey: "invalid",
@@ -126,6 +132,7 @@ var _ = Describe("SignPublicKey", func() {
 			Context("invalid data", func() {
 				It("errors", func() {
 					_, err := subject.Execute(
+						req,
 						token,
 						api.SignPublicKeyRequest{
 							PublicKey: "ssh-rsa =",
@@ -147,6 +154,7 @@ var _ = Describe("SignPublicKey", func() {
 			Context("invalid ssh key", func() {
 				It("errors", func() {
 					_, err := subject.Execute(
+						req,
 						token,
 						api.SignPublicKeyRequest{
 							PublicKey: "ssh-rsa data",
@@ -171,6 +179,7 @@ var _ = Describe("SignPublicKey", func() {
 				fakecertauth.SignSSHCertificateReturns(errors.New("fake-err"))
 
 				_, err := subject.Execute(
+					req,
 					token,
 					api.SignPublicKeyRequest{
 						PublicKey: publicKey,
