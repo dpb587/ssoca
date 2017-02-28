@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"net/http"
@@ -6,15 +6,15 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-type APIError struct {
+type Error struct {
 	error
 
 	Status      int
 	PublicError string
 }
 
-func NewAPIError(err error, status int, publicError string) APIError {
-	apiError, ok := err.(APIError)
+func NewError(err error, status int, publicError string) Error {
+	apiError, ok := err.(Error)
 
 	if ok {
 		status = apiError.Status
@@ -25,7 +25,7 @@ func NewAPIError(err error, status int, publicError string) APIError {
 		publicError = http.StatusText(status)
 	}
 
-	return APIError{
+	return Error{
 		error:       err,
 		Status:      status,
 		PublicError: publicError,
@@ -33,10 +33,10 @@ func NewAPIError(err error, status int, publicError string) APIError {
 }
 
 func WrapError(err error, msg string) error {
-	apiError, ok := err.(APIError)
+	apiError, ok := err.(Error)
 
 	if ok {
-		return APIError{
+		return Error{
 			error:       bosherr.WrapError(apiError.error, msg),
 			Status:      apiError.Status,
 			PublicError: apiError.PublicError,
@@ -47,10 +47,10 @@ func WrapError(err error, msg string) error {
 }
 
 func WrapErrorf(err error, msg string, args ...interface{}) error {
-	apiError, ok := err.(APIError)
+	apiError, ok := err.(Error)
 
 	if ok {
-		return APIError{
+		return Error{
 			error:       bosherr.WrapErrorf(apiError.error, msg, args...),
 			Status:      apiError.Status,
 			PublicError: apiError.PublicError,

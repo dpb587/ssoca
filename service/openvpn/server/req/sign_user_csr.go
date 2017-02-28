@@ -15,9 +15,9 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/api"
 	svc "github.com/dpb587/ssoca/service/openvpn"
-	"github.com/dpb587/ssoca/service/openvpn/api"
+	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
@@ -32,17 +32,17 @@ func (h SignUserCSR) Route() string {
 	return "sign-user-csr"
 }
 
-func (h SignUserCSR) Execute(token *auth.Token, payload api.SignUserCSRRequest, loggerContext logrus.Fields) (api.SignUserCSRResponse, error) {
-	res := api.SignUserCSRResponse{}
+func (h SignUserCSR) Execute(token *auth.Token, payload svcapi.SignUserCSRRequest, loggerContext logrus.Fields) (svcapi.SignUserCSRResponse, error) {
+	res := svcapi.SignUserCSRResponse{}
 
 	csrPEM, _ := pem.Decode([]byte(payload.CSR))
 	if csrPEM == nil {
-		return res, server.NewAPIError(errors.New("Decoding CSR"), http.StatusBadRequest, "Failed to decode certificate signing request")
+		return res, api.NewError(errors.New("Decoding CSR"), http.StatusBadRequest, "Failed to decode certificate signing request")
 	}
 
 	csr, err := x509.ParseCertificateRequest(csrPEM.Bytes)
 	if err != nil {
-		return res, server.NewAPIError(bosherr.WrapError(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
+		return res, api.NewError(bosherr.WrapError(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
 	}
 
 	serialNumber, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))

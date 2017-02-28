@@ -8,7 +8,7 @@ import (
 
 	"net/http/httptest"
 
-	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/api"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
 
@@ -66,7 +66,7 @@ var _ = Describe("Get", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Missing query parameter: name"))
 
-				apiErr, ok := err.(server.APIError)
+				apiErr, ok := err.(api.Error)
 				Expect(ok).To(BeTrue())
 				Expect(apiErr.Status).To(Equal(404))
 			})
@@ -82,7 +82,7 @@ var _ = Describe("Get", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Invalid file name"))
 
-				apiErr, ok := err.(server.APIError)
+				apiErr, ok := err.(api.Error)
 				Expect(ok).To(BeTrue())
 				Expect(apiErr.Status).To(Equal(404))
 			})
@@ -97,7 +97,7 @@ var _ = Describe("Get", func() {
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Invalid file name"))
 
-					apiErr, ok := err.(server.APIError)
+					apiErr, ok := err.(api.Error)
 					Expect(ok).To(BeTrue())
 					Expect(apiErr.Status).To(Equal(404))
 				})

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/api"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
@@ -27,7 +27,7 @@ func (h Get) Route() string {
 func (h Get) Execute(r *http.Request, w http.ResponseWriter) error {
 	name := r.URL.Query().Get("name")
 	if name == "" {
-		return server.NewAPIError(errors.New("Missing query parameter: name"), 404, "")
+		return api.NewError(errors.New("Missing query parameter: name"), 404, "")
 	}
 
 	for _, file := range h.Paths {
@@ -47,5 +47,5 @@ func (h Get) Execute(r *http.Request, w http.ResponseWriter) error {
 		}
 	}
 
-	return server.NewAPIError(fmt.Errorf("Invalid file name: %s", name), 404, "")
+	return api.NewError(fmt.Errorf("Invalid file name: %s", name), 404, "")
 }

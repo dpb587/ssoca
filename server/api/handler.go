@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"context"
@@ -27,7 +27,7 @@ type apiHandler struct {
 	logger      logrus.FieldLogger
 }
 
-func CreateAPIHandler(authService service.AuthService, apiService service.Service, handler req.RouteHandler, logger logrus.FieldLogger) (http.Handler, error) {
+func CreateHandler(authService service.AuthService, apiService service.Service, handler req.RouteHandler, logger logrus.FieldLogger) (http.Handler, error) {
 	handlerIn := []func(http.ResponseWriter, *http.Request) (reflect.Value, error){}
 
 	handlerMethod := reflect.ValueOf(handler).MethodByName("Execute")
@@ -60,7 +60,7 @@ func CreateAPIHandler(authService service.AuthService, apiService service.Servic
 			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
 				token := r.Context().Value(auth.RequestToken)
 				if token == nil {
-					return reflect.Value{}, NewAPIError(errors.New("Token missing from request context"), http.StatusUnauthorized, "")
+					return reflect.Value{}, NewError(errors.New("Token missing from request context"), http.StatusUnauthorized, "")
 				}
 
 				return reflect.ValueOf(token), nil
@@ -77,7 +77,7 @@ func CreateAPIHandler(authService service.AuthService, apiService service.Servic
 
 				err = json.Unmarshal(bytes, apiRequestData.Interface())
 				if err != nil {
-					return reflect.Value{}, NewAPIError(WrapError(err, "Unmarshaling request payload"), http.StatusBadRequest, "Invalid body")
+					return reflect.Value{}, NewError(WrapError(err, "Unmarshaling request payload"), http.StatusBadRequest, "Invalid body")
 				}
 
 				return reflect.ValueOf(apiRequestData.Elem().Interface()), nil
@@ -158,7 +158,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		return
 	} else if !authz {
-		h.sendErrorResponse(w, r, NewAPIError(errors.New("Not authorized"), http.StatusForbidden, ""))
+		h.sendErrorResponse(w, r, NewError(errors.New("Not authorized"), http.StatusForbidden, ""))
 
 		return
 	}
@@ -216,10 +216,10 @@ func (h apiHandler) logResponse(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h apiHandler) sendGenericErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
-	h.sendErrorResponse(w, r, NewAPIError(err, http.StatusInternalServerError, ""))
+	h.sendErrorResponse(w, r, NewError(err, http.StatusInternalServerError, ""))
 }
 
-func (h apiHandler) sendErrorResponse(w http.ResponseWriter, r *http.Request, err APIError) {
+func (h apiHandler) sendErrorResponse(w http.ResponseWriter, r *http.Request, err Error) {
 	w.WriteHeader(err.Status)
 
 	if err.Status > 500 {
@@ -240,7 +240,7 @@ func (h apiHandler) sendResponse(w http.ResponseWriter, r *http.Request, payload
 	bytes, err := json.MarshalIndent(payload, "", "  ")
 	if err != nil {
 		// @todo hope we don't have recursive errors...
-		h.sendErrorResponse(w, r, NewAPIError(bosherr.WrapError(err, "Marshaling response payload"), http.StatusInternalServerError, ""))
+		h.sendErrorResponse(w, r, NewError(bosherr.WrapError(err, "Marshaling response payload"), http.StatusInternalServerError, ""))
 
 		return
 	}

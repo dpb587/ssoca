@@ -14,9 +14,9 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
 	"github.com/dpb587/ssoca/certauth/memory/memoryfakes"
-	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
-	"github.com/dpb587/ssoca/service/ssh/api"
+	svcapi "github.com/dpb587/ssoca/service/ssh/api"
 	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
 	. "github.com/dpb587/ssoca/service/ssh/server/req"
 
@@ -77,7 +77,7 @@ var _ = Describe("SignPublicKey", func() {
 				res, err := subject.Execute(
 					req,
 					token,
-					api.SignPublicKeyRequest{
+					svcapi.SignPublicKeyRequest{
 						PublicKey: publicKey,
 					},
 					loggerContext,
@@ -117,7 +117,7 @@ var _ = Describe("SignPublicKey", func() {
 						_, err := subject.Execute(
 							req,
 							token,
-							api.SignPublicKeyRequest{
+							svcapi.SignPublicKeyRequest{
 								PublicKey: "invalid",
 							},
 							loggerContext,
@@ -126,7 +126,7 @@ var _ = Describe("SignPublicKey", func() {
 						Expect(err).To(HaveOccurred())
 						Expect(err.Error()).To(ContainSubstring("Invalid public key format"))
 
-						apiError, ok := err.(server.APIError)
+						apiError, ok := err.(api.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
@@ -139,7 +139,7 @@ var _ = Describe("SignPublicKey", func() {
 						_, err := subject.Execute(
 							req,
 							token,
-							api.SignPublicKeyRequest{
+							svcapi.SignPublicKeyRequest{
 								PublicKey: "ssh-rsa =",
 							},
 							loggerContext,
@@ -148,7 +148,7 @@ var _ = Describe("SignPublicKey", func() {
 						Expect(err).To(HaveOccurred())
 						Expect(err.Error()).To(ContainSubstring("Decoding public key"))
 
-						apiError, ok := err.(server.APIError)
+						apiError, ok := err.(api.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
@@ -161,7 +161,7 @@ var _ = Describe("SignPublicKey", func() {
 						_, err := subject.Execute(
 							req,
 							token,
-							api.SignPublicKeyRequest{
+							svcapi.SignPublicKeyRequest{
 								PublicKey: "ssh-rsa data",
 							},
 							loggerContext,
@@ -170,7 +170,7 @@ var _ = Describe("SignPublicKey", func() {
 						Expect(err).To(HaveOccurred())
 						Expect(err.Error()).To(ContainSubstring("Parsing public key"))
 
-						apiError, ok := err.(server.APIError)
+						apiError, ok := err.(api.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
@@ -186,7 +186,7 @@ var _ = Describe("SignPublicKey", func() {
 					_, err := subject.Execute(
 						req,
 						token,
-						api.SignPublicKeyRequest{
+						svcapi.SignPublicKeyRequest{
 							PublicKey: publicKey,
 						},
 						loggerContext,
@@ -238,7 +238,7 @@ var _ = Describe("SignPublicKey", func() {
 				res, err := subject.Execute(
 					req,
 					token,
-					api.SignPublicKeyRequest{
+					svcapi.SignPublicKeyRequest{
 						PublicKey: publicKey,
 					},
 					loggerContext,

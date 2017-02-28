@@ -9,6 +9,7 @@ import (
 	"github.com/dpb587/ssoca/authz/filter"
 	"github.com/dpb587/ssoca/authz/service"
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
 
@@ -176,13 +177,13 @@ func (s Server) Run() error {
 		svc, _ := s.services.Get(svcName)
 
 		for _, handler := range svc.GetRoutes() {
-			fullPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
-			fullHandler, err := CreateAPIHandler(authSvc, svc, handler, s.logger)
+			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
+			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.logger)
 			if err != nil {
-				return bosherr.WrapErrorf(err, "Creating handler for %s", fullPath)
+				return bosherr.WrapErrorf(err, "Creating handler for %s", apiPath)
 			}
 
-			mux.Handle(fullPath, fullHandler)
+			mux.Handle(apiPath, apiHandler)
 		}
 	}
 

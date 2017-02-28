@@ -1,11 +1,11 @@
-package server_test
+package api_test
 
 import (
 	"errors"
 	"io/ioutil"
 	"strings"
 
-	. "github.com/dpb587/ssoca/server"
+	. "github.com/dpb587/ssoca/server/api"
 
 	"net/http"
 	"net/http/httptest"
@@ -20,7 +20,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("ApiHandler", func() {
+var _ = Describe("Handler", func() {
 	var res httptest.ResponseRecorder
 	var req *http.Request
 	var authService *servicefakes.FakeAuthService
@@ -38,13 +38,13 @@ var _ = Describe("ApiHandler", func() {
 		logger, _ = logrustest.NewNullLogger()
 	})
 
-	Describe("CreateAPIHandler", func() {
+	Describe("CreateHandler", func() {
 		Context("handler inputs", func() {
 			Context("http.ResponseWriter", func() {
 				It("works", func() {
 					handler := &internalfakes.FakeFakeInHttpResponseWriter{}
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -59,7 +59,7 @@ var _ = Describe("ApiHandler", func() {
 				It("works", func() {
 					handler := &internalfakes.FakeFakeInHttpRequest{}
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -78,7 +78,7 @@ var _ = Describe("ApiHandler", func() {
 
 					handler := &internalfakes.FakeFakeInAuthToken{}
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -92,7 +92,7 @@ var _ = Describe("ApiHandler", func() {
 					It("errors with 401", func() {
 						handler := &internalfakes.FakeFakeInAuthToken{}
 
-						wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+						wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 						Expect(err).ToNot(HaveOccurred())
 
@@ -116,7 +116,7 @@ var _ = Describe("ApiHandler", func() {
 
 					req.Body = ioutil.NopCloser(strings.NewReader(`{"test":true}`))
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -132,7 +132,7 @@ var _ = Describe("ApiHandler", func() {
 
 						req.Body = ioutil.NopCloser(strings.NewReader(`{"test"`))
 
-						wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+						wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 						Expect(err).ToNot(HaveOccurred())
 
@@ -150,7 +150,7 @@ var _ = Describe("ApiHandler", func() {
 				It("works", func() {
 					handler := &internalfakes.FakeFake{}
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -165,7 +165,7 @@ var _ = Describe("ApiHandler", func() {
 					handler := &internalfakes.FakeFakeOutError{}
 					handler.ExecuteReturns(errors.New("fake-err"))
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -178,7 +178,7 @@ var _ = Describe("ApiHandler", func() {
 				It("works without error", func() {
 					handler := &internalfakes.FakeFakeOutError{}
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -200,7 +200,7 @@ var _ = Describe("ApiHandler", func() {
 					handler := &internalfakes.FakeFakeOutInterfaceError{}
 					handler.ExecuteReturns(map[string]interface{}{"output": true}, nil)
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -217,7 +217,7 @@ var _ = Describe("ApiHandler", func() {
 					handler := &internalfakes.FakeFakeOutInterfaceError{}
 					handler.ExecuteReturns(nil, errors.New("fake-err"))
 
-					wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -232,7 +232,7 @@ var _ = Describe("ApiHandler", func() {
 				It("errors", func() {
 					handler := &internalfakes.FakeFakeOutOther{}
 
-					_, err := CreateAPIHandler(authService, apiService, handler, logger)
+					_, err := CreateHandler(authService, apiService, handler, logger)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Invalid handler function"))
@@ -248,7 +248,7 @@ var _ = Describe("ApiHandler", func() {
 
 				handler := &internalfakes.FakeFake{}
 
-				wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+				wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 				Expect(err).ToNot(HaveOccurred())
 
@@ -265,7 +265,7 @@ var _ = Describe("ApiHandler", func() {
 
 				handler := &internalfakes.FakeFake{}
 
-				wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+				wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 				Expect(err).ToNot(HaveOccurred())
 
@@ -282,7 +282,7 @@ var _ = Describe("ApiHandler", func() {
 
 				handler := &internalfakes.FakeFake{}
 
-				wrapper, err := CreateAPIHandler(authService, apiService, handler, logger)
+				wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
 				Expect(err).ToNot(HaveOccurred())
 

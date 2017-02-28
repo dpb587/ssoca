@@ -13,10 +13,10 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
-	"github.com/dpb587/ssoca/service/ssh/api"
-	"github.com/dpb587/ssoca/service/ssh/config"
+	svcapi "github.com/dpb587/ssoca/service/ssh/api"
+	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
@@ -24,32 +24,32 @@ import (
 type SignPublicKey struct {
 	Validity        time.Duration
 	Principals      []dynamicvalue.Value
-	CriticalOptions config.CriticalOptions
-	Extensions      config.Extensions
+	CriticalOptions svcconfig.CriticalOptions
+	Extensions      svcconfig.Extensions
 	CertAuth        certauth.Provider
-	Target          config.Target
+	Target          svcconfig.Target
 }
 
 func (h SignPublicKey) Route() string {
 	return "sign-public-key"
 }
 
-func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api.SignPublicKeyRequest, loggerContext logrus.Fields) (api.SignPublicKeyResponse, error) {
-	res := api.SignPublicKeyResponse{}
+func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svcapi.SignPublicKeyRequest, loggerContext logrus.Fields) (svcapi.SignPublicKeyResponse, error) {
+	res := svcapi.SignPublicKeyResponse{}
 
 	parts := strings.SplitN(payload.PublicKey, " ", 3)
 	if len(parts) < 2 {
-		return res, server.NewAPIError(errors.New("Invalid public key format"), 400, "Failed to read public key")
+		return res, api.NewError(errors.New("Invalid public key format"), 400, "Failed to read public key")
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(parts[1])
 	if err != nil {
-		return res, server.NewAPIError(bosherr.WrapErrorf(err, "Decoding public key"), 400, "Failed to decode public key")
+		return res, api.NewError(bosherr.WrapErrorf(err, "Decoding public key"), 400, "Failed to decode public key")
 	}
 
 	publicKey, err := ssh.ParsePublicKey([]byte(decoded))
 	if err != nil {
-		return res, server.NewAPIError(bosherr.WrapErrorf(err, "Parsing public key"), 400, "Failed to parse public key")
+		return res, api.NewError(bosherr.WrapErrorf(err, "Parsing public key"), 400, "Failed to parse public key")
 	}
 
 	now := time.Now()
@@ -68,9 +68,9 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api
 	}
 
 	for _, dynamicPrincipal := range h.Principals {
-		principal, err := dynamicPrincipal.Evaluate(req, token)
-		if err != nil {
-			return res, bosherr.WrapError(err, "Evaluating dynamic principal")
+		principal, err1 := dynamicPrincipal.Evaluate(req, token)
+		if err1 != nil {
+			return res, bosherr.WrapError(err1, "Evaluating dynamic principal")
 		} else if principal == "" {
 			continue
 		}
@@ -94,7 +94,7 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api
 	res.Certificate = fmt.Sprintf("%s %s", certificate.Type(), base64.StdEncoding.EncodeToString(certificate.Marshal()))
 
 	if h.Target.Configured() {
-		res.Target = &api.SignPublicKeyTargetResponse{
+		res.Target = &svcapi.SignPublicKeyTargetResponse{
 			Host: h.Target.Host,
 			Port: h.Target.Port,
 		}

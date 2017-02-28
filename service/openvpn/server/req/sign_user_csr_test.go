@@ -12,8 +12,8 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
 	"github.com/dpb587/ssoca/certauth/memory/memoryfakes"
-	"github.com/dpb587/ssoca/server"
-	"github.com/dpb587/ssoca/service/openvpn/api"
+	"github.com/dpb587/ssoca/server/api"
+	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
 	. "github.com/dpb587/ssoca/service/openvpn/server/req"
 
 	. "github.com/onsi/ginkgo"
@@ -82,7 +82,7 @@ vqQ=
 
 			res, err := subject.Execute(
 				&token,
-				api.SignUserCSRRequest{
+				svcapi.SignUserCSRRequest{
 					CSR: usr1csrStr,
 				},
 				loggerContext,
@@ -118,7 +118,7 @@ vqQ=
 				It("errors", func() {
 					_, err := subject.Execute(
 						&token,
-						api.SignUserCSRRequest{
+						svcapi.SignUserCSRRequest{
 							CSR: "invalid",
 						},
 						loggerContext,
@@ -127,7 +127,7 @@ vqQ=
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Decoding CSR"))
 
-					apiError, ok := err.(server.APIError)
+					apiError, ok := err.(api.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
@@ -139,7 +139,7 @@ vqQ=
 				It("errors", func() {
 					_, err := subject.Execute(
 						&token,
-						api.SignUserCSRRequest{
+						svcapi.SignUserCSRRequest{
 							CSR: `-----BEGIN CERTIFICATE REQUEST-----
 MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 -----END CERTIFICATE REQUEST-----`,
@@ -150,7 +150,7 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Parsing CSR"))
 
-					apiError, ok := err.(server.APIError)
+					apiError, ok := err.(api.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
@@ -166,7 +166,7 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 
 					_, err := subject.Execute(
 						&token,
-						api.SignUserCSRRequest{
+						svcapi.SignUserCSRRequest{
 							CSR: usr1csrStr,
 						},
 						loggerContext,
@@ -185,7 +185,7 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 
 					_, err := subject.Execute(
 						&token,
-						api.SignUserCSRRequest{
+						svcapi.SignUserCSRRequest{
 							CSR: usr1csrStr,
 						},
 						loggerContext,
