@@ -14,6 +14,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server"
+	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 	"github.com/dpb587/ssoca/service/ssh/api"
 	"github.com/dpb587/ssoca/service/ssh/config"
 
@@ -22,6 +23,7 @@ import (
 
 type SignPublicKey struct {
 	Validity        time.Duration
+	Principals      []dynamicvalue.Value
 	CriticalOptions config.CriticalOptions
 	Extensions      config.Extensions
 	CertAuth        certauth.Provider
@@ -58,11 +60,22 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api
 		CertType:        ssh.UserCert,
 		ValidAfter:      uint64(now.Add(-5 * time.Second).UTC().Unix()),
 		ValidBefore:     uint64(now.Add(h.Validity).UTC().Unix()),
-		ValidPrincipals: []string{"vcap"},
+		ValidPrincipals: []string{},
 		Permissions: ssh.Permissions{
 			CriticalOptions: map[string]string{},
 			Extensions:      map[string]string{},
 		},
+	}
+
+	for _, dynamicPrincipal := range h.Principals {
+		principal, err := dynamicPrincipal.Evaluate(req, token)
+		if err != nil {
+			return res, bosherr.WrapError(err, "Evaluating dynamic principal")
+		} else if principal == "" {
+			continue
+		}
+
+		certificate.ValidPrincipals = append(certificate.ValidPrincipals, principal)
 	}
 
 	for criticalOption, criticalOptionData := range h.CriticalOptions {
@@ -70,10 +83,6 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload api
 	}
 
 	for _, extension := range h.Extensions {
-		if extension == config.ExtensionNoDefaults {
-			continue
-		}
-
 		certificate.Permissions.Extensions[string(extension)] = ""
 	}
 

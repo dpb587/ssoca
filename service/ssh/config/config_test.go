@@ -15,20 +15,31 @@ var _ = Describe("Config", func() {
 	})
 
 	Describe("ApplyDefaults", func() {
-		BeforeEach(func() {
-			subject.ApplyDefaults()
+		Describe("with defaults", func() {
+			BeforeEach(func() {
+				subject.ApplyDefaults()
+			})
+
+			It("defaults certauth: default", func() {
+				Expect(subject.CertAuthName).To(Equal("default"))
+			})
+
+			It("defaults validity", func() {
+				Expect(subject.ValidityString).To(Equal("2m"))
+			})
+
+			It("defaults extensions", func() {
+				Expect(subject.Extensions).To(Equal(ExtensionDefaults))
+			})
 		})
 
-		It("defaults certauth: default", func() {
-			Expect(subject.CertAuthName).To(Equal("default"))
-		})
+		Describe("not really dealing with defaults but its convenient so...", func() {
+			It("ignores extensions if ssoca-no-defaults is used", func() {
+				subject.Extensions = Extensions{ExtensionNoDefaults}
+				subject.ApplyDefaults()
 
-		It("defaults validity", func() {
-			Expect(subject.ValidityString).To(Equal("2m"))
-		})
-
-		It("defaults extensions", func() {
-			Expect(subject.Extensions).To(Equal(ExtensionDefaults))
+				Expect(subject.Extensions).To(HaveLen(0))
+			})
 		})
 	})
 

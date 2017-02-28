@@ -27,10 +27,19 @@ func CreateTemplateValue(value string) (templateValue, error) {
 		"split": strings.Split,
 	}).Parse(value)
 	if err != nil {
-		bosherr.WrapErrorf(err, "Parsing config value: %s", value)
+		bosherr.WrapErrorf(err, "Parsing template: %s", value)
 	}
 
 	return NewTemplateValue(tpl), nil
+}
+
+func MustCreateTemplateValue(value string) templateValue {
+	must, err := CreateTemplateValue(value)
+	if err != nil {
+		panic(err)
+	}
+
+	return must
 }
 
 func (cv templateValue) Evaluate(req *http.Request, token *auth.Token) (string, error) {

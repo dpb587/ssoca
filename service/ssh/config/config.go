@@ -87,7 +87,12 @@ func (c *Config) ApplyDefaults() {
 		c.ValidityString = "2m"
 	}
 
-	if len(c.Extensions) == 0 {
+	switch len(c.Extensions) {
+	case 0:
 		c.Extensions = ExtensionDefaults
+	case 1:
+		if c.Extensions[0] == ExtensionNoDefaults {
+			c.Extensions = Extensions{}
+		}
 	}
 }

@@ -39,6 +39,7 @@ func (s Service) GetRoutes() []req.RouteHandler {
 		},
 		svcreq.SignPublicKey{
 			Validity:        s.config.Validity,
+			Principals:      s.config.Principals,
 			CriticalOptions: s.config.CriticalOptions,
 			Extensions:      s.config.Extensions,
 			CertAuth:        s.config.CertAuth,
