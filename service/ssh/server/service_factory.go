@@ -69,5 +69,14 @@ func (f ServiceFactory) validateConfig(config *svcconfig.Config) error {
 		config.Target.User = value
 	}
 
+	for _, rawPrincipal := range config.RawPrincipals {
+		value, err := f.dynamicvalueFactory.Create(rawPrincipal)
+		if err != nil {
+			return bosherr.WrapError(err, "Parsing dynamic value principals")
+		}
+
+		config.Principals = append(config.Principals, value)
+	}
+
 	return nil
 }

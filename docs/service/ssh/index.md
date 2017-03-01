@@ -55,3 +55,27 @@ If you do not want to allow users to manage their own `~/.ssh/authorized_keys` f
 Once configured, restart the `ssh` service.
 
     service ssh restart
+
+
+## Debugging
+
+If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate.
+
+    $ ssh-keygen -L -f <( ssoca ssh sign-public-key )
+    /dev/fd/63:
+        Type: ssh-rsa-cert-v01@openssh.com user certificate
+        Public key: RSA-CERT SHA256:Lbm8fojiin5Mn95obC0Qxxf9/Gca4GtJMuUfax4Vu7M
+        Signing CA: RSA SHA256:9cqZE53uBj8fA5MBg9OBU9fzQ6L10G4O90x0ETgFp7E
+        Key ID: "somebody@example.com"
+        Serial: 0
+        Valid: from 2017-02-28T22:53:47 to 2017-02-28T22:55:52
+        Principals:
+                somebody
+                vcap
+        Critical Options: (none)
+        Extensions:
+                permit-X11-forwarding
+                permit-agent-forwarding
+                permit-port-forwarding
+                permit-pty
+                permit-user-rc
