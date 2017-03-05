@@ -5,7 +5,8 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	svc "github.com/dpb587/ssoca/authn/uaa"
-	svc_api "github.com/dpb587/ssoca/authn/uaa/api"
+	svcapi "github.com/dpb587/ssoca/authn/uaa/api"
+	svcconfig "github.com/dpb587/ssoca/authn/uaa/config"
 	"github.com/dpb587/ssoca/server/service/req"
 )
 
@@ -13,10 +14,10 @@ type Service struct {
 	svc.Service
 
 	name   string
-	config Config
+	config svcconfig.Config
 }
 
-func NewService(name string, config Config) Service {
+func NewService(name string, config svcconfig.Config) Service {
 	return Service{
 		name:   name,
 		config: config,
@@ -28,7 +29,7 @@ func (s Service) Name() string {
 }
 
 func (s Service) Metadata() interface{} {
-	return svc_api.Metadata{
+	return svcapi.Metadata{
 		URL:           s.config.URL,
 		CACertificate: s.config.CACertificate,
 	}

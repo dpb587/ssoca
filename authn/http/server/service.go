@@ -5,6 +5,7 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	svc "github.com/dpb587/ssoca/authn/http"
+	svcconfig "github.com/dpb587/ssoca/authn/http/config"
 	"github.com/dpb587/ssoca/server/service/req"
 )
 
@@ -12,10 +13,10 @@ type Service struct {
 	svc.Service
 
 	name   string
-	config Config
+	config svcconfig.Config
 }
 
-func NewService(name string, config Config) Service {
+func NewService(name string, config svcconfig.Config) Service {
 	return Service{
 		name:   name,
 		config: config,

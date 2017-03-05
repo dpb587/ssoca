@@ -58,7 +58,6 @@ var _ = Describe("ServiceFactory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing validity duration"))
 			})
 		})
 

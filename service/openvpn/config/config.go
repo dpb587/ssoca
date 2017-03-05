@@ -7,20 +7,7 @@ import (
 )
 
 type Config struct {
-	CertAuthName   string `yaml:"certauth,omitempty"`
-	ValidityString string `yaml:"validity,omitempty"`
-	Profile        string `yaml:"profile,omitempty"`
-
-	CertAuth certauth.Provider `yaml:"-"`
-	Validity time.Duration     `yaml:"-"`
-}
-
-func (c *Config) ApplyDefaults() {
-	if c.CertAuthName == "" {
-		c.CertAuthName = "default"
-	}
-
-	if c.ValidityString == "" {
-		c.ValidityString = "2m"
-	}
+	CertAuth certauth.ConfigValue `yaml:"certauth,omitempty"`
+	Validity time.Duration        `yaml:"validity,omitempty"`
+	Profile  string               `yaml:"profile,omitempty"`
 }

@@ -15,25 +15,25 @@ type templateValue struct {
 	template *template.Template
 }
 
-func NewTemplateValue(tpl *template.Template) templateValue {
+func NewTemplateValue(tpl *template.Template) Value {
 	return templateValue{
 		template: tpl,
 	}
 }
 
-func CreateTemplateValue(value string) (templateValue, error) {
+func CreateTemplateValue(value string) (Value, error) {
 	tpl, err := template.New("configvalue").Funcs(template.FuncMap{
 		"join":  strings.Join,
 		"split": strings.Split,
 	}).Parse(value)
 	if err != nil {
-		bosherr.WrapErrorf(err, "Parsing template: %s", value)
+		return templateValue{}, bosherr.WrapErrorf(err, "Parsing template: %s", value)
 	}
 
 	return NewTemplateValue(tpl), nil
 }
 
-func MustCreateTemplateValue(value string) templateValue {
+func MustCreateTemplateValue(value string) Value {
 	must, err := CreateTemplateValue(value)
 	if err != nil {
 		panic(err)

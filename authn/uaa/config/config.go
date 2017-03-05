@@ -1,4 +1,4 @@
-package server
+package config
 
 // Config settings for UAA Authentication.
 type Config struct {

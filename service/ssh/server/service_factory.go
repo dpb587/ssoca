@@ -31,52 +31,17 @@ func (f ServiceFactory) Type() string {
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {
 	var cfg svcconfig.Config
+	cfg.Validity = 2 * time.Minute
+	cfg.CertAuth = certauth.NewConfigValue(f.caManager)
+	cfg.Principals = dynamicvalue.NewMultiConfigValue(f.dynamicvalueFactory)
+	cfg.Target = svcconfig.Target{
+		User: dynamicvalue.NewConfigValue(f.dynamicvalueFactory),
+	}
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Loading config")
 	}
 
-	err = f.validateConfig(&cfg)
-	if err != nil {
-		return nil, bosherr.WrapError(err, "Validating config")
-	}
-
 	return NewService(name, cfg), nil
-}
-
-func (f ServiceFactory) validateConfig(config *svcconfig.Config) error {
-	ca, err := f.caManager.Get(config.CertAuthName)
-	if err != nil {
-		return bosherr.WrapError(err, "Getting certificate authority")
-	}
-
-	config.CertAuth = ca
-
-	duration, err := time.ParseDuration(config.ValidityString)
-	if err != nil {
-		return bosherr.WrapError(err, "Parsing duration")
-	}
-
-	config.Validity = duration
-
-	if config.Target.RawUser != "" {
-		value, err := f.dynamicvalueFactory.Create(config.Target.RawUser)
-		if err != nil {
-			return bosherr.WrapError(err, "Parsing dynamic value target.user")
-		}
-
-		config.Target.User = value
-	}
-
-	for _, rawPrincipal := range config.RawPrincipals {
-		value, err := f.dynamicvalueFactory.Create(rawPrincipal)
-		if err != nil {
-			return bosherr.WrapError(err, "Parsing dynamic value principals")
-		}
-
-		config.Principals = append(config.Principals, value)
-	}
-
-	return nil
 }

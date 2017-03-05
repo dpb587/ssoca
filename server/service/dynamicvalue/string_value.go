@@ -8,7 +8,7 @@ import (
 
 type stringValue string
 
-func NewStringValue(val string) stringValue {
+func NewStringValue(val string) Value {
 	return stringValue(val)
 }
 

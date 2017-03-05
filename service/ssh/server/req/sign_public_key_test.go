@@ -54,7 +54,7 @@ var _ = Describe("SignPublicKey", func() {
 
 				subject = SignPublicKey{
 					Validity: time.Duration(3600),
-					Principals: []dynamicvalue.Value{
+					Principals: dynamicvalue.MultiAnyValue{
 						dynamicvalue.NewStringValue("vcap"),
 					},
 					CertAuth: &fakecertauth,
@@ -210,9 +210,12 @@ var _ = Describe("SignPublicKey", func() {
 				fakecertauth = certauthfakes.FakeProvider{}
 				realcertauth = memoryfakes.CreateMock1()
 
+				targetUser := dynamicvalue.ConfigValue{}
+				targetUser.WithDefault(dynamicvalue.MustCreateTemplateValue("{{ .Token.ID }}-suffixed"))
+
 				subject = SignPublicKey{
 					Validity: time.Duration(3600),
-					Principals: []dynamicvalue.Value{
+					Principals: dynamicvalue.MultiAnyValue{
 						dynamicvalue.NewStringValue("static"),
 						dynamicvalue.MustCreateTemplateValue("{{ .Token.ID }}"),
 						dynamicvalue.MustCreateTemplateValue("{{ if false }}something{{ end }}"),
@@ -227,7 +230,7 @@ var _ = Describe("SignPublicKey", func() {
 					},
 					Target: svcconfig.Target{
 						Host: "ssh.example.com",
-						User: dynamicvalue.MustCreateTemplateValue("{{ .Token.ID }}-suffixed"),
+						User: targetUser,
 					},
 				}
 			})

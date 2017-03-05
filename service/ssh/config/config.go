@@ -47,18 +47,14 @@ var ExtensionDefaults = Extensions{
 
 // Config settings for SSH key signing.
 type Config struct {
-	CertAuthName   string   `yaml:"certauth,omitempty"`
-	ValidityString string   `yaml:"validity,omitempty"`
-	RawPrincipals  []string `yaml:"principals,omitempty"`
+	CertAuth   certauth.ConfigValue          `yaml:"certauth,omitempty"`
+	Validity   time.Duration                 `yaml:"validity,omitempty"`
+	Principals dynamicvalue.MultiConfigValue `yaml:"principals,omitempty"`
 
 	Target Target `yaml:"target,omitempty"`
 
 	CriticalOptions CriticalOptions `yaml:"critical_options,omitempty"`
 	Extensions      Extensions      `yaml:"extensions,omitempty"`
-
-	CertAuth   certauth.Provider    `yaml:"-"`
-	Validity   time.Duration        `yaml:"-"`
-	Principals []dynamicvalue.Value `yaml:"-"`
 }
 
 type CriticalOptions map[configCriticalOption]string
@@ -66,27 +62,13 @@ type CriticalOptions map[configCriticalOption]string
 type Extensions []configExtension
 
 type Target struct {
-	Host    string `yaml:"host,omitempty" json:"host,omitempty"`
-	RawUser string `yaml:"user,omitempty" json:"user,omitempty"`
-	Port    int    `yaml:"port,omitempty" json:"port,omitempty"`
-
-	User dynamicvalue.Value `yaml:"-"`
-}
-
-func (c Target) Configured() bool {
-	return c.Host != "" || c.RawUser != "" || c.Port != 0
+	Host string                   `yaml:"host,omitempty" json:"host,omitempty"`
+	User dynamicvalue.ConfigValue `yaml:"user,omitempty" json:"user,omitempty"`
+	Port int                      `yaml:"port,omitempty" json:"port,omitempty"`
 }
 
 // ApplyDefaults provides some static default values.
 func (c *Config) ApplyDefaults() {
-	if c.CertAuthName == "" {
-		c.CertAuthName = "default"
-	}
-
-	if c.ValidityString == "" {
-		c.ValidityString = "2m"
-	}
-
 	switch len(c.Extensions) {
 	case 0:
 		c.Extensions = ExtensionDefaults

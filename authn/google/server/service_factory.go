@@ -32,15 +32,14 @@ func (f ServiceFactory) Type() string {
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {
 	var cfg svcconfig.Config
+	cfg.JWT.Validity = 24 * time.Hour
+	cfg.JWT.ValidityPast = 2 * time.Second
+	cfg.AuthURL = "https://accounts.google.com/o/oauth2/v2/auth"
+	cfg.TokenURL = "https://www.googleapis.com/oauth2/v4/token"
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Loading config")
-	}
-
-	err = f.validateConfig(&cfg)
-	if err != nil {
-		return nil, bosherr.WrapError(err, "Validating config")
 	}
 
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(cfg.JWT.PrivateKey))
@@ -75,22 +74,4 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	)
 
 	return NewService(name, cfg, backend), nil
-}
-
-func (f ServiceFactory) validateConfig(config *svcconfig.Config) error {
-	duration, err := time.ParseDuration(config.JWT.ValidityString)
-	if err != nil {
-		return bosherr.WrapError(err, "Parsing config jwt.validity")
-	}
-
-	config.JWT.Validity = duration
-
-	duration, err = time.ParseDuration(config.JWT.ValidityPastString)
-	if err != nil {
-		return bosherr.WrapError(err, "Parsing config jwt.validity_past")
-	}
-
-	config.JWT.ValidityPast = duration
-
-	return nil
 }

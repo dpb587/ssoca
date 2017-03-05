@@ -23,7 +23,7 @@ import (
 
 type SignPublicKey struct {
 	Validity        time.Duration
-	Principals      []dynamicvalue.Value
+	Principals      dynamicvalue.MultiValue
 	CriticalOptions svcconfig.CriticalOptions
 	Extensions      svcconfig.Extensions
 	CertAuth        certauth.Provider
@@ -67,16 +67,22 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 		},
 	}
 
-	for _, dynamicPrincipal := range h.Principals {
-		principal, err1 := dynamicPrincipal.Evaluate(req, token)
-		if err1 != nil {
-			return res, bosherr.WrapError(err1, "Evaluating dynamic principal")
-		} else if principal == "" {
+	principals, err := h.Principals.Evaluate(req, token)
+	if err != nil {
+		return res, bosherr.WrapError(err, "Evaulating principals")
+	}
+
+	principalsFiltered := []string{}
+
+	for _, principalsCandidate := range principals {
+		if principalsCandidate == "" {
 			continue
 		}
 
-		certificate.ValidPrincipals = append(certificate.ValidPrincipals, principal)
+		principalsFiltered = append(principalsFiltered, principalsCandidate)
 	}
+
+	certificate.ValidPrincipals = principalsFiltered
 
 	for criticalOption, criticalOptionData := range h.CriticalOptions {
 		certificate.Permissions.CriticalOptions[string(criticalOption)] = criticalOptionData
@@ -93,19 +99,21 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 
 	res.Certificate = fmt.Sprintf("%s %s", certificate.Type(), base64.StdEncoding.EncodeToString(certificate.Marshal()))
 
-	if h.Target.Configured() {
-		res.Target = &svcapi.SignPublicKeyTargetResponse{
+	{
+		target := &svcapi.SignPublicKeyTargetResponse{
 			Host: h.Target.Host,
 			Port: h.Target.Port,
 		}
 
-		if h.Target.User != nil {
-			user, err := h.Target.User.Evaluate(req, token)
-			if err != nil {
-				return res, bosherr.WrapError(err, "Evaluting target.user")
-			}
+		targetUser, err := h.Target.User.Evaluate(req, token)
+		if err != nil {
+			return res, bosherr.WrapError(err, "Evaluting target user")
+		}
 
-			res.Target.User = user
+		target.User = targetUser
+
+		if target.Host != "" || target.Port != 0 || target.User != "" {
+			res.Target = target
 		}
 	}
 

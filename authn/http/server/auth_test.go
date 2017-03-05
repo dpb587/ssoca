@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	svcconfig "github.com/dpb587/ssoca/authn/http/config"
 	. "github.com/dpb587/ssoca/authn/http/server"
 
 	. "github.com/onsi/ginkgo"
@@ -22,8 +23,8 @@ var _ = Describe("Auth", func() {
 
 		service = NewService(
 			"auth",
-			Config{
-				Users: []UserConfig{
+			svcconfig.Config{
+				Users: []svcconfig.User{
 					{
 						Username: "user1",
 						Password: "pass1",

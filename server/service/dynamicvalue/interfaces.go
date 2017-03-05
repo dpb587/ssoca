@@ -13,3 +13,7 @@ type Factory interface {
 type Value interface {
 	Evaluate(*http.Request, *auth.Token) (string, error)
 }
+
+type MultiValue interface {
+	Evaluate(*http.Request, *auth.Token) ([]string, error)
+}

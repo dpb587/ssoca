@@ -1,12 +1,12 @@
-package server
+package config
 
 import "github.com/dpb587/ssoca/auth"
 
 type Config struct {
-	Users []UserConfig `yaml:"users"`
+	Users []User `yaml:"users"`
 }
 
-type UserConfig struct {
+type User struct {
 	Username   string                          `yaml:"username"`
 	Password   string                          `yaml:"password"`
 	Groups     []string                        `yaml:"groups"`
