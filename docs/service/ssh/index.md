@@ -29,6 +29,7 @@ This service provides a client command:
   * `host` - the remote host of the SSH server
   * `port` - the remote port of the SSH server (default `22`)
   * `user` - the remote user to authenticate as (templatized)
+  * `public_key` - the public key of the remote SSH server (requires `host`)
 
 
 ## General Notes

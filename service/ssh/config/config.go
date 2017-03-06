@@ -62,19 +62,8 @@ type CriticalOptions map[configCriticalOption]string
 type Extensions []configExtension
 
 type Target struct {
-	Host string                   `yaml:"host,omitempty" json:"host,omitempty"`
-	User dynamicvalue.ConfigValue `yaml:"user,omitempty" json:"user,omitempty"`
-	Port int                      `yaml:"port,omitempty" json:"port,omitempty"`
-}
-
-// ApplyDefaults provides some static default values.
-func (c *Config) ApplyDefaults() {
-	switch len(c.Extensions) {
-	case 0:
-		c.Extensions = ExtensionDefaults
-	case 1:
-		if c.Extensions[0] == ExtensionNoDefaults {
-			c.Extensions = Extensions{}
-		}
-	}
+	Host      string                   `yaml:"host,omitempty"`
+	User      dynamicvalue.ConfigValue `yaml:"user,omitempty"`
+	Port      int                      `yaml:"port,omitempty"`
+	PublicKey string                   `yaml:"public_key,omitempty"`
 }

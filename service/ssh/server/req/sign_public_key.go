@@ -101,8 +101,9 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 
 	{
 		target := &svcapi.SignPublicKeyTargetResponse{
-			Host: h.Target.Host,
-			Port: h.Target.Port,
+			Host:      h.Target.Host,
+			Port:      h.Target.Port,
+			PublicKey: h.Target.PublicKey,
 		}
 
 		targetUser, err := h.Target.User.Evaluate(req, token)

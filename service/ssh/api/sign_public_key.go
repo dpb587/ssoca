@@ -10,7 +10,8 @@ type SignPublicKeyResponse struct {
 }
 
 type SignPublicKeyTargetResponse struct {
-	Host string `json:"host,omitempty"`
-	User string `json:"user,omitempty"`
-	Port int    `json:"port,omitempty"`
+	Host      string `json:"host,omitempty"`
+	User      string `json:"user,omitempty"`
+	Port      int    `json:"port,omitempty"`
+	PublicKey string `json:"public_key,omitempty"`
 }

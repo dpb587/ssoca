@@ -1,7 +1,15 @@
 package server
 
 import (
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/pem"
+	"errors"
+	"fmt"
+	"strings"
 	"time"
+
+	"golang.org/x/crypto/ssh"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
@@ -33,6 +41,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	var cfg svcconfig.Config
 	cfg.Validity = 2 * time.Minute
 	cfg.CertAuth = certauth.NewConfigValue(f.caManager)
+	cfg.Extensions = svcconfig.ExtensionDefaults
 	cfg.Principals = dynamicvalue.NewMultiConfigValue(f.dynamicvalueFactory)
 	cfg.Target = svcconfig.Target{
 		User: dynamicvalue.NewConfigValue(f.dynamicvalueFactory),
@@ -41,6 +50,29 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Loading config")
+	}
+
+	if cfg.Target.PublicKey != "" && strings.Contains(cfg.Target.PublicKey, "-----") {
+		publicKeyPEM, _ := pem.Decode([]byte(cfg.Target.PublicKey))
+		if publicKeyPEM == nil {
+			return nil, errors.New("Failed to parse public_key")
+		}
+
+		rsa, err := x509.ParsePKIXPublicKey(publicKeyPEM.Bytes)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Parsing public key")
+		}
+
+		publicKey, err := ssh.NewPublicKey(rsa)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Parsing ssh public key")
+		}
+
+		cfg.Target.PublicKey = fmt.Sprintf(
+			"%s %s",
+			publicKey.Type(),
+			base64.StdEncoding.EncodeToString(publicKey.Marshal()),
+		)
 	}
 
 	return NewService(name, cfg), nil

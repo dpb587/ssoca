@@ -23,7 +23,9 @@ type Exec struct {
 	CmdRunner boshsys.CmdRunner
 	FS        boshsys.FileSystem
 
-	Args ExecArgs `positional-args:"true"`
+	Opts []string `long:"opts" description:"Options to pass through to SSH"`
+
+	Args ExecArgs `positional-args:"true" optional:"true"`
 }
 
 type ExecArgs struct {
@@ -55,14 +57,18 @@ func (c *Exec) Execute(args []string) error {
 
 	sshargs := []string{}
 
-	targetPath := fmt.Sprintf("%s/id_rsa-cert.pub", tmpdir)
+	tmpCertificate := fmt.Sprintf("%s/id_rsa-cert.pub", tmpdir)
 
-	err = c.FS.WriteFileString(targetPath, response.Certificate)
+	err = c.FS.WriteFileString(tmpCertificate, response.Certificate)
 	if err != nil {
 		return bosherr.WrapError(err, "Writing certificate")
 	}
 
-	sshargs = append(sshargs, "-o", fmt.Sprintf("CertificateFile=%s", targetPath))
+	sshargs = append(sshargs, "-o", fmt.Sprintf("CertificateFile=%s", tmpCertificate))
+
+	for _, arg := range c.Opts {
+		sshargs = append(sshargs, arg)
+	}
 
 	if response.Target != nil {
 		if response.Target.Port != 0 {
@@ -71,6 +77,19 @@ func (c *Exec) Execute(args []string) error {
 
 		if response.Target.User != "" {
 			sshargs = append(sshargs, "-l", response.Target.User)
+		}
+
+		if response.Target.PublicKey != "" {
+			sshargs = append(sshargs, "-o", "StrictHostKeyChecking=yes")
+
+			tmpKnownHosts := fmt.Sprintf("%s/known_hosts", tmpdir)
+
+			err = c.FS.WriteFileString(tmpKnownHosts, fmt.Sprintf("%s %s\n", response.Target.Host, response.Target.PublicKey))
+			if err != nil {
+				return bosherr.WrapError(err, "Writing certificate")
+			}
+
+			sshargs = append(sshargs, "-o", fmt.Sprintf("UserKnownHostsFile=%s", tmpKnownHosts))
 		}
 
 		if response.Target.Host != "" {
