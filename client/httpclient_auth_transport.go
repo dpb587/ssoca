@@ -9,6 +9,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
+const AuthorizationNone = "none"
+
 type AuthTransport struct {
 	Runtime Runtime
 	Base    http.RoundTripper
@@ -25,8 +27,9 @@ func NewAuthTransport(runtime Runtime, serviceManager service.Manager, base http
 }
 
 func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if req.Header.Get("Authorization") == "none" {
+	if req.Header.Get("Authorization") == AuthorizationNone {
 		// do nothing
+		req.Header.Del("Authorization")
 	} else {
 		env, err := t.Runtime.GetEnvironment()
 		if err != nil {
