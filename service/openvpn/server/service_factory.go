@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
 	"github.com/dpb587/ssoca/certauth"
@@ -27,6 +29,7 @@ func (f ServiceFactory) Type() string {
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {
 	var cfg svcconfig.Config
 	cfg.CertAuth = certauth.NewConfigValue(f.caManager)
+	cfg.Validity = 2 * time.Minute
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
