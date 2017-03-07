@@ -2,10 +2,8 @@ package server
 
 import (
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/pem"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -68,11 +66,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 			return nil, bosherr.WrapError(err, "Parsing ssh public key")
 		}
 
-		cfg.Target.PublicKey = fmt.Sprintf(
-			"%s %s",
-			publicKey.Type(),
-			base64.StdEncoding.EncodeToString(publicKey.Marshal()),
-		)
+		cfg.Target.PublicKey = string(ssh.MarshalAuthorizedKey(publicKey))
 	}
 
 	return NewService(name, cfg), nil

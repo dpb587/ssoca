@@ -1,13 +1,16 @@
 package cmd
 
 import (
-	"encoding/base64"
+	"bytes"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
 	"fmt"
-	"net"
 	"os"
 
-	"golang.org/x/crypto/ssh/agent"
+	"golang.org/x/crypto/ssh"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/service/ssh/api"
@@ -38,16 +41,6 @@ func (c *Exec) Execute(args []string) error {
 		return bosherr.WrapError(err, "Getting client")
 	}
 
-	requestPayload, err := c.generatePayload()
-	if err != nil {
-		return bosherr.WrapError(err, "Generating request payload")
-	}
-
-	response, err := client.PostSignPublicKey(requestPayload)
-	if err != nil {
-		return bosherr.WrapError(err, "Requesting signed public keys")
-	}
-
 	tmpdir, err := c.FS.TempDir("ssh")
 	if err != nil {
 		return bosherr.WrapError(err, "Creating certificate tmpdir")
@@ -55,7 +48,40 @@ func (c *Exec) Execute(args []string) error {
 
 	defer c.FS.RemoveAll(tmpdir)
 
-	sshargs := []string{}
+	privateKeyBytes, publicKeyBytes, err := makeSSHKeyPair()
+	if err != nil {
+		return bosherr.WrapError(err, "Creating ephemeral ssh key")
+	}
+
+	tmpPrivateKey := fmt.Sprintf("%s/id_rsa", tmpdir)
+
+	err = c.FS.WriteFile(tmpPrivateKey, privateKeyBytes)
+	if err != nil {
+		return bosherr.WrapError(err, "Writing private key")
+	}
+
+	err = c.FS.Chmod(tmpPrivateKey, 0600)
+	if err != nil {
+		return bosherr.WrapError(err, "Setting permissions of private key")
+	}
+
+	err = c.FS.WriteFile(fmt.Sprintf("%s/id_rsa.pub", tmpdir), publicKeyBytes)
+	if err != nil {
+		return bosherr.WrapError(err, "Writing public key")
+	}
+
+	response, err := client.PostSignPublicKey(api.SignPublicKeyRequest{
+		PublicKey: string(publicKeyBytes),
+	})
+	if err != nil {
+		return bosherr.WrapError(err, "Requesting signed public keys")
+	}
+
+	sshargs := []string{
+		"-o", "ForwardAgent=no",
+		"-o", "ServerAliveInterval=30",
+		"-o", "IdentitiesOnly=yes",
+	}
 
 	tmpCertificate := fmt.Sprintf("%s/id_rsa-cert.pub", tmpdir)
 
@@ -64,6 +90,7 @@ func (c *Exec) Execute(args []string) error {
 		return bosherr.WrapError(err, "Writing certificate")
 	}
 
+	sshargs = append(sshargs, "-o", fmt.Sprintf("IdentityFile=%s", tmpPrivateKey))
 	sshargs = append(sshargs, "-o", fmt.Sprintf("CertificateFile=%s", tmpCertificate))
 
 	for _, arg := range c.Opts {
@@ -119,29 +146,29 @@ func (c *Exec) Execute(args []string) error {
 	return err
 }
 
-func (c *Exec) generatePayload() (api.SignPublicKeyRequest, error) {
-	payload := api.SignPublicKeyRequest{}
-
-	socket, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
+// https://github.com/cloudfoundry/bosh-cli/blob/a0c78a59b5eeac11a32e953451a497eb1cb9ba7d/director/ssh_opts.go#L43
+func makeSSHKeyPair() ([]byte, []byte, error) {
+	privKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return payload, bosherr.WrapError(err, "Dialing $SSH_AUTH_SOCK")
+		return nil, nil, err
 	}
 
-	a := agent.NewClient(socket)
-	keys, err := a.List()
+	privKeyPEM := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(privKey),
+	}
+
+	privKeyBuf := bytes.NewBufferString("")
+
+	err = pem.Encode(privKeyBuf, privKeyPEM)
 	if err != nil {
-		return payload, bosherr.WrapError(err, "Listing SSH agent keys")
+		return nil, nil, err
 	}
 
-	for _, key := range keys {
-		payload.PublicKey = fmt.Sprintf("%s %s %s", key.Format, base64.StdEncoding.EncodeToString(key.Marshal()), key.Comment)
-
-		break
+	pub, err := ssh.NewPublicKey(&privKey.PublicKey)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	if payload.PublicKey == "" {
-		return payload, errors.New("Cannot find public key from agent")
-	}
-
-	return payload, nil
+	return privKeyBuf.Bytes(), ssh.MarshalAuthorizedKey(pub), nil
 }
