@@ -56,7 +56,7 @@ var _ = Describe("Filter", func() {
 						_, err := subject.Create("something")
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("not an array"))
+						Expect(err.Error()).To(ContainSubstring("Failed to parse 'and' config"))
 					})
 				})
 

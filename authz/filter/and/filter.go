@@ -5,6 +5,7 @@ import (
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/authz/filter"
+	"github.com/dpb587/ssoca/config"
 )
 
 type Filter struct {
@@ -20,9 +21,11 @@ func NewFilter(manager filter.Manager) Filter {
 func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
 	requirement := Requirement{}
 
-	arr, ok := cfg.([]filter.RequireConfig)
-	if !ok {
-		return nil, fmt.Errorf("Filter options for 'and' is not an array: %#v", cfg)
+	arr := []filter.RequireConfig{}
+
+	err := config.RemarshalYAML(cfg, &arr)
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Failed to parse 'and' config")
 	}
 
 	for reqIdx, req := range arr {
@@ -38,7 +41,7 @@ func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
 
 			req, err := reqFilter.Create(reqOptions)
 			if err != nil {
-				return nil, fmt.Errorf("Creating requirement for item %d of 'and'", reqIdx)
+				return nil, bosherr.WrapErrorf(err, "Creating requirement for item %d of 'and'", reqIdx)
 			}
 
 			requirement.Requirements = append(requirement.Requirements, req)
