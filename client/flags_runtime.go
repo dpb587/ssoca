@@ -72,7 +72,10 @@ func (r FlagsRuntime) GetClient() (*httpclient.Client, error) {
 		return nil, bosherr.WrapError(err, "Getting environment")
 	}
 
-	certPool := x509.NewCertPool()
+	certPool, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Loading trusted system CA certificates")
+	}
 
 	if env.CACertificate != "" {
 		cert, err := env.GetCACertificate()
