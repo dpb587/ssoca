@@ -7,6 +7,8 @@ type RouteHandlerFunc struct {
 	Func http.HandlerFunc
 }
 
+var _ RouteHandler = RouteHandlerFunc{}
+
 func (h RouteHandlerFunc) Route() string {
 	return h.Path
 }

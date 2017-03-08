@@ -18,6 +18,8 @@ type Service struct {
 	services service.Manager
 }
 
+var _ service.Service = Service{}
+
 // @todo config leaking scope
 func NewService(config svcconfig.Config, services service.Manager) Service {
 	return Service{

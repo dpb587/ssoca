@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/download"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
@@ -20,6 +21,8 @@ type Service struct {
 
 	fs boshsys.FileSystem
 }
+
+var _ service.Service = Service{}
 
 func NewService(name string, config svcconfig.Config, fs boshsys.FileSystem) Service {
 	return Service{

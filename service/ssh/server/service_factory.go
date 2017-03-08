@@ -24,6 +24,8 @@ type ServiceFactory struct {
 	dynamicvalueFactory dynamicvalue.Factory
 }
 
+var _ service.ServiceFactory = ServiceFactory{}
+
 func NewServiceFactory(dynamicvalueFactory dynamicvalue.Factory, caManager certauth.Manager) ServiceFactory {
 	return ServiceFactory{
 		caManager:           caManager,

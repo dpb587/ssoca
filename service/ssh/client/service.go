@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/client/service"
 
 	svc "github.com/dpb587/ssoca/service/ssh"
 	svccmd "github.com/dpb587/ssoca/service/ssh/client/cmd"
@@ -18,6 +19,8 @@ type Service struct {
 	fs        boshsys.FileSystem
 	cmdRunner boshsys.CmdRunner
 }
+
+var _ service.Service = Service{}
 
 func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
 	return Service{

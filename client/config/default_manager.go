@@ -12,6 +12,8 @@ type DefaultManager struct {
 	path    string
 }
 
+var _ Manager = DefaultManager{}
+
 func NewDefaultManager(storage storage.Storage, path string) DefaultManager {
 	return DefaultManager{
 		storage: storage,

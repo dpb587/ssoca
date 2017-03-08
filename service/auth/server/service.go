@@ -17,6 +17,8 @@ type Service struct {
 	auth service.AuthService
 }
 
+var _ service.Service = Service{}
+
 func NewService(authService service.AuthService) Service {
 	return Service{
 		auth: authService,

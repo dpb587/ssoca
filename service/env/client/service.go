@@ -6,6 +6,7 @@ import (
 	"github.com/dpb587/ssoca/client"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/client/service"
 	svc "github.com/dpb587/ssoca/service/env"
 	svccmd "github.com/dpb587/ssoca/service/env/client/cmd"
 	svchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
@@ -17,6 +18,8 @@ type Service struct {
 	runtime client.Runtime
 	fs      boshsys.FileSystem
 }
+
+var _ service.Service = Service{}
 
 func NewService(runtime client.Runtime, fs boshsys.FileSystem) Service {
 	return Service{

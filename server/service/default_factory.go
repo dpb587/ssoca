@@ -10,6 +10,8 @@ type defaultFactory struct {
 	services map[string]ServiceFactory
 }
 
+var _ Factory = defaultFactory{}
+
 func NewDefaultFactory() defaultFactory {
 	res := defaultFactory{}
 	res.services = map[string]ServiceFactory{}

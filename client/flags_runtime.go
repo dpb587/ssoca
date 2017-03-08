@@ -30,6 +30,8 @@ type FlagsRuntime struct {
 	config config.Manager
 }
 
+var _ Runtime = FlagsRuntime{}
+
 func NewFlagsRuntime(serviceManager service.Manager, ui boshui.UI, stdout io.Writer, stdin io.Reader, fs boshsys.FileSystem, logger boshlog.Logger) FlagsRuntime {
 	return FlagsRuntime{
 		serviceManager: serviceManager,

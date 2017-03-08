@@ -14,6 +14,8 @@ type Factory struct {
 	logger logrus.FieldLogger
 }
 
+var _ certauth.ProviderFactory = Factory{}
+
 func NewFactory(fs boshsys.FileSystem, logger logrus.FieldLogger) Factory {
 	return Factory{
 		fs:     fs,

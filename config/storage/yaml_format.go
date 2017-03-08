@@ -7,6 +7,8 @@ import (
 
 type YAMLFormat struct{}
 
+var _ Storage = YAMLFormat{}
+
 func (s YAMLFormat) Get(data string, get interface{}) error {
 	err := yaml.Unmarshal([]byte(data), get)
 	if err != nil {

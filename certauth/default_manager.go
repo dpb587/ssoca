@@ -6,6 +6,8 @@ type defaultManager struct {
 	certAuths map[string]Provider
 }
 
+var _ Manager = defaultManager{}
+
 func NewDefaultManager() Manager {
 	res := defaultManager{}
 	res.certAuths = map[string]Provider{}

@@ -10,6 +10,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
+var _ service.AuthService = Service{}
+
 func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error) {
 	authServiceType := info.Type
 

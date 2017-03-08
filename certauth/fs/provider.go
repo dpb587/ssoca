@@ -12,6 +12,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/dpb587/ssoca/certauth"
 )
 
 type Provider struct {
@@ -20,6 +21,8 @@ type Provider struct {
 	fs     boshsys.FileSystem
 	logger logrus.FieldLogger
 }
+
+var _ certauth.Provider = Provider{}
 
 func NewProvider(name string, config Config, fs boshsys.FileSystem, logger logrus.FieldLogger) Provider {
 	return Provider{

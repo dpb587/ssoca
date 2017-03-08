@@ -18,6 +18,8 @@ type ServiceFactory struct {
 	fs boshsys.FileSystem
 }
 
+var _ service.ServiceFactory = ServiceFactory{}
+
 func NewServiceFactory(fs boshsys.FileSystem) ServiceFactory {
 	return ServiceFactory{
 		fs: fs,

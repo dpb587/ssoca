@@ -10,6 +10,8 @@ type FormattedFS struct {
 	parser Storage
 }
 
+var _ Storage = FormattedFS{}
+
 func NewFormattedFS(fs boshsys.FileSystem, parser Storage) FormattedFS {
 	return FormattedFS{
 		fs:     fs,

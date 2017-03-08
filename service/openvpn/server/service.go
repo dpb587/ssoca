@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/openvpn"
 	svcconfig "github.com/dpb587/ssoca/service/openvpn/config"
@@ -16,6 +17,8 @@ type Service struct {
 	name   string
 	config svcconfig.Config
 }
+
+var _ service.Service = Service{}
 
 func NewService(name string, config svcconfig.Config) Service {
 	return Service{

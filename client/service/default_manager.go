@@ -6,6 +6,8 @@ type defaultManager struct {
 	services map[string]Service
 }
 
+var _ Manager = defaultManager{}
+
 func NewDefaultManager() Manager {
 	res := defaultManager{}
 	res.services = map[string]Service{}

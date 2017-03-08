@@ -16,6 +16,8 @@ type ServiceFactory struct {
 	caManager certauth.Manager
 }
 
+var _ service.ServiceFactory = ServiceFactory{}
+
 func NewServiceFactory(caManager certauth.Manager) ServiceFactory {
 	return ServiceFactory{
 		caManager: caManager,
