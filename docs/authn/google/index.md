@@ -1,6 +1,6 @@
 # Google Authentication (`google`)
 
-Google authenticates users through their Google accounts. Users are redirected through Google's website and given a token for their CLI usage. Once authenticated, short-lived JWT tokens are used to persist and validate authentication state.
+Google authenticates users through their Google accounts. Users are redirected through Google's website and given a token for their CLI usage. Once authenticated, short-lived [JSON Web Tokens](../jwt) are used to persist and validate authentication state.
 
 
 ## Options

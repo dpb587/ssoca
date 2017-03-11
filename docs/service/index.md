@@ -1,12 +1,17 @@
 # Services
 
-Services can provide internal and external authentication behaviors.
+Services provide the client+server bindings between `ssoca` and the certificate, identity, or user service providers. The following services provide the user with certificate-based authentication to external services:
 
- * [Document Root](service/docroot)
- * [Download](service/download)
- * [HTTP](service/http)
- * [OpenVPN](service/openvpn)
- * [SSH](service/ssh)
+ * [HTTP](http)
+ * [OpenVPN](openvpn)
+ * [SSH](ssh)
+
+Several meta-services provide commands and endpoints for authentication and additional resources:
+
+ * [Authentication](auth)
+ * [Document Root](docroot)
+ * [Download](download)
+ * [Environment](env)
 
 
 ## Configuration

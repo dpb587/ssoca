@@ -1,5 +1,8 @@
 Learn more about...
 
+ * **Overview**
+    * [Architecture](architecture)
+    * [Installation](installation)
  * **[Authentication](authn)** - how users authenticate
     * [Cloud Foundry UAA](authn/uaa)
     * [GitHub](authn/github)
@@ -23,4 +26,5 @@ Learn more about...
     * [Environment](service/env)
     * [OpenVPN](service/openvpn)
     * [SSH](service/ssh)
- * **[Development](dev)**
+
+There's also some [development notes](dev) if you're looking to make changes or work from source.

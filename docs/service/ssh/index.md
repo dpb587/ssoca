@@ -60,7 +60,7 @@ Once configured, restart the `ssh` service.
 
 ## Debugging
 
-If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate.
+If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate...
 
     $ ssh-keygen -L -f <( ssoca ssh sign-public-key )
     /dev/fd/63:
@@ -80,3 +80,7 @@ If a signed certificate is not working, sometimes it's helpful to inspect the si
                 permit-port-forwarding
                 permit-pty
                 permit-user-rc
+
+To convert a X509 private key to an OpenSSH public key...
+
+    $ ssh-keygen -f ca-private.pem -y > ca-cert.pub

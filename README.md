@@ -2,7 +2,7 @@
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Pre-alpha stability](https://img.shields.io/badge/stability-pre--alpha-red.svg)](#development)
-![Coverage Status](https://coveralls.io/repos/github/dpb587/ssoca/badge.svg?branch=master&t=4lRGqE)
+[![Coverage Status](https://coveralls.io/repos/github/dpb587/ssoca/badge.svg?branch=master)](https://coveralls.io/github/dpb587/ssoca)
 
 SSO for services that use CA-based authentication.
 

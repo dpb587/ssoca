@@ -1,4 +1,48 @@
-Use [certstrap](https://github.com/square/certstrap) to generate certificates...
+# Development
+
+Some notes to remember when working from source...
+
+
+## Commits
+
+Before committing, run the `bin/pre-commit` script to...
+
+ * regenerate fakes
+ * `go fmt` source files
+ * run all tests
+ * build all binaries
+ * regenerate client command docs
+
+Review for unexpected changes before including them in your commit.
+
+
+## Shortcuts
+
+Some shortcuts instead of the built-in `go` commands...
+
+
+### `go run`
+
+ * `bin/client` - shortcut to run the client from source in any directory
+ * `bin/server` - shortcut to run the server from source in any directory
+
+
+### `go build`
+
+Run `bin/build` to build both client and server for all supported architectures and operating systems. Optionally pass a version as the first argument (defaults to `0.0.0`). Binaries are put into the `tmp` directory of the repository and use the following naming convention:
+
+    ssoca-(client|server)-$VERSION-$GOOS-$GOARCH
+    # e.g. ssoca-client-0.1.0-darwin-amd64
+
+    $ bin/pre-commit
+
+
+## Certificates
+
+You might find [certstrap](https://github.com/square/certstrap) useful for generating certificates.
+
+
+### Installation
 
     $ go get github.com/square/certstrap
     $ pushd $GOPATH/src/github.com/square/cerstrap
@@ -6,69 +50,12 @@ Use [certstrap](https://github.com/square/certstrap) to generate certificates...
     $ mv bin/certstrap $GOPATH/bin
     $ popd
 
-Generate some certificates...
 
-    $ certstrap --depot-path tmp/server init --cn ca --passphrase ''
-    $ chmod 0600 tmp/server/ca.key
-    $ ssh-keygen -f tmp/server/ca.key -y > tmp/server/ca-cert.pub
-    $ certstrap --depot-path tmp/server request-cert --cn server --domain localhost --passphrase ''
-    $ chmod 0600 tmp/server/server.key
-    $ certstrap --depot-path tmp/server sign server --CA ca
-    $ cat > tmp/server/config.yml <<EOF
-    auth:
-      type: http
-      options:
-        users:
-          - username: admin
-            password: nimda
-    certauths:
-      - name: default
-        type: fs
-        options:
-          private_key_path: tmp/server/ca.key
-    server:
-      certificate_path: tmp/server/server.crt
-      private_key_path: tmp/server/server.key
-    services:
-      - name: ssh
-        type: ssh
-        options:
-          certauth: default
-    EOF
+### Usage
 
-Start the server...
-
-    $ go run cli/server/main.go
-
-Run the client...
-
-    $ go run cli/client/main.go -e localhost env add --ca-cert tmp/server/ca.crt https://localhost:18705
-
-Run the tests...
-
-    $ ginkgo -r
-
-Lint before committing...
-
-    $ bin/pre-commit
-
-# Snippets
-
-Convert PEM to OpenSSH public key...
-
-    ssh-keygen -f ca-private.pem -y > ca-cert.pub
-
-Investigate a signed public key...
-
-    ssh-keygen -L -f id_rsa-cert.pub
-
-JWT key...
-
-    openssl genrsa -out jwt.key 2049
-
-More...
-
-    ssh-keygen -C CA -f ca
-    ssh-keygen -t ecdsa -f jdoe
-
-    cat ~/.ssh/id_rsa.pub | jq -sR '{"public_keys":[.]}' | curl -kd@- https://127.0.0.1:18705/ssh/sign
+    $ certstrap --depot-path tmp/dev-server init --cn ca --passphrase ''
+    $ chmod 0600 tmp/dev-server/ca.key
+    $ ssh-keygen -f tmp/dev-server/ca.key -y > tmp/dev-server/ca-cert.pub
+    $ certstrap --depot-path tmp/dev-server request-cert --cn server --domain localhost --passphrase ''
+    $ chmod 0600 tmp/dev-server/server.key
+    $ certstrap --depot-path tmp/dev-server sign server --CA ca
