@@ -30,6 +30,7 @@ import (
 	filter_or "github.com/dpb587/ssoca/authz/filter/or"
 	filter_remote_ip "github.com/dpb587/ssoca/authz/filter/remote_ip"
 	filter_scope "github.com/dpb587/ssoca/authz/filter/scope"
+	filter_username "github.com/dpb587/ssoca/authz/filter/username"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -75,6 +76,7 @@ func main() {
 	filterManager.Add("or", filter_or.NewFilter(&filterManager))
 	filterManager.Add("remote_ip", filter_remote_ip.Filter{})
 	filterManager.Add("scope", filter_scope.Filter{})
+	filterManager.Add("username", filter_username.Filter{})
 
 	serviceManager := service.NewDefaultManager()
 	serviceManager.Add(srv_env.NewService(cfg.Env, &serviceManager))

@@ -17,13 +17,25 @@ type Token struct {
 }
 
 func (t Token) Name() string {
+	if t.Attributes == nil {
+		return ""
+	}
+
 	return *t.Attributes[TokenNameAttribute]
 }
 
 func (t Token) Email() string {
+	if t.Attributes == nil {
+		return ""
+	}
+
 	return *t.Attributes[TokenEmailAttribute]
 }
 
 func (t Token) Username() string {
+	if t.Attributes == nil {
+		return ""
+	}
+
 	return *t.Attributes[TokenUsernameAttribute]
 }
