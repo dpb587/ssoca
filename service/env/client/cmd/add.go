@@ -3,6 +3,7 @@ package cmd
 import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 
@@ -18,11 +19,13 @@ type Add struct {
 	FS boshsys.FileSystem
 }
 
+var _ flags.Commander = Add{}
+
 type AddArgs struct {
 	URL string `positional-arg-name:"URI" description:"Environment URL"`
 }
 
-func (c *Add) Execute(args []string) error {
+func (c Add) Execute(args []string) error {
 	env := config.EnvironmentState{
 		Alias: c.Runtime.GetEnvironmentName(),
 		URL:   c.Args.URL,

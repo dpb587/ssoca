@@ -4,6 +4,7 @@ import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/jessevdk/go-flags"
 )
 
 type Info struct {
@@ -12,7 +13,9 @@ type Info struct {
 	GetClient GetClient
 }
 
-func (c *Info) Execute(args []string) error {
+var _ flags.Commander = Info{}
+
+func (c Info) Execute(args []string) error {
 	client, err := c.GetClient()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

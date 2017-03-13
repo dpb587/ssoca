@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
@@ -14,7 +15,9 @@ type Logout struct {
 	ServiceManager service.Manager
 }
 
-func (c *Logout) Execute(args []string) error {
+var _ flags.Commander = Logout{}
+
+func (c Logout) Execute(args []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting environment state")

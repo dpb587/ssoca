@@ -4,11 +4,14 @@ import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/jessevdk/go-flags"
 )
 
 type List struct {
 	clientcmd.ServiceCommand
 }
+
+var _ flags.Commander = List{}
 
 func (c List) Execute(args []string) error {
 	table := boshtbl.Table{

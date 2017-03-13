@@ -12,6 +12,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/authn/support/oauth2/config"
 	"github.com/dpb587/ssoca/authn/support/selfsignedjwt"
+	"github.com/dpb587/ssoca/server/service/req"
 	uuid "github.com/nu7hatch/gouuid"
 	"golang.org/x/oauth2"
 
@@ -44,6 +45,8 @@ type Callback struct {
 	Context           context.Context
 	JWT               config.JWT
 }
+
+var _ req.RouteHandler = Callback{}
 
 func (h Callback) Route() string {
 	return "callback"

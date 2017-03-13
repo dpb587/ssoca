@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/ssh/api"
 	"golang.org/x/crypto/ssh"
 
@@ -14,6 +15,8 @@ import (
 type CAPublicKey struct {
 	CertAuth certauth.Provider
 }
+
+var _ req.RouteHandler = CAPublicKey{}
 
 func (CAPublicKey) Route() string {
 	return "ca-public-key"

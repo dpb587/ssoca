@@ -16,6 +16,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/api"
+	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/openvpn"
 	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
 
@@ -27,6 +28,8 @@ type SignUserCSR struct {
 	Validity    time.Duration
 	BaseProfile string
 }
+
+var _ req.RouteHandler = SignUserCSR{}
 
 func (h SignUserCSR) Route() string {
 	return "sign-user-csr"

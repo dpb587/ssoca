@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/jessevdk/go-flags"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -51,11 +52,13 @@ type CreateTunnelblickProfile struct {
 	GetClient GetClient
 }
 
+var _ flags.Commander = CreateTunnelblickProfile{}
+
 type CreateTunnelblickProfileArgs struct {
 	DestinationDir string `positional-arg-name:"DESTINATION-DIR" description:"Directory where the *.tblk profile will be created (default: $PWD)"`
 }
 
-func (c *CreateTunnelblickProfile) Execute(args []string) error {
+func (c CreateTunnelblickProfile) Execute(args []string) error {
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting config manager")

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/download/api"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
 )
@@ -8,6 +9,8 @@ import (
 type List struct {
 	Paths []svcconfig.PathConfig
 }
+
+var _ req.RouteHandler = List{}
 
 func (h List) Route() string {
 	return "list"

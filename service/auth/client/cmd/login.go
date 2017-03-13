@@ -6,6 +6,7 @@ import (
 
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/service"
+	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	envclient "github.com/dpb587/ssoca/service/env/client"
@@ -20,7 +21,9 @@ type Login struct {
 	GetClient      GetClient
 }
 
-func (c *Login) Execute(args []string) error {
+var _ flags.Commander = Login{}
+
+func (c Login) Execute(args []string) error {
 	rawEnvService, err := c.ServiceManager.Get("env")
 	if err != nil {
 		return bosherr.WrapError(err, "Getting env service")

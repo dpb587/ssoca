@@ -14,6 +14,7 @@ import (
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/service/ssh/api"
+	"github.com/jessevdk/go-flags"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -31,11 +32,13 @@ type Exec struct {
 	Args ExecArgs `positional-args:"true" optional:"true"`
 }
 
+var _ flags.Commander = Exec{}
+
 type ExecArgs struct {
 	Host string `positional-arg-name:"HOST"`
 }
 
-func (c *Exec) Execute(args []string) error {
+func (c Exec) Execute(args []string) error {
 	client, err := c.GetClient(c.ServiceName)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

@@ -7,6 +7,7 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/dpb587/ssoca/server/service/req"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
@@ -15,6 +16,8 @@ type BaseProfile struct {
 	CertAuth    certauth.Provider
 	BaseProfile string
 }
+
+var _ req.RouteHandler = BaseProfile{}
 
 func (h BaseProfile) Route() string {
 	return "base-profile"

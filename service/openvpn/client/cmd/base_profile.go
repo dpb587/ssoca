@@ -2,6 +2,7 @@ package cmd
 
 import (
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/jessevdk/go-flags"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
@@ -12,7 +13,9 @@ type BaseProfile struct {
 	GetClient GetClient
 }
 
-func (c *BaseProfile) Execute(args []string) error {
+var _ flags.Commander = BaseProfile{}
+
+func (c BaseProfile) Execute(args []string) error {
 	client, err := c.GetClient(c.ServiceName)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

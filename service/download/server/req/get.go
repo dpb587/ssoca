@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/dpb587/ssoca/server/api"
+	"github.com/dpb587/ssoca/server/service/req"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
@@ -19,6 +20,8 @@ type Get struct {
 	Paths []svcconfig.PathConfig
 	FS    boshsys.FileSystem
 }
+
+var _ req.RouteHandler = Get{}
 
 func (h Get) Route() string {
 	return "get"

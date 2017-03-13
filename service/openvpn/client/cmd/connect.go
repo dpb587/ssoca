@@ -6,6 +6,7 @@ import (
 
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/jessevdk/go-flags"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -25,11 +26,13 @@ type Connect struct {
 	ExecutableFinder client.ExecutableFinder
 }
 
+var _ flags.Commander = Connect{}
+
 type ConnectArgs struct {
 	Extra []string `positional-arg-name:"EXTRA" description:"Additional arguments to pass to openvpn"`
 }
 
-func (c *Connect) Execute(args []string) error {
+func (c Connect) Execute(args []string) error {
 	var executable string
 
 	if c.Exec != "" {

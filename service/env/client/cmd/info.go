@@ -3,6 +3,7 @@ package cmd
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svcapi "github.com/dpb587/ssoca/service/env/api"
@@ -13,6 +14,8 @@ type Info struct {
 
 	GetClient GetClient
 }
+
+var _ flags.Commander = Info{}
 
 func (c Info) Execute(args []string) error {
 	client, err := c.GetClient()

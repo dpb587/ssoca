@@ -15,6 +15,7 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
+	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
 	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
 
@@ -29,6 +30,8 @@ type SignPublicKey struct {
 	CertAuth        certauth.Provider
 	Target          svcconfig.Target
 }
+
+var _ req.RouteHandler = SignPublicKey{}
 
 func (h SignPublicKey) Route() string {
 	return "sign-public-key"

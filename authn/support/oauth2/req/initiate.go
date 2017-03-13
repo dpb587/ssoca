@@ -6,12 +6,15 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/authn/support/oauth2/config"
+	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
 )
 
 type Initiate struct {
 	Config oauth2.Config
 }
+
+var _ req.RouteHandler = Initiate{}
 
 func (h Initiate) Route() string {
 	return "initiate"

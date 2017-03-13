@@ -37,7 +37,7 @@ Run `bin/build` to build both client and server for all supported architectures 
     $ bin/pre-commit
 
 
-## Certificates
+## Certificate Authorities
 
 You might find [certstrap](https://github.com/square/certstrap) useful for generating certificates.
 
@@ -59,3 +59,8 @@ You might find [certstrap](https://github.com/square/certstrap) useful for gener
     $ certstrap --depot-path tmp/dev-server request-cert --cn server --domain localhost --passphrase ''
     $ chmod 0600 tmp/dev-server/server.key
     $ certstrap --depot-path tmp/dev-server sign server --CA ca
+
+
+## Random Tips
+
+ * pipe server log output through `jq` for more readable messages

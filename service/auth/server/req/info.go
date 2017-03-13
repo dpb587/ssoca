@@ -1,13 +1,16 @@
-package server
+package req
 
 import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/auth/api"
 )
 
 type Info struct{}
+
+var _ req.RouteHandler = Info{}
 
 func (h Info) Route() string {
 	return "info"

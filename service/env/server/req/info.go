@@ -5,6 +5,7 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
+	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/env/api"
 	"github.com/dpb587/ssoca/service/env/config"
 )
@@ -13,6 +14,8 @@ type Info struct {
 	Config   config.Config
 	Services service.Manager
 }
+
+var _ req.RouteHandler = Info{}
 
 func (h Info) Route() string {
 	return "info"
