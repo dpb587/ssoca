@@ -30,4 +30,4 @@ The following diagram demonstrates the high-level interactions which occur betwe
   ssoca-cli->service-provider: certificate-based connection
 </pre></div>
 
-<script type="text/javascript" src="http://www.websequencediagrams.com/service.js"></script>
+<script type="text/javascript" src="https://www.websequencediagrams.com/service.js"></script>

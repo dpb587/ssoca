@@ -110,7 +110,7 @@ func CreateFromConfig(
 
 		filteredService, err := filterService(svc, svcConfig, cfg.Auth.Require, filterManager)
 		if err != nil {
-			return Server{}, bosherr.WrapErrorf(err, "Applying authorzation filters to %s", svc.Name())
+			return Server{}, bosherr.WrapErrorf(err, "Applying authorization filters to %s", svc.Name())
 		}
 
 		serviceManager.Add(filteredService)
