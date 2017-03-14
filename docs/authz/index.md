@@ -23,7 +23,7 @@ Require that the user has been successfully authenticated. This filter has no op
 
 ## `or`
 
-Require at least one of multiple filters to be true. The array values of the node must include on or more additional filters.
+Require at least one of multiple filters to be true. The array values of the node must include one or more additional filters.
 
     - or:
       - remote_ip: { within: "192.0.2.0/24" }

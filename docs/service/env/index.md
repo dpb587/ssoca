@@ -2,13 +2,15 @@
 
 The environments can be managed through the `env` commands.
 
- * `add` ([details](add)) - add a new environment
- * `info` ([details](info)) - show current environment information
- * `list` ([details](list)) - list all locally-configured environments
- * `remove` ([details](remove)) - remove an environment
+ * `add` ([details](add-cmd)) - add a new environment
+ * `info` ([details](info-cmd)) - show current environment information
+ * `list` ([details](list-cmd)) - list all locally-configured environments
+ * `remove` ([details](remove-cmd)) - remove an environment
 
 
 ## Options
+
+These options must be configured with the top-level `env` section rather than a service.
 
  * **`url`** - a fully-qualified URI for where the server can be reached
  * `banner` - a custom message which may be shown to users

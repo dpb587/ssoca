@@ -1,4 +1,4 @@
-# Client Overview
+# Client
 
 Most users will be executing the `ssoca` client binary from their workstations.
 

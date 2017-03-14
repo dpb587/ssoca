@@ -1,5 +1,3 @@
-Learn more about...
-
  * **Overview**
     * [Architecture](architecture)
     * [Installation](installation)
@@ -7,14 +5,11 @@ Learn more about...
     * [Cloud Foundry UAA](authn/uaa)
     * [GitHub](authn/github)
     * [Google](authn/google)
-    * [HTTP Basic](authn/http)
  * **[Authorization](authz)** - how users are authorized
  * **[Certificate Authority](certauth)** - how certificates can be signed
-    * [AWS Key Management Service](certauth/awskms)
-    * [File System](certauth/fs)
     * [In-Memory](certauth/memory)
+    * [Local Filesystem](certauth/fs)
  * **[Client](client)** - how end users interact with ssoca
-    * [State Files](client/state)
  * **[Server](server)** - how the ssoca server runs
     * [Configuration](server/config)
     * [Frontend UI](server/ui)

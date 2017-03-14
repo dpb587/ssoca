@@ -10,4 +10,3 @@ For more details on authenticating from the client, see the client-side [Authent
  * [Cloud Foundry UAA](uaa)
  * [GitHub](github)
  * [Google](google)
- * [HTTP Basic](http)

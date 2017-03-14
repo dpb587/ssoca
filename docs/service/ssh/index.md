@@ -57,12 +57,14 @@ Once configured, restart the `ssh` service.
 
     service ssh restart
 
+For a BOSH-managed server, you may find the [ssh-conf](https://github.com/dpb587/ssh-conf-bosh-release) BOSH release useful.
+
 
 ## Debugging
 
-If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate...
+If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate, taking particular interest in the principals...
 
-    $ ssh-keygen -L -f <( ssoca ssh sign-public-key )
+    $ ssh-keygen -L -f <( ssoca ssh sign-public-key ~/.ssh/id_rsa.pub )
     /dev/fd/63:
         Type: ssh-rsa-cert-v01@openssh.com user certificate
         Public key: RSA-CERT SHA256:Lbm8fojiin5Mn95obC0Qxxf9/Gca4GtJMuUfax4Vu7M
