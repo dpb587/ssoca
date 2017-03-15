@@ -2,9 +2,12 @@ package req_test
 
 import (
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"net/http/httptest"
+	"strings"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -12,7 +15,8 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
 	"github.com/dpb587/ssoca/certauth/memory/memoryfakes"
-	"github.com/dpb587/ssoca/server/api"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
+	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
 	. "github.com/dpb587/ssoca/service/openvpn/server/req"
 
@@ -60,6 +64,7 @@ vqQ=
 		var realcertauth certauth.Provider
 		var token auth.Token
 		var loggerContext logrus.Fields
+		var res httptest.ResponseRecorder
 
 		BeforeEach(func() {
 			loggerContext = logrus.Fields{
@@ -69,6 +74,7 @@ vqQ=
 			token = auth.Token{ID: "fake-user"}
 			fakecertauth = certauthfakes.FakeProvider{}
 			realcertauth = memoryfakes.CreateMock1()
+			res = *httptest.NewRecorder()
 
 			subject = SignUserCSR{
 				Validity:    time.Duration(3600 * time.Second),
@@ -80,21 +86,27 @@ vqQ=
 		It("works", func() {
 			fakecertauth.SignCertificateStub = realcertauth.SignCertificate
 
-			res, err := subject.Execute(
-				&token,
-				svcapi.SignUserCSRRequest{
-					CSR: usr1csrStr,
-				},
-				loggerContext,
-			)
+			req := req.Request{
+				RawRequest:    httptest.NewRequest("GET", "https://localhost/file?name=test1", strings.NewReader(fmt.Sprintf(`{"csr":"%s"}`, strings.Replace(usr1csrStr, "\n", "\\n", -1)))),
+				RawResponse:   &res,
+				AuthToken:     &token,
+				LoggerContext: loggerContext,
+			}
+
+			err := subject.Execute(req)
 
 			Expect(err).ToNot(HaveOccurred())
 
-			Expect(res.Certificate).ToNot(Equal(""))
-			pemToCertificate([]byte(res.Certificate))
+			var resPayload svcapi.SignUserCSRResponse
 
-			Expect(res.Profile).To(ContainSubstring("\nremap-usr1 SIGTERM\n"))
-			Expect(res.Profile).To(ContainSubstring(fmt.Sprintf("<cert>\n%s\n</cert>", res.Certificate)))
+			err = json.Unmarshal(res.Body.Bytes(), &resPayload)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(resPayload.Certificate).ToNot(Equal(""))
+			pemToCertificate([]byte(resPayload.Certificate))
+
+			Expect(resPayload.Profile).To(ContainSubstring("\nremap-usr1 SIGTERM\n"))
+			Expect(resPayload.Profile).To(ContainSubstring(fmt.Sprintf("<cert>\n%s\n</cert>", resPayload.Certificate)))
 
 			cert, _, innerLoggerContext := fakecertauth.SignCertificateArgsForCall(0)
 			Expect(cert.SerialNumber).ToNot(Equal(0))
@@ -116,18 +128,19 @@ vqQ=
 		Context("invalid csr", func() {
 			Context("invalid format", func() {
 				It("errors", func() {
-					_, err := subject.Execute(
-						&token,
-						svcapi.SignUserCSRRequest{
-							CSR: "invalid",
-						},
-						loggerContext,
-					)
+					req := req.Request{
+						RawRequest:    httptest.NewRequest("GET", "https://localhost/file?name=test1", strings.NewReader(`{"csr":"invalid"}`)),
+						RawResponse:   &res,
+						AuthToken:     &token,
+						LoggerContext: loggerContext,
+					}
+
+					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Decoding CSR"))
 
-					apiError, ok := err.(api.Error)
+					apiError, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
@@ -137,20 +150,19 @@ vqQ=
 
 			Context("invalid data", func() {
 				It("errors", func() {
-					_, err := subject.Execute(
-						&token,
-						svcapi.SignUserCSRRequest{
-							CSR: `-----BEGIN CERTIFICATE REQUEST-----
-MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
------END CERTIFICATE REQUEST-----`,
-						},
-						loggerContext,
-					)
+					req := req.Request{
+						RawRequest:    httptest.NewRequest("GET", "https://localhost/file?name=test1", strings.NewReader(`{"csr":"-----BEGIN CERTIFICATE REQUEST-----\nMIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN\n-----END CERTIFICATE REQUEST-----"}`)),
+						RawResponse:   &res,
+						AuthToken:     &token,
+						LoggerContext: loggerContext,
+					}
+
+					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Parsing CSR"))
 
-					apiError, ok := err.(api.Error)
+					apiError, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
@@ -164,13 +176,14 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 				It("errors", func() {
 					fakecertauth.SignCertificateReturns([]byte{}, errors.New("fake-err"))
 
-					_, err := subject.Execute(
-						&token,
-						svcapi.SignUserCSRRequest{
-							CSR: usr1csrStr,
-						},
-						loggerContext,
-					)
+					req := req.Request{
+						RawRequest:    httptest.NewRequest("GET", "https://localhost/file?name=test1", strings.NewReader(fmt.Sprintf(`{"csr":"%s"}`, strings.Replace(usr1csrStr, "\n", "\\n", -1)))),
+						RawResponse:   &res,
+						AuthToken:     &token,
+						LoggerContext: loggerContext,
+					}
+
+					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
@@ -183,13 +196,14 @@ MIIBTjCBuAIBADAPMQ0wCwYDVQQDEwR0ZXN0MIGfMA0GCSqGSIb3DQEBAQUAA4GN
 					fakecertauth.SignCertificateStub = realcertauth.SignCertificate
 					fakecertauth.GetCertificatePEMReturns("", errors.New("fake-err"))
 
-					_, err := subject.Execute(
-						&token,
-						svcapi.SignUserCSRRequest{
-							CSR: usr1csrStr,
-						},
-						loggerContext,
-					)
+					req := req.Request{
+						RawRequest:    httptest.NewRequest("GET", "https://localhost/file?name=test1", strings.NewReader(fmt.Sprintf(`{"csr":"%s"}`, strings.Replace(usr1csrStr, "\n", "\\n", -1)))),
+						RawResponse:   &res,
+						AuthToken:     &token,
+						LoggerContext: loggerContext,
+					}
+
+					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("fake-err"))

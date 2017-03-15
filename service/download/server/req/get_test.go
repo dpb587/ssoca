@@ -3,12 +3,13 @@ package server_test
 import (
 	"errors"
 
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
 	. "github.com/dpb587/ssoca/service/download/server/req"
 
 	"net/http/httptest"
 
-	"github.com/dpb587/ssoca/server/api"
+	"github.com/dpb587/ssoca/server/service/req"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
 
@@ -46,8 +47,10 @@ var _ = Describe("Get", func() {
 
 		It("works", func() {
 			err := subject.Execute(
-				httptest.NewRequest("GET", "https://localhost/file?name=test1", nil),
-				&res,
+				req.Request{
+					RawRequest:  httptest.NewRequest("GET", "https://localhost/file?name=test1", nil),
+					RawResponse: &res,
+				},
 			)
 
 			Expect(err).ToNot(HaveOccurred())
@@ -59,14 +62,16 @@ var _ = Describe("Get", func() {
 		Context("missing name query", func() {
 			It("errors with 404", func() {
 				err := subject.Execute(
-					httptest.NewRequest("GET", "https://localhost/file", nil),
-					&res,
+					req.Request{
+						RawRequest:  httptest.NewRequest("GET", "https://localhost/file", nil),
+						RawResponse: &res,
+					},
 				)
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Missing query parameter: name"))
 
-				apiErr, ok := err.(api.Error)
+				apiErr, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
 				Expect(apiErr.Status).To(Equal(404))
 			})
@@ -75,14 +80,16 @@ var _ = Describe("Get", func() {
 		Context("unregistered file request", func() {
 			It("errors with 404", func() {
 				err := subject.Execute(
-					httptest.NewRequest("GET", "https://localhost/file?name=nonexistant", nil),
-					&res,
+					req.Request{
+						RawRequest:  httptest.NewRequest("GET", "https://localhost/file?name=nonexistant", nil),
+						RawResponse: &res,
+					},
 				)
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Invalid file name"))
 
-				apiErr, ok := err.(api.Error)
+				apiErr, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
 				Expect(apiErr.Status).To(Equal(404))
 			})
@@ -90,14 +97,16 @@ var _ = Describe("Get", func() {
 			Context("when file exists", func() {
 				It("errors with 404", func() {
 					err := subject.Execute(
-						httptest.NewRequest("GET", "https://localhost/file?name=/test2", nil),
-						&res,
+						req.Request{
+							RawRequest:  httptest.NewRequest("GET", "https://localhost/file?name=/test2", nil),
+							RawResponse: &res,
+						},
 					)
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Invalid file name"))
 
-					apiErr, ok := err.(api.Error)
+					apiErr, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
 					Expect(apiErr.Status).To(Equal(404))
 				})
@@ -109,8 +118,10 @@ var _ = Describe("Get", func() {
 				fs.OpenFileErr = errors.New("fake-err")
 
 				err := subject.Execute(
-					httptest.NewRequest("GET", "https://localhost/file?name=test1", nil),
-					&res,
+					req.Request{
+						RawRequest:  httptest.NewRequest("GET", "https://localhost/file?name=test1", nil),
+						RawResponse: &res,
+					},
 				)
 
 				Expect(err).To(HaveOccurred())

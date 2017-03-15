@@ -12,10 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/dpb587/ssoca/server/api"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/openvpn"
 	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
@@ -27,6 +25,8 @@ type SignUserCSR struct {
 	CertAuth    certauth.Provider
 	Validity    time.Duration
 	BaseProfile string
+
+	req.WithAuthenticationRequired
 }
 
 var _ req.RouteHandler = SignUserCSR{}
@@ -35,22 +35,29 @@ func (h SignUserCSR) Route() string {
 	return "sign-user-csr"
 }
 
-func (h SignUserCSR) Execute(token *auth.Token, payload svcapi.SignUserCSRRequest, loggerContext logrus.Fields) (svcapi.SignUserCSRResponse, error) {
-	res := svcapi.SignUserCSRResponse{}
+func (h SignUserCSR) Execute(request req.Request) error {
+	payload := svcapi.SignUserCSRRequest{}
+
+	err := request.ReadPayload(&payload)
+	if err != nil {
+		return err
+	}
+
+	response := svcapi.SignUserCSRResponse{}
 
 	csrPEM, _ := pem.Decode([]byte(payload.CSR))
 	if csrPEM == nil {
-		return res, api.NewError(errors.New("Decoding CSR"), http.StatusBadRequest, "Failed to decode certificate signing request")
+		return apierr.NewError(errors.New("Decoding CSR"), http.StatusBadRequest, "Failed to decode certificate signing request")
 	}
 
 	csr, err := x509.ParseCertificateRequest(csrPEM.Bytes)
 	if err != nil {
-		return res, api.NewError(bosherr.WrapError(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
+		return apierr.NewError(bosherr.WrapError(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
 	}
 
 	serialNumber, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 	if err != nil {
-		return res, bosherr.WrapError(err, "Generating serial number")
+		return bosherr.WrapError(err, "Generating serial number")
 	}
 
 	now := time.Now()
@@ -59,7 +66,7 @@ func (h SignUserCSR) Execute(token *auth.Token, payload svcapi.SignUserCSRReques
 		Subject: pkix.Name{
 			Country:      []string{"US"},
 			Organization: []string{fmt.Sprintf("ssoca/%s", svc.Service{}.Version())},
-			CommonName:   token.ID,
+			CommonName:   request.AuthToken.ID,
 		},
 		EmailAddresses:        csr.EmailAddresses,
 		NotBefore:             now.Add(-5 * time.Second).UTC(),
@@ -69,24 +76,24 @@ func (h SignUserCSR) Execute(token *auth.Token, payload svcapi.SignUserCSRReques
 		BasicConstraintsValid: true,
 	}
 
-	certificatePEM, err := h.CertAuth.SignCertificate(&template, csr.PublicKey, loggerContext)
+	certificatePEM, err := h.CertAuth.SignCertificate(&template, csr.PublicKey, request.LoggerContext)
 	if err != nil {
-		return res, bosherr.WrapError(err, "Signing certificate")
+		return bosherr.WrapError(err, "Signing certificate")
 	}
 
-	res.Certificate = strings.TrimSpace(string(certificatePEM))
+	response.Certificate = strings.TrimSpace(string(certificatePEM))
 
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
-		return res, bosherr.WrapError(err, "Loading CA certificate")
+		return bosherr.WrapError(err, "Loading CA certificate")
 	}
 
-	res.Profile = fmt.Sprintf(
+	response.Profile = fmt.Sprintf(
 		"%s\nremap-usr1 SIGTERM\n<ca>\n%s\n</ca>\n<cert>\n%s\n</cert>\n",
 		strings.TrimSpace(h.BaseProfile),
 		strings.TrimSpace(caCertificate),
-		res.Certificate,
+		response.Certificate,
 	)
 
-	return res, nil
+	return request.WritePayload(response)
 }

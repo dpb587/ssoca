@@ -44,6 +44,8 @@ type Callback struct {
 	Config            oauth2.Config
 	Context           context.Context
 	JWT               config.JWT
+
+	req.WithoutAdditionalAuthorization
 }
 
 var _ req.RouteHandler = Callback{}
@@ -52,17 +54,17 @@ func (h Callback) Route() string {
 	return "callback"
 }
 
-func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
-	state, err := r.Cookie(config.CookieStateName)
+func (h Callback) Execute(request req.Request) error {
+	state, err := request.RawRequest.Cookie(config.CookieStateName)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting state cookie")
 	}
 
-	if r.URL.Query().Get("state") != state.Value {
+	if request.RawRequest.URL.Query().Get("state") != state.Value {
 		return errors.New("State cookie value does not match expected state")
 	}
 
-	oauthToken, err := h.Config.Exchange(h.Context, r.URL.Query().Get("code"))
+	oauthToken, err := h.Config.Exchange(h.Context, request.RawRequest.URL.Query().Get("code"))
 	if err != nil {
 		return bosherr.WrapError(err, "Exchanging token")
 	}
@@ -102,7 +104,7 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 
 	// remove the cookie
 	http.SetCookie(
-		w,
+		request.RawResponse,
 		&http.Cookie{
 			Name:   state.Name,
 			MaxAge: -1,
@@ -112,7 +114,7 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 	// ui cookie
 	// @todo configurable
 	http.SetCookie(
-		w,
+		request.RawResponse,
 		&http.Cookie{
 			Name:  "Authorization",
 			Value: fmt.Sprintf("bearer %s", tokenString),
@@ -120,11 +122,11 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 		},
 	)
 
-	clientPort, _ := r.Cookie(config.CookieClientPortName)
+	clientPort, _ := request.RawRequest.Cookie(config.CookieClientPortName)
 
 	if clientPort != nil {
 		http.SetCookie(
-			w,
+			request.RawResponse,
 			&http.Cookie{
 				Name:   clientPort.Name,
 				MaxAge: -1,
@@ -149,11 +151,11 @@ func (h Callback) Execute(r *http.Request, w http.ResponseWriter) error {
 			return err
 		}
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Write(buf.Bytes())
+		request.RawResponse.Header().Set("Content-Type", "text/html")
+		request.RawResponse.Write(buf.Bytes())
 	} else {
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(tokenString))
+		request.RawResponse.Header().Set("Content-Type", "text/plain")
+		request.RawResponse.Write([]byte(tokenString))
 	}
 
 	return nil

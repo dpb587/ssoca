@@ -1,9 +1,9 @@
-package api_test
+package errors_test
 
 import (
 	"errors"
 
-	. "github.com/dpb587/ssoca/server/api"
+	. "github.com/dpb587/ssoca/server/api/errors"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	. "github.com/dpb587/ssoca/authn/support/oauth2/req"
+	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
 
 	. "github.com/onsi/ginkgo"
@@ -23,7 +24,7 @@ var _ = Describe("Initiate", func() {
 	})
 
 	Describe("Execute", func() {
-		var w http.ResponseWriter
+		var res http.ResponseWriter
 
 		BeforeEach(func() {
 			subject = Initiate{
@@ -36,20 +37,23 @@ var _ = Describe("Initiate", func() {
 				},
 			}
 
-			w = httptest.NewRecorder()
+			res = httptest.NewRecorder()
 		})
 
 		It("works", func() {
-			err := subject.Execute(w, httptest.NewRequest("GET", "http://localhost/auth/initiate", nil))
+			err := subject.Execute(req.Request{
+				RawRequest:  httptest.NewRequest("GET", "http://localhost/auth/initiate", nil),
+				RawResponse: res,
+			})
 
 			Expect(err).ToNot(HaveOccurred())
 
-			Expect(w.Header()["Set-Cookie"]).To(HaveLen(1))
+			Expect(res.Header()["Set-Cookie"]).To(HaveLen(1))
 
-			stateCookie := strings.SplitN(w.Header()["Set-Cookie"][0], "=", 2)
+			stateCookie := strings.SplitN(res.Header()["Set-Cookie"][0], "=", 2)
 			Expect(stateCookie).To(HaveLen(2))
 
-			location, err := url.Parse(w.Header().Get("Location"))
+			location, err := url.Parse(res.Header().Get("Location"))
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(location.Host).To(Equal("oauth.example.com"))
@@ -62,13 +66,16 @@ var _ = Describe("Initiate", func() {
 
 		Context("client port passed", func() {
 			It("sets the cookie", func() {
-				err := subject.Execute(w, httptest.NewRequest("GET", "http://localhost/auth/initiate?client_port=12345", nil))
+				err := subject.Execute(req.Request{
+					RawRequest:  httptest.NewRequest("GET", "http://localhost/auth/initiate?client_port=12345", nil),
+					RawResponse: res,
+				})
 
 				Expect(err).ToNot(HaveOccurred())
 
-				Expect(w.Header()["Set-Cookie"]).To(HaveLen(2))
+				Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
 
-				portCookie := strings.SplitN(w.Header()["Set-Cookie"][1], "=", 2)
+				portCookie := strings.SplitN(res.Header()["Set-Cookie"][1], "=", 2)
 				Expect(portCookie).To(HaveLen(2))
 				Expect(portCookie[1]).To(Equal("12345"))
 			})

@@ -15,6 +15,7 @@ import (
 	oauth2supportconfig "github.com/dpb587/ssoca/authn/support/oauth2/config"
 	internaltests "github.com/dpb587/ssoca/authn/support/oauth2/internal/tests"
 	. "github.com/dpb587/ssoca/authn/support/oauth2/req"
+	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
 
 	. "github.com/onsi/ginkgo"
@@ -45,7 +46,7 @@ var _ = Describe("Callback", func() {
 	})
 
 	Describe("Execute", func() {
-		var w httptest.ResponseRecorder
+		var res httptest.ResponseRecorder
 		var rt func(r *http.Request) (w *http.Response, err error)
 		var privateKey *rsa.PrivateKey
 
@@ -114,7 +115,7 @@ var _ = Describe("Callback", func() {
 				},
 			}
 
-			w = *httptest.NewRecorder()
+			res = *httptest.NewRecorder()
 		})
 
 		Context("happy path", func() {
@@ -136,18 +137,21 @@ var _ = Describe("Callback", func() {
 			})
 
 			It("signs tokens and removes state cookie", func() {
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  r,
+					RawResponse: &res,
+				})
 
 				Expect(err).ToNot(HaveOccurred())
 
-				Expect(w.Header()["Content-Type"]).To(HaveLen(1))
-				Expect(w.Header()["Content-Type"][0]).To(Equal("text/plain"))
+				Expect(res.Header()["Content-Type"]).To(HaveLen(1))
+				Expect(res.Header()["Content-Type"][0]).To(Equal("text/plain"))
 
-				Expect(w.Header()["Set-Cookie"]).To(HaveLen(2))
-				Expect(w.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
-				Expect(w.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
+				Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+				Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
+				Expect(res.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
 
-				claims := parseClaims(w.Body.String())
+				claims := parseClaims(res.Body.String())
 
 				Expect(claims["scid"]).To(Equal("fake-id"))
 				Expect(claims["scat"]).To(Equal(map[string]interface{}{"username": "fake-user"}))
@@ -163,18 +167,21 @@ var _ = Describe("Callback", func() {
 				It("sends html", func() {
 					r.Header.Add("Cookie", "ssoca_oauth_clientport=12345")
 
-					err := subject.Execute(r, &w)
+					err := subject.Execute(req.Request{
+						RawRequest:  r,
+						RawResponse: &res,
+					})
 
 					Expect(err).ToNot(HaveOccurred())
 
-					Expect(w.Header()["Content-Type"]).To(HaveLen(1))
-					Expect(w.Header()["Content-Type"][0]).To(Equal("text/html"))
+					Expect(res.Header()["Content-Type"]).To(HaveLen(1))
+					Expect(res.Header()["Content-Type"][0]).To(Equal("text/html"))
 
-					Expect(w.Header()["Set-Cookie"]).To(HaveLen(3))
-					Expect(w.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
-					Expect(w.Header()["Set-Cookie"][2]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
+					Expect(res.Header()["Set-Cookie"]).To(HaveLen(3))
+					Expect(res.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
+					Expect(res.Header()["Set-Cookie"][2]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
 
-					body := w.Body.String()
+					body := res.Body.String()
 
 					Expect(body).To(ContainSubstring(` action="http://127.0.0.1:12345"`))
 					Expect(body).To(ContainSubstring(` value="/ui/auth-success.html"`))
@@ -191,9 +198,10 @@ var _ = Describe("Callback", func() {
 
 		Context("state cookie", func() {
 			It("errors when missing", func() {
-				r := httptest.NewRequest("GET", "http://localhost/auth/callback?state=state12345&code=myauthtoken", nil)
-
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  httptest.NewRequest("GET", "http://localhost/auth/callback?state=state12345&code=myauthtoken", nil),
+					RawResponse: &res,
+				})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("state cookie"))
@@ -203,7 +211,10 @@ var _ = Describe("Callback", func() {
 				r := httptest.NewRequest("GET", "http://localhost/auth/callback?state=state12345&code=myauthtoken", nil)
 				r.Header.Add("Cookie", "ssoca_oauth_state=mismatch12345")
 
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  r,
+					RawResponse: &res,
+				})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("value does not match"))
@@ -219,7 +230,10 @@ var _ = Describe("Callback", func() {
 					return nil, errors.New("fake-err")
 				}
 
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  r,
+					RawResponse: &res,
+				})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Exchanging token"))
@@ -238,7 +252,10 @@ var _ = Describe("Callback", func() {
 					}, nil
 				}
 
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  r,
+					RawResponse: &res,
+				})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Invalid token"))
@@ -264,7 +281,10 @@ var _ = Describe("Callback", func() {
 					return auth.Token{}, errors.New("fake-err")
 				}
 
-				err := subject.Execute(r, &w)
+				err := subject.Execute(req.Request{
+					RawRequest:  r,
+					RawResponse: &res,
+				})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Loading user profile"))

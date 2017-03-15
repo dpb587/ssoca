@@ -4,8 +4,10 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"net/http/httptest"
 
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
+	"github.com/dpb587/ssoca/server/service/req"
 	. "github.com/dpb587/ssoca/service/ssh/server/req"
 
 	. "github.com/onsi/ginkgo"
@@ -22,6 +24,7 @@ var _ = Describe("CaPublicKey", func() {
 	})
 
 	Describe("Execute", func() {
+		var res httptest.ResponseRecorder
 		var certauth certauthfakes.FakeProvider
 		var ca1crtStr = `-----BEGIN CERTIFICATE-----
 MIIB5TCCAU6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwpzc29j
@@ -52,6 +55,7 @@ SMO3sf1847tASv3eUFwEUt9vv39vtey6C6ftiUUImzZYfx6FO/A62uGEg2w3IOJ+
 		}
 
 		BeforeEach(func() {
+			res = *httptest.NewRecorder()
 			certauth = certauthfakes.FakeProvider{}
 
 			subject = CAPublicKey{
@@ -62,17 +66,20 @@ SMO3sf1847tASv3eUFwEUt9vv39vtey6C6ftiUUImzZYfx6FO/A62uGEg2w3IOJ+
 		It("works", func() {
 			certauth.GetCertificateReturns(pemToCertificate([]byte(ca1crtStr)), nil)
 
-			res, err := subject.Execute()
+			err := subject.Execute(req.Request{RawResponse: &res})
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(res.OpenSSH).To(Equal("ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDpN3e+wD9/2UdA94jMkH0nUlNdoNV+qgKVTZlGW5rsGaV9c5CeCj/U6Z607dMcSv6bEUwaB8lnoK6MFF3cDv/eH4jDvaMoYFqDiIQEj24FzJ5GBZ3NxXuXt3NBPTRcIGeQklElXiOgMii+q4DPqIp/gCXjDJDmTVEz0oCVSKkgWQ=="))
+			Expect(res.Body.String()).To(Equal(`{
+  "openssh": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDpN3e+wD9/2UdA94jMkH0nUlNdoNV+qgKVTZlGW5rsGaV9c5CeCj/U6Z607dMcSv6bEUwaB8lnoK6MFF3cDv/eH4jDvaMoYFqDiIQEj24FzJ5GBZ3NxXuXt3NBPTRcIGeQklElXiOgMii+q4DPqIp/gCXjDJDmTVEz0oCVSKkgWQ=="
+}
+`))
 		})
 
 		Context("certauth errors", func() {
 			It("errors", func() {
 				certauth.GetCertificateReturns(nil, errors.New("fake-err"))
 
-				_, err := subject.Execute()
+				err := subject.Execute(req.Request{RawResponse: &res})
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("fake-err"))

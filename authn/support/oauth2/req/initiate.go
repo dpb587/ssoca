@@ -12,6 +12,8 @@ import (
 
 type Initiate struct {
 	Config oauth2.Config
+
+	req.WithoutAdditionalAuthorization
 }
 
 var _ req.RouteHandler = Initiate{}
@@ -20,25 +22,25 @@ func (h Initiate) Route() string {
 	return "initiate"
 }
 
-func (h Initiate) Execute(w http.ResponseWriter, r *http.Request) error {
+func (h Initiate) Execute(req req.Request) error {
 	s := make([]byte, 32)
 	rand.Read(s)
 
 	state := base64.URLEncoding.EncodeToString(s)
 
 	http.SetCookie(
-		w,
+		req.RawResponse,
 		&http.Cookie{
 			Name:  config.CookieStateName,
 			Value: state,
 		},
 	)
 
-	clientPort := r.FormValue("client_port")
+	clientPort := req.RawRequest.FormValue("client_port")
 
 	if clientPort != "" {
 		http.SetCookie(
-			w,
+			req.RawResponse,
 			&http.Cookie{
 				Name:  config.CookieClientPortName,
 				Value: clientPort,
@@ -48,7 +50,7 @@ func (h Initiate) Execute(w http.ResponseWriter, r *http.Request) error {
 
 	url := h.Config.AuthCodeURL(state)
 
-	http.Redirect(w, r, url, 302)
+	http.Redirect(req.RawResponse, req.RawRequest, url, 302)
 
 	return nil
 }

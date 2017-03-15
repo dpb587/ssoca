@@ -15,7 +15,7 @@ import (
 	"github.com/dpb587/ssoca/authn/support/oauth2/config"
 	oauth2supportreq "github.com/dpb587/ssoca/authn/support/oauth2/req"
 	"github.com/dpb587/ssoca/authn/support/selfsignedjwt"
-	"github.com/dpb587/ssoca/server/api"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 )
 
@@ -51,9 +51,9 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 
 	authValuePieces := strings.SplitN(authValue, " ", 2)
 	if len(authValuePieces) != 2 {
-		return nil, api.NewError(errors.New("Invalid Authorization format"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.New("Invalid Authorization format"), http.StatusForbidden, "")
 	} else if strings.ToLower(authValuePieces[0]) != "bearer" {
-		return nil, api.NewError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
 	}
 
 	intTok := selfsignedjwt.NewOriginToken(b.origin)
@@ -63,14 +63,14 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		&intTok,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method != config.JWTSigningMethod {
-				return nil, api.NewError(errors.New("Invalid signing method"), http.StatusForbidden, "")
+				return nil, apierr.NewError(errors.New("Invalid signing method"), http.StatusForbidden, "")
 			}
 
 			return &b.jwtConfig.PrivateKey.PublicKey, nil
 		},
 	)
 	if err != nil {
-		return nil, api.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
+		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
 	authToken := auth.Token{

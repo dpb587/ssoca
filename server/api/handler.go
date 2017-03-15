@@ -1,253 +1,109 @@
 package api
 
 import (
-	"context"
-	"encoding/json"
 	"errors"
-	"io"
-	"io/ioutil"
 	"net/http"
-	"reflect"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/dpb587/ssoca/auth"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
-	uuid "github.com/nu7hatch/gouuid"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	uuid "github.com/nu7hatch/gouuid"
 )
 
 type apiHandler struct {
 	authService service.AuthService
 	apiService  service.Service
-	handler     reflect.Value
-	handlerIn   []func(http.ResponseWriter, *http.Request) (reflect.Value, error)
-	handlerOut  func([]reflect.Value) (interface{}, error)
+	handler     req.RouteHandler
 	logger      logrus.FieldLogger
 }
 
 func CreateHandler(authService service.AuthService, apiService service.Service, handler req.RouteHandler, logger logrus.FieldLogger) (http.Handler, error) {
-	handlerIn := []func(http.ResponseWriter, *http.Request) (reflect.Value, error){}
-
-	handlerMethod := reflect.ValueOf(handler).MethodByName("Execute")
-	if handlerMethod.IsNil() {
-		return nil, errors.New("Route handler is missing Execute method")
-	}
-
-	handlerType := handlerMethod.Type()
-
-	// inputs
-
-	for numIdx := 0; numIdx < handlerType.NumIn(); numIdx++ {
-		var handlerArgTransform func(http.ResponseWriter, *http.Request) (reflect.Value, error)
-
-		handlerArg := handlerType.In(numIdx)
-
-		if handlerArg.String() == "http.ResponseWriter" {
-			handlerArgTransform = func(w http.ResponseWriter, _ *http.Request) (reflect.Value, error) {
-				return reflect.ValueOf(w), nil
-			}
-		} else if handlerArg.String() == "*http.Request" {
-			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
-				return reflect.ValueOf(r), nil
-			}
-		} else if handlerArg.String() == "logrus.Fields" {
-			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
-				return reflect.ValueOf(r.Context().Value("loggerContext")), nil
-			}
-		} else if handlerArg.String() == "*auth.Token" {
-			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
-				token := r.Context().Value(auth.RequestToken)
-				if token == nil {
-					return reflect.Value{}, NewError(errors.New("Token missing from request context"), http.StatusUnauthorized, "")
-				}
-
-				return reflect.ValueOf(token), nil
-			}
-		} else {
-			// better be an api type
-			handlerArgTransform = func(_ http.ResponseWriter, r *http.Request) (reflect.Value, error) {
-				bytes, err := ioutil.ReadAll(r.Body)
-				if err != nil {
-					return reflect.Value{}, bosherr.WrapError(err, "Reading request body")
-				}
-
-				apiRequestData := reflect.New(handlerArg)
-
-				err = json.Unmarshal(bytes, apiRequestData.Interface())
-				if err != nil {
-					return reflect.Value{}, NewError(WrapError(err, "Unmarshaling request payload"), http.StatusBadRequest, "Invalid body")
-				}
-
-				return reflect.ValueOf(apiRequestData.Elem().Interface()), nil
-			}
-		}
-
-		handlerIn = append(handlerIn, handlerArgTransform)
-	}
-
-	// outputs
-
-	var handlerOut func([]reflect.Value) (interface{}, error)
-
-	switch handlerType.NumOut() {
-	case 0:
-		handlerOut = func(_ []reflect.Value) (interface{}, error) {
-			return nil, nil
-		}
-	case 1:
-		handlerOut = func(v []reflect.Value) (interface{}, error) {
-			if !v[0].IsNil() {
-				return nil, v[0].Elem().Interface().(error)
-			}
-
-			return nil, nil
-		}
-	case 2:
-		handlerOut = func(v []reflect.Value) (interface{}, error) {
-			if !v[1].IsNil() {
-				return v[0].Interface(), v[1].Elem().Interface().(error)
-			}
-
-			return v[0].Interface(), nil
-		}
-	default:
-		return apiHandler{}, errors.New("Invalid handler function return values")
-	}
-
-	// container
-
 	return apiHandler{
 		authService: authService,
 		apiService:  apiService,
-		handler:     handlerMethod,
-		handlerIn:   handlerIn,
-		handlerOut:  handlerOut,
+		handler:     handler,
 		logger:      logger,
 	}, nil
 }
 
 func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	request := req.Request{
+		RawRequest:  r,
+		RawResponse: w,
+	}
+
 	requestUUID, err := uuid.NewV4()
 	if err != nil {
-		h.sendGenericErrorResponse(w, r, WrapError(err, "Generating request ID"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Generating request ID"))
 
 		return
 	}
 
-	loggerContext := logrus.Fields{
-		"server.request.id":          requestUUID.String(),
+	request.ID = requestUUID.String()
+	request.LoggerContext = logrus.Fields{
+		"server.request.id":          request.ID,
 		"server.request.remote_addr": r.RemoteAddr,
 		"service.name":               h.apiService.Name(),
 		"service.type":               h.apiService.Type(),
 	}
 
-	r = r.WithContext(context.WithValue(r.Context(), "loggerContext", loggerContext))
-
 	token, err := h.authService.ParseRequestAuth(*r)
 	if err != nil {
-		h.sendGenericErrorResponse(w, r, WrapError(err, "Parsing authentication token"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
 
 		return
 	}
 
-	authz, err := h.apiService.IsAuthorized(*r, token)
+	request.AuthToken = token
+
+	authz, err := h.apiService.IsAuthorized(*r, request.AuthToken)
 	if err != nil {
-		h.sendGenericErrorResponse(w, r, WrapError(err, "Checking service authorization"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Checking service authorization"))
 
 		return
 	} else if !authz {
-		h.sendErrorResponse(w, r, NewError(errors.New("Not authorized"), http.StatusForbidden, ""))
+		h.sendErrorResponse(request, apierr.NewError(errors.New("Not authorized"), http.StatusForbidden, ""))
 
 		return
 	}
 
 	if token != nil {
-		loggerContext["auth.user_id"] = token.ID
-
-		r = r.WithContext(context.WithValue(r.Context(), auth.RequestToken, token))
-		r = r.WithContext(context.WithValue(r.Context(), "loggerContext", loggerContext))
+		request.LoggerContext["auth.user_id"] = token.ID
 	}
 
-	handlerIn := []reflect.Value{}
-
-	for argTransformIdx, argTransform := range h.handlerIn {
-		argValue, err1 := argTransform(w, r)
-		if err1 != nil {
-			h.sendGenericErrorResponse(w, r, WrapErrorf(err1, "Converting argument %d", argTransformIdx+1))
-
-			return
-		}
-
-		handlerIn = append(handlerIn, argValue)
-	}
-
-	handlerReturn := h.handler.Call(handlerIn)
-
-	res, err := h.handlerOut(handlerReturn)
+	err = h.handler.Execute(request)
 	if err != nil {
-		h.sendGenericErrorResponse(w, r, WrapError(err, "Executing handler"))
-	} else if res != nil {
-		h.sendResponse(w, r, res)
-	} else {
-		// they hadnled it directly; log what happened
-		h.logResponse(w, r)
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Executing handler"))
 	}
 }
 
-func (h apiHandler) getRequestContext(w http.ResponseWriter, r *http.Request) logrus.FieldLogger {
-	l := h.logger.WithFields(logrus.Fields{
-		"server.request.method": r.Method,
-		"server.request.path":   r.URL.Path,
+func (h apiHandler) sendGenericErrorResponse(request req.Request, err error) {
+	h.sendErrorResponse(request, apierr.NewError(err, http.StatusInternalServerError, ""))
+}
+
+func (h apiHandler) sendErrorResponse(request req.Request, err apierr.Error) {
+	request.RawResponse.WriteHeader(err.Status)
+
+	var loggerFunc func(args ...interface{})
+	logger := h.logger.WithFields(request.LoggerContext).WithFields(logrus.Fields{
+		"server.request.method": request.RawRequest.Method,
+		"server.request.path":   request.RawRequest.URL.Path,
 	})
 
-	loggerContext := r.Context().Value("loggerContext")
-	if loggerContext != nil {
-		loggerContext, _ := loggerContext.(logrus.Fields)
-		l = l.WithFields(loggerContext)
-	}
-
-	return l
-}
-
-func (h apiHandler) logResponse(w http.ResponseWriter, r *http.Request) {
-	h.getRequestContext(w, r).Debug("Handled server request")
-}
-
-func (h apiHandler) sendGenericErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
-	h.sendErrorResponse(w, r, NewError(err, http.StatusInternalServerError, ""))
-}
-
-func (h apiHandler) sendErrorResponse(w http.ResponseWriter, r *http.Request, err Error) {
-	w.WriteHeader(err.Status)
-
-	if err.Status > 500 {
-		h.getRequestContext(w, r).Error(err.Error())
+	if err.Status >= 500 {
+		loggerFunc = logger.Error
 	} else {
-		h.getRequestContext(w, r).Warn(err.Error())
+		loggerFunc = logger.Warn
 	}
 
-	h.sendResponse(w, r, map[string]interface{}{
+	loggerFunc(err.Error())
+
+	request.WritePayload(map[string]interface{}{
 		"error": map[string]interface{}{
 			"status":  err.Status,
 			"message": err.PublicError,
 		},
 	})
-}
-
-func (h apiHandler) sendResponse(w http.ResponseWriter, r *http.Request, payload interface{}) {
-	bytes, err := json.MarshalIndent(payload, "", "  ")
-	if err != nil {
-		// @todo hope we don't have recursive errors...
-		h.sendErrorResponse(w, r, NewError(bosherr.WrapError(err, "Marshaling response payload"), http.StatusInternalServerError, ""))
-
-		return
-	}
-
-	w.Header().Add("Content-Type", "application/javascript")
-	io.WriteString(w, string(bytes))
-	io.WriteString(w, "\n")
-
-	h.logResponse(w, r)
 }

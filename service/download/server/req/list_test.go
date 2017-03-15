@@ -1,6 +1,9 @@
 package server_test
 
 import (
+	"net/http/httptest"
+
+	"github.com/dpb587/ssoca/server/service/req"
 	svcconfig "github.com/dpb587/ssoca/service/download/config"
 	. "github.com/dpb587/ssoca/service/download/server/req"
 
@@ -12,6 +15,7 @@ var _ = Describe("List", func() {
 	Describe("Execute", func() {
 		Context("with files", func() {
 			var subject List
+			var res httptest.ResponseRecorder
 
 			BeforeEach(func() {
 				subject = List{
@@ -28,19 +32,29 @@ var _ = Describe("List", func() {
 						},
 					},
 				}
+
+				res = *httptest.NewRecorder()
 			})
 
 			It("enumerates all files and properties", func() {
-				res, err := subject.Execute()
+				err := subject.Execute(req.Request{RawResponse: &res})
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(res.Files).To(HaveLen(2))
-				Expect(res.Files[0].Digest).To(Equal("a1b2c3d4"))
-				Expect(res.Files[0].Name).To(Equal("test1"))
-				Expect(res.Files[0].Size).To(BeEquivalentTo(1234))
-				Expect(res.Files[1].Digest).To(Equal("e5f6g7h8"))
-				Expect(res.Files[1].Name).To(Equal("test2"))
-				Expect(res.Files[1].Size).To(BeEquivalentTo(5678))
+				Expect(res.Body.String()).To(Equal(`{
+  "files": [
+    {
+      "name": "test1",
+      "size": 1234,
+      "digest": "a1b2c3d4"
+    },
+    {
+      "name": "test2",
+      "size": 5678,
+      "digest": "e5f6g7h8"
+    }
+  ]
+}
+`))
 			})
 		})
 	})

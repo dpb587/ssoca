@@ -4,16 +4,13 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
 	"golang.org/x/crypto/ssh"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/dpb587/ssoca/server/api"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
@@ -29,6 +26,8 @@ type SignPublicKey struct {
 	Extensions      svcconfig.Extensions
 	CertAuth        certauth.Provider
 	Target          svcconfig.Target
+
+	req.WithAuthenticationRequired
 }
 
 var _ req.RouteHandler = SignPublicKey{}
@@ -37,29 +36,36 @@ func (h SignPublicKey) Route() string {
 	return "sign-public-key"
 }
 
-func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svcapi.SignPublicKeyRequest, loggerContext logrus.Fields) (svcapi.SignPublicKeyResponse, error) {
-	res := svcapi.SignPublicKeyResponse{}
+func (h SignPublicKey) Execute(request req.Request) error {
+	response := svcapi.SignPublicKeyResponse{}
+
+	payload := svcapi.SignPublicKeyRequest{}
+
+	err := request.ReadPayload(&payload)
+	if err != nil {
+		return err
+	}
 
 	parts := strings.SplitN(payload.PublicKey, " ", 3)
 	if len(parts) < 2 {
-		return res, api.NewError(errors.New("Invalid public key format"), 400, "Failed to read public key")
+		return apierr.NewError(errors.New("Invalid public key format"), 400, "Failed to read public key")
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(parts[1])
 	if err != nil {
-		return res, api.NewError(bosherr.WrapErrorf(err, "Decoding public key"), 400, "Failed to decode public key")
+		return apierr.NewError(bosherr.WrapErrorf(err, "Decoding public key"), 400, "Failed to decode public key")
 	}
 
 	publicKey, err := ssh.ParsePublicKey([]byte(decoded))
 	if err != nil {
-		return res, api.NewError(bosherr.WrapErrorf(err, "Parsing public key"), 400, "Failed to parse public key")
+		return apierr.NewError(bosherr.WrapErrorf(err, "Parsing public key"), 400, "Failed to parse public key")
 	}
 
 	now := time.Now()
 	certificate := ssh.Certificate{
 		// https://github.com/openssh/openssh-portable/blob/master/PROTOCOL.certkeys
 		Key:             publicKey,
-		KeyId:           token.ID,
+		KeyId:           request.AuthToken.ID,
 		CertType:        ssh.UserCert,
 		ValidAfter:      uint64(now.Add(-5 * time.Second).UTC().Unix()),
 		ValidBefore:     uint64(now.Add(h.Validity).UTC().Unix()),
@@ -70,9 +76,9 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 		},
 	}
 
-	principals, err := h.Principals.Evaluate(req, token)
+	principals, err := h.Principals.Evaluate(request.RawRequest, request.AuthToken)
 	if err != nil {
-		return res, bosherr.WrapError(err, "Evaulating principals")
+		return bosherr.WrapError(err, "Evaulating principals")
 	}
 
 	principalsFiltered := []string{}
@@ -95,12 +101,12 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 		certificate.Permissions.Extensions[string(extension)] = ""
 	}
 
-	err = h.CertAuth.SignSSHCertificate(&certificate, loggerContext)
+	err = h.CertAuth.SignSSHCertificate(&certificate, request.LoggerContext)
 	if err != nil {
-		return res, bosherr.WrapError(err, "Signing certificate")
+		return bosherr.WrapError(err, "Signing certificate")
 	}
 
-	res.Certificate = fmt.Sprintf("%s %s", certificate.Type(), base64.StdEncoding.EncodeToString(certificate.Marshal()))
+	response.Certificate = fmt.Sprintf("%s %s", certificate.Type(), base64.StdEncoding.EncodeToString(certificate.Marshal()))
 
 	{
 		target := &svcapi.SignPublicKeyTargetResponse{
@@ -109,17 +115,17 @@ func (h SignPublicKey) Execute(req *http.Request, token *auth.Token, payload svc
 			PublicKey: h.Target.PublicKey,
 		}
 
-		targetUser, err := h.Target.User.Evaluate(req, token)
+		targetUser, err := h.Target.User.Evaluate(request.RawRequest, request.AuthToken)
 		if err != nil {
-			return res, bosherr.WrapError(err, "Evaluting target user")
+			return bosherr.WrapError(err, "Evaluting target user")
 		}
 
 		target.User = targetUser
 
 		if target.Host != "" || target.Port != 0 || target.User != "" {
-			res.Target = target
+			response.Target = target
 		}
 	}
 
-	return res, nil
+	return request.WritePayload(response)
 }

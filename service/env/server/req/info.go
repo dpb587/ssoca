@@ -1,9 +1,6 @@
 package req
 
 import (
-	"net/http"
-
-	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/env/api"
@@ -13,6 +10,8 @@ import (
 type Info struct {
 	Config   config.Config
 	Services service.Manager
+
+	req.WithoutAdditionalAuthorization
 }
 
 var _ req.RouteHandler = Info{}
@@ -21,8 +20,8 @@ func (h Info) Route() string {
 	return "info"
 }
 
-func (h Info) Execute(req *http.Request) (api.InfoResponse, error) {
-	res := api.InfoResponse{
+func (h Info) Execute(request req.Request) error {
+	response := api.InfoResponse{
 		Env: api.InfoEnvResponse{
 			Banner:   h.Config.Banner,
 			Metadata: h.Config.Metadata,
@@ -32,21 +31,10 @@ func (h Info) Execute(req *http.Request) (api.InfoResponse, error) {
 		},
 	}
 
-	var token *auth.Token
-	rawToken := req.Context().Value(auth.RequestToken)
-
-	if rawToken != nil {
-		var ok bool
-		token, ok = rawToken.(*auth.Token)
-		if !ok {
-			panic("invalid token in request context")
-		}
-	}
-
 	for _, svcName := range h.Services.Services() {
 		svc, _ := h.Services.Get(svcName)
 
-		authz, _ := svc.IsAuthorized(*req, token)
+		authz, _ := svc.IsAuthorized(*request.RawRequest, request.AuthToken)
 		if !authz {
 			continue
 		}
@@ -58,14 +46,14 @@ func (h Info) Execute(req *http.Request) (api.InfoResponse, error) {
 		}
 
 		if svc.Name() == "auth" {
-			res.Auth = svcInfo
+			response.Auth = svcInfo
 		} else if svc.Name() == "env" {
-			res.Version = svc.Version()
+			response.Version = svc.Version()
 		} else {
 			svcInfo.Name = svc.Name()
-			res.Services = append(res.Services, svcInfo)
+			response.Services = append(response.Services, svcInfo)
 		}
 	}
 
-	return res, nil
+	return request.WritePayload(response)
 }

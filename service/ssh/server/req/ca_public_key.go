@@ -14,6 +14,8 @@ import (
 
 type CAPublicKey struct {
 	CertAuth certauth.Provider
+
+	req.WithoutAdditionalAuthorization
 }
 
 var _ req.RouteHandler = CAPublicKey{}
@@ -22,20 +24,20 @@ func (CAPublicKey) Route() string {
 	return "ca-public-key"
 }
 
-func (h CAPublicKey) Execute() (api.CAPublicKeyResponse, error) {
+func (h CAPublicKey) Execute(request req.Request) error {
 	payload := api.CAPublicKeyResponse{}
 
 	certificate, err := h.CertAuth.GetCertificate()
 	if err != nil {
-		return payload, bosherr.WrapError(err, "Loading certificate")
+		return bosherr.WrapError(err, "Loading certificate")
 	}
 
 	sshcert, err := ssh.NewPublicKey(certificate.PublicKey)
 	if err != nil {
-		return payload, bosherr.WrapError(err, "Parsing ssh public key")
+		return bosherr.WrapError(err, "Parsing ssh public key")
 	}
 
 	payload.OpenSSH = fmt.Sprintf("%s %s", sshcert.Type(), base64.StdEncoding.EncodeToString(sshcert.Marshal()))
 
-	return payload, nil
+	return request.WritePayload(payload)
 }

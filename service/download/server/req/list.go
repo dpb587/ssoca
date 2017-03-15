@@ -8,6 +8,8 @@ import (
 
 type List struct {
 	Paths []svcconfig.PathConfig
+
+	req.WithoutAdditionalAuthorization
 }
 
 var _ req.RouteHandler = List{}
@@ -16,14 +18,14 @@ func (h List) Route() string {
 	return "list"
 }
 
-func (h List) Execute() (api.ListResponse, error) {
-	res := api.ListResponse{
+func (h List) Execute(request req.Request) error {
+	response := api.ListResponse{
 		Files: []api.ListFileResponse{},
 	}
 
 	for _, path := range h.Paths {
-		res.Files = append(
-			res.Files,
+		response.Files = append(
+			response.Files,
 			api.ListFileResponse{
 				Name:   path.Name,
 				Size:   path.Size,
@@ -32,5 +34,5 @@ func (h List) Execute() (api.ListResponse, error) {
 		)
 	}
 
-	return res, nil
+	return request.WritePayload(response)
 }
