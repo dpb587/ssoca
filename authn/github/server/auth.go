@@ -19,14 +19,18 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 
 	user, _, err := ghclient.Users.Get("")
 	if err != nil {
-		return token, bosherr.WrapError(err, "Fetching username")
+		return token, bosherr.WrapError(err, "Fetching user info")
 	}
 
 	token.ID = *user.Login
 	token.Attributes = map[auth.TokenAttribute]*string{}
 	token.Attributes[auth.TokenUsernameAttribute] = user.Login
 
-	token.Groups = []string{*user.Login}
+	if user.Name != nil {
+		token.Attributes[auth.TokenNameAttribute] = user.Name
+	}
+
+	token.Groups = []string{}
 
 	for nextPage := 1; nextPage != 0; {
 		teams, resp, err := ghclient.Organizations.ListUserTeams(&github.ListOptions{Page: nextPage})
