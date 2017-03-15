@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
-	"github.com/dpb587/ssoca/authz/filter"
+	"github.com/dpb587/ssoca/auth/authz/filter"
 )
 
 type RouteHandlerFunc struct {

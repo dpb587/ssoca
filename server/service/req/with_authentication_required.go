@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
-	"github.com/dpb587/ssoca/authz/filter/authenticated"
+	"github.com/dpb587/ssoca/auth/authz/filter/authenticated"
 )
 
 var authz authenticated.Requirement

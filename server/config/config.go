@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/dpb587/ssoca/authz/filter"
+	"github.com/dpb587/ssoca/auth/authz/filter"
 	envconfig "github.com/dpb587/ssoca/service/env/config"
 )
 

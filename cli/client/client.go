@@ -13,15 +13,15 @@ import (
 	"github.com/dpb587/ssoca/client/service"
 
 	// srv_download "github.com/dpb587/ssoca/service/download/client"
-	srv_github_auth "github.com/dpb587/ssoca/authn/github/client"
-	srv_google_auth "github.com/dpb587/ssoca/authn/google/client"
-	srv_http_auth "github.com/dpb587/ssoca/authn/http/client"
+	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
+	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
+	srv_http_auth "github.com/dpb587/ssoca/auth/authn/http/client"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
-	// srv_uaa_auth "github.com/dpb587/ssoca/authn/uaa/client"
-	// srv_uaa_auth_helper "github.com/dpb587/ssoca/authn/uaa/helper"
+	// srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
+	// srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 )
 
 func main() {

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/dpb587/ssoca/authz/filter"
-	"github.com/dpb587/ssoca/authz/service"
+	"github.com/dpb587/ssoca/auth/authz/filter"
+	"github.com/dpb587/ssoca/auth/authz/service"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/config"

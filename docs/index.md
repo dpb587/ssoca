@@ -1,11 +1,11 @@
  * **Overview**
     * [Architecture](architecture)
     * [Installation](installation)
- * **[Authentication](authn)** - how users authenticate
-    * [Cloud Foundry UAA](authn/uaa)
-    * [GitHub](authn/github)
-    * [Google](authn/google)
- * **[Authorization](authz)** - how users are authorized
+ * **[Authentication](auth/authn)** - how users authenticate
+    * [Cloud Foundry UAA](auth/authn/uaa)
+    * [GitHub](auth/authn/github)
+    * [Google](auth/authn/google)
+ * **[Authorization](auth/authz)** - how users are authorized
  * **[Certificate Authority](certauth)** - how certificates can be signed
     * [In-Memory](certauth/memory)
     * [Local Filesystem](certauth/fs)
