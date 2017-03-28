@@ -41,9 +41,14 @@ func (s Service) GetCommand() interface{} {
 	}
 
 	return &struct {
+		Agent         svccmd.Agent         `command:"agent" description:"Start an SSH agent"`
 		Exec          svccmd.Exec          `command:"exec" description:"Connect to a remote SSH server"`
 		SignPublicKey svccmd.SignPublicKey `command:"sign-public-key" description:"Create a certificate for a specific public key"`
 	}{
+		Agent: svccmd.Agent{
+			ServiceCommand: cmd,
+			GetClient:      s.GetClient,
+		},
 		Exec: svccmd.Exec{
 			ServiceCommand: cmd,
 			CmdRunner:      s.cmdRunner,
