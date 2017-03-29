@@ -41,6 +41,8 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
   rm -fr docs/service/$cmd/*-cmd.md
 
   for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
+    echo docs/service/$cmd/$subcmd-cmd.md
+
     (
       echo '# `ssoca' $cmd $subcmd '...`'
       echo
@@ -58,6 +60,6 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
   done
 done
 
-if [[ "$( echo "$exit" | sed 's/0//' )" != "" ]] ; then
+if [[ "$( echo "$exit" | sed 's/0//g' )" != "" ]] ; then
   exit 1
 fi

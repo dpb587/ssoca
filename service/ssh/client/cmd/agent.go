@@ -5,14 +5,17 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"strconv"
 	"syscall"
 
+	"github.com/dpb587/ssoca/cli/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/service/ssh/agent"
 	"github.com/jessevdk/go-flags"
 	sshagent "golang.org/x/crypto/ssh/agent"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type Agent struct {
@@ -22,6 +25,8 @@ type Agent struct {
 	Socket     string `long:"socket" description:"Socket path (ensure the directory has restricted permissions)"`
 
 	GetClient GetClient
+	CmdRunner boshsys.CmdRunner
+	FS        boshsys.FileSystem
 }
 
 var _ flags.Commander = Agent{}
@@ -39,16 +44,34 @@ func (c Agent) Execute(args []string) error {
 		}
 
 		c.Socket = fmt.Sprintf("%s/agent.sock", tmpdir)
+	} else {
+		socket, err := c.FS.ExpandPath(c.Socket)
+		if err != nil {
+			return bosherr.WrapError(err, "Expanding socket path")
+		}
+
+		c.Socket = socket
 	}
 
-	if !c.Foreground {
+	// do this early to detect misconfiguration before detachinig
+	client, err := c.GetClient(c.ServiceName)
+	if err != nil {
+		return bosherr.WrapError(err, "Getting client")
+	}
+
+	if !c.Foreground && len(args) == 0 {
 		configManager, err := c.Runtime.GetConfigManager()
 		if err != nil {
 			return bosherr.WrapError(err, "Getting config manager")
 		}
 
+		executable, err := os.Executable()
+		if err != nil {
+			return bosherr.WrapError(err, "Finding executable")
+		}
+
 		process, err := os.StartProcess(
-			os.Args[0],
+			executable,
 			[]string{
 				fmt.Sprintf("--config=%s", configManager.GetSource()),
 				fmt.Sprintf("--environment=%s", c.Runtime.GetEnvironmentName()),
@@ -77,14 +100,9 @@ func (c Agent) Execute(args []string) error {
 			return bosherr.WrapError(err, "Detaching from agent")
 		}
 
-		c.printEnv(pid)
+		c.printEnv(strconv.Itoa(pid))
 
 		return nil
-	}
-
-	client, err := c.GetClient(c.ServiceName)
-	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
 	}
 
 	var parentAgent sshagent.Agent
@@ -108,24 +126,59 @@ func (c Agent) Execute(args []string) error {
 		return bosherr.WrapError(err, "Opening socket")
 	}
 
-	c.printEnv(os.Getpid())
+	defer socket.Close()
 
-	for {
-		handle, _ := socket.Accept()
-		go func(handle net.Conn) {
-			defer handle.Close()
+	pid := strconv.Itoa(os.Getpid())
+	os.Setenv("SSH_AUTH_SOCK", c.Socket)
+	os.Setenv("SSH_AGENT_PID", pid)
 
-			_ = sshagent.ServeAgent(sshAgent, handle)
-		}(handle)
+	if len(args) > 0 {
+		go c.serveAgent(sshAgent, socket)
+
+		_, _, exit, err := c.CmdRunner.RunComplexCommand(boshsys.Command{
+			Name: args[0],
+			Args: args[1:],
+
+			Stdin:  os.Stdin,
+			Stdout: os.Stdout,
+			Stderr: os.Stderr,
+		})
+
+		// @todo doesn't seem to get here
+
+		if err != nil && exit == 0 {
+			return bosherr.WrapError(err, "Executing command")
+		}
+
+		return errors.Exit{Code: exit}
 	}
+
+	c.printEnv(pid)
+
+	c.serveAgent(sshAgent, socket)
 
 	return nil
 }
 
-func (c Agent) printEnv(pid int) {
+func (c Agent) serveAgent(agent sshagent.Agent, socket net.Listener) {
+	for {
+		handle, err := socket.Accept()
+		if err != nil {
+			return
+		}
+
+		go func(handle net.Conn) {
+			defer handle.Close()
+
+			_ = sshagent.ServeAgent(agent, handle)
+		}(handle)
+	}
+}
+
+func (c Agent) printEnv(pid string) {
 	stdout := c.Runtime.GetStdout()
 
 	fmt.Fprintf(stdout, "SSH_AUTH_SOCK=%s; export SSH_AUTH_SOCK;\n", c.Socket)
-	fmt.Fprintf(stdout, "SSH_AGENT_PID=%d; export SSH_AGENT_PID;\n", pid)
-	fmt.Fprintf(stdout, "echo ssoca agent pid %d;\n", pid)
+	fmt.Fprintf(stdout, "SSH_AGENT_PID=%s; export SSH_AGENT_PID;\n", pid)
+	fmt.Fprintf(stdout, "echo ssoca agent pid %s;\n", pid)
 }

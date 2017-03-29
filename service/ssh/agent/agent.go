@@ -12,27 +12,42 @@ import (
 	sshagent "golang.org/x/crypto/ssh/agent"
 )
 
-type Agent struct {
+type agent_ struct {
 	parent sshagent.Agent
 	client *httpclient.Client
 }
 
-var _ sshagent.Agent = Agent{}
+var _ sshagent.Agent = agent_{}
 
 func NewAgent(parent sshagent.Agent, client *httpclient.Client) sshagent.Agent {
-	return Agent{
+	return agent_{
 		parent: parent,
 		client: client,
 	}
 }
 
-func (a Agent) List() ([]*sshagent.Key, error) {
+func (a agent_) List() ([]*sshagent.Key, error) {
 	keys, err := a.parent.List()
 	if err != nil {
 		return nil, err
 	}
 
+	allKeys := []*sshagent.Key{}
+
+	// @todo probably don't want to sign everything, everytime
 	for keyIdx, key := range keys {
+		parsedKey, err := ssh.ParsePublicKey(key.Blob)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "parsing public key")
+		}
+
+		allKeys = append(allKeys, key)
+
+		_, signed := parsedKey.(*ssh.Certificate)
+		if signed {
+			continue
+		}
+
 		cert, err := a.client.PostSignPublicKey(api.SignPublicKeyRequest{
 			PublicKey: fmt.Sprintf("%s %s", key.Format, base64.StdEncoding.EncodeToString(key.Blob)),
 		})
@@ -50,42 +65,40 @@ func (a Agent) List() ([]*sshagent.Key, error) {
 			return nil, bosherr.WrapErrorf(err, "decoding certificate")
 		}
 
-		keys[keyIdx] = &sshagent.Key{
+		allKeys = append(allKeys, &sshagent.Key{
 			Blob:    decoded,
-			Comment: key.Comment,
+			Comment: fmt.Sprintf("%s (ssoca agent)", key.Comment),
 			Format:  split[0],
-		}
-
-		break
+		})
 	}
 
-	return keys, nil
+	return allKeys, nil
 }
 
-func (a Agent) Sign(key ssh.PublicKey, data []byte) (*ssh.Signature, error) {
+func (a agent_) Sign(key ssh.PublicKey, data []byte) (*ssh.Signature, error) {
 	return a.parent.Sign(key, data)
 }
 
-func (a Agent) Add(key sshagent.AddedKey) error {
+func (a agent_) Add(key sshagent.AddedKey) error {
 	return a.parent.Add(key)
 }
 
-func (a Agent) Remove(key ssh.PublicKey) error {
+func (a agent_) Remove(key ssh.PublicKey) error {
 	return a.parent.Remove(key)
 }
 
-func (a Agent) RemoveAll() error {
+func (a agent_) RemoveAll() error {
 	return a.parent.RemoveAll()
 }
 
-func (a Agent) Lock(passphrase []byte) error {
+func (a agent_) Lock(passphrase []byte) error {
 	return a.parent.Lock(passphrase)
 }
 
-func (a Agent) Unlock(passphrase []byte) error {
+func (a agent_) Unlock(passphrase []byte) error {
 	return a.parent.Unlock(passphrase)
 }
 
-func (a Agent) Signers() ([]ssh.Signer, error) {
+func (a agent_) Signers() ([]ssh.Signer, error) {
 	return a.parent.Signers()
 }

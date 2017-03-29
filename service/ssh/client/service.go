@@ -47,6 +47,8 @@ func (s Service) GetCommand() interface{} {
 	}{
 		Agent: svccmd.Agent{
 			ServiceCommand: cmd,
+			CmdRunner:      s.cmdRunner,
+			FS:             s.fs,
 			GetClient:      s.GetClient,
 		},
 		Exec: svccmd.Exec{

@@ -4,6 +4,7 @@ The SSH service is used to sign a user's public key for accessing an intentional
 
 This service provides a client command:
 
+* `aget` ([details](agent-cmd)) - start an SSH agent
 * `exec` ([details](exec-cmd)) - connect to a remote SSH server
 * `sign-public-key` ([details](sign-public-key-cmd)) - create a certificate for a specific public key
 

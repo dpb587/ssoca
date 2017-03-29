@@ -14,4 +14,5 @@ Connect to a remote SSH server
     
     [exec command options]
           -s, --service= Service name (default: ssh) [$SSOCA_SERVICE]
+              --opts=    Options to pass through to SSH
     

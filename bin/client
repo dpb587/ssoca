@@ -2,4 +2,6 @@
 
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
+source .envrc
+
 exec go run cli/client/client.go "$@"

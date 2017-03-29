@@ -9,7 +9,7 @@ version="${1:-0.0.0}"
 
 mkdir -p tmp
 
-for cli in $( ls cli ); do
+for cli in client server; do
   for os in darwin linux ; do
     for arch in amd64 ; do
       name=ssoca-$cli-$version-$os-$arch

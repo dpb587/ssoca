@@ -12,6 +12,8 @@ import (
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/service"
 
+	clierrors "github.com/dpb587/ssoca/cli/errors"
+
 	// srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
 	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
@@ -58,6 +60,8 @@ func main() {
 	if _, err := parser.Parse(); err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			os.Exit(0)
+		} else if exitErr, ok := err.(clierrors.Exit); ok {
+			os.Exit(exitErr.Code)
 		} else {
 			os.Exit(1)
 		}
