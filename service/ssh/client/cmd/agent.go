@@ -180,5 +180,5 @@ func (c Agent) printEnv(pid string) {
 
 	fmt.Fprintf(stdout, "SSH_AUTH_SOCK=%s; export SSH_AUTH_SOCK;\n", c.Socket)
 	fmt.Fprintf(stdout, "SSH_AGENT_PID=%s; export SSH_AGENT_PID;\n", pid)
-	fmt.Fprintf(stdout, "echo ssoca agent pid %s;\n", pid)
+	fmt.Fprintf(stdout, "echo ssoca ssh agent pid %s;\n", pid)
 }

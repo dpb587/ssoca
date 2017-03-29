@@ -5,7 +5,7 @@ This agent follows the `ssh-agent` protocol to dynamically sign a certificate wh
 You can use this like a regular `ssh-agent` and execute the output with `eval` (which will reconfigure `SSH_AUTH_SOCK`). For example...
 
     $ eval `ssoca ssh agent`
-    ssoca agent pid 12345
+    ssoca ssh agent pid 12345
 
 Once a key is added, each request to list keys will request a signed certificate from the ssoca server.
 
@@ -44,6 +44,39 @@ To use an agent for a specific VM, you could use the following configuration...
       ProxyCommand ssoca ssh agent --socket=~/.ssh/agent/%h -- nc %h %p
 
 
+## Workflow
+
+The general workflow between this agent, `ssh`, `ssh-agent`, the remote SSH server, and remote ssoca server looks something like this...
+
+<div class="wsd" wsd_style="roundgreen"><pre>
+  ssh->ssh-server: hello
+  ssh-server->ssh: pubkey plz
+  ssh->ssoca-ssh-agent: list identities
+  ssoca-ssh-agent->ssh-agent: list identities
+  ssh-agent->ssoca-ssh-agent: public keys
+  ssoca-ssh-agent->ssoca: sign public key
+  ssoca->ssoca-ssh-agent: short-lived certificate
+  ssoca-ssh-agent->ssoca-ssh-agent: add certs to list
+  ssoca-ssh-agent->ssh: pubkeys + certs
+  ssh->ssh-server: pubkey
+  ssh-server->ssh: more plz
+  ssh->ssh-server: pubkey-cert
+  ssh-server->ssh: prove it
+  ssh->ssoca-ssh-agent: sign proof
+  ssoca-ssh-agent->ssh-agent: sign proof
+  ssh-agent->ssoca-ssh-agent: signature
+  ssoca-ssh-agent->ssh: signature
+  ssh->ssh-server: signature
+  ssh-server->ssh: you win
+  ssh->ssh-server: gimme a shell
+  note over ssh,ssh-server: ssh session
+  ssh-server<->ssh: disconnect
+</pre></div>
+
+
 ## Notes
 
 Keep in mind that when forwarding any SSH agent (`-A` or `-o ForwardAgent=yes`), remote systems can access and initiate keyring operations on your local workstation. In the case of this agent, it means requests will locally be sent to the ssoca server to dynamically generate a signed certificate.
+
+
+<script type="text/javascript" src="https://www.websequencediagrams.com/service.js"></script>
