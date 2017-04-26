@@ -7,6 +7,7 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
+// var tunnelblickDefault = "/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.4.1-openssl-1.0.2k/openvpn"
 var tunnelblickDefault = "/Applications/Tunnelblick.app/Contents/Resources/openvpn/default"
 
 type ExecutableFinder struct {

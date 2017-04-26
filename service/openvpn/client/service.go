@@ -43,16 +43,6 @@ func (s Service) GetCommand() interface{} {
 		ServiceName: s.Type(),
 	}
 
-	connect := svccmd.Connect{
-		ServiceCommand: cmd,
-		FS:             s.fs,
-		CmdRunner:      s.cmdRunner,
-		CreateProfile:  s.CreateProfile,
-		ExecutableFinder: svcclienthelper.ExecutableFinder{
-			FS: s.fs,
-		},
-	}
-
 	return &struct {
 		BaseProfile              svccmd.BaseProfile              `command:"base-profile" description:"Show the base connection profile of the OpenVPN server"`
 		Connect                  svccmd.Connect                  `command:"connect" description:"Connect to a remote OpenVPN server"`
@@ -63,10 +53,18 @@ func (s Service) GetCommand() interface{} {
 			ServiceCommand: cmd,
 			GetClient:      s.GetClient,
 		},
-		Connect: connect,
+		Connect: svccmd.Connect{
+			ServiceCommand: cmd,
+			FS:             s.fs,
+			CmdRunner:      s.cmdRunner,
+			GetClient:      s.GetClient,
+			ExecutableFinder: svcclienthelper.ExecutableFinder{
+				FS: s.fs,
+			},
+		},
 		CreateProfile: svccmd.CreateProfile{
-			ServiceCommand:    cmd,
-			CreateUserProfile: s.CreateProfile,
+			ServiceCommand: cmd,
+			GetClient:      s.GetClient,
 		},
 		CreateTunnelblickProfile: svccmd.CreateTunnelblickProfile{
 			ServiceCommand: cmd,

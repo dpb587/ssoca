@@ -89,10 +89,9 @@ func (h SignUserCSR) Execute(request req.Request) error {
 	}
 
 	response.Profile = fmt.Sprintf(
-		"%s\nremap-usr1 SIGTERM\n<ca>\n%s\n</ca>\n<cert>\n%s\n</cert>\n",
+		"%s\n<ca>\n%s\n</ca>\n",
 		strings.TrimSpace(h.BaseProfile),
 		strings.TrimSpace(caCertificate),
-		response.Certificate,
 	)
 
 	return request.WritePayload(response)
