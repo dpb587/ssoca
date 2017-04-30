@@ -31,7 +31,7 @@ func (h BaseProfile) Execute(request req.Request) error {
 
 	request.RawResponse.Header().Add("Content-Type", "text/plain")
 	request.RawResponse.Write([]byte(fmt.Sprintf(
-		"%s\nremap-usr1 SIGTERM\n<ca>\n%s\n</ca>\n",
+		"%s\n<ca>\n%s\n</ca>\n",
 		strings.TrimSpace(h.BaseProfile),
 		strings.TrimSpace(caCertificate),
 	)))

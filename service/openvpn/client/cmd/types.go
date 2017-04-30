@@ -5,4 +5,3 @@ import (
 )
 
 type GetClient func(string) (*svchttpclient.Client, error)
-type CreateUserProfile func(string) (string, error)

@@ -3,7 +3,6 @@ package req_test
 import (
 	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"net/http/httptest"
@@ -38,20 +37,6 @@ L2e2xkgR/FAcp3ndKzk4tfak94VohbGvXzxieTtvDpfMUEYpWf7FQzPUBaZuebkC
 aLUVg3Hw2wG7zZry4BtFfQnl8RDqqEsnj+41PUX2/eDbxd3pDr/61rUWqfQir1Xt
 vqQ=
 -----END CERTIFICATE REQUEST-----`
-
-	pemToCertificate := func(bytes []byte) x509.Certificate {
-		pem, _ := pem.Decode(bytes)
-		if pem == nil {
-			panic("Failed decoding PEM")
-		}
-
-		certificate, err := x509.ParseCertificate(pem.Bytes)
-		if err != nil {
-			panic(err)
-		}
-
-		return *certificate
-	}
 
 	Describe("Route", func() {
 		It("returns", func() {
@@ -103,10 +88,7 @@ vqQ=
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(resPayload.Certificate).ToNot(Equal(""))
-			pemToCertificate([]byte(resPayload.Certificate))
-
-			Expect(resPayload.Profile).To(ContainSubstring("\nremap-usr1 SIGTERM\n"))
-			Expect(resPayload.Profile).To(ContainSubstring(fmt.Sprintf("<cert>\n%s\n</cert>", resPayload.Certificate)))
+			Expect(len(resPayload.Certificate)).To(BeNumerically(">", 128))
 
 			cert, _, innerLoggerContext := fakecertauth.SignCertificateArgsForCall(0)
 			Expect(cert.SerialNumber).ToNot(Equal(0))
