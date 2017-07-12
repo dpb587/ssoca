@@ -20,16 +20,18 @@ func (h Info) Execute(request req.Request) error {
 
 	token := request.AuthToken
 
-	response.ID = token.ID
-	response.Groups = token.Groups
-	response.Attributes = map[string]string{}
+	if token != nil {
+		response.ID = token.ID
+		response.Groups = token.Groups
+		response.Attributes = map[string]string{}
 
-	for k, v := range token.Attributes {
-		if v == nil {
-			continue
+		for k, v := range token.Attributes {
+			if v == nil {
+				continue
+			}
+
+			response.Attributes[string(k)] = *v
 		}
-
-		response.Attributes[string(k)] = *v
 	}
 
 	return request.WritePayload(response)
