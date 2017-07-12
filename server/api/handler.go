@@ -91,6 +91,8 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Executing handler"))
 	}
+
+	h.getRequestLogger(request).Info("Finished request")
 }
 
 func (h apiHandler) sendGenericErrorResponse(request req.Request, err error) {
