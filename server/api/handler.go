@@ -51,9 +51,23 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.authService.ParseRequestAuth(*r)
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
+		// never allow a token if there was an error
+		token = nil
 
-		return
+		// differentiate unauthorized (essentially unauthorized, aka expired) vs forbidden (apparent auth, but invalid)
+		if matchederr, matched := err.(apierr.Error); matched {
+			if matchederr.Status == http.StatusUnauthorized {
+				h.getRequestLogger(request).Debug(err)
+
+				err = nil
+			}
+		}
+
+		if err != nil {
+			h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
+
+			return
+		}
 	}
 
 	request.AuthToken = token
@@ -87,10 +101,7 @@ func (h apiHandler) sendErrorResponse(request req.Request, err apierr.Error) {
 	request.RawResponse.WriteHeader(err.Status)
 
 	var loggerFunc func(args ...interface{})
-	logger := h.logger.WithFields(request.LoggerContext).WithFields(logrus.Fields{
-		"server.request.method": request.RawRequest.Method,
-		"server.request.path":   request.RawRequest.URL.Path,
-	})
+	logger := h.getRequestLogger(request)
 
 	if err.Status >= 500 {
 		loggerFunc = logger.Error
@@ -105,5 +116,12 @@ func (h apiHandler) sendErrorResponse(request req.Request, err apierr.Error) {
 			"status":  err.Status,
 			"message": err.PublicError,
 		},
+	})
+}
+
+func (h apiHandler) getRequestLogger(request req.Request) *logrus.Entry {
+	return h.logger.WithFields(request.LoggerContext).WithFields(logrus.Fields{
+		"server.request.method": request.RawRequest.Method,
+		"server.request.path":   request.RawRequest.URL.Path,
 	})
 }
