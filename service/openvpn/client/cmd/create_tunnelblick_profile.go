@@ -145,16 +145,16 @@ func (c CreateTunnelblickProfile) Execute(args []string) error {
 		return bosherr.WrapError(err, "Chmoding pre-connect.sh")
 	}
 
-	pathReconnect := fmt.Sprintf("%s/reconnect.sh", dirAbs)
+	pathReconnect := fmt.Sprintf("%s/reconnecting.sh", dirAbs)
 
 	err = c.FS.WriteFileString(pathReconnect, script)
 	if err != nil {
-		return bosherr.WrapError(err, "Writing reconnect.sh")
+		return bosherr.WrapError(err, "Writing reconnecting.sh")
 	}
 
 	err = c.FS.Chmod(pathReconnect, 0500)
 	if err != nil {
-		return bosherr.WrapError(err, "Chmoding reconnect.sh")
+		return bosherr.WrapError(err, "Chmoding reconnecting.sh")
 	}
 
 	return nil
