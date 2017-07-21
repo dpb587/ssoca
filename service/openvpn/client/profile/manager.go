@@ -7,9 +7,11 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"os"
 	"os/user"
+	"time"
 
 	"github.com/dpb587/ssoca/service/openvpn/api"
 	"github.com/dpb587/ssoca/service/openvpn/httpclient"
@@ -18,15 +20,21 @@ import (
 )
 
 type Manager struct {
-	client     *httpclient.Client
-	service    string
+	client  *httpclient.Client
+	service string
+
 	privateKey *rsa.PrivateKey
+
+	profile          string
+	certificate      *x509.Certificate
+	certificateBytes []byte
 }
 
 func NewManager(client *httpclient.Client, service string, privateKey *rsa.PrivateKey) Manager {
 	return Manager{
-		client:     client,
-		service:    service,
+		client:  client,
+		service: service,
+
 		privateKey: privateKey,
 	}
 }
@@ -44,24 +52,50 @@ func (m Manager) Sign(data []byte) ([]byte, error) {
 	return rsa.SignPKCS1v15(rand.Reader, m.privateKey, 0, data)
 }
 
-func (m Manager) GetProfile() (Settings, error) {
+func (m *Manager) GetProfile() (Profile, error) {
+	if m.IsExpired() {
+		err := m.Renew()
+		if err != nil {
+			return Profile{}, bosherr.WrapError(err, "Renewing certificate")
+		}
+	}
+
+	return NewProfile(m.profile, m.privateKey, m.certificateBytes), nil
+}
+
+func (m Manager) IsExpired() bool {
+	return m.certificate == nil || time.Now().After(m.certificate.NotAfter)
+}
+
+func (m *Manager) Renew() error {
 	csrBytes, err := m.createCSR()
 	if err != nil {
-		return Settings{}, bosherr.WrapError(err, "Creating csr")
+		return bosherr.WrapError(err, "Creating CSR")
 	}
 
 	response, err := m.client.SignUserCSR(api.SignUserCSRRequest{
 		CSR: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})),
 	})
 	if err != nil {
-		return Settings{}, bosherr.WrapError(err, "Requesting signed profile")
+		return bosherr.WrapError(err, "Requesting signed profile")
 	}
 
-	return Settings{
-		Profile:     response.Profile,
-		PrivateKey:  m.privateKey,
-		Certificate: []byte(response.Certificate),
-	}, nil
+	m.profile = response.Profile
+	m.certificateBytes = []byte(response.Certificate)
+
+	pem, _ := pem.Decode(m.certificateBytes)
+	if pem == nil {
+		return errors.New("Failed to decode PEM from certificate")
+	}
+
+	certificate, err := x509.ParseCertificate(pem.Bytes)
+	if err != nil {
+		panic(err)
+	}
+
+	m.certificate = certificate
+
+	return nil
 }
 
 func (m Manager) createCSR() ([]byte, error) {

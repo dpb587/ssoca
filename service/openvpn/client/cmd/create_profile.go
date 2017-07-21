@@ -32,7 +32,7 @@ func (c CreateProfile) Execute(args []string) error {
 		return bosherr.WrapError(err, "Getting profile")
 	}
 
-	c.Runtime.GetUI().PrintBlock(profile.String())
+	c.Runtime.GetUI().PrintBlock(profile.FullConfig())
 
 	return nil
 }
