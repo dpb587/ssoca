@@ -33,7 +33,7 @@ func main() {
 	ui := boshui.NewConfUI(logger)
 	serviceManager := service.NewDefaultManager()
 
-	runtime := goflags.NewRuntime(serviceManager, ui, os.Stdout, os.Stdin, fs, logger)
+	runtime := goflags.NewRuntime(serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs, logger)
 	var parser = flags.NewParser(&runtime, flags.Default)
 
 	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))

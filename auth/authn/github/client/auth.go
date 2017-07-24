@@ -23,7 +23,7 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 		return nil, bosherr.WrapError(err, "Loading option")
 	}
 
-	str := auth.NewServerTokenRetrieval(env.URL, s.cmdRunner, openCommand.GetValue(), s.runtime.GetStdout(), s.runtime.GetStdin())
+	str := auth.NewServerTokenRetrieval(env.URL, s.cmdRunner, openCommand.GetValue(), s.runtime.GetStderr(), s.runtime.GetStdin())
 
 	token, err := str.Retrieve("/auth/initiate")
 	if err != nil {

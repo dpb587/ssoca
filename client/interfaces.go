@@ -10,12 +10,16 @@ import (
 
 //go:generate counterfeiter . Runtime
 type Runtime interface {
-	GetClient() (httpclient.Client, error)
-	GetAuthInterceptClient() (httpclient.Client, error)
 	GetEnvironment() (config.EnvironmentState, error)
 	GetEnvironmentName() string
 	GetConfigManager() (config.Manager, error)
+
+	GetClient() (httpclient.Client, error)
+	GetAuthInterceptClient() (httpclient.Client, error)
+
 	GetUI() ui.UI
+
+	GetStderr() io.Writer
 	GetStdout() io.Writer
 	GetStdin() io.Reader
 }

@@ -12,20 +12,6 @@ import (
 )
 
 type FakeRuntime struct {
-	GetClientStub        func() (httpclient.Client, error)
-	getClientMutex       sync.RWMutex
-	getClientArgsForCall []struct{}
-	getClientReturns     struct {
-		result1 httpclient.Client
-		result2 error
-	}
-	GetAuthInterceptClientStub        func() (httpclient.Client, error)
-	getAuthInterceptClientMutex       sync.RWMutex
-	getAuthInterceptClientArgsForCall []struct{}
-	getAuthInterceptClientReturns     struct {
-		result1 httpclient.Client
-		result2 error
-	}
 	GetEnvironmentStub        func() (config.EnvironmentState, error)
 	getEnvironmentMutex       sync.RWMutex
 	getEnvironmentArgsForCall []struct{}
@@ -46,11 +32,31 @@ type FakeRuntime struct {
 		result1 config.Manager
 		result2 error
 	}
+	GetClientStub        func() (httpclient.Client, error)
+	getClientMutex       sync.RWMutex
+	getClientArgsForCall []struct{}
+	getClientReturns     struct {
+		result1 httpclient.Client
+		result2 error
+	}
+	GetAuthInterceptClientStub        func() (httpclient.Client, error)
+	getAuthInterceptClientMutex       sync.RWMutex
+	getAuthInterceptClientArgsForCall []struct{}
+	getAuthInterceptClientReturns     struct {
+		result1 httpclient.Client
+		result2 error
+	}
 	GetUIStub        func() ui.UI
 	getUIMutex       sync.RWMutex
 	getUIArgsForCall []struct{}
 	getUIReturns     struct {
 		result1 ui.UI
+	}
+	GetStderrStub        func() io.Writer
+	getStderrMutex       sync.RWMutex
+	getStderrArgsForCall []struct{}
+	getStderrReturns     struct {
+		result1 io.Writer
 	}
 	GetStdoutStub        func() io.Writer
 	getStdoutMutex       sync.RWMutex
@@ -66,56 +72,6 @@ type FakeRuntime struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
-}
-
-func (fake *FakeRuntime) GetClient() (httpclient.Client, error) {
-	fake.getClientMutex.Lock()
-	fake.getClientArgsForCall = append(fake.getClientArgsForCall, struct{}{})
-	fake.recordInvocation("GetClient", []interface{}{})
-	fake.getClientMutex.Unlock()
-	if fake.GetClientStub != nil {
-		return fake.GetClientStub()
-	}
-	return fake.getClientReturns.result1, fake.getClientReturns.result2
-}
-
-func (fake *FakeRuntime) GetClientCallCount() int {
-	fake.getClientMutex.RLock()
-	defer fake.getClientMutex.RUnlock()
-	return len(fake.getClientArgsForCall)
-}
-
-func (fake *FakeRuntime) GetClientReturns(result1 httpclient.Client, result2 error) {
-	fake.GetClientStub = nil
-	fake.getClientReturns = struct {
-		result1 httpclient.Client
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeRuntime) GetAuthInterceptClient() (httpclient.Client, error) {
-	fake.getAuthInterceptClientMutex.Lock()
-	fake.getAuthInterceptClientArgsForCall = append(fake.getAuthInterceptClientArgsForCall, struct{}{})
-	fake.recordInvocation("GetAuthInterceptClient", []interface{}{})
-	fake.getAuthInterceptClientMutex.Unlock()
-	if fake.GetAuthInterceptClientStub != nil {
-		return fake.GetAuthInterceptClientStub()
-	}
-	return fake.getAuthInterceptClientReturns.result1, fake.getAuthInterceptClientReturns.result2
-}
-
-func (fake *FakeRuntime) GetAuthInterceptClientCallCount() int {
-	fake.getAuthInterceptClientMutex.RLock()
-	defer fake.getAuthInterceptClientMutex.RUnlock()
-	return len(fake.getAuthInterceptClientArgsForCall)
-}
-
-func (fake *FakeRuntime) GetAuthInterceptClientReturns(result1 httpclient.Client, result2 error) {
-	fake.GetAuthInterceptClientStub = nil
-	fake.getAuthInterceptClientReturns = struct {
-		result1 httpclient.Client
-		result2 error
-	}{result1, result2}
 }
 
 func (fake *FakeRuntime) GetEnvironment() (config.EnvironmentState, error) {
@@ -192,6 +148,56 @@ func (fake *FakeRuntime) GetConfigManagerReturns(result1 config.Manager, result2
 	}{result1, result2}
 }
 
+func (fake *FakeRuntime) GetClient() (httpclient.Client, error) {
+	fake.getClientMutex.Lock()
+	fake.getClientArgsForCall = append(fake.getClientArgsForCall, struct{}{})
+	fake.recordInvocation("GetClient", []interface{}{})
+	fake.getClientMutex.Unlock()
+	if fake.GetClientStub != nil {
+		return fake.GetClientStub()
+	}
+	return fake.getClientReturns.result1, fake.getClientReturns.result2
+}
+
+func (fake *FakeRuntime) GetClientCallCount() int {
+	fake.getClientMutex.RLock()
+	defer fake.getClientMutex.RUnlock()
+	return len(fake.getClientArgsForCall)
+}
+
+func (fake *FakeRuntime) GetClientReturns(result1 httpclient.Client, result2 error) {
+	fake.GetClientStub = nil
+	fake.getClientReturns = struct {
+		result1 httpclient.Client
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeRuntime) GetAuthInterceptClient() (httpclient.Client, error) {
+	fake.getAuthInterceptClientMutex.Lock()
+	fake.getAuthInterceptClientArgsForCall = append(fake.getAuthInterceptClientArgsForCall, struct{}{})
+	fake.recordInvocation("GetAuthInterceptClient", []interface{}{})
+	fake.getAuthInterceptClientMutex.Unlock()
+	if fake.GetAuthInterceptClientStub != nil {
+		return fake.GetAuthInterceptClientStub()
+	}
+	return fake.getAuthInterceptClientReturns.result1, fake.getAuthInterceptClientReturns.result2
+}
+
+func (fake *FakeRuntime) GetAuthInterceptClientCallCount() int {
+	fake.getAuthInterceptClientMutex.RLock()
+	defer fake.getAuthInterceptClientMutex.RUnlock()
+	return len(fake.getAuthInterceptClientArgsForCall)
+}
+
+func (fake *FakeRuntime) GetAuthInterceptClientReturns(result1 httpclient.Client, result2 error) {
+	fake.GetAuthInterceptClientStub = nil
+	fake.getAuthInterceptClientReturns = struct {
+		result1 httpclient.Client
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeRuntime) GetUI() ui.UI {
 	fake.getUIMutex.Lock()
 	fake.getUIArgsForCall = append(fake.getUIArgsForCall, struct{}{})
@@ -213,6 +219,30 @@ func (fake *FakeRuntime) GetUIReturns(result1 ui.UI) {
 	fake.GetUIStub = nil
 	fake.getUIReturns = struct {
 		result1 ui.UI
+	}{result1}
+}
+
+func (fake *FakeRuntime) GetStderr() io.Writer {
+	fake.getStderrMutex.Lock()
+	fake.getStderrArgsForCall = append(fake.getStderrArgsForCall, struct{}{})
+	fake.recordInvocation("GetStderr", []interface{}{})
+	fake.getStderrMutex.Unlock()
+	if fake.GetStderrStub != nil {
+		return fake.GetStderrStub()
+	}
+	return fake.getStderrReturns.result1
+}
+
+func (fake *FakeRuntime) GetStderrCallCount() int {
+	fake.getStderrMutex.RLock()
+	defer fake.getStderrMutex.RUnlock()
+	return len(fake.getStderrArgsForCall)
+}
+
+func (fake *FakeRuntime) GetStderrReturns(result1 io.Writer) {
+	fake.GetStderrStub = nil
+	fake.getStderrReturns = struct {
+		result1 io.Writer
 	}{result1}
 }
 
@@ -267,18 +297,20 @@ func (fake *FakeRuntime) GetStdinReturns(result1 io.Reader) {
 func (fake *FakeRuntime) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getClientMutex.RLock()
-	defer fake.getClientMutex.RUnlock()
-	fake.getAuthInterceptClientMutex.RLock()
-	defer fake.getAuthInterceptClientMutex.RUnlock()
 	fake.getEnvironmentMutex.RLock()
 	defer fake.getEnvironmentMutex.RUnlock()
 	fake.getEnvironmentNameMutex.RLock()
 	defer fake.getEnvironmentNameMutex.RUnlock()
 	fake.getConfigManagerMutex.RLock()
 	defer fake.getConfigManagerMutex.RUnlock()
+	fake.getClientMutex.RLock()
+	defer fake.getClientMutex.RUnlock()
+	fake.getAuthInterceptClientMutex.RLock()
+	defer fake.getAuthInterceptClientMutex.RUnlock()
 	fake.getUIMutex.RLock()
 	defer fake.getUIMutex.RUnlock()
+	fake.getStderrMutex.RLock()
+	defer fake.getStderrMutex.RUnlock()
 	fake.getStdoutMutex.RLock()
 	defer fake.getStdoutMutex.RUnlock()
 	fake.getStdinMutex.RLock()

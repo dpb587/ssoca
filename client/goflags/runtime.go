@@ -28,22 +28,25 @@ type Runtime struct {
 	fs             boshsys.FileSystem
 	ui             boshui.UI
 	logger         boshlog.Logger
-	stdout         io.Writer
-	stdin          io.Reader
+
+	stdin  io.Reader
+	stdout io.Writer
+	stderr io.Writer
 
 	config config.Manager
 }
 
 var _ client.Runtime = Runtime{}
 
-func NewRuntime(serviceManager service.Manager, ui boshui.UI, stdout io.Writer, stdin io.Reader, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
+func NewRuntime(serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
 	return Runtime{
 		serviceManager: serviceManager,
 		fs:             fs,
 		ui:             ui,
 		logger:         logger,
-		stdout:         stdout,
 		stdin:          stdin,
+		stdout:         stdout,
+		stderr:         stderr,
 	}
 }
 
@@ -64,12 +67,16 @@ func (r Runtime) GetUI() boshui.UI {
 	return r.ui
 }
 
+func (r Runtime) GetStdin() io.Reader {
+	return r.stdin
+}
+
 func (r Runtime) GetStdout() io.Writer {
 	return r.stdout
 }
 
-func (r Runtime) GetStdin() io.Reader {
-	return r.stdin
+func (r Runtime) GetStderr() io.Writer {
+	return r.stderr
 }
 
 func (r Runtime) GetClient() (httpclient.Client, error) {
