@@ -10,7 +10,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client *httpclient.Client, service string) (*Client, error) {
+func New(client httpclient.Client, service string) (*Client, error) {
 	if client == nil {
 		return nil, errors.New("client is nil")
 	}
@@ -22,7 +22,7 @@ func New(client *httpclient.Client, service string) (*Client, error) {
 }
 
 type Client struct {
-	client  *httpclient.Client
+	client  httpclient.Client
 	service string
 }
 

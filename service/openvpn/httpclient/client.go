@@ -11,7 +11,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client *httpclient.Client, service string) (*Client, error) {
+func New(client httpclient.Client, service string) (*Client, error) {
 	if client == nil {
 		return nil, errors.New("client is nil")
 	}
@@ -23,13 +23,13 @@ func New(client *httpclient.Client, service string) (*Client, error) {
 }
 
 type Client struct {
-	client  *httpclient.Client
+	client  httpclient.Client
 	service string
 }
 
 func (c Client) BaseProfile() (string, error) {
 	path := fmt.Sprintf("/%s/base-profile", c.service)
-	res, err := c.client.Get(c.client.ExpandURI(path))
+	res, err := c.client.Get(path)
 	if err != nil {
 		return "", bosherr.WrapErrorf(err, "Getting %s", path)
 	}

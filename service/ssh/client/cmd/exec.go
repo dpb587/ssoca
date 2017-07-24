@@ -22,6 +22,7 @@ import (
 
 type Exec struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	GetClient GetClient
 	CmdRunner boshsys.CmdRunner
@@ -39,7 +40,7 @@ type ExecArgs struct {
 }
 
 func (c Exec) Execute(args []string) error {
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

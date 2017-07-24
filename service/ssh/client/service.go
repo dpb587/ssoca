@@ -4,6 +4,7 @@ import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
+	"github.com/dpb587/ssoca/httpclient"
 
 	svc "github.com/dpb587/ssoca/service/ssh"
 	svccmd "github.com/dpb587/ssoca/service/ssh/client/cmd"
@@ -65,8 +66,16 @@ func (s Service) GetCommand() interface{} {
 	}
 }
 
-func (s Service) GetClient(service string) (*svchttpclient.Client, error) {
-	client, err := s.runtime.GetClient()
+func (s Service) GetClient(service string, skipAuthRetry bool) (*svchttpclient.Client, error) {
+	var client httpclient.Client
+	var err error
+
+	if skipAuthRetry {
+		client, err = s.runtime.GetClient()
+	} else {
+		client, err = s.runtime.GetAuthInterceptClient()
+	}
+
 	if err != nil {
 		return &svchttpclient.Client{}, err
 	}

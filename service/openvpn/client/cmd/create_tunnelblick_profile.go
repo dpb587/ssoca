@@ -43,6 +43,7 @@ cp "$file" "$shadow"
 
 type CreateTunnelblickProfile struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	SssocaExec string                       `long:"exec-ssoca" description:"Path to the ssoca binary"`
 	Name       string                       `long:"name" description:"Specific file name to use for *.tblk"`
@@ -90,7 +91,7 @@ func (c CreateTunnelblickProfile) Execute(args []string) error {
 		return bosherr.WrapError(err, "Creating target directory")
 	}
 
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

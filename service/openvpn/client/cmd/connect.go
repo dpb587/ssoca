@@ -16,6 +16,7 @@ import (
 
 type Connect struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	Exec              string      `long:"exec" description:"Path to the openvpn binary"`
 	Reconnect         bool        `long:"reconnect" description:"Reconnect on connection disconnects"`
@@ -49,7 +50,7 @@ func (c Connect) Execute(args []string) error {
 		}
 	}
 
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

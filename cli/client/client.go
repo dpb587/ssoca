@@ -9,7 +9,7 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	"github.com/dpb587/ssoca/client"
+	"github.com/dpb587/ssoca/client/goflags"
 	"github.com/dpb587/ssoca/client/service"
 
 	clierrors "github.com/dpb587/ssoca/cli/errors"
@@ -33,7 +33,7 @@ func main() {
 	ui := boshui.NewConfUI(logger)
 	serviceManager := service.NewDefaultManager()
 
-	runtime := client.NewFlagsRuntime(serviceManager, ui, os.Stdout, os.Stdin, fs, logger)
+	runtime := goflags.NewRuntime(serviceManager, ui, os.Stdout, os.Stdin, fs, logger)
 	var parser = flags.NewParser(&runtime, flags.Default)
 
 	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))

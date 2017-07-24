@@ -9,6 +9,7 @@ import (
 
 type BaseProfile struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	GetClient GetClient
 }
@@ -16,7 +17,7 @@ type BaseProfile struct {
 var _ flags.Commander = BaseProfile{}
 
 func (c BaseProfile) Execute(args []string) error {
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

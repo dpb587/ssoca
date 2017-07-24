@@ -20,6 +20,7 @@ import (
 
 type Agent struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	Foreground bool   `long:"foreground" description:"Stay in foreground"`
 	Socket     string `long:"socket" description:"Socket path (ensure the directory has restricted permissions)"`
@@ -54,7 +55,7 @@ func (c Agent) Execute(args []string) error {
 	}
 
 	// do this early to detect misconfiguration before detachinig
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

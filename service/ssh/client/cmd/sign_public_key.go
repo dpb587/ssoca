@@ -11,6 +11,7 @@ import (
 
 type SignPublicKey struct {
 	clientcmd.ServiceCommand
+	clientcmd.InteractiveAuthCommand
 
 	GetClient GetClient
 	FS        boshsys.FileSystem
@@ -25,7 +26,7 @@ type SignPublicKeyArgs struct {
 }
 
 func (c SignPublicKey) Execute(args []string) error {
-	client, err := c.GetClient(c.ServiceName)
+	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}

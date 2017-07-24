@@ -9,7 +9,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client *httpclient.Client) (*Client, error) {
+func New(client httpclient.Client) (*Client, error) {
 	if client == nil {
 		return nil, errors.New("client is nil")
 	}
@@ -18,7 +18,7 @@ func New(client *httpclient.Client) (*Client, error) {
 }
 
 type Client struct {
-	client *httpclient.Client
+	client httpclient.Client
 }
 
 func (c Client) GetInfo() (api.InfoResponse, error) {
