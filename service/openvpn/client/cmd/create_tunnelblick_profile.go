@@ -23,21 +23,23 @@ shadow="$( dirname "$0" )/config.ovpn"
 
 file="/Users/$USER/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
 
-echo "generating profile"
+echo "renewing profile"
 {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
 exit=$?
 
-if [[ "0" != "$?" ]]; then
+if [[ "0" != "$exit" ]]; then
   rm "$file.tmp"
 
+  echo "exiting with failure"
   exit $exit
 fi
 
 set -e
 
-mv "$file.tmp" "$file"
+echo "writing profile"
+mv -f "$file.tmp" "$file"
 
-echo "updating shadow copy"g
+echo "updating shadow copy"
 cp "$file" "$shadow"
 `))
 
