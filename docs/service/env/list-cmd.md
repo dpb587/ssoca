@@ -6,7 +6,7 @@ List all locally-configured environments
       ssoca [OPTIONS] env list [list-OPTIONS]
     
     Application Options:
-          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+          --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:

@@ -6,7 +6,7 @@ Show current environment information
       ssoca [OPTIONS] env info [info-OPTIONS]
     
     Application Options:
-          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+          --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:

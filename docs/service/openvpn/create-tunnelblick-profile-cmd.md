@@ -6,7 +6,7 @@ Create a Tunnelblick profile
       ssoca [OPTIONS] openvpn create-tunnelblick-profile [create-tunnelblick-profile-OPTIONS] [DESTINATION-DIR]
     
     Application Options:
-          --config=              Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+          --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:
@@ -14,6 +14,7 @@ Create a Tunnelblick profile
     
     [create-tunnelblick-profile command options]
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
+              --skip-auth-retry  Skip interactive authentication retries when logged out
               --exec-ssoca=      Path to the ssoca binary (default: ssoca)
               --name=            Specific file name to use for *.tblk (default: openvpn)
     
@@ -25,7 +26,7 @@ Create a Tunnelblick profile
 
 First, create a Tunnelblick profile package (it will create a `{service-name}.tblk` in your current directory)...
 
-    $ ssoca create-tunnelblick-profile
+    $ ssoca openvpn create-tunnelblick-profile
 
 Then, open the file to register it with Tunnelblick...
 
@@ -42,4 +43,4 @@ The generated profile includes scripts to automatically regenerate connection ce
 
  * The scripts execute as `root`, therefore Tunnelblick gives very clear warnings and confirmations when first installing the profile. It is referring to the `pre-connect.sh` and `reconnecting.sh` files inside the generated `*.tblk` directories.
  * For security, Tunnelblick may keep a shadow copy of profile configuration which requires a user authentication prompt whenever the configuration is changed. The ssoca profiles have a short lifetime and are regenerated every connection. To avoid this user intervention, the background scripts automatically updates the shadow copy.
- * If your authentication session expires, Tunnelblick will error during the next connection attempt and provide an [ambiguous] error dialog.
+ * If your authentication session expires, Tunnelblick may error during the next connection attempt with an [ambiguous] error dialog.

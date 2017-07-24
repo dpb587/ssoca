@@ -6,12 +6,13 @@ Create a certificate for a specific public key
       ssoca [OPTIONS] ssh sign-public-key [sign-public-key-OPTIONS] PATH
     
     Application Options:
-          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
-      -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
+          --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
+      -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:
-      -h, --help         Show this help message
+      -h, --help                 Show this help message
     
     [sign-public-key command options]
-          -s, --service= Service name (default: ssh) [$SSOCA_SERVICE]
+          -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
+              --skip-auth-retry  Skip interactive authentication retries when logged out
     

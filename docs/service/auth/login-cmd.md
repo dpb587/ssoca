@@ -6,7 +6,7 @@ Authenticate for a new token
       ssoca [OPTIONS] auth login [login-OPTIONS]
     
     Application Options:
-          --config=      Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
+          --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment= Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:

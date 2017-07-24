@@ -6,16 +6,17 @@ Start an SSH agent
       ssoca [OPTIONS] ssh agent [agent-OPTIONS]
     
     Application Options:
-          --config=         Configuration file path (default: ~/.ssoca/config) [$SSOCA_CONFIG]
-      -e, --environment=    Environment name [$SSOCA_ENVIRONMENT]
+          --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
+      -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
     
     Help Options:
-      -h, --help            Show this help message
+      -h, --help                 Show this help message
     
     [agent command options]
-          -s, --service=    Service name (default: ssh) [$SSOCA_SERVICE]
-              --foreground  Stay in foreground
-              --socket=     Socket path (ensure the directory has restricted permissions)
+          -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
+              --skip-auth-retry  Skip interactive authentication retries when logged out
+              --foreground       Stay in foreground
+              --socket=          Socket path (ensure the directory has restricted permissions)
     
 
 ## Usage Details
