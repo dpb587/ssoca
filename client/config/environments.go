@@ -55,6 +55,14 @@ func (e EnvironmentState) GetOption(option EnvironmentOption, def interface{}) e
 	return option.SetValue(val)
 }
 
+func (e *EnvironmentState) SetOption(key string, val interface{}) {
+	if e.Options == nil {
+		e.Options = map[string]interface{}{}
+	}
+
+	e.Options[key] = val
+}
+
 type EnvironmentAuthState struct {
 	Type    string      `yaml:"type"`
 	Options interface{} `yaml:"options"`

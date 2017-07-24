@@ -7,3 +7,16 @@ Commands related to authentication and credential management for environments.
  * `logout` ([details](logout-cmd)) - revoke an authentication token
 
 For more details configuring the underlying authentication provider, see the server-side [Authentication docs](../../authn).
+
+
+## Client Options
+
+### `open_command` (Interactive Login)
+
+If the user needs to visit a URL during authentication, the CLI will attempt to open the URL automatically. By default, the system's `open` command is invoked, but this can be overridden with the `open_command` option if advanced usage is required. The URL will be appended to the command.
+
+For example, to open the URL in Google Chrome with a specific profile for the user, you might use...
+
+    ssoca env set-option auth.open_command "[ sudo, -u, $USER, /Applications/Google Chrome.app/Contents/MacOS/Google Chrome, --profile-directory=Default, --disable-gpu ]"
+
+*Note*: shell environment variables are not interpolated by the client at runtime (i.e. `$USER` is parsed by shell here). The `sudo` usage allows the process to interact with the user's console UI if the command is run as `root`. The `--disable-gpu` suppresses a seemingly innocuous warning message.

@@ -39,9 +39,10 @@ func (s Service) GetCommand() interface{} {
 	}
 
 	return &struct {
-		Add  svccmd.Add  `command:"add" description:"Add a new environment"`
-		Info svccmd.Info `command:"info" description:"Show current environment information"`
-		List svccmd.List `command:"list" description:"List all locally-configured environments"`
+		Add       svccmd.Add       `command:"add" description:"Add a new environment"`
+		Info      svccmd.Info      `command:"info" description:"Show current environment information"`
+		List      svccmd.List      `command:"list" description:"List all locally-configured environments"`
+		SetOption svccmd.SetOption `command:"set-option" description:"Set a local client option in the environment"`
 		// Remove svccmd.Remove `command:"remove" description:"Remove an environment"`
 	}{
 		Add: svccmd.Add{
@@ -53,6 +54,9 @@ func (s Service) GetCommand() interface{} {
 			GetClient:      s.GetClient,
 		},
 		List: svccmd.List{
+			ServiceCommand: cmd,
+		},
+		SetOption: svccmd.SetOption{
 			ServiceCommand: cmd,
 		},
 	}
