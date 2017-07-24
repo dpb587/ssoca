@@ -27,11 +27,21 @@ func NewClient(endpoint string, goclient *http.Client) Client {
 }
 
 func (c client) Get(url string) (*http.Response, error) {
-	return c.client.Get(c.expandURI(url))
+	res, err := c.client.Get(c.expandURI(url))
+	if err == nil && res.StatusCode >= 400 {
+		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
+	}
+
+	return res, err
 }
 
-func (c client) Post(url string, contentType string, body io.Reader) (resp *http.Response, err error) {
-	return c.client.Post(c.expandURI(url), contentType, body)
+func (c client) Post(url string, contentType string, body io.Reader) (*http.Response, error) {
+	res, err := c.client.Post(c.expandURI(url), contentType, body)
+	if err == nil && res.StatusCode >= 400 {
+		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
+	}
+
+	return res, err
 }
 
 func (c client) APIGet(url string, out interface{}) error {

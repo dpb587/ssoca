@@ -118,7 +118,7 @@ var _ = Describe("Client", func() {
 			err := subject.APIGet("/test1", &jsonResponse{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("HTTP 403: Forbidden"))
+			Expect(err.Error()).To(ContainSubstring("HTTP 403"))
 		})
 	})
 
@@ -203,7 +203,7 @@ var _ = Describe("Client", func() {
 			err := subject.APIPost("/test1", &jsonResponse{}, struct{}{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("HTTP 403: Forbidden"))
+			Expect(err.Error()).To(ContainSubstring("HTTP 403"))
 		})
 
 		It("errors on bad server json", func() {

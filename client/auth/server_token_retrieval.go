@@ -74,8 +74,13 @@ func (str *ServerTokenRetrieval) waitForTokenInput(tokenChannel chan string, err
 		fmt.Fprintf(str.stdout, "token> ")
 
 		var token string
-		_, err := fmt.Scanf("%s", &token)
+		_, err := fmt.Fscanf(str.stdin, "%s", &token)
 		if err != nil {
+			if err == io.EOF {
+				// log?
+				return
+			}
+
 			errorChannel <- err
 
 			return
@@ -122,7 +127,7 @@ func (str *ServerTokenRetrieval) Retrieve(url string) (string, error) {
 		Name: openExecutable,
 		Args: openCommand,
 
-		Stdin:  os.Stdin,
+		Stdin:  nil,
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
 
