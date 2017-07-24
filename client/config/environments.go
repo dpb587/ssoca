@@ -10,6 +10,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
+const EnvironmentOptionAuthOpenCommand string = "auth.open_command"
+
 type State struct {
 	Environments EnvironmentsState `yaml:"environments,omitempty"`
 }
@@ -17,15 +19,11 @@ type State struct {
 type EnvironmentsState []EnvironmentState
 
 type EnvironmentState struct {
-	URL           string                `yaml:"url"`
-	CACertificate string                `yaml:"ca_certificate,omitempty"`
-	Alias         string                `yaml:"alias,omitempty"`
-	Auth          *EnvironmentAuthState `yaml:"auth,omitempty"`
-}
-
-type EnvironmentAuthState struct {
-	Type    string      `yaml:"type"`
-	Options interface{} `yaml:"options"`
+	URL           string                 `yaml:"url"`
+	CACertificate string                 `yaml:"ca_certificate,omitempty"`
+	Alias         string                 `yaml:"alias,omitempty"`
+	Auth          *EnvironmentAuthState  `yaml:"auth,omitempty"`
+	Options       map[string]interface{} `yaml:"options,omitempty"`
 }
 
 func (e EnvironmentState) GetCACertificate() (*x509.Certificate, error) {
@@ -46,6 +44,20 @@ func (e EnvironmentState) GetCACertificate() (*x509.Certificate, error) {
 	}
 
 	return cert, nil
+}
+
+func (e EnvironmentState) GetOption(option EnvironmentOption, def interface{}) error {
+	val, found := e.Options[option.Key()]
+	if !found {
+		val = def
+	}
+
+	return option.SetValue(val)
+}
+
+type EnvironmentAuthState struct {
+	Type    string      `yaml:"type"`
+	Options interface{} `yaml:"options"`
 }
 
 func (ea EnvironmentAuthState) UnmarshalOptions(typed interface{}) error {

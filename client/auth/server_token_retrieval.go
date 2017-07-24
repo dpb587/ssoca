@@ -11,18 +11,20 @@ import (
 )
 
 type ServerTokenRetrieval struct {
-	envURL    string
-	cmdRunner boshsys.CmdRunner
-	stdout    io.Writer
-	stdin     io.Reader
+	envURL      string
+	cmdRunner   boshsys.CmdRunner
+	openCommand []string
+	stdout      io.Writer
+	stdin       io.Reader
 }
 
-func NewServerTokenRetrieval(envURL string, cmdRunner boshsys.CmdRunner, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
+func NewServerTokenRetrieval(envURL string, cmdRunner boshsys.CmdRunner, openCommand []string, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
 	return ServerTokenRetrieval{
-		envURL:    envURL,
-		cmdRunner: cmdRunner,
-		stdout:    stdout,
-		stdin:     stdin,
+		envURL:      envURL,
+		cmdRunner:   cmdRunner,
+		openCommand: openCommand,
+		stdout:      stdout,
+		stdin:       stdin,
 	}
 }
 
@@ -97,10 +99,28 @@ func (str *ServerTokenRetrieval) Retrieve(url string) (string, error) {
 
 	fullurl := fmt.Sprintf("%s%s?client_port=%s", str.envURL, url, port)
 
-	// @todo osx only?
+	openCommand := str.openCommand
+	foundURL := false
+
+	for argIdx, argVal := range openCommand {
+		if argVal == "((url))" {
+			openCommand[argIdx] = fullurl
+			foundURL = true
+
+			break
+		}
+	}
+
+	if !foundURL {
+		openCommand = append(openCommand, fullurl)
+	}
+
+	openExecutable := openCommand[0]
+	openCommand = openCommand[1:]
+
 	str.cmdRunner.RunComplexCommand(boshsys.Command{
-		Name: "open",
-		Args: []string{fullurl},
+		Name: openExecutable,
+		Args: openCommand,
 
 		Stdin:  os.Stdin,
 		Stdout: os.Stdout,

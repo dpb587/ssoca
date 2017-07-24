@@ -7,6 +7,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
 	"github.com/dpb587/ssoca/client/auth"
+	"github.com/dpb587/ssoca/client/config"
 	env_api "github.com/dpb587/ssoca/service/env/api"
 )
 
@@ -16,7 +17,13 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 		return nil, bosherr.WrapError(err, "Getting environment")
 	}
 
-	str := auth.NewServerTokenRetrieval(env.URL, s.cmdRunner, s.runtime.GetStdout(), s.runtime.GetStdin())
+	openCommand := config.NewStringSliceEnvironmentOption(config.EnvironmentOptionAuthOpenCommand)
+	err = env.GetOption(&openCommand, []string{"open"})
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Loading option")
+	}
+
+	str := auth.NewServerTokenRetrieval(env.URL, s.cmdRunner, openCommand.GetValue(), s.runtime.GetStdout(), s.runtime.GetStdin())
 
 	token, err := str.Retrieve("/auth/initiate")
 	if err != nil {
