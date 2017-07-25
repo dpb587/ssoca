@@ -14,33 +14,40 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
-var tunnelblickConnectionScript = template.Must(template.New("script").Parse(`#!/bin/bash
+var tunnelblickPreConnectScript = template.Must(template.New("script").Parse(`#!/bin/bash
 
 set -u
+
+REM() { /bin/echo $( date -u +"%Y-%m-%dT%H:%M:%SZ" ) "$@"; }
 
 name="$( basename "$( dirname "$( dirname "$( dirname "$0" )" )" )" )"
 shadow="$( dirname "$0" )/config.ovpn"
 
 file="/Users/$USER/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
 
-echo "renewing profile"
+REM "renewing profile"
 {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
 exit=$?
 
 if [[ "0" != "$exit" ]]; then
   rm "$file.tmp"
 
-  echo "exiting with failure"
+  REM "exiting with failure"
   exit $exit
 fi
 
 set -e
 
-echo "writing profile"
+REM "patching profile"
+echo "remap-usr1 SIGTERM" >> "$file.tmp"
+
+REM "installing profile"
 mv -f "$file.tmp" "$file"
 
-echo "updating shadow copy"
+REM "installing shadow copy"
 cp "$file" "$shadow"
+
+REM done
 `))
 
 type CreateTunnelblickProfile struct {
@@ -117,9 +124,9 @@ func (c CreateTunnelblickProfile) Execute(args []string) error {
 
 	pathPreConnect := fmt.Sprintf("%s/pre-connect.sh", dirAbs)
 
-	var scriptBuf bytes.Buffer
-	err = tunnelblickConnectionScript.Execute(
-		&scriptBuf,
+	var preconnectScriptBuf bytes.Buffer
+	err = tunnelblickPreConnectScript.Execute(
+		&preconnectScriptBuf,
 		struct {
 			Exec        string
 			Config      string
@@ -133,12 +140,12 @@ func (c CreateTunnelblickProfile) Execute(args []string) error {
 		},
 	)
 	if err != nil {
-		return bosherr.WrapError(err, "Generating Tunnelblick script")
+		return bosherr.WrapError(err, "Generating Tunnelblick pre-connect.sh")
 	}
 
-	script := scriptBuf.String()
+	preconnectScript := preconnectScriptBuf.String()
 
-	err = c.FS.WriteFileString(pathPreConnect, script)
+	err = c.FS.WriteFileString(pathPreConnect, preconnectScript)
 	if err != nil {
 		return bosherr.WrapError(err, "Writing pre-connect.sh")
 	}
@@ -146,18 +153,6 @@ func (c CreateTunnelblickProfile) Execute(args []string) error {
 	err = c.FS.Chmod(pathPreConnect, 0500)
 	if err != nil {
 		return bosherr.WrapError(err, "Chmoding pre-connect.sh")
-	}
-
-	pathReconnect := fmt.Sprintf("%s/reconnecting.sh", dirAbs)
-
-	err = c.FS.WriteFileString(pathReconnect, script)
-	if err != nil {
-		return bosherr.WrapError(err, "Writing reconnecting.sh")
-	}
-
-	err = c.FS.Chmod(pathReconnect, 0500)
-	if err != nil {
-		return bosherr.WrapError(err, "Chmoding reconnecting.sh")
 	}
 
 	return nil
