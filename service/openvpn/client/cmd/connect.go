@@ -112,7 +112,7 @@ func (c Connect) Execute(args []string) error {
 			return bosherr.WrapError(err, "Writing certificate")
 		}
 
-		_, _, _, err = c.CmdRunner.RunComplexCommand(boshsys.Command{
+		_, _, _, err = c.CmdRunner.RunComplexCommand(c.osCommand(boshsys.Command{
 			Name: executable,
 			Args: openvpnargs,
 
@@ -121,7 +121,7 @@ func (c Connect) Execute(args []string) error {
 			Stderr: os.Stderr,
 
 			KeepAttached: true,
-		})
+		}))
 
 		if err != nil {
 			return err

@@ -85,18 +85,22 @@ func (r Runtime) GetClient() (httpclient.Client, error) {
 		return nil, bosherr.WrapError(err, "Getting environment")
 	}
 
-	certPool, err := x509.SystemCertPool()
-	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading trusted system CA certificates")
-	}
+	var certPool *x509.CertPool
 
 	if env.CACertificate != "" {
+		certPool = x509.NewCertPool()
+
 		cert, err := env.GetCACertificate()
 		if err != nil {
 			return nil, bosherr.WrapError(err, "Getting CA certificate")
 		}
 
 		certPool.AddCert(cert)
+	} else {
+		certPool, err = x509.SystemCertPool()
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Loading trusted system CA certificates")
+		}
 	}
 
 	baseTransport := &http.Transport{
