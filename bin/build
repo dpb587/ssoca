@@ -10,9 +10,13 @@ version="${1:-0.0.0}"
 mkdir -p tmp
 
 for cli in client server; do
-  for os in darwin linux ; do
+  for os in darwin linux windows ; do
     for arch in amd64 ; do
       name=ssoca-$cli-$version-$os-$arch
+
+      if [ "$os" == "windows" ]; then
+        name=$name.exe
+      fi
 
       echo "$name"
       GOOS=$os GOARCH=$arch go build -o tmp/$name cli/$cli/$cli.go
