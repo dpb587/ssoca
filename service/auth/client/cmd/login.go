@@ -23,7 +23,7 @@ type Login struct {
 
 var _ flags.Commander = Login{}
 
-func (c Login) Execute(args []string) error {
+func (c Login) Execute(_ []string) error {
 	rawEnvService, err := c.ServiceManager.Get("env")
 	if err != nil {
 		return bosherr.WrapError(err, "Getting env service")

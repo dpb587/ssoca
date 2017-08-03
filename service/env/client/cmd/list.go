@@ -13,7 +13,7 @@ type List struct {
 
 var _ flags.Commander = List{}
 
-func (c List) Execute(args []string) error {
+func (c List) Execute(_ []string) error {
 	table := boshtbl.Table{
 		Header: []string{
 			"URL",

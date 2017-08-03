@@ -17,7 +17,7 @@ type Info struct {
 
 var _ flags.Commander = Info{}
 
-func (c Info) Execute(args []string) error {
+func (c Info) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

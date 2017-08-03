@@ -25,7 +25,7 @@ type SetOptionArgs struct {
 	Value string `positional-arg-name:"VALUE" description:"Client option value (parsed as YAML)"`
 }
 
-func (c SetOption) Execute(args []string) error {
+func (c SetOption) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting environment")

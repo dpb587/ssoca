@@ -36,7 +36,7 @@ type ConnectArgs struct {
 	Extra []string `positional-arg-name:"EXTRA" description:"Additional arguments to pass to openvpn"`
 }
 
-func (c Connect) Execute(args []string) error {
+func (c Connect) Execute(_ []string) error {
 	var executable string
 
 	if c.Exec != "" {

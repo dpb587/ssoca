@@ -68,7 +68,7 @@ type CreateTunnelblickProfileArgs struct {
 	DestinationDir string `positional-arg-name:"DESTINATION-DIR" description:"Directory where the *.tblk profile will be created (default: $PWD)"`
 }
 
-func (c CreateTunnelblickProfile) Execute(args []string) error {
+func (c CreateTunnelblickProfile) Execute(_ []string) error {
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting config manager")

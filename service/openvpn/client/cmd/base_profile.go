@@ -16,7 +16,7 @@ type BaseProfile struct {
 
 var _ flags.Commander = BaseProfile{}
 
-func (c BaseProfile) Execute(args []string) error {
+func (c BaseProfile) Execute(_ []string) error {
 	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

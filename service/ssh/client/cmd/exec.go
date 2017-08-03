@@ -39,7 +39,7 @@ type ExecArgs struct {
 	Host string `positional-arg-name:"HOST"`
 }
 
-func (c Exec) Execute(args []string) error {
+func (c Exec) Execute(_ []string) error {
 	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

@@ -17,7 +17,7 @@ type CreateProfile struct {
 
 var _ flags.Commander = CreateProfile{}
 
-func (c CreateProfile) Execute(args []string) error {
+func (c CreateProfile) Execute(_ []string) error {
 	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")

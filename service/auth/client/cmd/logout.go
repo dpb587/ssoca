@@ -17,7 +17,7 @@ type Logout struct {
 
 var _ flags.Commander = Logout{}
 
-func (c Logout) Execute(args []string) error {
+func (c Logout) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting environment state")

@@ -23,6 +23,6 @@ type Agent struct {
 
 var _ flags.Commander = Agent{}
 
-func (c Agent) Execute(args []string) error {
+func (c Agent) Execute(_ []string) error {
 	return errors.New("Not yet tested on Windows. Pull requests accepted!")
 }

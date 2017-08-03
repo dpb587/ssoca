@@ -25,7 +25,7 @@ type AddArgs struct {
 	URL string `positional-arg-name:"URI" description:"Environment URL"`
 }
 
-func (c Add) Execute(args []string) error {
+func (c Add) Execute(_ []string) error {
 	env := config.EnvironmentState{
 		Alias: c.Runtime.GetEnvironmentName(),
 		URL:   c.Args.URL,

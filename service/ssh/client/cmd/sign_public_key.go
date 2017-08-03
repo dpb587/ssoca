@@ -25,7 +25,7 @@ type SignPublicKeyArgs struct {
 	Path string `positional-arg-name:"PATH"`
 }
 
-func (c SignPublicKey) Execute(args []string) error {
+func (c SignPublicKey) Execute(_ []string) error {
 	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
