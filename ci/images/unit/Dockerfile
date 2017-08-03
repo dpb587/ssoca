@@ -1,4 +1,4 @@
-FROM golang:1.7.5-alpine
+FROM golang:1.8.1-alpine
 RUN true \
   && apk --no-cache add bash ca-certificates curl git openssl \
   && go get github.com/mattn/goveralls \
