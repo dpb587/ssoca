@@ -40,13 +40,7 @@ func NewBackend(origin string, config oauth2.Config, oauthContext context.Contex
 func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	authValue := req.Header.Get("Authorization")
 	if authValue == "" {
-		authCookie, _ := req.Cookie("Authorization")
-
-		if authCookie == nil {
-			return nil, nil
-		}
-
-		authValue = authCookie.Value
+		return nil, nil
 	}
 
 	authValuePieces := strings.SplitN(authValue, " ", 2)
@@ -70,12 +64,6 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		},
 	)
 	if err != nil {
-		if jwterror, found := err.(*jwt.ValidationError); found {
-			if jwterror.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, apierr.NewError(bosherr.WrapError(err, "Ignoring authentication"), http.StatusUnauthorized, "")
-			}
-		}
-
 		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 

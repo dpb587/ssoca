@@ -147,9 +147,8 @@ var _ = Describe("Callback", func() {
 				Expect(res.Header()["Content-Type"]).To(HaveLen(1))
 				Expect(res.Header()["Content-Type"][0]).To(Equal("text/plain"))
 
-				Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+				Expect(res.Header()["Set-Cookie"]).To(HaveLen(1))
 				Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
-				Expect(res.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
 
 				claims := parseClaims(res.Body.String())
 
@@ -177,9 +176,9 @@ var _ = Describe("Callback", func() {
 					Expect(res.Header()["Content-Type"]).To(HaveLen(1))
 					Expect(res.Header()["Content-Type"][0]).To(Equal("text/html"))
 
-					Expect(res.Header()["Set-Cookie"]).To(HaveLen(3))
-					Expect(res.Header()["Set-Cookie"][1]).To(MatchRegexp("^Authorization=[^;]+; Path=/$"))
-					Expect(res.Header()["Set-Cookie"][2]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
+					Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+					Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
+					Expect(res.Header()["Set-Cookie"][1]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
 
 					body := res.Body.String()
 
