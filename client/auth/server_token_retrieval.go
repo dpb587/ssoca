@@ -5,7 +5,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"os"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
@@ -126,10 +125,6 @@ func (str *ServerTokenRetrieval) Retrieve(url string) (string, error) {
 	str.cmdRunner.RunComplexCommand(boshsys.Command{
 		Name: openExecutable,
 		Args: openCommand,
-
-		Stdin:  nil,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
 
 		KeepAttached: true,
 	})
