@@ -104,7 +104,7 @@ func (c Connect) Execute(_ []string) error {
 		}
 
 		if c.StaticCertificate {
-			err = c.FS.WriteFileString(configPath, profile.FullConfig())
+			err = c.FS.WriteFileString(configPath, profile.StaticConfig())
 		} else {
 			err = c.FS.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue()))
 		}

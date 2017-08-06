@@ -53,7 +53,7 @@ func (m Manager) Sign(data []byte) ([]byte, error) {
 }
 
 func (m *Manager) GetProfile() (Profile, error) {
-	if m.IsExpired() {
+	if !m.IsCertificateValid() {
 		err := m.Renew()
 		if err != nil {
 			return Profile{}, bosherr.WrapError(err, "Renewing certificate")
@@ -63,8 +63,8 @@ func (m *Manager) GetProfile() (Profile, error) {
 	return NewProfile(m.profile, m.privateKey, m.certificateBytes), nil
 }
 
-func (m Manager) IsExpired() bool {
-	return m.certificate == nil || time.Now().After(m.certificate.NotAfter)
+func (m Manager) IsCertificateValid() bool {
+	return m.certificate != nil && time.Now().Before(m.certificate.NotAfter)
 }
 
 func (m *Manager) Renew() error {
@@ -90,7 +90,7 @@ func (m *Manager) Renew() error {
 
 	certificate, err := x509.ParseCertificate(pem.Bytes)
 	if err != nil {
-		panic(err)
+		return bosherr.WrapError(err, "Parsing certificate")
 	}
 
 	m.certificate = certificate
@@ -106,7 +106,7 @@ func (m Manager) createCSR() ([]byte, error) {
 
 	localhost, err := os.Hostname()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Checking local host")
+		return nil, bosherr.WrapError(err, "Checking local hostname")
 	}
 
 	emailAddress := fmt.Sprintf("%s@%s", localuser.Username, localhost)

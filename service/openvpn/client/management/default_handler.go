@@ -34,7 +34,7 @@ func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ClientHandlerC
 }
 
 func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ClientHandlerCallback, error) {
-	if ch.profileManager.IsExpired() {
+	if !ch.profileManager.IsCertificateValid() {
 		w.Write([]byte("signal SIGHUP\n"))
 
 		return SimpleCallbackHandler, nil
