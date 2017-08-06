@@ -77,7 +77,7 @@ func (s Service) GetCommand() interface{} {
 	}
 }
 
-func (s Service) GetClient(service string, skipAuthRetry bool) (*svchttpclient.Client, error) {
+func (s Service) GetClient(service string, skipAuthRetry bool) (svchttpclient.Client, error) {
 	var client httpclient.Client
 	var err error
 
@@ -88,7 +88,7 @@ func (s Service) GetClient(service string, skipAuthRetry bool) (*svchttpclient.C
 	}
 
 	if err != nil {
-		return &svchttpclient.Client{}, err
+		return nil, err
 	}
 
 	return svchttpclient.New(client, service)

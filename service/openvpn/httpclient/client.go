@@ -11,23 +11,23 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client httpclient.Client, service string) (*Client, error) {
-	if client == nil {
+func New(baseclient httpclient.Client, service string) (Client, error) {
+	if baseclient == nil {
 		return nil, errors.New("client is nil")
 	}
 
-	return &Client{
-		client:  client,
+	return &client{
+		client:  baseclient,
 		service: service,
 	}, nil
 }
 
-type Client struct {
+type client struct {
 	client  httpclient.Client
 	service string
 }
 
-func (c Client) BaseProfile() (string, error) {
+func (c client) BaseProfile() (string, error) {
 	path := fmt.Sprintf("/%s/base-profile", c.service)
 	res, err := c.client.Get(path)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c Client) BaseProfile() (string, error) {
 	return string(body), nil
 }
 
-func (c Client) SignUserCSR(in api.SignUserCSRRequest) (api.SignUserCSRResponse, error) {
+func (c client) SignUserCSR(in api.SignUserCSRRequest) (api.SignUserCSRResponse, error) {
 	out := api.SignUserCSRResponse{}
 
 	path := fmt.Sprintf("/%s/sign-user-csr", c.service)

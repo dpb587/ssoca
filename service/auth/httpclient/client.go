@@ -9,19 +9,19 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client httpclient.Client) (*Client, error) {
-	if client == nil {
+func New(baseclient httpclient.Client) (Client, error) {
+	if baseclient == nil {
 		return nil, errors.New("client is nil")
 	}
 
-	return &Client{client: client}, nil
+	return &client{client: baseclient}, nil
 }
 
-type Client struct {
+type client struct {
 	client httpclient.Client
 }
 
-func (c Client) GetInfo() (api.InfoResponse, error) {
+func (c client) GetInfo() (api.InfoResponse, error) {
 	out := api.InfoResponse{}
 
 	err := c.client.APIGet("/auth/info", &out)

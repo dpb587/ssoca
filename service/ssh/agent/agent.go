@@ -14,12 +14,12 @@ import (
 
 type agent_ struct {
 	parent sshagent.Agent
-	client *httpclient.Client
+	client httpclient.Client
 }
 
 var _ sshagent.Agent = agent_{}
 
-func NewAgent(parent sshagent.Agent, client *httpclient.Client) sshagent.Agent {
+func NewAgent(parent sshagent.Agent, client httpclient.Client) sshagent.Agent {
 	return agent_{
 		parent: parent,
 		client: client,

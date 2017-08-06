@@ -62,10 +62,10 @@ func (s Service) GetCommand() interface{} {
 	}
 }
 
-func (s Service) GetClient() (*svchttpclient.Client, error) {
+func (s Service) GetClient() (svchttpclient.Client, error) {
 	client, err := s.runtime.GetClient()
 	if err != nil {
-		return &svchttpclient.Client{}, err
+		return nil, err
 	}
 
 	return svchttpclient.New(client)

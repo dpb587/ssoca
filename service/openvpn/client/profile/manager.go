@@ -20,7 +20,7 @@ import (
 )
 
 type Manager struct {
-	client  *httpclient.Client
+	client  httpclient.Client
 	service string
 
 	privateKey *rsa.PrivateKey
@@ -30,7 +30,7 @@ type Manager struct {
 	certificateBytes []byte
 }
 
-func NewManager(client *httpclient.Client, service string, privateKey *rsa.PrivateKey) Manager {
+func NewManager(client httpclient.Client, service string, privateKey *rsa.PrivateKey) Manager {
 	return Manager{
 		client:  client,
 		service: service,
@@ -39,7 +39,7 @@ func NewManager(client *httpclient.Client, service string, privateKey *rsa.Priva
 	}
 }
 
-func CreateManagerAndPrivateKey(client *httpclient.Client, service string) (Manager, error) {
+func CreateManagerAndPrivateKey(client httpclient.Client, service string) (Manager, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return Manager{}, bosherr.WrapError(err, "Generating private key")

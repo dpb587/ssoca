@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+//go:generate counterfeiter . Client
 type Client interface {
 	APIGet(string, interface{}) error
 	APIPost(string, interface{}, interface{}) error

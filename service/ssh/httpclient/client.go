@@ -10,23 +10,23 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-func New(client httpclient.Client, service string) (*Client, error) {
-	if client == nil {
+func New(baseclient httpclient.Client, service string) (Client, error) {
+	if baseclient == nil {
 		return nil, errors.New("client is nil")
 	}
 
-	return &Client{
-		client:  client,
+	return client{
+		client:  baseclient,
 		service: service,
 	}, nil
 }
 
-type Client struct {
+type client struct {
 	client  httpclient.Client
 	service string
 }
 
-func (c Client) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
+func (c client) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
 	out := api.CAPublicKeyResponse{}
 
 	path := fmt.Sprintf("/%s/ca-public-key", c.service)
@@ -38,7 +38,7 @@ func (c Client) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
 	return out, nil
 }
 
-func (c Client) PostSignPublicKey(in api.SignPublicKeyRequest) (api.SignPublicKeyResponse, error) {
+func (c client) PostSignPublicKey(in api.SignPublicKeyRequest) (api.SignPublicKeyResponse, error) {
 	out := api.SignPublicKeyResponse{}
 
 	path := fmt.Sprintf("/%s/sign-public-key", c.service)
