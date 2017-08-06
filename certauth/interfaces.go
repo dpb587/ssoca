@@ -36,7 +36,6 @@ type Provider interface {
 	Name() string
 	GetCertificate() (*x509.Certificate, error)
 	GetCertificatePEM() (string, error)
-	GetPrivateKeyPEM() (string, error)
 	SignCertificate(*x509.Certificate, interface{}, logrus.Fields) ([]byte, error)
 	SignSSHCertificate(*ssh.Certificate, logrus.Fields) error
 }

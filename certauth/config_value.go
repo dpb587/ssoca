@@ -65,14 +65,6 @@ func (cv ConfigValue) GetCertificatePEM() (string, error) {
 	return cv.provider.GetCertificatePEM()
 }
 
-func (cv ConfigValue) GetPrivateKeyPEM() (string, error) {
-	if cv.provider == nil {
-		panic(configValueMissing)
-	}
-
-	return cv.provider.GetPrivateKeyPEM()
-}
-
 func (cv ConfigValue) SignCertificate(arg0 *x509.Certificate, arg1 interface{}, arg2 logrus.Fields) ([]byte, error) {
 	if cv.provider == nil {
 		panic(configValueMissing)

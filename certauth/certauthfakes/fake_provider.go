@@ -31,13 +31,6 @@ type FakeProvider struct {
 		result1 string
 		result2 error
 	}
-	GetPrivateKeyPEMStub        func() (string, error)
-	getPrivateKeyPEMMutex       sync.RWMutex
-	getPrivateKeyPEMArgsForCall []struct{}
-	getPrivateKeyPEMReturns     struct {
-		result1 string
-		result2 error
-	}
 	SignCertificateStub        func(*x509.Certificate, interface{}, logrus.Fields) ([]byte, error)
 	signCertificateMutex       sync.RWMutex
 	signCertificateArgsForCall []struct {
@@ -136,31 +129,6 @@ func (fake *FakeProvider) GetCertificatePEMReturns(result1 string, result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeProvider) GetPrivateKeyPEM() (string, error) {
-	fake.getPrivateKeyPEMMutex.Lock()
-	fake.getPrivateKeyPEMArgsForCall = append(fake.getPrivateKeyPEMArgsForCall, struct{}{})
-	fake.recordInvocation("GetPrivateKeyPEM", []interface{}{})
-	fake.getPrivateKeyPEMMutex.Unlock()
-	if fake.GetPrivateKeyPEMStub != nil {
-		return fake.GetPrivateKeyPEMStub()
-	}
-	return fake.getPrivateKeyPEMReturns.result1, fake.getPrivateKeyPEMReturns.result2
-}
-
-func (fake *FakeProvider) GetPrivateKeyPEMCallCount() int {
-	fake.getPrivateKeyPEMMutex.RLock()
-	defer fake.getPrivateKeyPEMMutex.RUnlock()
-	return len(fake.getPrivateKeyPEMArgsForCall)
-}
-
-func (fake *FakeProvider) GetPrivateKeyPEMReturns(result1 string, result2 error) {
-	fake.GetPrivateKeyPEMStub = nil
-	fake.getPrivateKeyPEMReturns = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeProvider) SignCertificate(arg1 *x509.Certificate, arg2 interface{}, arg3 logrus.Fields) ([]byte, error) {
 	fake.signCertificateMutex.Lock()
 	fake.signCertificateArgsForCall = append(fake.signCertificateArgsForCall, struct {
@@ -238,8 +206,6 @@ func (fake *FakeProvider) Invocations() map[string][][]interface{} {
 	defer fake.getCertificateMutex.RUnlock()
 	fake.getCertificatePEMMutex.RLock()
 	defer fake.getCertificatePEMMutex.RUnlock()
-	fake.getPrivateKeyPEMMutex.RLock()
-	defer fake.getPrivateKeyPEMMutex.RUnlock()
 	fake.signCertificateMutex.RLock()
 	defer fake.signCertificateMutex.RUnlock()
 	fake.signSSHCertificateMutex.RLock()
