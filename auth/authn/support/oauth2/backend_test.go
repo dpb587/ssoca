@@ -11,6 +11,7 @@ import (
 	. "github.com/dpb587/ssoca/auth/authn/support/oauth2"
 	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	internaltests "github.com/dpb587/ssoca/auth/authn/support/oauth2/internal/tests"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 
 	"golang.org/x/oauth2"
 
@@ -96,6 +97,11 @@ var _ = Describe("Backend", func() {
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Invalid signing method"))
+
+					errapi, errok := err.(apierr.Error)
+					Expect(errok).To(BeTrue())
+					Expect(errapi.Status).To(Equal(http.StatusUnauthorized))
+
 					Expect(token).To(BeNil())
 				})
 			})
@@ -115,7 +121,12 @@ var _ = Describe("Backend", func() {
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing claims"))
+					Expect(err.Error()).To(ContainSubstring("Parsing claims (ignorable validation error)"))
+
+					errapi, errok := err.(apierr.Error)
+					Expect(errok).To(BeTrue())
+					Expect(errapi.Status).To(Equal(http.StatusUnauthorized))
+
 					Expect(token).To(BeNil())
 				})
 			})

@@ -64,6 +64,10 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		},
 	)
 	if err != nil {
+		if _, ok := err.(*jwt.ValidationError); ok {
+			return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims (ignorable validation error)"), http.StatusUnauthorized, "")
+		}
+
 		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
