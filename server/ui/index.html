@@ -130,7 +130,7 @@
 
                     data['files'].forEach(function (file, index) {
                       dom.append('<dt class="b' + (index ? ' mt3' : '') + '"><a class="ci" href="' + downloadPath + '/get?name=' + encodeURIComponent(file['name']) + '">' + file['name'] + '</a></dt>')
-                      dom.append('<dd class="code ml0 mt1 gray">' + file['digest'] + '</dd>');
+                      dom.append('<dd class="code ml0 mt1 gray">' + file['digest']['sha1'] + '</dd>');
                     });
                   },
                   error: function () {

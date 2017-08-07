@@ -21,14 +21,22 @@ var _ = Describe("List", func() {
 				subject = List{
 					Paths: []svcconfig.PathConfig{
 						{
-							Name:   "test1",
-							Size:   1234,
-							Digest: "a1b2c3d4",
+							Name: "test1",
+							Size: 1234,
+							Digest: svcconfig.PathDigestConfig{
+								SHA1:   "a1b2c3d4",
+								SHA256: "a1b2c3d4a1b2c3d4",
+								SHA512: "a1b2c3d4a1b2c3d4a1b2c3d4",
+							},
 						},
 						{
-							Name:   "test2",
-							Size:   5678,
-							Digest: "e5f6g7h8",
+							Name: "test2",
+							Size: 5678,
+							Digest: svcconfig.PathDigestConfig{
+								SHA1:   "e5f6g7h8",
+								SHA256: "e5f6g7h8e5f6g7h8",
+								SHA512: "e5f6g7h8e5f6g7h8e5f6g7h8",
+							},
 						},
 					},
 				}
@@ -45,12 +53,20 @@ var _ = Describe("List", func() {
     {
       "name": "test1",
       "size": 1234,
-      "digest": "a1b2c3d4"
+      "digest": {
+        "sha1": "a1b2c3d4",
+        "sha256": "a1b2c3d4a1b2c3d4",
+        "sha512": "a1b2c3d4a1b2c3d4a1b2c3d4"
+      }
     },
     {
       "name": "test2",
       "size": 5678,
-      "digest": "e5f6g7h8"
+      "digest": {
+        "sha1": "e5f6g7h8",
+        "sha256": "e5f6g7h8e5f6g7h8",
+        "sha512": "e5f6g7h8e5f6g7h8e5f6g7h8"
+      }
     }
   ]
 }

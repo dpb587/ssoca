@@ -27,9 +27,13 @@ func (h List) Execute(request req.Request) error {
 		response.Files = append(
 			response.Files,
 			api.ListFileResponse{
-				Name:   path.Name,
-				Size:   path.Size,
-				Digest: path.Digest,
+				Name: path.Name,
+				Size: path.Size,
+				Digest: api.ListFileDigestResponse{
+					SHA1:   path.Digest.SHA1,
+					SHA256: path.Digest.SHA256,
+					SHA512: path.Digest.SHA512,
+				},
 			},
 		)
 	}

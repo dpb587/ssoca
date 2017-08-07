@@ -6,6 +6,7 @@ import (
 	. "github.com/dpb587/ssoca/service/download/server"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
+	svcconfig "github.com/dpb587/ssoca/service/download/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -51,12 +52,20 @@ var _ = Describe("Factory", func() {
 			Expect(paths[0].Name).To(Equal("ssoca-client-one"))
 			Expect(paths[0].Path).To(Equal("/testdir/ssoca-client-one"))
 			Expect(paths[0].Size).To(BeEquivalentTo(8))
-			Expect(paths[0].Digest).To(Equal("3aa2bfba9635820577e1fec31e8cc3087e2cb003"))
+			Expect(paths[0].Digest).To(Equal(svcconfig.PathDigestConfig{
+				SHA1:   "3aa2bfba9635820577e1fec31e8cc3087e2cb003",
+				SHA256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+				SHA512: "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
+			}))
 
 			Expect(paths[1].Name).To(Equal("ssoca-client-two"))
 			Expect(paths[1].Path).To(Equal("/testdir/ssoca-client-two"))
 			Expect(paths[1].Size).To(BeEquivalentTo(8))
-			Expect(paths[1].Digest).To(Equal("64acd80fad66f66b398686f0165b1c30edbe3730"))
+			Expect(paths[1].Digest).To(Equal(svcconfig.PathDigestConfig{
+				SHA1:   "64acd80fad66f66b398686f0165b1c30edbe3730",
+				SHA256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+				SHA512: "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
+			}))
 		})
 
 		Context("filesystem errors", func() {

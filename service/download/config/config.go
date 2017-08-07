@@ -10,5 +10,11 @@ type PathConfig struct {
 	Name   string
 	Path   string
 	Size   int64
-	Digest string
+	Digest PathDigestConfig
+}
+
+type PathDigestConfig struct {
+	SHA1   string
+	SHA256 string
+	SHA512 string
 }

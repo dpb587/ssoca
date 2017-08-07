@@ -3,6 +3,7 @@ package server
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
@@ -55,18 +56,32 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 		defer file.Close()
 
-		digest, err := boshcrypto.DigestAlgorithmSHA1.CreateDigest(file)
+		digestSHA1, err := boshcrypto.DigestAlgorithmSHA1.CreateDigest(file)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Creating file digest")
+			return nil, bosherr.WrapError(err, "Creating sha1 digest")
+		}
+
+		digestSHA256, err := boshcrypto.DigestAlgorithmSHA256.CreateDigest(file)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Creating sha256 digest")
+		}
+
+		digestSHA512, err := boshcrypto.DigestAlgorithmSHA512.CreateDigest(file)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Creating sha512 digest")
 		}
 
 		cfg.Paths = append(
 			cfg.Paths,
 			svcconfig.PathConfig{
-				Name:   filepath.Base(path),
-				Path:   path,
-				Size:   stat.Size(),
-				Digest: digest.String(),
+				Name: filepath.Base(path),
+				Path: path,
+				Size: stat.Size(),
+				Digest: svcconfig.PathDigestConfig{
+					SHA1:   digestSHA1.String(),
+					SHA256: strings.SplitN(digestSHA256.String(), ":", 2)[1],
+					SHA512: strings.SplitN(digestSHA512.String(), ":", 2)[1],
+				},
 			},
 		)
 	}
