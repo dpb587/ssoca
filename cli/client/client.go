@@ -14,11 +14,11 @@ import (
 
 	clierrors "github.com/dpb587/ssoca/cli/errors"
 
-	// srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
 	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
 	srv_http_auth "github.com/dpb587/ssoca/auth/authn/http/client"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
+	srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
@@ -37,6 +37,7 @@ func main() {
 	var parser = flags.NewParser(&runtime, flags.Default)
 
 	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))
+	serviceManager.Add(srv_download.NewService(&runtime, fs))
 	serviceManager.Add(srv_env.NewService(&runtime, fs))
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
