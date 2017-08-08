@@ -22,7 +22,6 @@ import (
 type Server struct {
 	config   config.ServerConfig
 	services service.Manager
-	fs       boshsys.FileSystem
 	logger   logrus.FieldLogger
 
 	server *http.Server
@@ -123,7 +122,7 @@ func CreateFromConfig(
 
 	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
 
-	return NewServer(cfg.Server, serviceManager, fs, logger), nil
+	return NewServer(cfg.Server, serviceManager, logger), nil
 }
 
 func filterService(service service.Service, config config.ServiceConfig, authFilters []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
@@ -154,11 +153,10 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 	return authorized.NewService(service, requirement), nil
 }
 
-func NewServer(cfg config.ServerConfig, services service.Manager, fs boshsys.FileSystem, logger logrus.FieldLogger) Server {
+func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.FieldLogger) Server {
 	res := Server{
 		config:   cfg,
 		services: services,
-		fs:       fs,
 		logger:   logger,
 	}
 
