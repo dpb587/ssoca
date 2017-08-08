@@ -5,7 +5,8 @@ The environments can be managed through the `env` commands.
  * `add` ([details](add-cmd)) - add a new environment
  * `info` ([details](info-cmd)) - show current environment information
  * `list` ([details](list-cmd)) - list all locally-configured environments
- * `remove` ([details](remove-cmd)) - remove an environment
+ * `set-option` ([details](set-option-cmd)) - set a local client option in the environment
+ * `update-client` ([details](update-client-cmd)) - download the latest client from the environment
 
 
 ## Options

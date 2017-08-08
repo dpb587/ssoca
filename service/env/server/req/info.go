@@ -23,11 +23,12 @@ func (h Info) Route() string {
 func (h Info) Execute(request req.Request) error {
 	response := api.InfoResponse{
 		Env: api.InfoEnvResponse{
-			Banner:   h.Config.Banner,
-			Metadata: h.Config.Metadata,
-			Name:     h.Config.Name,
-			Title:    h.Config.Title,
-			URL:      h.Config.URL,
+			Banner:        h.Config.Banner,
+			Metadata:      h.Config.Metadata,
+			Name:          h.Config.Name,
+			Title:         h.Config.Title,
+			UpdateService: h.Config.UpdateService,
+			URL:           h.Config.URL,
 		},
 	}
 

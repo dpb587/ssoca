@@ -119,8 +119,8 @@
                 $('body').addClass('bg-' + data['env']['metadata']['ui.color']);
               }
 
-              if (data['env']['metadata']['ui.download']) {
-                var downloadPath = '../' + data['env']['metadata']['ui.download'];
+              if (data['env']['update_service']) {
+                var downloadPath = '../' + data['env']['update_service'];
 
                 $.ajax({
                   url: downloadPath + '/list',

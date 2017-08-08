@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"os"
+	"time"
 
+	"github.com/cheggaaa/pb"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
@@ -37,5 +39,9 @@ func (c Get) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Opening file")
 	}
 
-	return client.Download(c.Args.File, file)
+	downloadStatus := pb.New(0).SetRefreshRate(250 * time.Millisecond).SetWidth(80)
+	downloadStatus.Output = c.Runtime.GetStderr()
+	downloadStatus.ShowPercent = false
+
+	return client.Download(c.Args.File, file, downloadStatus)
 }

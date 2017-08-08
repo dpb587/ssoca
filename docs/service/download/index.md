@@ -2,7 +2,8 @@
 
 A service to expose files from the local filesystem which can be downloaded by a client.
 
-This service does not provide any client-side commands. Typically this would be used to enable the server to provide pre-compiled binaries of the `ssoca` client itself.
+ * `get` ([details](get-cmd)) - get an artifact
+ * `list` ([details](list-cmd)) - list available artifacts
 
 
 ## Options

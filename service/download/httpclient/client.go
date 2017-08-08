@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/cheggaaa/pb"
 	"github.com/dpb587/ssoca/httpclient"
 	"github.com/dpb587/ssoca/service/download/api"
 
@@ -41,7 +42,7 @@ func (c client) GetList() (api.ListResponse, error) {
 	return out, nil
 }
 
-func (c client) Download(name string, target io.ReadWriteSeeker) error {
+func (c client) Download(name string, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
 	list, err := c.GetList()
 	if err != nil {
 		return bosherr.WrapError(err, "Listing artifacts")
@@ -52,13 +53,13 @@ func (c client) Download(name string, target io.ReadWriteSeeker) error {
 			continue
 		}
 
-		return c.download(file, target)
+		return c.download(file, target, downloadStatus)
 	}
 
 	return fmt.Errorf("File is not known: %s", name)
 }
 
-func (c client) download(file api.ListFileResponse, target io.ReadWriteSeeker) error {
+func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
 	path := fmt.Sprintf("/%s/get?name=%s", c.service, url.QueryEscape(file.Name))
 
 	res, err := c.client.Get(path)
@@ -66,7 +67,12 @@ func (c client) download(file api.ListFileResponse, target io.ReadWriteSeeker) e
 		return bosherr.WrapError(err, "Getting file")
 	}
 
-	_, err = io.Copy(target, res.Body)
+	downloadStatus.Total = file.Size
+	downloadStatus.SetUnits(pb.U_BYTES)
+	downloadStatus.Start()
+	defer downloadStatus.Finish()
+
+	_, err = io.Copy(target, downloadStatus.NewProxyReader(res.Body))
 	if err != nil {
 		return bosherr.WrapError(err, "Streaming to file")
 	}

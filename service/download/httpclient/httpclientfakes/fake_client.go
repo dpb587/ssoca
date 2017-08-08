@@ -5,6 +5,7 @@ import (
 	"io"
 	"sync"
 
+	"github.com/cheggaaa/pb"
 	"github.com/dpb587/ssoca/service/download/api"
 	"github.com/dpb587/ssoca/service/download/httpclient"
 )
@@ -17,11 +18,12 @@ type FakeClient struct {
 		result1 api.ListResponse
 		result2 error
 	}
-	DownloadStub        func(string, io.ReadWriteSeeker) error
+	DownloadStub        func(string, io.ReadWriteSeeker, *pb.ProgressBar) error
 	downloadMutex       sync.RWMutex
 	downloadArgsForCall []struct {
 		arg1 string
 		arg2 io.ReadWriteSeeker
+		arg3 *pb.ProgressBar
 	}
 	downloadReturns struct {
 		result1 error
@@ -55,16 +57,17 @@ func (fake *FakeClient) GetListReturns(result1 api.ListResponse, result2 error) 
 	}{result1, result2}
 }
 
-func (fake *FakeClient) Download(arg1 string, arg2 io.ReadWriteSeeker) error {
+func (fake *FakeClient) Download(arg1 string, arg2 io.ReadWriteSeeker, arg3 *pb.ProgressBar) error {
 	fake.downloadMutex.Lock()
 	fake.downloadArgsForCall = append(fake.downloadArgsForCall, struct {
 		arg1 string
 		arg2 io.ReadWriteSeeker
-	}{arg1, arg2})
-	fake.recordInvocation("Download", []interface{}{arg1, arg2})
+		arg3 *pb.ProgressBar
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("Download", []interface{}{arg1, arg2, arg3})
 	fake.downloadMutex.Unlock()
 	if fake.DownloadStub != nil {
-		return fake.DownloadStub(arg1, arg2)
+		return fake.DownloadStub(arg1, arg2, arg3)
 	}
 	return fake.downloadReturns.result1
 }
@@ -75,10 +78,10 @@ func (fake *FakeClient) DownloadCallCount() int {
 	return len(fake.downloadArgsForCall)
 }
 
-func (fake *FakeClient) DownloadArgsForCall(i int) (string, io.ReadWriteSeeker) {
+func (fake *FakeClient) DownloadArgsForCall(i int) (string, io.ReadWriteSeeker, *pb.ProgressBar) {
 	fake.downloadMutex.RLock()
 	defer fake.downloadMutex.RUnlock()
-	return fake.downloadArgsForCall[i].arg1, fake.downloadArgsForCall[i].arg2
+	return fake.downloadArgsForCall[i].arg1, fake.downloadArgsForCall[i].arg2, fake.downloadArgsForCall[i].arg3
 }
 
 func (fake *FakeClient) DownloadReturns(result1 error) {
