@@ -39,7 +39,7 @@ func (r *Request) ReadPayload(data interface{}) error {
 func (r *Request) WritePayload(data interface{}) error {
 	bytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		return err
+		return bosherr.WrapError(err, "Marshalling response payload")
 	}
 
 	r.RawResponse.Header().Add("Content-Type", "application/json")

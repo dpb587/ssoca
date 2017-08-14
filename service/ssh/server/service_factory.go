@@ -55,7 +55,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	if cfg.Target.PublicKey != "" && strings.Contains(cfg.Target.PublicKey, "-----") {
 		publicKeyPEM, _ := pem.Decode([]byte(cfg.Target.PublicKey))
 		if publicKeyPEM == nil {
-			return nil, errors.New("Failed to parse public_key")
+			return nil, errors.New("Failed to parse public key")
 		}
 
 		rsa, err := x509.ParsePKIXPublicKey(publicKeyPEM.Bytes)
