@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/server/service"
-	svcconfig "github.com/dpb587/ssoca/service/download/config"
 	. "github.com/dpb587/ssoca/service/download/server"
+	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
 

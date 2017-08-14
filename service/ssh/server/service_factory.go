@@ -16,7 +16,7 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 	svc "github.com/dpb587/ssoca/service/ssh"
-	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
+	svcconfig "github.com/dpb587/ssoca/service/ssh/server/config"
 )
 
 type ServiceFactory struct {

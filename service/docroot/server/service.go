@@ -8,7 +8,7 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/docroot"
-	svcconfig "github.com/dpb587/ssoca/service/docroot/config"
+	svcconfig "github.com/dpb587/ssoca/service/docroot/server/config"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )

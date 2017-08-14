@@ -7,7 +7,7 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/env"
-	svcconfig "github.com/dpb587/ssoca/service/env/config"
+	svcconfig "github.com/dpb587/ssoca/service/env/server/config"
 	svcreq "github.com/dpb587/ssoca/service/env/server/req"
 )
 

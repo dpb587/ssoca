@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/server/service"
-	svcconfig "github.com/dpb587/ssoca/service/openvpn/config"
 	. "github.com/dpb587/ssoca/service/openvpn/server"
+	svcconfig "github.com/dpb587/ssoca/service/openvpn/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

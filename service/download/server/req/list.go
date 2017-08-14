@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/download/api"
-	svcconfig "github.com/dpb587/ssoca/service/download/config"
+	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
 )
 
 type List struct {

@@ -4,7 +4,7 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/env/api"
-	"github.com/dpb587/ssoca/service/env/config"
+	"github.com/dpb587/ssoca/service/env/server/config"
 )
 
 type Info struct {

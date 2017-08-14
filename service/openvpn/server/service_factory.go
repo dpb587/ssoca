@@ -9,7 +9,7 @@ import (
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
 	svc "github.com/dpb587/ssoca/service/openvpn"
-	svcconfig "github.com/dpb587/ssoca/service/openvpn/config"
+	svcconfig "github.com/dpb587/ssoca/service/openvpn/server/config"
 )
 
 type ServiceFactory struct {

@@ -1,7 +1,7 @@
 package config_test
 
 import (
-	. "github.com/dpb587/ssoca/service/ssh/config"
+	. "github.com/dpb587/ssoca/service/ssh/server/config"
 
 	. "github.com/onsi/ginkgo"
 	// . "github.com/onsi/gomega"

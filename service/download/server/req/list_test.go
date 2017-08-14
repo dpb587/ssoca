@@ -4,7 +4,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/dpb587/ssoca/server/service/req"
-	svcconfig "github.com/dpb587/ssoca/service/download/config"
+	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
 	. "github.com/dpb587/ssoca/service/download/server/req"
 
 	. "github.com/onsi/ginkgo"

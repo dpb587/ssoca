@@ -7,7 +7,7 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/openvpn"
-	svcconfig "github.com/dpb587/ssoca/service/openvpn/config"
+	svcconfig "github.com/dpb587/ssoca/service/openvpn/server/config"
 	svcreq "github.com/dpb587/ssoca/service/openvpn/server/req"
 )
 

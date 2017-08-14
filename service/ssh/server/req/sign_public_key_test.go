@@ -20,7 +20,7 @@ import (
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 	serverreq "github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
-	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
+	svcconfig "github.com/dpb587/ssoca/service/ssh/server/config"
 	. "github.com/dpb587/ssoca/service/ssh/server/req"
 
 	. "github.com/onsi/ginkgo"

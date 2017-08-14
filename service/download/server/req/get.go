@@ -9,7 +9,7 @@ import (
 
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
-	svcconfig "github.com/dpb587/ssoca/service/download/config"
+	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"

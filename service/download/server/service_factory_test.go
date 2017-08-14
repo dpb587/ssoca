@@ -6,7 +6,7 @@ import (
 	. "github.com/dpb587/ssoca/service/download/server"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
-	svcconfig "github.com/dpb587/ssoca/service/download/config"
+	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

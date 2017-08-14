@@ -5,8 +5,8 @@ import (
 
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/servicefakes"
-	svcconfig "github.com/dpb587/ssoca/service/env/config"
 	. "github.com/dpb587/ssoca/service/env/server"
+	svcconfig "github.com/dpb587/ssoca/service/env/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

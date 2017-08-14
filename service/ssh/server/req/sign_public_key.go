@@ -14,7 +14,7 @@ import (
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
-	svcconfig "github.com/dpb587/ssoca/service/ssh/config"
+	svcconfig "github.com/dpb587/ssoca/service/ssh/server/config"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
