@@ -5,3 +5,4 @@ package helper
 
 var guessExecutableName = "openvpn"
 var guessExecutablePaths = []string{}
+var guessExecutableSuggestions = ""
