@@ -14,16 +14,21 @@ import (
 
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/config"
+	"github.com/dpb587/ssoca/client/goflags/cmd"
 	authintercept "github.com/dpb587/ssoca/client/httpclient"
 	"github.com/dpb587/ssoca/client/service"
 	"github.com/dpb587/ssoca/config/storage"
 	"github.com/dpb587/ssoca/httpclient"
+	"github.com/dpb587/ssoca/version"
 )
 
 type Runtime struct {
 	ConfigPath  string `long:"config" env:"SSOCA_CONFIG" description:"Configuration file path" default:"~/.config/ssoca/config"`
 	Environment string `short:"e" long:"environment" env:"SSOCA_ENVIRONMENT" description:"Environment name"`
 
+	Version cmd.Version `command:"version" description:"Show the current version"`
+
+	version        version.Version
 	serviceManager service.Manager
 	fs             boshsys.FileSystem
 	ui             boshui.UI
@@ -38,8 +43,9 @@ type Runtime struct {
 
 var _ client.Runtime = Runtime{}
 
-func NewRuntime(serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
-	return Runtime{
+func NewRuntime(version_ version.Version, serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
+	runtime := Runtime{
+		version:        version_,
 		serviceManager: serviceManager,
 		fs:             fs,
 		ui:             ui,
@@ -48,6 +54,14 @@ func NewRuntime(serviceManager service.Manager, ui boshui.UI, stdin io.Reader, s
 		stdout:         stdout,
 		stderr:         stderr,
 	}
+
+	runtime.Version = cmd.Version{Runtime: runtime, Version: runtime.version}
+
+	return runtime
+}
+
+func (r Runtime) GetVersion() version.Version {
+	return r.version
 }
 
 func (r Runtime) GetEnvironment() (config.EnvironmentState, error) {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/dpb587/ssoca/client/goflags"
 	"github.com/dpb587/ssoca/client/service"
+	"github.com/dpb587/ssoca/version"
 
 	clierrors "github.com/dpb587/ssoca/cli/errors"
 
@@ -26,6 +27,9 @@ import (
 	// srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 )
 
+var appName = "ssoca-client"
+var appSemver, appCommit, appBuilt string
+
 func main() {
 	logger := boshlog.NewLogger(boshlog.LevelError)
 	fs := boshsys.NewOsFileSystem(logger)
@@ -33,7 +37,7 @@ func main() {
 	ui := boshui.NewConfUI(logger)
 	serviceManager := service.NewDefaultManager()
 
-	runtime := goflags.NewRuntime(serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs, logger)
+	runtime := goflags.NewRuntime(version.MustVersion(appName, appSemver, appCommit, appBuilt), serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs, logger)
 	var parser = flags.NewParser(&runtime, flags.Default)
 
 	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))

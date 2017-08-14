@@ -9,9 +9,16 @@ import (
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/httpclient"
+	"github.com/dpb587/ssoca/version"
 )
 
 type FakeRuntime struct {
+	GetVersionStub        func() version.Version
+	getVersionMutex       sync.RWMutex
+	getVersionArgsForCall []struct{}
+	getVersionReturns     struct {
+		result1 version.Version
+	}
 	GetEnvironmentStub        func() (config.EnvironmentState, error)
 	getEnvironmentMutex       sync.RWMutex
 	getEnvironmentArgsForCall []struct{}
@@ -72,6 +79,30 @@ type FakeRuntime struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeRuntime) GetVersion() version.Version {
+	fake.getVersionMutex.Lock()
+	fake.getVersionArgsForCall = append(fake.getVersionArgsForCall, struct{}{})
+	fake.recordInvocation("GetVersion", []interface{}{})
+	fake.getVersionMutex.Unlock()
+	if fake.GetVersionStub != nil {
+		return fake.GetVersionStub()
+	}
+	return fake.getVersionReturns.result1
+}
+
+func (fake *FakeRuntime) GetVersionCallCount() int {
+	fake.getVersionMutex.RLock()
+	defer fake.getVersionMutex.RUnlock()
+	return len(fake.getVersionArgsForCall)
+}
+
+func (fake *FakeRuntime) GetVersionReturns(result1 version.Version) {
+	fake.GetVersionStub = nil
+	fake.getVersionReturns = struct {
+		result1 version.Version
+	}{result1}
 }
 
 func (fake *FakeRuntime) GetEnvironment() (config.EnvironmentState, error) {
@@ -297,6 +328,8 @@ func (fake *FakeRuntime) GetStdinReturns(result1 io.Reader) {
 func (fake *FakeRuntime) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getVersionMutex.RLock()
+	defer fake.getVersionMutex.RUnlock()
 	fake.getEnvironmentMutex.RLock()
 	defer fake.getEnvironmentMutex.RUnlock()
 	fake.getEnvironmentNameMutex.RLock()
