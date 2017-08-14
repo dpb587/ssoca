@@ -21,6 +21,9 @@ fi
 
 mkdir -p tmp
 
+commit=$( git rev-parse HEAD | cut -c-10 )$( git diff-index --quiet HEAD -- || echo "+dirty" )
+built=$( date -u +%Y-%m-%dT%H:%M:%S+00:00 )
+
 for cli in $cli_list ; do
   [ -e cli/$cli/$cli.go ] || continue
 
@@ -33,7 +36,14 @@ for cli in $cli_list ; do
       fi
 
       echo "$name"
-      GOOS=$os GOARCH=$arch go build -o tmp/$name cli/$cli/$cli.go
+      GOOS=$os GOARCH=$arch go build \
+        -ldflags "
+          -X main.appSemver=$version \
+          -X main.appCommit=$commit \
+          -X main.appBuilt=$built
+        " \
+        -o tmp/$name \
+        cli/$cli/$cli.go
     done
   done
 done
