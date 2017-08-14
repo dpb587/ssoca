@@ -42,7 +42,7 @@ func (r *Request) WritePayload(data interface{}) error {
 		return err
 	}
 
-	r.RawResponse.Header().Add("Content-Type", "application/javascript")
+	r.RawResponse.Header().Add("Content-Type", "application/json")
 	io.WriteString(r.RawResponse, string(bytes))
 	io.WriteString(r.RawResponse, "\n")
 

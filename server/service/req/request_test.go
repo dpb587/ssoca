@@ -57,7 +57,7 @@ var _ = Describe("Request", func() {
 			err := subject.WritePayload(payload)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(response.Header().Get("Content-Type")).To(Equal("application/javascript"))
+			Expect(response.Header().Get("Content-Type")).To(Equal("application/json"))
 			Expect(response.Body.String()).To(Equal(`{
   "test": true
 }
