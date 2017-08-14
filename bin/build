@@ -7,11 +7,25 @@ set -eu
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 version="${1:-0.0.0}"
 
+if [ -z "${cli_list:-}" ]; then
+  cli_list="$( cd cli ; ls )"
+fi
+
+if [ -z "${os_list:-}" ]; then
+  os_list="darwin linux windows"
+fi
+
+if [ -z "${arch_list:-}" ]; then
+  arch_list="amd64"
+fi
+
 mkdir -p tmp
 
-for cli in client server; do
-  for os in darwin linux windows ; do
-    for arch in amd64 ; do
+for cli in $cli_list ; do
+  [ -e cli/$cli/$cli.go ] || continue
+
+  for os in $os_list ; do
+    for arch in $arch_list ; do
       name=ssoca-$cli-$version-$os-$arch
 
       if [ "$os" == "windows" ]; then
