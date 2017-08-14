@@ -50,6 +50,20 @@ func (c UpdateClient) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Getting download client")
 	}
 
+	metadata, err := downloadClient.GetMetadata()
+	if err != nil {
+		return bosherr.WrapError(err, "Getting download metadata")
+	}
+
+	version, ok := metadata.Metadata["version"]
+	if !ok {
+		return errors.New("Environment does not advertise the client version")
+	}
+
+	if version == c.Runtime.GetVersion().Semver {
+		return nil
+	}
+
 	files, err := downloadClient.GetList()
 	if err != nil {
 		return bosherr.WrapError(err, "Listing client files")
