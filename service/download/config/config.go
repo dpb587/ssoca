@@ -1,7 +1,8 @@
 package config
 
 type Config struct {
-	Glob string `yaml:"glob,omitempty"`
+	Glob     string            `yaml:"glob,omitempty"`
+	Metadata map[string]string `yaml:"metadata,omitempty"`
 
 	Paths []PathConfig `yaml:"-"`
 }

@@ -11,6 +11,13 @@ import (
 )
 
 type FakeClient struct {
+	GetMetadataStub        func() (api.MetadataResponse, error)
+	getMetadataMutex       sync.RWMutex
+	getMetadataArgsForCall []struct{}
+	getMetadataReturns     struct {
+		result1 api.MetadataResponse
+		result2 error
+	}
 	GetListStub        func() (api.ListResponse, error)
 	getListMutex       sync.RWMutex
 	getListArgsForCall []struct{}
@@ -30,6 +37,31 @@ type FakeClient struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeClient) GetMetadata() (api.MetadataResponse, error) {
+	fake.getMetadataMutex.Lock()
+	fake.getMetadataArgsForCall = append(fake.getMetadataArgsForCall, struct{}{})
+	fake.recordInvocation("GetMetadata", []interface{}{})
+	fake.getMetadataMutex.Unlock()
+	if fake.GetMetadataStub != nil {
+		return fake.GetMetadataStub()
+	}
+	return fake.getMetadataReturns.result1, fake.getMetadataReturns.result2
+}
+
+func (fake *FakeClient) GetMetadataCallCount() int {
+	fake.getMetadataMutex.RLock()
+	defer fake.getMetadataMutex.RUnlock()
+	return len(fake.getMetadataArgsForCall)
+}
+
+func (fake *FakeClient) GetMetadataReturns(result1 api.MetadataResponse, result2 error) {
+	fake.GetMetadataStub = nil
+	fake.getMetadataReturns = struct {
+		result1 api.MetadataResponse
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeClient) GetList() (api.ListResponse, error) {
@@ -94,6 +126,8 @@ func (fake *FakeClient) DownloadReturns(result1 error) {
 func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getMetadataMutex.RLock()
+	defer fake.getMetadataMutex.RUnlock()
 	fake.getListMutex.RLock()
 	defer fake.getListMutex.RUnlock()
 	fake.downloadMutex.RLock()

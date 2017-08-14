@@ -42,12 +42,15 @@ func (s Service) Metadata() interface{} {
 
 func (s Service) GetRoutes() []req.RouteHandler {
 	return []req.RouteHandler{
-		svcreq.List{
-			Paths: s.config.Paths,
-		},
 		svcreq.Get{
 			Paths: s.config.Paths,
 			FS:    s.fs,
+		},
+		svcreq.List{
+			Paths: s.config.Paths,
+		},
+		svcreq.Metadata{
+			Metadata: s.config.Metadata,
 		},
 	}
 }

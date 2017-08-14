@@ -9,6 +9,7 @@ import (
 
 //go:generate counterfeiter . Client
 type Client interface {
+	GetMetadata() (api.MetadataResponse, error)
 	GetList() (api.ListResponse, error)
 	Download(string, io.ReadWriteSeeker, *pb.ProgressBar) error
 }

@@ -42,6 +42,18 @@ func (c client) GetList() (api.ListResponse, error) {
 	return out, nil
 }
 
+func (c client) GetMetadata() (api.MetadataResponse, error) {
+	out := api.MetadataResponse{}
+	path := fmt.Sprintf("/%s/metadata", c.service)
+
+	err := c.client.APIGet(path, &out)
+	if err != nil {
+		return out, bosherr.WrapErrorf(err, "Getting %s", path)
+	}
+
+	return out, nil
+}
+
 func (c client) Download(name string, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
 	list, err := c.GetList()
 	if err != nil {
