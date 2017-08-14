@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/dpb587/ssoca/auth/authz/filter"
+	"github.com/dpb587/ssoca/certauth"
 	envconfig "github.com/dpb587/ssoca/service/env/server/config"
 )
 
@@ -70,7 +71,7 @@ func (c *ServerConfig) ApplyDefaults() {
 
 func (c *CertAuthConfig) ApplyDefaults() {
 	if c.Name == "" {
-		c.Name = "default"
+		c.Name = certauth.DefaultName
 	}
 }
 

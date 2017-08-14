@@ -67,3 +67,12 @@ type Target struct {
 	Port      int                      `yaml:"port,omitempty"`
 	PublicKey string                   `yaml:"public_key,omitempty"`
 }
+
+func (c *Config) ApplyDefaults() {
+	if !c.CertAuth.IsConfigured() {
+		err := c.CertAuth.Configure(certauth.DefaultName)
+		if err != nil {
+			panic(err)
+		}
+	}
+}

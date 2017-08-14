@@ -31,7 +31,11 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return err
 	}
 
-	provider, err := cv.manager.Get(data)
+	return cv.Configure(data)
+}
+
+func (cv *ConfigValue) Configure(name string) error {
+	provider, err := cv.manager.Get(name)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting certificate authority")
 	}
@@ -41,8 +45,12 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
+func (cv ConfigValue) IsConfigured() bool {
+	return cv.provider != nil
+}
+
 func (cv ConfigValue) Name() string {
-	if cv.provider == nil {
+	if !cv.IsConfigured() {
 		panic(configValueMissing)
 	}
 
@@ -50,7 +58,7 @@ func (cv ConfigValue) Name() string {
 }
 
 func (cv ConfigValue) GetCertificate() (*x509.Certificate, error) {
-	if cv.provider == nil {
+	if !cv.IsConfigured() {
 		panic(configValueMissing)
 	}
 
@@ -58,7 +66,7 @@ func (cv ConfigValue) GetCertificate() (*x509.Certificate, error) {
 }
 
 func (cv ConfigValue) GetCertificatePEM() (string, error) {
-	if cv.provider == nil {
+	if !cv.IsConfigured() {
 		panic(configValueMissing)
 	}
 
@@ -66,7 +74,7 @@ func (cv ConfigValue) GetCertificatePEM() (string, error) {
 }
 
 func (cv ConfigValue) SignCertificate(arg0 *x509.Certificate, arg1 interface{}, arg2 logrus.Fields) ([]byte, error) {
-	if cv.provider == nil {
+	if !cv.IsConfigured() {
 		panic(configValueMissing)
 	}
 
@@ -74,7 +82,7 @@ func (cv ConfigValue) SignCertificate(arg0 *x509.Certificate, arg1 interface{}, 
 }
 
 func (cv ConfigValue) SignSSHCertificate(arg0 *ssh.Certificate, arg1 logrus.Fields) error {
-	if cv.provider == nil {
+	if !cv.IsConfigured() {
 		panic(configValueMissing)
 	}
 

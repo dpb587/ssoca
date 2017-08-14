@@ -13,6 +13,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+const DefaultName = "default"
+
 // Factory allows multiple certificate authority backends to be used.
 //
 //go:generate counterfeiter . Factory
