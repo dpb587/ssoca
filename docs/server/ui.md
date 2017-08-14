@@ -5,9 +5,10 @@ A simple UI is included in the [`server/ui`](../../server/ui) directory to suppo
 
 ## Parameters
 
-The following settings may be configured in the `env.metadata` to affect the appearance.
+The following optional settings may be configured in the `env.metadata` to affect the appearance.
 
  * `ui.color` - a [known](http://tachyons.io/docs/themes/skins/) color name for the background of pages
- * `ui.download` - the service name where client binaries are configured for download
+ * `ui.link.(title)` - URL(s) to external documentation or resources which may be useful to the user
+ * `ui.usage` - simple snippets documenting common commands which may be useful to the user
 
 Web pages also reference the `name`, `title`, and `banner` properties of the `env` settings.
