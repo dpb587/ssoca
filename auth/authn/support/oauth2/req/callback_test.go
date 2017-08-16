@@ -79,7 +79,10 @@ var _ = Describe("Callback", func() {
 		BeforeEach(func() {
 			user := "fake-user"
 			subject = Callback{
-				Origin: "fake-origin",
+				URLs: oauth2supportconfig.URLs{
+					Origin:      "fake-origin",
+					AuthSuccess: "/fake-ui/auth-success.html",
+				},
 				UserProfileLoader: func(_ *http.Client) (auth.Token, error) {
 					return auth.Token{
 						ID: "fake-id",
@@ -183,7 +186,7 @@ var _ = Describe("Callback", func() {
 					body := res.Body.String()
 
 					Expect(body).To(ContainSubstring(` action="http://127.0.0.1:12345"`))
-					Expect(body).To(ContainSubstring(` value="/ui/auth-success.html"`))
+					Expect(body).To(ContainSubstring(` value="/fake-ui/auth-success.html"`))
 
 					re := regexp.MustCompile(` name="token" value="([^"]+)"`)
 					tokenMatch := re.FindStringSubmatch(body)

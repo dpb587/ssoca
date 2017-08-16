@@ -34,7 +34,7 @@ var _ = Describe("Backend", func() {
 	Describe("ParseRequestAuth", func() {
 		BeforeEach(func() {
 			subject = NewBackend(
-				"fake-origin",
+				oauth2supportconfig.URLs{Origin: "fake-origin"},
 				oauth2.Config{},
 				oauth2.NoContext,
 				oauth2supportconfig.JWT{

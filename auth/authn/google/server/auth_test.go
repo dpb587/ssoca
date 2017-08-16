@@ -36,7 +36,7 @@ var _ = Describe("Auth", func() {
 					"auth",
 					svcconfig.Config{},
 					oauth2support.NewBackend(
-						"test",
+						oauth2supportconfig.URLs{Origin: "test"},
 						oauth2.Config{},
 						oauth2.NoContext,
 						oauth2supportconfig.JWT{},
@@ -180,7 +180,7 @@ var _ = Describe("Auth", func() {
 						},
 					},
 					oauth2support.NewBackend(
-						"test",
+						oauth2supportconfig.URLs{Origin: "test"},
 						oauth2.Config{},
 						oauth2.NoContext,
 						oauth2supportconfig.JWT{},

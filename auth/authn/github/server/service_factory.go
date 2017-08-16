@@ -18,11 +18,15 @@ import (
 
 type ServiceFactory struct {
 	endpointURL string
+	failureURL  string
+	successURL  string
 }
 
-func NewServiceFactory(endpointURL string) ServiceFactory {
+func NewServiceFactory(endpointURL string, failureURL string, successURL string) ServiceFactory {
 	return ServiceFactory{
 		endpointURL: endpointURL,
+		failureURL:  failureURL,
+		successURL:  successURL,
 	}
 }
 
@@ -48,7 +52,11 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	}
 
 	backend := oauth2support.NewBackend(
-		fmt.Sprintf("%s/%s", f.endpointURL, name),
+		oauth2supportconfig.URLs{
+			Origin:      fmt.Sprintf("%s/%s", f.endpointURL, name),
+			AuthFailure: f.failureURL,
+			AuthSuccess: f.successURL,
+		},
 		oauth2.Config{
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,

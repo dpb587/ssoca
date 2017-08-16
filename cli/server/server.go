@@ -82,8 +82,8 @@ func main() {
 	serviceManager.Add(srv_env.NewService(cfg.Env, &serviceManager))
 
 	serviceFactory := service.NewDefaultFactory()
-	serviceFactory.Register(srv_github_authn.NewServiceFactory(cfg.Env.URL))
-	serviceFactory.Register(srv_google_authn.NewServiceFactory(cfg.Env.URL))
+	serviceFactory.Register(srv_github_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
+	serviceFactory.Register(srv_google_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
 	serviceFactory.Register(srv_http_authn.NewServiceFactory())
 	serviceFactory.Register(srv_uaa_authn.NewServiceFactory())
 

@@ -38,7 +38,7 @@ var clientRedirectTemplate = template.Must(template.New("html").Parse(`
 `))
 
 type Callback struct {
-	Origin            string
+	URLs              config.URLs
 	UserProfileLoader config.UserProfileLoader
 	Config            oauth2.Config
 	Context           context.Context
@@ -87,11 +87,11 @@ func (h Callback) Execute(request req.Request) error {
 		Groups:     userProfile.Groups,
 		Attributes: userProfile.Attributes,
 		StandardClaims: jwt.StandardClaims{
-			Audience:  h.Origin,
+			Audience:  h.URLs.Origin,
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 			Id:        tokenUUID.String(),
 			IssuedAt:  time.Now().Unix(),
-			Issuer:    h.Origin,
+			Issuer:    h.URLs.Origin,
 			NotBefore: time.Now().Unix(),
 		},
 	})
@@ -132,7 +132,7 @@ func (h Callback) Execute(request req.Request) error {
 			}{
 				Token:    tokenString,
 				Port:     clientPort.Value,
-				Redirect: "/ui/auth-success.html", // @todo
+				Redirect: h.URLs.AuthSuccess,
 			},
 		)
 		if err != nil {

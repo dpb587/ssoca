@@ -21,3 +21,9 @@ type JWT struct {
 	Validity     time.Duration
 	ValidityPast time.Duration
 }
+
+type URLs struct {
+	Origin      string
+	AuthSuccess string
+	AuthFailure string
+}

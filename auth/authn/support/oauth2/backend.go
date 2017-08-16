@@ -20,16 +20,16 @@ import (
 )
 
 type Backend struct {
-	origin       string
 	config       oauth2.Config
 	oauthContext context.Context
 
+	urls      config.URLs
 	jwtConfig config.JWT
 }
 
-func NewBackend(origin string, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT) Backend {
+func NewBackend(urls config.URLs, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT) Backend {
 	return Backend{
-		origin:       origin,
+		urls:         urls,
 		config:       config,
 		oauthContext: oauthContext,
 
@@ -50,7 +50,7 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		return nil, apierr.NewError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
 	}
 
-	intTok := selfsignedjwt.NewOriginToken(b.origin)
+	intTok := selfsignedjwt.NewOriginToken(b.urls.Origin)
 
 	_, err := jwt.ParseWithClaims(
 		authValuePieces[1],
@@ -86,7 +86,7 @@ func (b Backend) GetRoutes(userProfileLoader config.UserProfileLoader) []req.Rou
 			Config: b.config,
 		},
 		oauth2supportreq.Callback{
-			Origin:            b.origin,
+			URLs:              b.urls,
 			UserProfileLoader: userProfileLoader,
 			Config:            b.config,
 			Context:           b.oauthContext,
