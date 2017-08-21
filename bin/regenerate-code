@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -u
+
+_packages="$( go list ./... | grep -v /vendor/ )"
+exit=""
+
+find . -not -path '*/vendor/*' -path '*fakes/fake_*.go' | xargs rm
+find . -not -path '*/vendor/*' -path '*/ginkgo_test.go' | xargs rm
+
+for package in $_packages; do
+  if [[ "$( ls $GOPATH/src/$package/*_test.go 2> /dev/null | wc -l | awk '{ print $1 }' )" == "0" ]]; then
+    true # no tests
+  elif [ ! -e "$GOPATH/src/$package/ginkgo_test.go" ]; then
+    pushd $GOPATH/src/$package > /dev/null
+
+    ginkgo bootstrap
+    mv *_suite_test.go ginkgo_test.go
+
+    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/ginkgo_test.go
+
+    popd > /dev/null
+  fi
+
+  go generate $package
+  exit="$?$exit"
+
+  go fmt $package
+  exit="$?$exit"
+done
+
+if [[ "$( echo "$exit" | sed 's/0//g' )" != "" ]] ; then
+  exit 1
+fi

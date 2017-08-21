@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -eu
+
+cli_list=client os_list=darwin bin/build 0.0.0
+
+alias ssoca=tmp/ssoca-client-0.0.0-darwin-amd64
+
+for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
+  mkdir -p docs/service/$cmd
+  rm -fr docs/service/$cmd/*-cmd.md
+
+  for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
+    echo docs/service/$cmd/$subcmd-cmd.md
+
+    (
+      echo '# `ssoca' $cmd $subcmd '...`'
+      echo
+      ssoca $cmd --help | grep "^  $subcmd " | sed -E 's/^ +[^ ]+ +//'
+      echo
+      ssoca $cmd $subcmd --help | sed 's/^/    /'
+
+      codemd="service/$cmd/client/cmd/$( echo "$subcmd" | sed "s/-/_/g" ).md"
+
+      if [ -e "$codemd" ]; then
+        echo
+        cat "$codemd"
+      fi
+
+      codemd="service/$cmd/client/cli/$( echo "$subcmd" | sed "s/-/_/g" ).md"
+
+      if [ -e "$codemd" ]; then
+        echo
+        cat "$codemd"
+      fi
+    ) > docs/service/$cmd/$subcmd-cmd.md
+  done
+done

@@ -4,72 +4,19 @@ set -u
 
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
-_packages="$( go list ./... | grep -v /vendor/ )"
-packages() { echo "$_packages" | xargs -n1 -- "$@" ; }
 exit=""
 
-find . -not -path '*/vendor/*' -path '*fakes/fake_*.go' | xargs rm
-find . -not -path '*/vendor/*' -path '*/ginkgo_test.go' | xargs rm
+bin/regenerate-code
+exit="$exit$?"
 
-for package in $_packages; do
-  if [[ "$( ls $GOPATH/src/$package/*_test.go 2> /dev/null | wc -l | awk '{ print $1 }' )" == "0" ]]; then
-    true # no tests
-  elif [ ! -e "$GOPATH/src/$package/ginkgo_test.go" ]; then
-    pushd $GOPATH/src/$package > /dev/null
+bin/test-unit
+exit="$exit$?"
 
-    ginkgo bootstrap
-    mv *_suite_test.go ginkgo_test.go
+bin/build
+exit="$exit$?"
 
-    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/ginkgo_test.go
-
-    popd > /dev/null
-  fi
-
-  go generate $package
-  exit="$?$exit"
-
-  go fmt $package
-  exit="$?$exit"
-done
-
-ginkgo -r -keepGoing
-exit="$?$exit"
-
-bin/build 0.0.0
-exit="$?$exit"
-
-alias ssoca=tmp/ssoca-client-0.0.0-darwin-amd64
-
-for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
-  mkdir -p docs/service/$cmd
-  rm -fr docs/service/$cmd/*-cmd.md
-
-  for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
-    echo docs/service/$cmd/$subcmd-cmd.md
-
-    (
-      echo '# `ssoca' $cmd $subcmd '...`'
-      echo
-      ssoca $cmd --help | grep "^  $subcmd " | sed -E 's/^ +[^ ]+ +//'
-      echo
-      ssoca $cmd $subcmd --help | sed 's/^/    /'
-
-      codemd="service/$cmd/client/cmd/$( echo "$subcmd" | sed "s/-/_/g" ).md"
-
-      if [ -e "$codemd" ]; then
-        echo
-        cat "$codemd"
-      fi
-
-      codemd="service/$cmd/client/cli/$( echo "$subcmd" | sed "s/-/_/g" ).md"
-
-      if [ -e "$codemd" ]; then
-        echo
-        cat "$codemd"
-      fi
-    ) > docs/service/$cmd/$subcmd-cmd.md
-  done
-done
+bin/regenerate-docs
+exit="$exit$?"
 
 if [[ "$( echo "$exit" | sed 's/0//g' )" != "" ]] ; then
   exit 1
