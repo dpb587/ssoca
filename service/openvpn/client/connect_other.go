@@ -1,9 +1,9 @@
 // +build !windows
 
-package cmd
+package client
 
 import boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-func (c Connect) osCommand(cmd boshsys.Command) boshsys.Command {
+func connectRewriteCommand(cmd boshsys.Command) boshsys.Command {
 	return cmd
 }

@@ -18,6 +18,9 @@ type Service interface {
 	Type() string
 	Version() string
 	Description() string
+}
+
+type CommandService interface {
 	GetCommand() interface{}
 }
 

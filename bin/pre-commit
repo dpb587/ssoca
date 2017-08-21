@@ -60,6 +60,13 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
         echo
         cat "$codemd"
       fi
+
+      codemd="service/$cmd/client/cli/$( echo "$subcmd" | sed "s/-/_/g" ).md"
+
+      if [ -e "$codemd" ]; then
+        echo
+        cat "$codemd"
+      fi
     ) > docs/service/$cmd/$subcmd-cmd.md
   done
 done

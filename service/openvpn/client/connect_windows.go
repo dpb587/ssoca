@@ -1,4 +1,4 @@
-package cmd
+package client
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
-func (c Connect) osCommand(cmd boshsys.Command) boshsys.Command {
+func connectRewriteCommand(cmd boshsys.Command) boshsys.Command {
 	cmd.Args = append([]string{cmd.Name}, cmd.Args...)
 	for i, arg := range cmd.Args {
 		cmd.Args[i] = fmt.Sprintf("'%s'", arg)

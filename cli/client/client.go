@@ -22,6 +22,8 @@ import (
 	srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
+	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
+	srv_openvpn_helper "github.com/dpb587/ssoca/service/openvpn/client/helper"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
 	// srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
 	// srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
@@ -46,21 +48,25 @@ func main() {
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_http_auth.NewService(&runtime))
-	serviceManager.Add(srv_openvpn.NewService(&runtime, fs, cmdRunner))
 	serviceManager.Add(srv_ssh.NewService(&runtime, fs, cmdRunner))
 	// serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {
-		service, err := serviceManager.Get(name)
+		svc, err := serviceManager.Get(name)
 		if err != nil {
 			panic(err)
 		}
 
-		command := service.GetCommand()
+		svccmd := svc.(service.CommandService)
+
+		command := svccmd.GetCommand()
 		if command != nil {
-			parser.AddCommand(name, service.Description(), service.Description(), command)
+			parser.AddCommand(name, svc.Description(), svc.Description(), command)
 		}
 	}
+
+	svc := srv_openvpn.NewService(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs})
+	parser.AddCommand(svc.Type(), svc.Description(), svc.Description(), srv_openvpn_cli.CreateCommands(runtime, svc))
 
 	if _, err := parser.Parse(); err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {

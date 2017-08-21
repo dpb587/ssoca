@@ -1,30 +1,26 @@
-package cmd
+package cli
 
 import (
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	svc "github.com/dpb587/ssoca/service/openvpn/client"
 	"github.com/jessevdk/go-flags"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type BaseProfile struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
-	GetClient GetClient
+	Service svc.Service
 }
 
 var _ flags.Commander = BaseProfile{}
 
 func (c BaseProfile) Execute(_ []string) error {
-	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
+	profile, err := c.Service.BaseProfile(c.ServiceName, svc.BaseProfileOptions{
+		SkipAuthRetry: c.SkipAuthRetry,
+	})
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
-	}
-
-	profile, err := client.BaseProfile()
-	if err != nil {
-		return bosherr.WrapError(err, "Getting base profile")
+		return err
 	}
 
 	c.Runtime.GetUI().PrintBlock(profile)

@@ -28,12 +28,6 @@ type FakeAuthService struct {
 	descriptionReturns     struct {
 		result1 string
 	}
-	GetCommandStub        func() interface{}
-	getCommandMutex       sync.RWMutex
-	getCommandArgsForCall []struct{}
-	getCommandReturns     struct {
-		result1 interface{}
-	}
 	AuthRequestStub        func(*http.Request) error
 	authRequestMutex       sync.RWMutex
 	authRequestArgsForCall []struct {
@@ -130,30 +124,6 @@ func (fake *FakeAuthService) DescriptionReturns(result1 string) {
 	fake.DescriptionStub = nil
 	fake.descriptionReturns = struct {
 		result1 string
-	}{result1}
-}
-
-func (fake *FakeAuthService) GetCommand() interface{} {
-	fake.getCommandMutex.Lock()
-	fake.getCommandArgsForCall = append(fake.getCommandArgsForCall, struct{}{})
-	fake.recordInvocation("GetCommand", []interface{}{})
-	fake.getCommandMutex.Unlock()
-	if fake.GetCommandStub != nil {
-		return fake.GetCommandStub()
-	}
-	return fake.getCommandReturns.result1
-}
-
-func (fake *FakeAuthService) GetCommandCallCount() int {
-	fake.getCommandMutex.RLock()
-	defer fake.getCommandMutex.RUnlock()
-	return len(fake.getCommandArgsForCall)
-}
-
-func (fake *FakeAuthService) GetCommandReturns(result1 interface{}) {
-	fake.GetCommandStub = nil
-	fake.getCommandReturns = struct {
-		result1 interface{}
 	}{result1}
 }
 
@@ -255,8 +225,6 @@ func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	defer fake.versionMutex.RUnlock()
 	fake.descriptionMutex.RLock()
 	defer fake.descriptionMutex.RUnlock()
-	fake.getCommandMutex.RLock()
-	defer fake.getCommandMutex.RUnlock()
 	fake.authRequestMutex.RLock()
 	defer fake.authRequestMutex.RUnlock()
 	fake.authLoginMutex.RLock()
