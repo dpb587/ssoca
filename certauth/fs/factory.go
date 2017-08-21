@@ -1,9 +1,9 @@
 package fs
 
 import (
-	"github.com/Sirupsen/logrus"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/config"

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
+	"github.com/sirupsen/logrus"
 
 	uuid "github.com/nu7hatch/gouuid"
 )

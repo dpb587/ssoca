@@ -11,7 +11,6 @@ import (
 
 	"golang.org/x/crypto/ssh"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
@@ -22,6 +21,7 @@ import (
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
 	svcconfig "github.com/dpb587/ssoca/service/ssh/server/config"
 	. "github.com/dpb587/ssoca/service/ssh/server/req"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

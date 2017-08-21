@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
@@ -18,6 +17,7 @@ import (
 	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
 	. "github.com/dpb587/ssoca/service/openvpn/server/req"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

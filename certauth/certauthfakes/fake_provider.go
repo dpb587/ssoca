@@ -5,8 +5,8 @@ import (
 	"crypto/x509"
 	"sync"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
 

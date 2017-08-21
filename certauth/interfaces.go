@@ -8,7 +8,7 @@ package certauth
 import (
 	"crypto/x509"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"golang.org/x/crypto/ssh"
 )

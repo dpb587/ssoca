@@ -1,9 +1,9 @@
 package fs_test
 
 import (
-	"github.com/Sirupsen/logrus"
-	logrustest "github.com/Sirupsen/logrus/hooks/test"
 	. "github.com/dpb587/ssoca/certauth/fs"
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
 

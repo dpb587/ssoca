@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/Sirupsen/logrus"
-	logrustest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/dpb587/ssoca/server/service/req/reqfakes"
 	"github.com/dpb587/ssoca/server/service/servicefakes"
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

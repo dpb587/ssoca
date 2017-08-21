@@ -10,8 +10,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/Sirupsen/logrus"
-	logrustest "github.com/Sirupsen/logrus/hooks/test"
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 	"golang.org/x/crypto/ssh"
 
 	. "github.com/dpb587/ssoca/certauth/memory"

@@ -5,8 +5,8 @@ import (
 	"encoding/pem"
 	"errors"
 
-	"github.com/Sirupsen/logrus"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/config"

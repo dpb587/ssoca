@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
+	"github.com/sirupsen/logrus"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )

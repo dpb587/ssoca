@@ -15,18 +15,6 @@
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "XFl7nlkh1EUa3RvYEsT8Q4O1Mvc=",
-			"path": "github.com/Sirupsen/logrus",
-			"revision": "7f4b1adc791766938c29457bed0703fb9134421a",
-			"revisionTime": "2017-02-15T16:43:24Z"
-		},
-		{
-			"checksumSHA1": "Lglgc8iIRhqbqd8fpAZKpo/eqeY=",
-			"path": "github.com/Sirupsen/logrus/hooks/test",
-			"revision": "7f4b1adc791766938c29457bed0703fb9134421a",
-			"revisionTime": "2017-02-15T16:43:24Z"
-		},
-		{
 			"checksumSHA1": "I2DDeog8ML55A+drYgods2s4Y5Q=",
 			"path": "github.com/bmatcuk/doublestar",
 			"revision": "dd6a6f0a8cdfaaa88b08cf26cf1bc7d69003ee13",
@@ -407,6 +395,18 @@
 			"path": "github.com/pivotal-golang/clock",
 			"revision": "8c7a9b28ef3317dc849a49704c17575cb9e62afb",
 			"revisionTime": "2017-02-09T00:15:57Z"
+		},
+		{
+			"checksumSHA1": "liSJy+TEkL/0QroEp56Tv6LVrI4=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "84573d5f03ab3740f524c7842c3a9bf617961d32",
+			"revisionTime": "2017-08-21T07:31:01Z"
+		},
+		{
+			"checksumSHA1": "Kt+BhrXMyYvOc9TGiBVOSNn6wcc=",
+			"path": "github.com/sirupsen/logrus/hooks/test",
+			"revision": "84573d5f03ab3740f524c7842c3a9bf617961d32",
+			"revisionTime": "2017-08-21T07:31:01Z"
 		},
 		{
 			"checksumSHA1": "elz2qFrGUAUPKg70jY1dJdHejso=",

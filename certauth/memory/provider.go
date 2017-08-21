@@ -8,9 +8,9 @@ import (
 
 	"golang.org/x/crypto/ssh"
 
-	"github.com/Sirupsen/logrus"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/certauth"
+	"github.com/sirupsen/logrus"
 )
 
 type Provider struct {

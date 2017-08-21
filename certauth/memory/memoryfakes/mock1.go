@@ -4,7 +4,7 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	. "github.com/dpb587/ssoca/certauth/memory"
 
-	logrustest "github.com/Sirupsen/logrus/hooks/test"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 )
 
 func CreateMock1() certauth.Provider {

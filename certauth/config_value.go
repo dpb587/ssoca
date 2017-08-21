@@ -4,7 +4,7 @@ import (
 	"crypto/x509"
 	"errors"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"

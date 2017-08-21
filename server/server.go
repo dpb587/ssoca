@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/auth/authz/service"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
+	"github.com/sirupsen/logrus"
 
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
 
