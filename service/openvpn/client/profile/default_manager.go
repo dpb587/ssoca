@@ -19,7 +19,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-type Manager struct {
+type DefaultManager struct {
 	client  httpclient.Client
 	service string
 
@@ -30,8 +30,10 @@ type Manager struct {
 	certificateBytes []byte
 }
 
-func NewManager(client httpclient.Client, service string, privateKey *rsa.PrivateKey) Manager {
-	return Manager{
+var _ Manager = &DefaultManager{}
+
+func NewDefaultManager(client httpclient.Client, service string, privateKey *rsa.PrivateKey) DefaultManager {
+	return DefaultManager{
 		client:  client,
 		service: service,
 
@@ -39,20 +41,20 @@ func NewManager(client httpclient.Client, service string, privateKey *rsa.Privat
 	}
 }
 
-func CreateManagerAndPrivateKey(client httpclient.Client, service string) (Manager, error) {
+func CreateManagerAndPrivateKey(client httpclient.Client, service string) (DefaultManager, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return Manager{}, bosherr.WrapError(err, "Generating private key")
+		return DefaultManager{}, bosherr.WrapError(err, "Generating private key")
 	}
 
-	return NewManager(client, service, privateKey), nil
+	return NewDefaultManager(client, service, privateKey), nil
 }
 
-func (m Manager) Sign(data []byte) ([]byte, error) {
+func (m DefaultManager) Sign(data []byte) ([]byte, error) {
 	return rsa.SignPKCS1v15(rand.Reader, m.privateKey, 0, data)
 }
 
-func (m *Manager) GetProfile() (Profile, error) {
+func (m *DefaultManager) GetProfile() (Profile, error) {
 	if !m.IsCertificateValid() {
 		err := m.Renew()
 		if err != nil {
@@ -63,11 +65,11 @@ func (m *Manager) GetProfile() (Profile, error) {
 	return NewProfile(m.profile, m.privateKey, m.certificateBytes), nil
 }
 
-func (m Manager) IsCertificateValid() bool {
+func (m DefaultManager) IsCertificateValid() bool {
 	return m.certificate != nil && time.Now().Before(m.certificate.NotAfter)
 }
 
-func (m *Manager) Renew() error {
+func (m *DefaultManager) Renew() error {
 	csrBytes, err := m.createCSR()
 	if err != nil {
 		return bosherr.WrapError(err, "Creating CSR")
@@ -98,7 +100,7 @@ func (m *Manager) Renew() error {
 	return nil
 }
 
-func (m Manager) createCSR() ([]byte, error) {
+func (m DefaultManager) createCSR() ([]byte, error) {
 	localuser, err := user.Current()
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Checking local user")

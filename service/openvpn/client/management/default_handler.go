@@ -5,24 +5,26 @@ import (
 	"io"
 
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
+
+	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type DefaultHandler struct {
-	profileManager *profile.Manager
+	profileManager profile.Manager
 }
 
-var _ ClientHandler = &DefaultHandler{}
+var _ ServerHandler = &DefaultHandler{}
 
-func NewDefaultHandler(profileManager *profile.Manager) *DefaultHandler {
+func NewDefaultHandler(profileManager profile.Manager) *DefaultHandler {
 	return &DefaultHandler{
 		profileManager: profileManager,
 	}
 }
 
-func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ClientHandlerCallback, error) {
+func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ServerHandlerCallback, error) {
 	profile, err := ch.profileManager.GetProfile()
 	if err != nil {
-		return nil, err
+		return nil, bosherr.WrapError(err, "Retrieving profile")
 	}
 
 	w.Write([]byte("certificate\n"))
@@ -30,24 +32,24 @@ func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ClientHandlerC
 	w.Write([]byte("\n"))
 	w.Write([]byte("END\n"))
 
-	return SimpleCallbackHandler, nil
+	return SuccessCallback, nil
 }
 
-func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ClientHandlerCallback, error) {
+func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ServerHandlerCallback, error) {
 	if !ch.profileManager.IsCertificateValid() {
 		w.Write([]byte("signal SIGHUP\n"))
 
-		return SimpleCallbackHandler, nil
+		return SuccessCallback, nil
 	}
 
 	data64, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return nil, err
+		return nil, bosherr.WrapError(err, "Decoding signing token")
 	}
 
 	signature, err := ch.profileManager.Sign(data64)
 	if err != nil {
-		return nil, err
+		return nil, bosherr.WrapError(err, "Signing token")
 	}
 
 	signature64 := base64.StdEncoding.EncodeToString(signature)
@@ -57,5 +59,5 @@ func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ClientHandlerCallba
 	w.Write([]byte("\n"))
 	w.Write([]byte("END\n"))
 
-	return SimpleCallbackHandler, nil
+	return SuccessCallback, nil
 }

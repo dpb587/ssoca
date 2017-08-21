@@ -9,6 +9,7 @@ import (
 	"github.com/dpb587/ssoca/service/openvpn/client/management"
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
 	"github.com/jessevdk/go-flags"
+	"github.com/sirupsen/logrus"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -84,13 +85,14 @@ func (c Connect) Execute(_ []string) error {
 	openvpnargs = append(openvpnargs, "--config", configPath)
 	openvpnargs = append(openvpnargs, c.Args.Extra...)
 
-	var mgmt management.Client
+	var mgmt management.Server
 
 	if !c.StaticCertificate {
-		mgmt = management.NewClient(
+		mgmt = management.NewServer(
 			management.NewDefaultHandler(&profileManager),
 			"tcp",
 			"127.0.0.1:9010",
+			logrus.New(),
 		)
 
 		mgmt.Start()

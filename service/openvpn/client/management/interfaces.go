@@ -2,9 +2,10 @@ package management
 
 import "io"
 
-type ClientHandler interface {
-	NeedCertificate(io.Writer, string) (ClientHandlerCallback, error)
-	SignRSA(io.Writer, string) (ClientHandlerCallback, error)
+//go:generate counterfeiter . ServerHandler
+type ServerHandler interface {
+	NeedCertificate(io.Writer, string) (ServerHandlerCallback, error)
+	SignRSA(io.Writer, string) (ServerHandlerCallback, error)
 }
 
-type ClientHandlerCallback func(io.Writer, string) (ClientHandlerCallback, error)
+type ServerHandlerCallback func(io.Writer, string) (ServerHandlerCallback, error)

@@ -22,8 +22,8 @@ var _ = Describe("CreateManagerAndPrivateKey", func() {
 	})
 })
 
-var _ = Describe("Manager", func() {
-	var subject Manager
+var _ = Describe("DefaultManager", func() {
+	var subject DefaultManager
 	var fakeapiclient *httpclientfakes.FakeClient
 
 	var test1keyStr = `-----BEGIN RSA PRIVATE KEY-----
@@ -89,7 +89,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 		fakeapiclient = &httpclientfakes.FakeClient{}
 
-		subject = NewManager(fakeapiclient, "fake-service", test1key)
+		subject = NewDefaultManager(fakeapiclient, "fake-service", test1key)
 	})
 
 	Describe("Renew", func() {
