@@ -10,9 +10,9 @@ type CreateTunnelblickProfile struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
-	SssocaExec string                       `long:"exec-ssoca" description:"Path to the ssoca binary"`
-	Name       string                       `long:"name" description:"Specific file name to use for *.tblk"`
-	Args       createTunnelblickProfileArgs `positional-args:"true"`
+	SsocaExec string                       `long:"exec-ssoca" description:"Path to the ssoca binary"`
+	Name      string                       `long:"name" description:"Specific file name to use for *.tblk"`
+	Args      createTunnelblickProfileArgs `positional-args:"true"`
 
 	Service svc.Service
 }
@@ -26,7 +26,7 @@ type createTunnelblickProfileArgs struct {
 func (c CreateTunnelblickProfile) Execute(_ []string) error {
 	return c.Service.CreateTunnelblickProfile(c.ServiceName, svc.CreateTunnelblickProfileOpts{
 		SkipAuthRetry: c.SkipAuthRetry,
-		SssocaExec:    c.SssocaExec,
+		SsocaExec:     c.SsocaExec,
 		FileName:      c.Name,
 		Directory:     c.Args.DestinationDir,
 	})

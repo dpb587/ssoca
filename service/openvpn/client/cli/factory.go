@@ -38,7 +38,7 @@ func CreateCommands(runtime client.Runtime, service svc.Service) *Commands {
 			ServiceCommand: cmd,
 			Service:        service,
 			Name:           service.Type(),
-			SssocaExec:     os.Args[0],
+			SsocaExec:      os.Args[0],
 		},
 	}
 }

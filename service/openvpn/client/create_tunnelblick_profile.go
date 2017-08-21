@@ -11,7 +11,7 @@ import (
 )
 
 type CreateTunnelblickProfileOpts struct {
-	SssocaExec    string
+	SsocaExec     string
 	SkipAuthRetry bool
 
 	Directory string
@@ -24,7 +24,7 @@ func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelb
 		return bosherr.WrapError(err, "Getting config manager")
 	}
 
-	ssocaExec := opts.SssocaExec
+	ssocaExec := opts.SsocaExec
 	if ssocaExec == "" {
 		ssocaExec = "ssoca" // TODO ssoca.exe
 	}
