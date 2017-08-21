@@ -10,6 +10,7 @@ import (
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/httpclient"
 	"github.com/dpb587/ssoca/version"
+	"github.com/sirupsen/logrus"
 )
 
 type FakeRuntime struct {
@@ -58,6 +59,12 @@ type FakeRuntime struct {
 	getUIArgsForCall []struct{}
 	getUIReturns     struct {
 		result1 ui.UI
+	}
+	GetLoggerStub        func() logrus.FieldLogger
+	getLoggerMutex       sync.RWMutex
+	getLoggerArgsForCall []struct{}
+	getLoggerReturns     struct {
+		result1 logrus.FieldLogger
 	}
 	GetStderrStub        func() io.Writer
 	getStderrMutex       sync.RWMutex
@@ -253,6 +260,30 @@ func (fake *FakeRuntime) GetUIReturns(result1 ui.UI) {
 	}{result1}
 }
 
+func (fake *FakeRuntime) GetLogger() logrus.FieldLogger {
+	fake.getLoggerMutex.Lock()
+	fake.getLoggerArgsForCall = append(fake.getLoggerArgsForCall, struct{}{})
+	fake.recordInvocation("GetLogger", []interface{}{})
+	fake.getLoggerMutex.Unlock()
+	if fake.GetLoggerStub != nil {
+		return fake.GetLoggerStub()
+	}
+	return fake.getLoggerReturns.result1
+}
+
+func (fake *FakeRuntime) GetLoggerCallCount() int {
+	fake.getLoggerMutex.RLock()
+	defer fake.getLoggerMutex.RUnlock()
+	return len(fake.getLoggerArgsForCall)
+}
+
+func (fake *FakeRuntime) GetLoggerReturns(result1 logrus.FieldLogger) {
+	fake.GetLoggerStub = nil
+	fake.getLoggerReturns = struct {
+		result1 logrus.FieldLogger
+	}{result1}
+}
+
 func (fake *FakeRuntime) GetStderr() io.Writer {
 	fake.getStderrMutex.Lock()
 	fake.getStderrArgsForCall = append(fake.getStderrArgsForCall, struct{}{})
@@ -342,6 +373,8 @@ func (fake *FakeRuntime) Invocations() map[string][][]interface{} {
 	defer fake.getAuthInterceptClientMutex.RUnlock()
 	fake.getUIMutex.RLock()
 	defer fake.getUIMutex.RUnlock()
+	fake.getLoggerMutex.RLock()
+	defer fake.getLoggerMutex.RUnlock()
 	fake.getStderrMutex.RLock()
 	defer fake.getStderrMutex.RUnlock()
 	fake.getStdoutMutex.RLock()

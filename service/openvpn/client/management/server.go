@@ -64,11 +64,15 @@ func (cs *Server) listen() {
 		log.Println(err)
 	}
 
-	x := NewClient(conn, cs.handler, cs.logger.WithFields(logrus.Fields{
+	logger := cs.logger.WithFields(logrus.Fields{
 		"net.remote.address": conn.RemoteAddr().String(),
 		"net.remote.network": conn.RemoteAddr().Network(),
-	}))
-	defer x.Run()
+	})
+
+	logger.Info("new openvpn management connection")
+
+	client := NewClient(conn, cs.handler, logger)
+	defer client.Run()
 
 	cs.Stop()
 }

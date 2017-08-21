@@ -9,7 +9,6 @@ import (
 	"github.com/dpb587/ssoca/service/openvpn/client/management"
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
 	"github.com/jessevdk/go-flags"
-	"github.com/sirupsen/logrus"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -91,8 +90,8 @@ func (c Connect) Execute(_ []string) error {
 		mgmt = management.NewServer(
 			management.NewDefaultHandler(&profileManager),
 			"tcp",
-			"127.0.0.1:9010",
-			logrus.New(),
+			"127.0.0.1:0",
+			c.GetLogger(),
 		)
 
 		mgmt.Start()

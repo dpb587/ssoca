@@ -11,6 +11,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/config"
@@ -25,6 +26,8 @@ import (
 type Runtime struct {
 	ConfigPath  string `long:"config" env:"SSOCA_CONFIG" description:"Configuration file path" default:"~/.config/ssoca/config"`
 	Environment string `short:"e" long:"environment" env:"SSOCA_ENVIRONMENT" description:"Environment name"`
+
+	LogLevel string `long:"log-level" env:"SSOCA_LOG_LEVEL" description:"Log level" default:"WARN"`
 
 	Version cmd.Version `command:"version" description:"Show the current version"`
 
@@ -58,6 +61,23 @@ func NewRuntime(version_ version.Version, serviceManager service.Manager, ui bos
 	runtime.Version = cmd.Version{Runtime: runtime, Version: runtime.version}
 
 	return runtime
+}
+
+func (r Runtime) GetLogger() logrus.FieldLogger {
+	logger := logrus.New()
+
+	level, err := logrus.ParseLevel(r.LogLevel)
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Level = level
+	logger.Formatter = &logrus.JSONFormatter{}
+
+	return logger.WithFields(logrus.Fields{
+		"cli.name":   r.Version.Version.Name,
+		"cli.semver": r.Version.Version.Semver,
+	})
 }
 
 func (r Runtime) GetVersion() version.Version {
