@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestOauth2backend(t *testing.T) {
+func TestOauth2(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/support/oauth2")
 }

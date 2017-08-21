@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestScope(t *testing.T) {
+func TestRemoteIp(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "github.com/dpb587/ssoca/auth/authz/filter/remote_ip")
 }

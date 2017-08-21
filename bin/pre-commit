@@ -9,16 +9,20 @@ packages() { echo "$_packages" | xargs -n1 -- "$@" ; }
 exit=""
 
 find . -not -path '*/vendor/*' -path '*fakes/fake_*.go' | xargs rm
+find . -not -path '*/vendor/*' -path '*/ginkgo_test.go' | xargs rm
 
 for package in $_packages; do
-  if [[ "$package" =~ fakes$ ]]; then
+  if [[ "$( ls $GOPATH/src/$package/*_test.go 2> /dev/null | wc -l | awk '{ print $1 }' )" == "0" ]]; then
     true # no tests
-  else
-    if [ ! -e $GOPATH/src/$package/*_suite_test.go ]; then
-      ( cd $GOPATH/src/$package ; ginkgo bootstrap )
-    fi
+  elif [ ! -e "$GOPATH/src/$package/ginkgo_test.go" ]; then
+    pushd $GOPATH/src/$package > /dev/null
 
-    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/*_suite_test.go
+    ginkgo bootstrap
+    mv *_suite_test.go ginkgo_test.go
+
+    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/ginkgo_test.go
+
+    popd > /dev/null
   fi
 
   go generate $package

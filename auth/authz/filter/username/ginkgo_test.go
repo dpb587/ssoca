@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestScope(t *testing.T) {
+func TestUsername(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "github.com/dpb587/ssoca/auth/authz/filter/username")
 }

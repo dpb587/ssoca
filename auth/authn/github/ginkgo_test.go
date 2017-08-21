@@ -1,4 +1,4 @@
-package agent_test
+package github_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestAgent(t *testing.T) {
+func TestGithub(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/service/ssh/agent")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/github")
 }

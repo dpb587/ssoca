@@ -1,4 +1,4 @@
-package auth_test
+package api_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestAuth(t *testing.T) {
+func TestApi(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn")
+	RunSpecs(t, "github.com/dpb587/ssoca/server/api")
 }

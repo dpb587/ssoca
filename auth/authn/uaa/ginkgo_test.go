@@ -1,4 +1,4 @@
-package api_test
+package uaa_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestApi(t *testing.T) {
+func TestUaa(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/service/download/api")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/uaa")
 }

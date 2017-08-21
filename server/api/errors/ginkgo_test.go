@@ -1,4 +1,4 @@
-package cmd_test
+package errors_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCmd(t *testing.T) {
+func TestErrors(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/client/goflags/cmd")
+	RunSpecs(t, "github.com/dpb587/ssoca/server/api/errors")
 }

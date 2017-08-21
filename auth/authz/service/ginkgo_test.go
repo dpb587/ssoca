@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestAuthorized(t *testing.T) {
+func TestService(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "github.com/dpb587/ssoca/auth/authz/service")
 }

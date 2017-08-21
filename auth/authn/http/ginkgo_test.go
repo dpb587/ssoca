@@ -1,4 +1,4 @@
-package cmd_test
+package http_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCmd(t *testing.T) {
+func TestHttp(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/service/env/client/cmd")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/http")
 }

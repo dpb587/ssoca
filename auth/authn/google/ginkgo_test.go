@@ -1,4 +1,4 @@
-package req_test
+package google_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestReq(t *testing.T) {
+func TestGoogle(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/service/env/server/req")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/google")
 }
