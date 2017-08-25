@@ -44,7 +44,11 @@ func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelb
 
 	file := opts.FileName
 	if file == "" {
-		file = serviceName
+		file = s.runtime.GetEnvironmentName()
+
+		if serviceName != "openvpn" {
+			file = fmt.Sprintf("%s-%s", file, serviceName)
+		}
 	}
 
 	dir = fmt.Sprintf("%s/%s.tblk", dir, file)

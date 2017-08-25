@@ -37,7 +37,6 @@ func CreateCommands(runtime client.Runtime, service svc.Service) *Commands {
 		CreateTunnelblickProfile: CreateTunnelblickProfile{
 			ServiceCommand: cmd,
 			Service:        service,
-			Name:           service.Type(),
 			SsocaExec:      os.Args[0],
 		},
 	}
