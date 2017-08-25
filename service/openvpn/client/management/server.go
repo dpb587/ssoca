@@ -56,12 +56,14 @@ func (cs *Server) ManagementConfigValue() string {
 func (cs *Server) listen() {
 	conn, err := cs.listener.Accept()
 
-	if nil != err {
+	if err != nil {
 		if opErr, ok := err.(*net.OpError); ok && opErr.Timeout() {
 			return
 		}
 
 		log.Println(err)
+
+		return
 	}
 
 	logger := cs.logger.WithFields(logrus.Fields{
