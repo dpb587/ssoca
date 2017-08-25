@@ -10,7 +10,7 @@ import (
 
 type Commands struct {
 	BaseProfile              BaseProfile              `command:"base-profile" description:"Show the base connection profile of the OpenVPN server"`
-	Connect                  Connect                  `command:"connect" description:"Connect to a remote OpenVPN server"`
+	Exec                     Exec                     `command:"exec" description:"Execute openvpn to connect to the remote server" alias:"connect"`
 	CreateProfile            CreateProfile            `command:"create-profile" description:"Create and sign an OpenVPN configuration profile"`
 	CreateTunnelblickProfile CreateTunnelblickProfile `command:"create-tunnelblick-profile" description:"Create a Tunnelblick profile"`
 }
@@ -26,7 +26,7 @@ func CreateCommands(runtime client.Runtime, service svc.Service) *Commands {
 			ServiceCommand: cmd,
 			Service:        service,
 		},
-		Connect: Connect{
+		Exec: Exec{
 			ServiceCommand: cmd,
 			Service:        service,
 		},

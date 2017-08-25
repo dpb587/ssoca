@@ -7,7 +7,7 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-type Connect struct {
+type Exec struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
@@ -21,15 +21,15 @@ type Connect struct {
 	ExecutableFinder client.ExecutableFinder
 }
 
-var _ flags.Commander = Connect{}
+var _ flags.Commander = Exec{}
 
 type connectArgs struct {
 	Extra []string `positional-arg-name:"EXTRA" description:"Additional arguments to pass to openvpn"`
 }
 
-func (c Connect) Execute(_ []string) error {
+func (c Exec) Execute(_ []string) error {
 	for {
-		err := c.Service.Connect(c.ServiceName, svc.ConnectOptions{
+		err := c.Service.Execute(c.ServiceName, svc.ExecuteOptions{
 			StaticCertificate: c.StaticCertificate,
 			Sudo:              c.Sudo,
 			Exec:              c.Exec,

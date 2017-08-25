@@ -11,7 +11,7 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
-type ConnectOptions struct {
+type ExecuteOptions struct {
 	Exec      string
 	ExtraArgs []string
 
@@ -20,7 +20,7 @@ type ConnectOptions struct {
 	Sudo              bool
 }
 
-func (s Service) Connect(serviceName string, opts ConnectOptions) error {
+func (s Service) Execute(serviceName string, opts ExecuteOptions) error {
 	var executable string
 
 	if opts.Exec != "" {
@@ -96,7 +96,7 @@ func (s Service) Connect(serviceName string, opts ConnectOptions) error {
 		return bosherr.WrapError(err, "Writing certificate")
 	}
 
-	_, _, _, err = s.cmdRunner.RunComplexCommand(connectRewriteCommand(boshsys.Command{
+	_, _, _, err = s.cmdRunner.RunComplexCommand(executeRewriteCommand(boshsys.Command{
 		Name: executable,
 		Args: openvpnargs,
 
