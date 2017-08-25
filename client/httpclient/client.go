@@ -69,7 +69,7 @@ func (c client) Post(url string, contentType string, body io.Reader) (*http.Resp
 }
 
 func (c client) attemptReauthenticate(err error) error {
-	if !strings.Contains(err.Error(), "HTTP 403") { // TODO lazy improper
+	if !strings.Contains(err.Error(), "HTTP 401") { // TODO lazy improper
 		return err
 	}
 

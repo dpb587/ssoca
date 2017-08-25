@@ -74,7 +74,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	authz, err := h.apiService.IsAuthorized(*r, request.AuthToken)
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Checking service authorization"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(apierr.NewError(err, 401, ""), "Checking service authorization"))
 
 		return
 	} else if !authz {

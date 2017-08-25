@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req/reqfakes"
 	"github.com/dpb587/ssoca/server/service/servicefakes"
 	"github.com/sirupsen/logrus"
@@ -54,7 +55,7 @@ var _ = Describe("Handler", func() {
 		})
 
 		Context("when authorization fails", func() {
-			It("fails the request", func() {
+			It("errors with 401", func() {
 				apiService.IsAuthorizedReturns(false, errors.New("fake-err"))
 
 				handler := &reqfakes.FakeRouteHandler{}
@@ -66,7 +67,25 @@ var _ = Describe("Handler", func() {
 				wrapper.ServeHTTP(&res, req)
 
 				Expect(handler.ExecuteCallCount()).To(Equal(0))
-				Expect(res.Code).To(Equal(500))
+				Expect(res.Code).To(Equal(401))
+			})
+		})
+
+		Context("when authorization fails with an alternative status code", func() {
+			It("errors with the custom status", func() {
+				apiService.IsAuthorizedReturns(false, apierr.NewError(errors.New("fake-err"), 418, ""))
+
+				handler := &reqfakes.FakeRouteHandler{}
+
+				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+
+				Expect(err).ToNot(HaveOccurred())
+
+				wrapper.ServeHTTP(&res, req)
+
+				Expect(handler.ExecuteCallCount()).To(Equal(0))
+				Expect(res.Code).To(Equal(418))
+				Expect(res.Body.String()).To(ContainSubstring("I'm a teapot"))
 			})
 		})
 
