@@ -1,9 +1,9 @@
-# `ssoca download list ...`
+# `ssoca env update-client ...`
 
-List available artifacts
+Download the latest client from the environment
 
     Usage:
-      ssoca [OPTIONS] download list [list-OPTIONS]
+      ssoca [OPTIONS] env update-client [update-client-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -13,7 +13,7 @@ List available artifacts
     Help Options:
       -h, --help                 Show this help message
     
-    [list command options]
-          -s, --service=         Service name (default: download) [$SSOCA_SERVICE]
+    [update-client command options]
+          -s, --service=         Service name (default: env) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     
