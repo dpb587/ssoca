@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os/exec"
 	"runtime"
 	"strings"
 	"time"
@@ -91,6 +92,16 @@ func (c UpdateClient) Execute(_ []string) error {
 }
 
 func (c UpdateClient) update(downloadClient downloadhttpclient.Client, fileName string) error {
+	executable := c.SsocaExec
+	if executable == "" {
+		executable = "ssoca"
+	}
+
+	executable, err := exec.LookPath(executable)
+	if err != nil {
+		return bosherr.WrapError(err, "Expanding path")
+	}
+
 	tmpfile, err := c.FS.TempFile("ssoca-update-client-")
 	if err != nil {
 		return bosherr.WrapError(err, "Creating temporary file for download")
@@ -112,7 +123,7 @@ func (c UpdateClient) update(downloadClient downloadhttpclient.Client, fileName 
 		return bosherr.WrapError(err, "Rewinding download")
 	}
 
-	err = update.Apply(tmpfile, update.Options{TargetPath: c.SsocaExec})
+	err = update.Apply(tmpfile, update.Options{TargetPath: executable})
 	if err != nil {
 		return bosherr.WrapError(err, "Updating file")
 	}
