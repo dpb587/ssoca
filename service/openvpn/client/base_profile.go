@@ -8,8 +8,8 @@ type BaseProfileOptions struct {
 	SkipAuthRetry bool
 }
 
-func (s Service) BaseProfile(serviceName string, opts BaseProfileOptions) (string, error) {
-	client, err := s.GetClient(serviceName, opts.SkipAuthRetry)
+func (s Service) BaseProfile(opts BaseProfileOptions) (string, error) {
+	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
 		return "", bosherr.WrapError(err, "Getting client")
 	}

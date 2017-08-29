@@ -20,7 +20,7 @@ type ExecuteOptions struct {
 	Sudo              bool
 }
 
-func (s Service) Execute(serviceName string, opts ExecuteOptions) error {
+func (s Service) Execute(opts ExecuteOptions) error {
 	var executable string
 
 	if opts.Exec != "" {
@@ -34,12 +34,12 @@ func (s Service) Execute(serviceName string, opts ExecuteOptions) error {
 		}
 	}
 
-	client, err := s.GetClient(serviceName, opts.SkipAuthRetry)
+	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}
 
-	profileManager, err := profile.CreateManagerAndPrivateKey(client, serviceName)
+	profileManager, err := profile.CreateManagerAndPrivateKey(client, s.name)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting profile manager")
 	}

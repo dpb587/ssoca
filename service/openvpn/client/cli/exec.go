@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
 	"github.com/jessevdk/go-flags"
@@ -17,8 +16,7 @@ type Exec struct {
 	Sudo              bool        `long:"sudo" description:"Execute openvpn with sudo"`
 	Args              connectArgs `positional-args:"true"`
 
-	Service          svc.Service
-	ExecutableFinder client.ExecutableFinder
+	serviceFactory svc.ServiceFactory
 }
 
 var _ flags.Commander = Exec{}
@@ -28,8 +26,10 @@ type connectArgs struct {
 }
 
 func (c Exec) Execute(_ []string) error {
+	service := c.serviceFactory.New(c.ServiceName)
+
 	for {
-		err := c.Service.Execute(c.ServiceName, svc.ExecuteOptions{
+		err := service.Execute(svc.ExecuteOptions{
 			StaticCertificate: c.StaticCertificate,
 			Sudo:              c.Sudo,
 			Exec:              c.Exec,

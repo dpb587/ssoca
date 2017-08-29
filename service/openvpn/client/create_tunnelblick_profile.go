@@ -18,7 +18,7 @@ type CreateTunnelblickProfileOpts struct {
 	FileName  string
 }
 
-func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelblickProfileOpts) error {
+func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) error {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
 		return bosherr.WrapError(err, "Getting config manager")
@@ -46,8 +46,8 @@ func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelb
 	if file == "" {
 		file = s.runtime.GetEnvironmentName()
 
-		if serviceName != "openvpn" {
-			file = fmt.Sprintf("%s-%s", file, serviceName)
+		if s.name != "openvpn" {
+			file = fmt.Sprintf("%s-%s", file, s.name)
 		}
 	}
 
@@ -63,7 +63,7 @@ func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelb
 		return bosherr.WrapError(err, "Creating target directory")
 	}
 
-	client, err := s.GetClient(serviceName, opts.SkipAuthRetry)
+	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
 		return bosherr.WrapError(err, "Getting client")
 	}
@@ -99,7 +99,7 @@ func (s Service) CreateTunnelblickProfile(serviceName string, opts CreateTunnelb
 			Exec:        ssocaExec,
 			Config:      configManager.GetSource(),
 			Environment: s.runtime.GetEnvironmentName(),
-			Service:     serviceName,
+			Service:     s.name,
 		},
 	)
 	if err != nil {

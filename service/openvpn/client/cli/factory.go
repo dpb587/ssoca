@@ -13,30 +13,32 @@ type Commands struct {
 	Exec                     Exec                     `command:"exec" description:"Execute openvpn to connect to the remote server" alias:"connect"`
 	CreateProfile            CreateProfile            `command:"create-profile" description:"Create and sign an OpenVPN configuration profile"`
 	CreateTunnelblickProfile CreateTunnelblickProfile `command:"create-tunnelblick-profile" description:"Create a Tunnelblick profile"`
+
+	sf svc.ServiceFactory
 }
 
-func CreateCommands(runtime client.Runtime, service svc.Service) *Commands {
+func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory) *Commands {
 	cmd := clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: service.Type(),
+		ServiceName: svc.Service{}.Type(),
 	}
 
 	return &Commands{
 		BaseProfile: BaseProfile{
+			serviceFactory: sf,
 			ServiceCommand: cmd,
-			Service:        service,
 		},
 		Exec: Exec{
+			serviceFactory: sf,
 			ServiceCommand: cmd,
-			Service:        service,
 		},
 		CreateProfile: CreateProfile{
+			serviceFactory: sf,
 			ServiceCommand: cmd,
-			Service:        service,
 		},
 		CreateTunnelblickProfile: CreateTunnelblickProfile{
+			serviceFactory: sf,
 			ServiceCommand: cmd,
-			Service:        service,
 			SsocaExec:      os.Args[0],
 		},
 	}

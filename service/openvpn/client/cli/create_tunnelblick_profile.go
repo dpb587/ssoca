@@ -14,7 +14,7 @@ type CreateTunnelblickProfile struct {
 	Name      string                       `long:"name" description:"Specific file name to use for *.tblk"`
 	Args      createTunnelblickProfileArgs `positional-args:"true"`
 
-	Service svc.Service
+	serviceFactory svc.ServiceFactory
 }
 
 var _ flags.Commander = CreateTunnelblickProfile{}
@@ -24,7 +24,9 @@ type createTunnelblickProfileArgs struct {
 }
 
 func (c CreateTunnelblickProfile) Execute(_ []string) error {
-	return c.Service.CreateTunnelblickProfile(c.ServiceName, svc.CreateTunnelblickProfileOpts{
+	service := c.serviceFactory.New(c.ServiceName)
+
+	return service.CreateTunnelblickProfile(svc.CreateTunnelblickProfileOpts{
 		SkipAuthRetry: c.SkipAuthRetry,
 		SsocaExec:     c.SsocaExec,
 		FileName:      c.Name,

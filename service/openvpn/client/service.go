@@ -14,6 +14,7 @@ import (
 type Service struct {
 	svc.Service
 
+	name             string
 	runtime          client.Runtime
 	fs               boshsys.FileSystem
 	cmdRunner        boshsys.CmdRunner
@@ -22,8 +23,9 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder) Service {
+func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder) Service {
 	return Service{
+		name:             name,
 		runtime:          runtime,
 		fs:               fs,
 		cmdRunner:        cmdRunner,
@@ -31,11 +33,7 @@ func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys
 	}
 }
 
-func (s Service) Description() string {
-	return "Establish an OpenVPN to a remote server"
-}
-
-func (s Service) GetClient(service string, skipAuthRetry bool) (svchttpclient.Client, error) {
+func (s Service) GetClient(skipAuthRetry bool) (svchttpclient.Client, error) {
 	var client httpclient.Client
 	var err error
 
@@ -49,5 +47,5 @@ func (s Service) GetClient(service string, skipAuthRetry bool) (svchttpclient.Cl
 		return nil, err
 	}
 
-	return svchttpclient.New(client, service)
+	return svchttpclient.New(client, s.name)
 }

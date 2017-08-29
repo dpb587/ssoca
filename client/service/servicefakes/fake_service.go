@@ -20,12 +20,6 @@ type FakeService struct {
 	versionReturns     struct {
 		result1 string
 	}
-	DescriptionStub        func() string
-	descriptionMutex       sync.RWMutex
-	descriptionArgsForCall []struct{}
-	descriptionReturns     struct {
-		result1 string
-	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -78,30 +72,6 @@ func (fake *FakeService) VersionReturns(result1 string) {
 	}{result1}
 }
 
-func (fake *FakeService) Description() string {
-	fake.descriptionMutex.Lock()
-	fake.descriptionArgsForCall = append(fake.descriptionArgsForCall, struct{}{})
-	fake.recordInvocation("Description", []interface{}{})
-	fake.descriptionMutex.Unlock()
-	if fake.DescriptionStub != nil {
-		return fake.DescriptionStub()
-	}
-	return fake.descriptionReturns.result1
-}
-
-func (fake *FakeService) DescriptionCallCount() int {
-	fake.descriptionMutex.RLock()
-	defer fake.descriptionMutex.RUnlock()
-	return len(fake.descriptionArgsForCall)
-}
-
-func (fake *FakeService) DescriptionReturns(result1 string) {
-	fake.DescriptionStub = nil
-	fake.descriptionReturns = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakeService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -109,8 +79,6 @@ func (fake *FakeService) Invocations() map[string][][]interface{} {
 	defer fake.typeMutex.RUnlock()
 	fake.versionMutex.RLock()
 	defer fake.versionMutex.RUnlock()
-	fake.descriptionMutex.RLock()
-	defer fake.descriptionMutex.RUnlock()
 	return fake.invocations
 }
 

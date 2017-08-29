@@ -61,12 +61,20 @@ func main() {
 
 		command := svccmd.GetCommand()
 		if command != nil {
-			parser.AddCommand(name, svc.Description(), svc.Description(), command)
+			parser.AddCommand(name, svccmd.Description(), svccmd.Description(), command)
 		}
 	}
 
-	svc := srv_openvpn.NewService(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs})
-	parser.AddCommand(svc.Type(), svc.Description(), svc.Description(), srv_openvpn_cli.CreateCommands(runtime, svc))
+	// new style
+
+	parser.AddCommand(
+		"openvpn",
+		"Establish OpenVPN connections to remote servers",
+		"Establish OpenVPN connections to remote servers",
+		srv_openvpn_cli.CreateCommands(&runtime, srv_openvpn.NewServiceFactory(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs})),
+	)
+
+	// execute
 
 	if _, err := parser.Parse(); err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {

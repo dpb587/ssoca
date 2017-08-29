@@ -22,12 +22,6 @@ type FakeAuthService struct {
 	versionReturns     struct {
 		result1 string
 	}
-	DescriptionStub        func() string
-	descriptionMutex       sync.RWMutex
-	descriptionArgsForCall []struct{}
-	descriptionReturns     struct {
-		result1 string
-	}
 	AuthRequestStub        func(*http.Request) error
 	authRequestMutex       sync.RWMutex
 	authRequestArgsForCall []struct {
@@ -99,30 +93,6 @@ func (fake *FakeAuthService) VersionCallCount() int {
 func (fake *FakeAuthService) VersionReturns(result1 string) {
 	fake.VersionStub = nil
 	fake.versionReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeAuthService) Description() string {
-	fake.descriptionMutex.Lock()
-	fake.descriptionArgsForCall = append(fake.descriptionArgsForCall, struct{}{})
-	fake.recordInvocation("Description", []interface{}{})
-	fake.descriptionMutex.Unlock()
-	if fake.DescriptionStub != nil {
-		return fake.DescriptionStub()
-	}
-	return fake.descriptionReturns.result1
-}
-
-func (fake *FakeAuthService) DescriptionCallCount() int {
-	fake.descriptionMutex.RLock()
-	defer fake.descriptionMutex.RUnlock()
-	return len(fake.descriptionArgsForCall)
-}
-
-func (fake *FakeAuthService) DescriptionReturns(result1 string) {
-	fake.DescriptionStub = nil
-	fake.descriptionReturns = struct {
 		result1 string
 	}{result1}
 }
@@ -223,8 +193,6 @@ func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	defer fake.typeMutex.RUnlock()
 	fake.versionMutex.RLock()
 	defer fake.versionMutex.RUnlock()
-	fake.descriptionMutex.RLock()
-	defer fake.descriptionMutex.RUnlock()
 	fake.authRequestMutex.RLock()
 	defer fake.authRequestMutex.RUnlock()
 	fake.authLoginMutex.RLock()

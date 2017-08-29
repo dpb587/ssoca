@@ -12,13 +12,15 @@ type CreateProfile struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
-	Service svc.Service
+	serviceFactory svc.ServiceFactory
 }
 
 var _ flags.Commander = CreateProfile{}
 
 func (c CreateProfile) Execute(_ []string) error {
-	profile, err := c.Service.CreateProfile(c.ServiceName, svc.CreateProfileOptions{
+	service := c.serviceFactory.New(c.ServiceName)
+
+	profile, err := service.CreateProfile(svc.CreateProfileOptions{
 		SkipAuthRetry: c.SkipAuthRetry,
 	})
 	if err != nil {
