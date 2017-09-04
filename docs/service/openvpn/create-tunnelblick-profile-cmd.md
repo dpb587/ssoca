@@ -17,7 +17,7 @@ Create a Tunnelblick profile
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --exec-ssoca=      Path to the ssoca binary (default: ssoca)
-              --name=            Specific file name to use for *.tblk (default: openvpn)
+              --name=            Specific file name to use for *.tblk
     
     [create-tunnelblick-profile command arguments]
       DESTINATION-DIR:           Directory where the *.tblk profile will be created (default: $PWD)

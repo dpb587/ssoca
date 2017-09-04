@@ -1,9 +1,9 @@
-# `ssoca openvpn connect ...`
+# `ssoca openvpn exec ...`
 
-Connect to a remote OpenVPN server
+Execute openvpn to connect to the remote server (aliases: connect)
 
     Usage:
-      ssoca [OPTIONS] openvpn connect [connect-OPTIONS] [EXTRA...]
+      ssoca [OPTIONS] openvpn exec [exec-OPTIONS] [EXTRA...]
     
     Application Options:
           --config=                 Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -13,7 +13,7 @@ Connect to a remote OpenVPN server
     Help Options:
       -h, --help                    Show this help message
     
-    [connect command options]
+    [exec command options]
           -s, --service=            Service name (default: openvpn) [$SSOCA_SERVICE]
               --skip-auth-retry     Skip interactive authentication retries when logged out
               --exec=               Path to the openvpn binary
@@ -21,6 +21,6 @@ Connect to a remote OpenVPN server
               --static-certificate  Write a static certificate in the configuration instead of dynamic renewals
               --sudo                Execute openvpn with sudo
     
-    [connect command arguments]
+    [exec command arguments]
       EXTRA:                        Additional arguments to pass to openvpn
     
