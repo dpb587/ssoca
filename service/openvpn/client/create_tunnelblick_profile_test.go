@@ -65,7 +65,9 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 		It("errors", func() {
 			fakeclient.GetReturns(nil, errors.New("fake-err1"))
 
-			err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{})
+			err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
+				SsocaExec: "false",
+			})
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Getting base profile"))
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
