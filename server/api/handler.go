@@ -51,23 +51,9 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.authService.ParseRequestAuth(*r)
 	if err != nil {
-		// never allow a token if there was an error
-		token = nil
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
 
-		// differentiate unauthorized (essentially unauthorized, aka expired) vs forbidden (apparent auth, but invalid)
-		if matchederr, matched := err.(apierr.Error); matched {
-			if matchederr.Status == http.StatusUnauthorized {
-				h.getRequestLogger(request).Debug(err)
-
-				err = nil
-			}
-		}
-
-		if err != nil {
-			h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
-
-			return
-		}
+		return
 	}
 
 	request.AuthToken = token
