@@ -25,10 +25,10 @@ func (h RouteHandlerFunc) Execute(request Request) error {
 	return nil
 }
 
-func (h RouteHandlerFunc) IsAuthorized(r *http.Request, token *auth.Token) (bool, error) {
+func (h RouteHandlerFunc) VerifyAuthorization(r *http.Request, token *auth.Token) error {
 	if h.Requirement == nil {
-		return true, nil
+		return nil
 	}
 
-	return h.Requirement.IsSatisfied(r, token)
+	return h.Requirement.VerifyAuthorization(r, token)
 }

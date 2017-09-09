@@ -37,12 +37,10 @@ var _ = Describe("Service", func() {
 			})
 		})
 
-		Describe("IsAuthorized", func() {
+		Describe("VerifyAuthorization", func() {
 			It("works", func() {
-				authz, err := subject.IsAuthorized(http.Request{}, nil)
-
+				err := subject.VerifyAuthorization(http.Request{}, nil)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(authz).To(BeTrue())
 			})
 		})
 	})

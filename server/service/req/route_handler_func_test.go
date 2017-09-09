@@ -45,7 +45,7 @@ var _ = Describe("RouteHandlerFunc", func() {
 		})
 	})
 
-	Describe("IsAuthorized", func() {
+	Describe("VerifyAuthorization", func() {
 		var req *http.Request
 		var token *auth.Token
 
@@ -56,9 +56,8 @@ var _ = Describe("RouteHandlerFunc", func() {
 
 		Context("without requirement", func() {
 			It("is authorized", func() {
-				is, err := subject.IsAuthorized(req, token)
+				err := subject.VerifyAuthorization(req, token)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(is).To(BeTrue())
 			})
 		})
 
@@ -67,19 +66,18 @@ var _ = Describe("RouteHandlerFunc", func() {
 
 			BeforeEach(func() {
 				requirement = &filterfakes.FakeRequirement{}
-				requirement.IsSatisfiedReturns(true, errors.New("fake-err1"))
+				requirement.VerifyAuthorizationReturns(errors.New("fake-err1"))
 
 				subject.Requirement = requirement
 			})
 
 			It("delegates", func() {
-				is, err := subject.IsAuthorized(req, token)
-				Expect(is).To(BeTrue())
+				err := subject.VerifyAuthorization(req, token)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("fake-err1"))
 
-				Expect(requirement.IsSatisfiedCallCount()).To(Equal(1))
-				arg1, arg2 := requirement.IsSatisfiedArgsForCall(0)
+				Expect(requirement.VerifyAuthorizationCallCount()).To(Equal(1))
+				arg1, arg2 := requirement.VerifyAuthorizationArgsForCall(0)
 				Expect(arg1).To(Equal(req))
 				Expect(arg2).To(Equal(token))
 			})

@@ -35,8 +35,8 @@ func (h Info) Execute(request req.Request) error {
 	for _, svcName := range h.Services.Services() {
 		svc, _ := h.Services.Get(svcName)
 
-		authz, _ := svc.IsAuthorized(*request.RawRequest, request.AuthToken)
-		if !authz {
+		err := svc.VerifyAuthorization(*request.RawRequest, request.AuthToken)
+		if err != nil {
 			continue
 		}
 

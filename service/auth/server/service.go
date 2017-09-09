@@ -45,6 +45,6 @@ func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
 	return s.auth.ParseRequestAuth(r)
 }
 
-func (s Service) IsAuthorized(req http.Request, token *auth.Token) (bool, error) {
-	return s.auth.IsAuthorized(req, token)
+func (s Service) VerifyAuthorization(req http.Request, token *auth.Token) error {
+	return s.auth.VerifyAuthorization(req, token)
 }

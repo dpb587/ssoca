@@ -11,6 +11,6 @@ var authz authenticated.Requirement
 
 type WithAuthenticationRequired struct{}
 
-func (WithAuthenticationRequired) IsAuthorized(r *http.Request, token *auth.Token) (bool, error) {
-	return authz.IsSatisfied(r, token)
+func (WithAuthenticationRequired) VerifyAuthorization(r *http.Request, token *auth.Token) error {
+	return authz.VerifyAuthorization(r, token)
 }

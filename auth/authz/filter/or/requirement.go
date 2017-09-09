@@ -1,9 +1,9 @@
 package or
 
 import (
+	"errors"
 	"net/http"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/auth/authz/filter"
 )
@@ -12,15 +12,15 @@ type Requirement struct {
 	Requirements []filter.Requirement
 }
 
-func (r Requirement) IsSatisfied(req *http.Request, token *auth.Token) (bool, error) {
+func (r Requirement) VerifyAuthorization(req *http.Request, token *auth.Token) error {
 	for _, requirement := range r.Requirements {
-		satisfied, err := requirement.IsSatisfied(req, token)
+		err := requirement.VerifyAuthorization(req, token)
 		if err != nil {
-			return false, bosherr.WrapError(err, "Evaluating requirements")
-		} else if satisfied == true {
-			return true, nil
+			continue
+		} else {
+			return nil
 		}
 	}
 
-	return false, nil
+	return errors.New("No filters authorized access")
 }

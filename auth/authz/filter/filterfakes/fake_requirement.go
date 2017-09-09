@@ -10,59 +10,57 @@ import (
 )
 
 type FakeRequirement struct {
-	IsSatisfiedStub        func(*http.Request, *auth.Token) (bool, error)
-	isSatisfiedMutex       sync.RWMutex
-	isSatisfiedArgsForCall []struct {
+	VerifyAuthorizationStub        func(*http.Request, *auth.Token) error
+	verifyAuthorizationMutex       sync.RWMutex
+	verifyAuthorizationArgsForCall []struct {
 		arg1 *http.Request
 		arg2 *auth.Token
 	}
-	isSatisfiedReturns struct {
-		result1 bool
-		result2 error
+	verifyAuthorizationReturns struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeRequirement) IsSatisfied(arg1 *http.Request, arg2 *auth.Token) (bool, error) {
-	fake.isSatisfiedMutex.Lock()
-	fake.isSatisfiedArgsForCall = append(fake.isSatisfiedArgsForCall, struct {
+func (fake *FakeRequirement) VerifyAuthorization(arg1 *http.Request, arg2 *auth.Token) error {
+	fake.verifyAuthorizationMutex.Lock()
+	fake.verifyAuthorizationArgsForCall = append(fake.verifyAuthorizationArgsForCall, struct {
 		arg1 *http.Request
 		arg2 *auth.Token
 	}{arg1, arg2})
-	fake.recordInvocation("IsSatisfied", []interface{}{arg1, arg2})
-	fake.isSatisfiedMutex.Unlock()
-	if fake.IsSatisfiedStub != nil {
-		return fake.IsSatisfiedStub(arg1, arg2)
+	fake.recordInvocation("VerifyAuthorization", []interface{}{arg1, arg2})
+	fake.verifyAuthorizationMutex.Unlock()
+	if fake.VerifyAuthorizationStub != nil {
+		return fake.VerifyAuthorizationStub(arg1, arg2)
 	}
-	return fake.isSatisfiedReturns.result1, fake.isSatisfiedReturns.result2
+	return fake.verifyAuthorizationReturns.result1
 }
 
-func (fake *FakeRequirement) IsSatisfiedCallCount() int {
-	fake.isSatisfiedMutex.RLock()
-	defer fake.isSatisfiedMutex.RUnlock()
-	return len(fake.isSatisfiedArgsForCall)
+func (fake *FakeRequirement) VerifyAuthorizationCallCount() int {
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
+	return len(fake.verifyAuthorizationArgsForCall)
 }
 
-func (fake *FakeRequirement) IsSatisfiedArgsForCall(i int) (*http.Request, *auth.Token) {
-	fake.isSatisfiedMutex.RLock()
-	defer fake.isSatisfiedMutex.RUnlock()
-	return fake.isSatisfiedArgsForCall[i].arg1, fake.isSatisfiedArgsForCall[i].arg2
+func (fake *FakeRequirement) VerifyAuthorizationArgsForCall(i int) (*http.Request, *auth.Token) {
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
+	return fake.verifyAuthorizationArgsForCall[i].arg1, fake.verifyAuthorizationArgsForCall[i].arg2
 }
 
-func (fake *FakeRequirement) IsSatisfiedReturns(result1 bool, result2 error) {
-	fake.IsSatisfiedStub = nil
-	fake.isSatisfiedReturns = struct {
-		result1 bool
-		result2 error
-	}{result1, result2}
+func (fake *FakeRequirement) VerifyAuthorizationReturns(result1 error) {
+	fake.VerifyAuthorizationStub = nil
+	fake.verifyAuthorizationReturns = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeRequirement) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.isSatisfiedMutex.RLock()
-	defer fake.isSatisfiedMutex.RUnlock()
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
 	return fake.invocations
 }
 

@@ -10,5 +10,5 @@ import (
 type RouteHandler interface {
 	Route() string
 	Execute(Request) error
-	IsAuthorized(*http.Request, *auth.Token) (bool, error)
+	VerifyAuthorization(*http.Request, *auth.Token) error
 }

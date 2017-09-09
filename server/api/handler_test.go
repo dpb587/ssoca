@@ -3,6 +3,8 @@ package api_test
 import (
 	"errors"
 
+	"github.com/dpb587/ssoca/auth/authn"
+	"github.com/dpb587/ssoca/auth/authz"
 	. "github.com/dpb587/ssoca/server/api"
 
 	"net/http"
@@ -31,7 +33,6 @@ var _ = Describe("Handler", func() {
 
 		authService = &servicefakes.FakeAuthService{}
 		apiService = &servicefakes.FakeService{}
-		apiService.IsAuthorizedReturns(true, nil)
 
 		logger, _ = logrustest.NewNullLogger()
 	})
@@ -54,62 +55,79 @@ var _ = Describe("Handler", func() {
 			})
 		})
 
-		Context("when authorization fails", func() {
-			It("errors with 401", func() {
-				apiService.IsAuthorizedReturns(false, errors.New("fake-err"))
+		Context("authorization", func() {
+			Context("authentication errors", func() {
+				It("errors with 401", func() {
+					apiService.VerifyAuthorizationReturns(authn.NewError(errors.New("fake-err")))
 
-				handler := &reqfakes.FakeRouteHandler{}
+					handler := &reqfakes.FakeRouteHandler{}
 
-				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
-				Expect(err).ToNot(HaveOccurred())
+					Expect(err).ToNot(HaveOccurred())
 
-				wrapper.ServeHTTP(&res, req)
+					wrapper.ServeHTTP(&res, req)
 
-				Expect(handler.ExecuteCallCount()).To(Equal(0))
-				Expect(res.Code).To(Equal(401))
+					Expect(handler.ExecuteCallCount()).To(Equal(0))
+					Expect(res.Code).To(Equal(401))
+				})
 			})
-		})
 
-		Context("when authorization fails with an alternative status code", func() {
-			It("errors with the custom status", func() {
-				apiService.IsAuthorizedReturns(false, apierr.NewError(errors.New("fake-err"), 418, ""))
+			Context("authorization errors", func() {
+				It("errors with 403", func() {
+					apiService.VerifyAuthorizationReturns(authz.NewError(errors.New("fake-err")))
 
-				handler := &reqfakes.FakeRouteHandler{}
+					handler := &reqfakes.FakeRouteHandler{}
 
-				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
-				Expect(err).ToNot(HaveOccurred())
+					Expect(err).ToNot(HaveOccurred())
 
-				wrapper.ServeHTTP(&res, req)
+					wrapper.ServeHTTP(&res, req)
 
-				Expect(handler.ExecuteCallCount()).To(Equal(0))
-				Expect(res.Code).To(Equal(418))
-				Expect(res.Body.String()).To(ContainSubstring("I'm a teapot"))
+					Expect(handler.ExecuteCallCount()).To(Equal(0))
+					Expect(res.Code).To(Equal(403))
+				})
 			})
-		})
 
-		Context("when authorization rejected", func() {
-			It("errors with 403", func() {
-				apiService.IsAuthorizedReturns(false, nil)
+			Context("generic errors", func() {
+				It("errors with 500", func() {
+					apiService.VerifyAuthorizationReturns(errors.New("fake-err"))
 
-				handler := &reqfakes.FakeRouteHandler{}
+					handler := &reqfakes.FakeRouteHandler{}
 
-				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
 
-				Expect(err).ToNot(HaveOccurred())
+					Expect(err).ToNot(HaveOccurred())
 
-				wrapper.ServeHTTP(&res, req)
+					wrapper.ServeHTTP(&res, req)
 
-				Expect(handler.ExecuteCallCount()).To(Equal(0))
-				Expect(res.Code).To(Equal(403))
+					Expect(handler.ExecuteCallCount()).To(Equal(0))
+					Expect(res.Code).To(Equal(500))
+				})
+			})
+
+			Context("custom status codes", func() {
+				It("errors with the custom status", func() {
+					apiService.VerifyAuthorizationReturns(apierr.NewError(errors.New("fake-err"), 418, ""))
+
+					handler := &reqfakes.FakeRouteHandler{}
+
+					wrapper, err := CreateHandler(authService, apiService, handler, logger)
+
+					Expect(err).ToNot(HaveOccurred())
+
+					wrapper.ServeHTTP(&res, req)
+
+					Expect(handler.ExecuteCallCount()).To(Equal(0))
+					Expect(res.Code).To(Equal(418))
+					Expect(res.Body.String()).To(ContainSubstring("I'm a teapot"))
+				})
 			})
 		})
 
 		Context("when handler fails", func() {
 			It("errors with 500", func() {
-				apiService.IsAuthorizedReturns(true, nil)
-
 				handler := &reqfakes.FakeRouteHandler{}
 				handler.ExecuteReturns(errors.New("fake-err1"))
 

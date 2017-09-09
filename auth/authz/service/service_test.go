@@ -68,7 +68,7 @@ var _ = Describe("Service", func() {
 		})
 	})
 
-	Describe("IsAuthorized", func() {
+	Describe("VerifyAuthorization", func() {
 		var req http.Request
 		var token *auth.Token
 
@@ -78,71 +78,42 @@ var _ = Describe("Service", func() {
 		})
 
 		Context("requirement fails", func() {
-			Context("denies authorization", func() {
-				It("is not authorized and does not invoke service", func() {
-					requirement.IsSatisfiedReturns(false, nil)
+			It("is not authorized and does not invoke service authorization check", func() {
+				requirement.VerifyAuthorizationReturns(errors.New("fake-err1"))
 
-					authz, err := subject.IsAuthorized(req, token)
+				err := subject.VerifyAuthorization(req, token)
 
-					Expect(err).ToNot(HaveOccurred())
-					Expect(authz).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("fake-err1"))
 
-					Expect(service.IsAuthorizedCallCount()).To(Equal(0))
-				})
-			})
-
-			Context("errors", func() {
-				It("errors and does not invoke service", func() {
-					requirement.IsSatisfiedReturns(false, errors.New("fake-error"))
-
-					authz, err := subject.IsAuthorized(req, token)
-
-					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("fake-error"))
-					Expect(authz).To(BeFalse())
-
-					Expect(service.IsAuthorizedCallCount()).To(Equal(0))
-				})
+				Expect(service.VerifyAuthorizationCallCount()).To(Equal(0))
 			})
 		})
 
 		Context("service fails", func() {
 			BeforeEach(func() {
-				requirement.IsSatisfiedReturns(true, nil)
+				requirement.VerifyAuthorizationReturns(nil)
 			})
 
 			Context("denies authorization", func() {
 				It("is not authorized and does not invoke service", func() {
-					service.IsAuthorizedReturns(false, nil)
+					service.VerifyAuthorizationReturns(errors.New("fake-err1"))
 
-					authz, err := subject.IsAuthorized(req, token)
-
-					Expect(err).ToNot(HaveOccurred())
-					Expect(authz).To(BeFalse())
-				})
-			})
-
-			Context("errors", func() {
-				It("errors and does not invoke service", func() {
-					service.IsAuthorizedReturns(false, errors.New("fake-error"))
-
-					authz, err := subject.IsAuthorized(req, token)
+					err := subject.VerifyAuthorization(req, token)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("fake-error"))
-					Expect(authz).To(BeFalse())
+					Expect(err.Error()).To(Equal("fake-err1"))
 				})
 			})
 		})
 
 		It("authorizes", func() {
-			requirement.IsSatisfiedReturns(true, nil)
-			service.IsAuthorizedReturns(true, nil)
+			requirement.VerifyAuthorizationReturns(nil)
+			service.VerifyAuthorizationReturns(nil)
 
-			authz, err := subject.IsAuthorized(req, token)
+			err := subject.VerifyAuthorization(req, token)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(authz).To(BeTrue())
 		})
 	})
 })

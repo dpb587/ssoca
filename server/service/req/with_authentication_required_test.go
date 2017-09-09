@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
 	. "github.com/dpb587/ssoca/server/service/req"
 
 	. "github.com/onsi/ginkgo"
@@ -13,22 +14,24 @@ import (
 var _ = Describe("WithAuthenticationRequired", func() {
 	var subject WithAuthenticationRequired
 
-	Describe("IsAuthorized", func() {
+	Describe("VerifyAuthorization", func() {
 		Context("with authorization token", func() {
 			It("is authorized", func() {
-				authz, err := subject.IsAuthorized(&http.Request{}, &auth.Token{ID: "authenticated"})
+				err := subject.VerifyAuthorization(&http.Request{}, &auth.Token{ID: "authenticated"})
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(authz).To(BeTrue())
 			})
 		})
 
 		Context("without authorization token", func() {
 			It("is not authorized", func() {
-				authz, err := subject.IsAuthorized(&http.Request{}, nil)
+				err := subject.VerifyAuthorization(&http.Request{}, nil)
 
-				Expect(err).ToNot(HaveOccurred())
-				Expect(authz).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+
+				aerr, ok := err.(authn.Error)
+				Expect(ok).To(BeTrue())
+				Expect(aerr.Error()).To(Equal("Authentication token missing"))
 			})
 		})
 	})

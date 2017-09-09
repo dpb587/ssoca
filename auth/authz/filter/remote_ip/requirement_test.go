@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/dpb587/ssoca/auth/authz"
 	. "github.com/dpb587/ssoca/auth/authz/filter/remote_ip"
 
 	. "github.com/onsi/ginkgo"
@@ -24,14 +25,14 @@ var _ = Describe("Requirement", func() {
 		}
 	}
 
-	Describe("IsSatisfied", func() {
+	Describe("VerifyAuthorization", func() {
 		Context("IP matching", func() {
 			BeforeEach(func() {
 				subject = createRequirement("192.0.2.29/32")
 			})
 
 			It("satisfies with IP", func() {
-				satisfied, err := subject.IsSatisfied(
+				err := subject.VerifyAuthorization(
 					&http.Request{
 						RemoteAddr: "192.0.2.29:1234",
 					},
@@ -39,19 +40,21 @@ var _ = Describe("Requirement", func() {
 				)
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(satisfied).To(BeTrue())
 			})
 
 			It("does not match another IP", func() {
-				satisfied, err := subject.IsSatisfied(
+				err := subject.VerifyAuthorization(
 					&http.Request{
 						RemoteAddr: "192.0.2.28:1234",
 					},
 					nil,
 				)
 
-				Expect(err).ToNot(HaveOccurred())
-				Expect(satisfied).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+
+				aerr, ok := err.(authz.Error)
+				Expect(ok).To(BeTrue())
+				Expect(aerr.Error()).To(Equal("Remote IP is not allowed"))
 			})
 		})
 
@@ -61,7 +64,7 @@ var _ = Describe("Requirement", func() {
 			})
 
 			It("satisfies with netmask", func() {
-				satisfied, err := subject.IsSatisfied(
+				err := subject.VerifyAuthorization(
 					&http.Request{
 						RemoteAddr: "192.0.2.27:1234",
 					},
@@ -69,25 +72,27 @@ var _ = Describe("Requirement", func() {
 				)
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(satisfied).To(BeTrue())
 			})
 
 			It("does not match another IP", func() {
-				satisfied, err := subject.IsSatisfied(
+				err := subject.VerifyAuthorization(
 					&http.Request{
 						RemoteAddr: "192.0.3.27:1234",
 					},
 					nil,
 				)
 
-				Expect(err).ToNot(HaveOccurred())
-				Expect(satisfied).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+
+				aerr, ok := err.(authz.Error)
+				Expect(ok).To(BeTrue())
+				Expect(aerr.Error()).To(Equal("Remote IP is not allowed"))
 			})
 		})
 
 		Context("eccentricities", func() {
 			It("error if request remote address is malformed", func() {
-				satisfied, err := subject.IsSatisfied(
+				err := subject.VerifyAuthorization(
 					&http.Request{
 						RemoteAddr: "impractical",
 					},
@@ -96,7 +101,6 @@ var _ = Describe("Requirement", func() {
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Parsing remote address"))
-				Expect(satisfied).To(BeFalse())
 			})
 		})
 	})

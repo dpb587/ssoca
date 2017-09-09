@@ -8,6 +8,6 @@ import (
 
 type WithoutAdditionalAuthorization struct{}
 
-func (WithoutAdditionalAuthorization) IsAuthorized(r *http.Request, token *auth.Token) (bool, error) {
-	return true, nil
+func (WithoutAdditionalAuthorization) VerifyAuthorization(r *http.Request, token *auth.Token) error {
+	return nil
 }

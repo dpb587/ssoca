@@ -33,7 +33,7 @@ type Service interface {
 	Version() string
 	Metadata() interface{}
 	GetRoutes() []req.RouteHandler
-	IsAuthorized(http.Request, *auth.Token) (bool, error)
+	VerifyAuthorization(http.Request, *auth.Token) error
 }
 
 //go:generate counterfeiter . AuthService

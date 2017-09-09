@@ -1,18 +1,21 @@
 package scope
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
+	"github.com/dpb587/ssoca/auth/authz"
 )
 
 type Requirement struct {
 	Present string `yaml:"present"`
 }
 
-func (r Requirement) IsSatisfied(_ *http.Request, token *auth.Token) (bool, error) {
+func (r Requirement) VerifyAuthorization(_ *http.Request, token *auth.Token) error {
 	if token == nil {
-		return false, nil
+		return authn.NewError(errors.New("Authentication token missing"))
 	}
 
 	for _, scope := range token.Groups {
@@ -20,8 +23,8 @@ func (r Requirement) IsSatisfied(_ *http.Request, token *auth.Token) (bool, erro
 			continue
 		}
 
-		return true, nil
+		return nil
 	}
 
-	return false, nil
+	return authz.NewError(errors.New("Scope is missing"))
 }

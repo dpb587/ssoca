@@ -13,22 +13,18 @@ import (
 var _ = Describe("WithoutAdditionalAuthorization", func() {
 	var subject WithoutAdditionalAuthorization
 
-	Describe("IsAuthorized", func() {
+	Describe("VerifyAuthorization", func() {
 		Context("with authorization token", func() {
 			It("is authorized", func() {
-				authz, err := subject.IsAuthorized(&http.Request{}, &auth.Token{ID: "authenticated"})
-
+				err := subject.VerifyAuthorization(&http.Request{}, &auth.Token{ID: "authenticated"})
 				Expect(err).ToNot(HaveOccurred())
-				Expect(authz).To(BeTrue())
 			})
 		})
 
 		Context("without authorization token", func() {
 			It("is authorized", func() {
-				authz, err := subject.IsAuthorized(&http.Request{}, nil)
-
+				err := subject.VerifyAuthorization(&http.Request{}, nil)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(authz).To(BeTrue())
 			})
 		})
 	})

@@ -3,6 +3,7 @@ package authenticated_test
 import (
 	"net/http"
 
+	"github.com/dpb587/ssoca/auth/authn"
 	. "github.com/dpb587/ssoca/auth/authz/filter/authenticated"
 
 	"github.com/dpb587/ssoca/auth"
@@ -19,29 +20,44 @@ var _ = Describe("Requirement", func() {
 		request = http.Request{}
 	})
 
-	Describe("IsSatisfied", func() {
+	Describe("VerifyAuthorization", func() {
 		BeforeEach(func() {
 			subject = Requirement{}
 		})
 
 		It("satisfies with token", func() {
-			satisfied, err := subject.IsSatisfied(
+			err := subject.VerifyAuthorization(
 				&request,
 				&auth.Token{ID: "test"},
 			)
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(satisfied).To(BeTrue())
+		})
+
+		It("does not satisfy without username", func() {
+			err := subject.VerifyAuthorization(
+				&request,
+				&auth.Token{},
+			)
+
+			Expect(err).To(HaveOccurred())
+
+			aerr, ok := err.(authn.Error)
+			Expect(ok).To(BeTrue())
+			Expect(aerr.Error()).To(Equal("Authentication ID missing"))
 		})
 
 		It("does not satisfy without token", func() {
-			satisfied, err := subject.IsSatisfied(
+			err := subject.VerifyAuthorization(
 				&request,
 				nil,
 			)
 
-			Expect(err).ToNot(HaveOccurred())
-			Expect(satisfied).To(BeFalse())
+			Expect(err).To(HaveOccurred())
+
+			aerr, ok := err.(authn.Error)
+			Expect(ok).To(BeTrue())
+			Expect(aerr.Error()).To(Equal("Authentication token missing"))
 		})
 	})
 })

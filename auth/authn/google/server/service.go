@@ -38,6 +38,6 @@ func (s Service) GetRoutes() []req.RouteHandler {
 	return s.oauth.GetRoutes(s.OAuthUserProfileLoader)
 }
 
-func (s Service) IsAuthorized(_ http.Request, _ *auth.Token) (bool, error) {
-	return true, nil
+func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
+	return nil
 }

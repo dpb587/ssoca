@@ -55,8 +55,8 @@ func (s Service) GetRoutes() []req.RouteHandler {
 	}
 }
 
-func (s Service) IsAuthorized(_ http.Request, _ *auth.Token) (bool, error) {
-	return true, nil
+func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
+	return nil
 }
 
 func (s Service) GetDownloadPaths() []svcconfig.PathConfig {

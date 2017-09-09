@@ -24,15 +24,14 @@ type FakeRouteHandler struct {
 	executeReturns struct {
 		result1 error
 	}
-	IsAuthorizedStub        func(*http.Request, *auth.Token) (bool, error)
-	isAuthorizedMutex       sync.RWMutex
-	isAuthorizedArgsForCall []struct {
+	VerifyAuthorizationStub        func(*http.Request, *auth.Token) error
+	verifyAuthorizationMutex       sync.RWMutex
+	verifyAuthorizationArgsForCall []struct {
 		arg1 *http.Request
 		arg2 *auth.Token
 	}
-	isAuthorizedReturns struct {
-		result1 bool
-		result2 error
+	verifyAuthorizationReturns struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -94,38 +93,37 @@ func (fake *FakeRouteHandler) ExecuteReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakeRouteHandler) IsAuthorized(arg1 *http.Request, arg2 *auth.Token) (bool, error) {
-	fake.isAuthorizedMutex.Lock()
-	fake.isAuthorizedArgsForCall = append(fake.isAuthorizedArgsForCall, struct {
+func (fake *FakeRouteHandler) VerifyAuthorization(arg1 *http.Request, arg2 *auth.Token) error {
+	fake.verifyAuthorizationMutex.Lock()
+	fake.verifyAuthorizationArgsForCall = append(fake.verifyAuthorizationArgsForCall, struct {
 		arg1 *http.Request
 		arg2 *auth.Token
 	}{arg1, arg2})
-	fake.recordInvocation("IsAuthorized", []interface{}{arg1, arg2})
-	fake.isAuthorizedMutex.Unlock()
-	if fake.IsAuthorizedStub != nil {
-		return fake.IsAuthorizedStub(arg1, arg2)
+	fake.recordInvocation("VerifyAuthorization", []interface{}{arg1, arg2})
+	fake.verifyAuthorizationMutex.Unlock()
+	if fake.VerifyAuthorizationStub != nil {
+		return fake.VerifyAuthorizationStub(arg1, arg2)
 	}
-	return fake.isAuthorizedReturns.result1, fake.isAuthorizedReturns.result2
+	return fake.verifyAuthorizationReturns.result1
 }
 
-func (fake *FakeRouteHandler) IsAuthorizedCallCount() int {
-	fake.isAuthorizedMutex.RLock()
-	defer fake.isAuthorizedMutex.RUnlock()
-	return len(fake.isAuthorizedArgsForCall)
+func (fake *FakeRouteHandler) VerifyAuthorizationCallCount() int {
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
+	return len(fake.verifyAuthorizationArgsForCall)
 }
 
-func (fake *FakeRouteHandler) IsAuthorizedArgsForCall(i int) (*http.Request, *auth.Token) {
-	fake.isAuthorizedMutex.RLock()
-	defer fake.isAuthorizedMutex.RUnlock()
-	return fake.isAuthorizedArgsForCall[i].arg1, fake.isAuthorizedArgsForCall[i].arg2
+func (fake *FakeRouteHandler) VerifyAuthorizationArgsForCall(i int) (*http.Request, *auth.Token) {
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
+	return fake.verifyAuthorizationArgsForCall[i].arg1, fake.verifyAuthorizationArgsForCall[i].arg2
 }
 
-func (fake *FakeRouteHandler) IsAuthorizedReturns(result1 bool, result2 error) {
-	fake.IsAuthorizedStub = nil
-	fake.isAuthorizedReturns = struct {
-		result1 bool
-		result2 error
-	}{result1, result2}
+func (fake *FakeRouteHandler) VerifyAuthorizationReturns(result1 error) {
+	fake.VerifyAuthorizationStub = nil
+	fake.verifyAuthorizationReturns = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeRouteHandler) Invocations() map[string][][]interface{} {
@@ -135,8 +133,8 @@ func (fake *FakeRouteHandler) Invocations() map[string][][]interface{} {
 	defer fake.routeMutex.RUnlock()
 	fake.executeMutex.RLock()
 	defer fake.executeMutex.RUnlock()
-	fake.isAuthorizedMutex.RLock()
-	defer fake.isAuthorizedMutex.RUnlock()
+	fake.verifyAuthorizationMutex.RLock()
+	defer fake.verifyAuthorizationMutex.RUnlock()
 	return fake.invocations
 }
 

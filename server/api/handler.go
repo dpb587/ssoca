@@ -1,9 +1,10 @@
 package api
 
 import (
-	"errors"
 	"net/http"
 
+	"github.com/dpb587/ssoca/auth/authn"
+	"github.com/dpb587/ssoca/auth/authz"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
@@ -72,13 +73,17 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	request.AuthToken = token
 
-	authz, err := h.apiService.IsAuthorized(*r, request.AuthToken)
+	err = h.apiService.VerifyAuthorization(*r, request.AuthToken)
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(apierr.NewError(err, 401, ""), "Checking service authorization"))
+		statusCode := http.StatusInternalServerError
 
-		return
-	} else if !authz {
-		h.sendErrorResponse(request, apierr.NewError(errors.New("Not authorized"), http.StatusForbidden, ""))
+		if _, ok := err.(authn.Error); ok {
+			statusCode = http.StatusUnauthorized
+		} else if _, ok := err.(authz.Error); ok {
+			statusCode = http.StatusForbidden
+		}
+
+		h.sendGenericErrorResponse(request, apierr.WrapError(apierr.NewError(err, statusCode, ""), "Checking service authorization"))
 
 		return
 	}
