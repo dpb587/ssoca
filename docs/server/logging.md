@@ -16,10 +16,11 @@ The following fields will be present on every message.
 
 The following fields will be present on messages related to an HTTP request or response.
 
- * `server.request.id` - a UUID identifying the request (this may appear in other messages for correlation when they're initiated by an HTTP request)
+ * `server.request.id` - a UUID identifying the request (this may appear in other log messages for correlation)
  * `server.request.method` - the HTTP method used (e.g. `POST`)
  * `server.request.path` - the URL path requested (e.g. `/ssh/sign-public-key`)
  * `server.request.remote_addr` - the remote address of the connecting client (e.g. `[::1]:50520`)
+ * `server.request.user_agent` - the user agent of the connecting client (e.g. `ssoca-client/0.7.0`)
 
 
 ## Services

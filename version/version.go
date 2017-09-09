@@ -40,6 +40,10 @@ func MustVersion(name string, semver string, commit string, built_ string) Versi
 	return Version{name, semver, commit, builtval}
 }
 
+func (v Version) Version() string {
+	return fmt.Sprintf("%s/%s", v.Name, v.Semver)
+}
+
 func (v Version) String() string {
 	return fmt.Sprintf("%s/%s (commit %s, built %s)", v.Name, v.Semver, v.Commit, v.Built.Format(time.RFC3339))
 }

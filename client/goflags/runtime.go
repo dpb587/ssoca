@@ -150,7 +150,7 @@ func (r Runtime) GetClient() (httpclient.Client, error) {
 		Transport: client.NewAuthTransport(r, r.serviceManager, baseTransport),
 	}
 
-	client := httpclient.NewClient(env.URL, goclient)
+	client := httpclient.NewClient(goclient, r.version, env.URL)
 
 	return client, nil
 }

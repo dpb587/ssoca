@@ -46,6 +46,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	request.LoggerContext = logrus.Fields{
 		"server.request.id":          request.ID,
 		"server.request.remote_addr": r.RemoteAddr,
+		"server.request.user_agent":  r.Header.Get("user-agent"),
 		"service.name":               h.apiService.Name(),
 		"service.type":               h.apiService.Type(),
 	}

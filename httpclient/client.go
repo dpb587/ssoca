@@ -10,24 +10,40 @@ import (
 	"strings"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/version"
 )
+
+var baseUserAgent = "httpclient.ssoca.dpb587.github.com/1.0"
 
 type client struct {
 	client   *http.Client
 	endpoint string
+	version  version.Version
 }
 
 var _ Client = client{}
 
-func NewClient(endpoint string, goclient *http.Client) Client {
+func NewClient(goclient *http.Client, v version.Version, endpoint string) Client {
 	return &client{
 		endpoint: endpoint,
 		client:   goclient,
+		version:  v,
 	}
 }
 
+func (c client) do(req *http.Request) (*http.Response, error) {
+	req.Header.Set("User-Agent", fmt.Sprintf("%s %s", c.version.Version(), baseUserAgent))
+
+	return c.client.Do(req)
+}
+
 func (c client) Get(url string) (*http.Response, error) {
-	res, err := c.client.Get(c.expandURI(url))
+	req, err := http.NewRequest("GET", c.expandURI(url), nil)
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Creating request")
+	}
+
+	res, err := c.do(req)
 	if err == nil && res.StatusCode >= 400 {
 		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
 	}
@@ -36,7 +52,14 @@ func (c client) Get(url string) (*http.Response, error) {
 }
 
 func (c client) Post(url string, contentType string, body io.Reader) (*http.Response, error) {
-	res, err := c.client.Post(c.expandURI(url), contentType, body)
+	req, err := http.NewRequest("POST", c.expandURI(url), body)
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Creating request")
+	}
+
+	req.Header.Set("Content-Type", contentType)
+
+	res, err := c.do(req)
 	if err == nil && res.StatusCode >= 400 {
 		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
 	}

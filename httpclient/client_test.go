@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	. "github.com/dpb587/ssoca/httpclient"
+	"github.com/dpb587/ssoca/version"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -37,7 +38,7 @@ var _ = Describe("Client", func() {
 		gohttp := &http.Client{}
 		gohttp.Transport = transport
 
-		return NewClient("https://example.com/subpath", gohttp)
+		return NewClient(gohttp, version.Version{Name: "ssoca-test", Semver: "0.0.1+dev"}, "https://example.com/subpath")
 	}
 	//
 	// Describe("ExpandURI", func() {
