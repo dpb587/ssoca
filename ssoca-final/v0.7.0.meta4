@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="ssoca-client-0.7.0-darwin-amd64">
+    <hash type="md5">d21c86afd5fb853e8d371562bca1a7aa</hash>
+    <hash type="sha-1">abca3a81c3d4f0dbb26f74a328b9f642ddde5bbe</hash>
+    <hash type="sha-256">34f8334120adc3028b685703531abc4044cb454f815c53f0f0a8cf85e86c07fb</hash>
+    <hash type="sha-512">ab65ccf4bc5198ccfbe666bafc09a68564b223c7861376b11c187d4ff549206a60080fb850778d42cdd91dd3788ae41784bf0fcbbbc40448d22c4ab2610873e3</hash>
+    <size>11303856</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/abca3a81c3d4f0dbb26f74a328b9f642ddde5bbe</url>
+    <version>0.7.0</version>
+  </file>
+  <file name="ssoca-client-0.7.0-linux-amd64">
+    <hash type="md5">5ca343a1cabea903ffa3db294fba0804</hash>
+    <hash type="sha-1">33d2346400e708580f3b34f573ce7ed923479178</hash>
+    <hash type="sha-256">08f88a4b0efc374a0b9541b9bbade9d3fa865cb109eae0dbb843099b704bcd2c</hash>
+    <hash type="sha-512">491538f32011fd8ad470ac0ff39723d2cb45c30051d3375f176c39a6b1f091658e5d671ee0954974f721844cda4c99a89c91d1c5b5ea46264d5568ddc1c1b9d4</hash>
+    <size>11481155</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/33d2346400e708580f3b34f573ce7ed923479178</url>
+    <version>0.7.0</version>
+  </file>
+  <file name="ssoca-client-0.7.0-windows-amd64.exe">
+    <hash type="md5">ba33c49b3a7c2de81289dc7b6c883365</hash>
+    <hash type="sha-1">cf4563e3fc3768cac84122ee87ed40dc0f944fed</hash>
+    <hash type="sha-256">09bb356596495624fcb55620935ed9804b995a6b4245fa7a251db64a14d11069</hash>
+    <hash type="sha-512">820749ec5f8cd2637abc1b14e8772779144a74e7b70d8e8171d962a7b35f960c1d869b9e3fbc3f9755d7b0cdcf9c45d3fa1755c086670665f998aa09533b3b84</hash>
+    <size>11186688</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/cf4563e3fc3768cac84122ee87ed40dc0f944fed</url>
+    <version>0.7.0</version>
+  </file>
+  <file name="ssoca-server-0.7.0-darwin-amd64">
+    <hash type="md5">ee06d0d43784644288925f52119ed9d9</hash>
+    <hash type="sha-1">1545d0868097b5825218a2d7a7e64f96842229f8</hash>
+    <hash type="sha-256">e865f1b2605b24b85c87db04e12a4feb21f039f33e7e4b1ab647fbcf46522a51</hash>
+    <hash type="sha-512">b488af8e571c2bbbaf79aa819d2531600bf440dc0e9b92dce3279557d2e2617b50dd6bb35fb612cf1a74e72f6267ae10bcf47105815f68ae1f1d1ee5b04d3cdf</hash>
+    <size>12080608</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/1545d0868097b5825218a2d7a7e64f96842229f8</url>
+    <version>0.7.0</version>
+  </file>
+  <file name="ssoca-server-0.7.0-linux-amd64">
+    <hash type="md5">b5cfdfa6bf1ff946cf4291c586d5e59a</hash>
+    <hash type="sha-1">41a8864e3e9cb993054a280bdf00475540bad945</hash>
+    <hash type="sha-256">be2bdba60f5c74ae912a38b308e47136ceea6c0f38ad78ce8e7978cd1365f5c7</hash>
+    <hash type="sha-512">f36417cfc7f08732c553625019f242144d5c0f5306ac1be0c9227215f043612438ca02bfc95c2f6ef8a74158508b04e6b85c667192f08dd901f0dfaf10ab3da4</hash>
+    <size>12238551</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/41a8864e3e9cb993054a280bdf00475540bad945</url>
+    <version>0.7.0</version>
+  </file>
+  <file name="ssoca-server-0.7.0-windows-amd64.exe">
+    <hash type="md5">3a2c216963d036cb62b7d12dfdfac54a</hash>
+    <hash type="sha-1">38d5f366af1d3f7d020cc6dd0b77259f46a333da</hash>
+    <hash type="sha-256">45dc82a5a3055a931dc4aed05cbb01e78873cf5d544e3baae7c9d6959b8b69f0</hash>
+    <hash type="sha-512">8f01e5cbf4242cf7cba887a2702c4e1f658758030199cab7446080222d9395af3c1723266bb8c4809cd83aeee4aabaa32ef32e616a3f2c74bef455494dd5298c</hash>
+    <size>12081664</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.7.0/38d5f366af1d3f7d020cc6dd0b77259f46a333da</url>
+    <version>0.7.0</version>
+  </file>
+  <generator>metalink.dpb587.github.io/0.0.0</generator>
+  <published>2017-09-14T07:47:04Z</published>
+</metalink>
