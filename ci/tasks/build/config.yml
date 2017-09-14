@@ -1,0 +1,20 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dpb587/ssoca
+    tag: ci-build
+inputs:
+  - name: repo
+    path: src/github.com/dpb587/ssoca
+  - name: version
+outputs:
+  - name: build
+run:
+  path: src/github.com/dpb587/ssoca/ci/tasks/build/execute.sh
+params:
+  s3_host: null
+  s3_bucket: null
+  s3_prefix: null
+  s3_access_key: null
+  s3_secret_key: null

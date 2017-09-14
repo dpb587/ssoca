@@ -39,24 +39,145 @@ jobs:
         file: repo/ci/tasks/unit-coverage/config.yml
         params:
           COVERALLS_TOKEN: {{coveralls_token}}
+  - name: build
+    serial_groups:
+      - version
+    plan:
+      - get: repo
+        trigger: true
+        passed:
+          - unit-tests
+      - put: version
+        params:
+          pre: dev
+      - task: build
+        file: repo/ci/tasks/build/config.yml
+        params:
+          s3_host: {{assets_s3_host}}
+          s3_bucket: {{assets_s3_bucket}}
+          s3_prefix: {{assets_s3_prefix}}
+          s3_access_key: {{assets_s3_access_key}}
+          s3_secret_key: {{assets_s3_secret_key}}
+      - put: repo-dev-artifacts
+        params:
+          metalink: /tmp/build/put/build/*.meta4
+          options:
+            author_name: {{maintainer_name}}
+            author_email: {{maintainer_email}}
+            message: "Add dev build"
+        get_params:
+          skip_download: true
+  - name: promote
+    serial_groups:
+      - version
+    plan:
+      - get: repo
+        passed:
+          - build
+      - put: version
+        params:
+          bump: final
+      - task: build
+        file: repo/ci/tasks/build/config.yml
+        params:
+          s3_host: {{assets_s3_host}}
+          s3_bucket: {{assets_s3_bucket}}
+          s3_prefix: {{assets_s3_prefix}}
+          s3_access_key: {{assets_s3_access_key}}
+          s3_secret_key: {{assets_s3_secret_key}}
+      - task: build-release
+        file: repo/ci/tasks/build-release/config.yml
+      - put: repo-final-artifacts
+        params:
+          metalink: /tmp/build/put/build/*.meta4
+          options:
+            author_name: {{maintainer_name}}
+            author_email: {{maintainer_email}}
+            message: "Add final build"
+        get_params:
+          skip_download: true
+      - put: repo
+        params:
+          annotate: /tmp/build/put/release/title
+          repository: /tmp/build/put/repo
+          only_tag: true
+          tag: /tmp/build/put/release/tag
+      - put: github-release
+        params:
+          body: release/notes.md
+          commitish: release/commit
+          name: release/tag
+          tag: release/tag
+          globs:
+            - release/blobs/*
+        get_params:
+          globs:
+            - none
+  - name: bump-major
+    serial_groups:
+      - version
+    plan:
+      - put: version
+        params:
+          bump: major
+  - name: bump-minor
+    serial_groups:
+      - version
+    plan:
+      - put: version
+        params:
+          bump: minor
+  - name: bump-patch
+    serial_groups:
+      - version
+    plan:
+      - get: version
+        trigger: true
+        passed:
+          - promote
+      - put: version
+        params:
+          bump: patch
+
 resources:
   - name: repo
     type: git
     source:
       uri: git@github.com:dpb587/ssoca.git
+      branch: master
       private_key: {{git_private_key}}
+  - name: repo-dev-artifacts
+    type: metalink-repository
+    source:
+      uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-dev#artifacts
+      options:
+        private_key: {{git_private_key}}
+  - name: repo-final-artifacts
+    type: metalink-repository
+    source:
+      uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-final#artifacts
+      options:
+        private_key: {{git_private_key}}
   - name: "repo-ci-images"
     type: "git"
     source:
       uri: git@github.com:dpb587/ssoca.git
+      branch: master
       private_key: {{git_private_key}}
       paths:
         - "ci/images/*"
         - "ci/images/**/*"
+  - name: github-release
+    type: github-release
+    source:
+      access_token: {{repo_github_token}}
+      repository: ssoca
+      user: dpb587
   - name: unit-tests-github-status
     type: github-status
     source:
       repository: dpb587/ssoca
+      branch: master
       access_token: {{repo_github_token}}
       context: unit-tests
   - name: "unit-ci-docker-image"
@@ -66,9 +187,23 @@ resources:
       tag: ci-unit
       username: {{docker_username}}
       password: {{docker_password}}
+  - name: "version"
+    type: "semver"
+    source:
+      initial_version: "0.7.0"
+      driver: s3
+      key: {{assets_s3_version_key}}
+      bucket: {{assets_s3_bucket}}
+      access_key_id: {{assets_s3_access_key}}
+      secret_access_key: {{assets_s3_secret_key}}
+      endpoint: {{assets_s3_host}}
 resource_types:
   - name: github-status
     type: docker-image
     source:
       repository: dpb587/github-status-resource
       tag: master
+  - name: metalink-repository
+    type: docker-image
+    source:
+      repository: dpb587/metalink-repository-resource
