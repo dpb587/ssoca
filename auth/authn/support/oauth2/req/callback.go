@@ -11,6 +11,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 	uuid "github.com/nu7hatch/gouuid"
 	"golang.org/x/oauth2"
@@ -56,11 +57,11 @@ func (h Callback) Route() string {
 func (h Callback) Execute(request req.Request) error {
 	state, err := request.RawRequest.Cookie(config.CookieStateName)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting state cookie")
+		return apierr.NewError(apierr.WrapError(err, "Getting state cookie"), http.StatusBadRequest, "State cookie does not exist")
 	}
 
 	if request.RawRequest.URL.Query().Get("state") != state.Value {
-		return errors.New("State cookie value does not match expected state")
+		return apierr.NewError(errors.New("State cookie value does not match expected state"), http.StatusBadRequest, "State cookie does not match")
 	}
 
 	oauthToken, err := h.Config.Exchange(h.Context, request.RawRequest.URL.Query().Get("code"))

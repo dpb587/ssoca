@@ -15,6 +15,7 @@ import (
 	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	internaltests "github.com/dpb587/ssoca/auth/authn/support/oauth2/internal/tests"
 	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/req"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
 
@@ -207,6 +208,11 @@ var _ = Describe("Callback", func() {
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("state cookie"))
+
+				errapi, ok := err.(apierr.Error)
+				Expect(ok).To(BeTrue())
+				Expect(errapi.Status).To(Equal(400))
+				Expect(errapi.PublicError).To(Equal("State cookie does not exist"))
 			})
 
 			It("errors when missing", func() {
@@ -220,6 +226,11 @@ var _ = Describe("Callback", func() {
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("value does not match"))
+
+				errapi, ok := err.(apierr.Error)
+				Expect(ok).To(BeTrue())
+				Expect(errapi.Status).To(Equal(400))
+				Expect(errapi.PublicError).To(Equal("State cookie does not match"))
 			})
 		})
 
