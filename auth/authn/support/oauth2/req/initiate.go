@@ -4,7 +4,9 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"net/http"
+	"net/url"
 
+	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
@@ -23,6 +25,21 @@ func (h Initiate) Route() string {
 }
 
 func (h Initiate) Execute(req req.Request) error {
+	redirect_uri, err := url.Parse(h.Config.RedirectURL)
+	if err != nil {
+		return bosherr.WrapError(err, "Parsing redirect URL")
+	}
+
+	if req.RawRequest.Host != redirect_uri.Host {
+		target := req.RawRequest.URL
+		target.Host = redirect_uri.Host
+		target.Scheme = redirect_uri.Scheme
+
+		http.Redirect(req.RawResponse, req.RawRequest, target.String(), 302)
+
+		return nil
+	}
+
 	s := make([]byte, 32)
 	rand.Read(s)
 
@@ -31,8 +48,11 @@ func (h Initiate) Execute(req req.Request) error {
 	http.SetCookie(
 		req.RawResponse,
 		&http.Cookie{
-			Name:  config.CookieStateName,
-			Value: state,
+			Domain: redirect_uri.Hostname(),
+			Name:   config.CookieStateName,
+			Path:   "/auth/",
+			Secure: redirect_uri.Scheme == "https",
+			Value:  state,
 		},
 	)
 
@@ -42,8 +62,11 @@ func (h Initiate) Execute(req req.Request) error {
 		http.SetCookie(
 			req.RawResponse,
 			&http.Cookie{
-				Name:  config.CookieClientPortName,
-				Value: clientPort,
+				Domain: redirect_uri.Hostname(),
+				Name:   config.CookieClientPortName,
+				Path:   "/auth/",
+				Secure: redirect_uri.Scheme == "https",
+				Value:  clientPort,
 			},
 		)
 	}

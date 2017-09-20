@@ -34,6 +34,7 @@ var _ = Describe("Initiate", func() {
 					Endpoint: oauth2.Endpoint{
 						AuthURL: "https://oauth.example.com/auth",
 					},
+					RedirectURL: "https://localhost/somewhere",
 				},
 			}
 
@@ -53,6 +54,10 @@ var _ = Describe("Initiate", func() {
 			stateCookie := strings.SplitN(res.Header()["Set-Cookie"][0], "=", 2)
 			Expect(stateCookie).To(HaveLen(2))
 
+			stateCookieSplit := strings.SplitN(stateCookie[1], "; ", 2)
+			Expect(stateCookieSplit).To(HaveLen(2))
+			Expect(stateCookieSplit[1]).To(Equal("Path=/auth/; Domain=localhost; Secure"))
+
 			location, err := url.Parse(res.Header().Get("Location"))
 
 			Expect(err).ToNot(HaveOccurred())
@@ -61,7 +66,7 @@ var _ = Describe("Initiate", func() {
 			Expect(location.Scheme).To(Equal("https"))
 			Expect(location.Query().Get("client_id")).To(Equal("client-id"))
 			Expect(location.Query().Get("response_type")).To(Equal("code"))
-			Expect(location.Query().Get("state")).To(Equal(stateCookie[1]))
+			Expect(location.Query().Get("state")).To(Equal(stateCookieSplit[0]))
 		})
 
 		Context("client port passed", func() {
@@ -77,7 +82,44 @@ var _ = Describe("Initiate", func() {
 
 				portCookie := strings.SplitN(res.Header()["Set-Cookie"][1], "=", 2)
 				Expect(portCookie).To(HaveLen(2))
-				Expect(portCookie[1]).To(Equal("12345"))
+				Expect(portCookie[1]).To(Equal("12345; Path=/auth/; Domain=localhost; Secure"))
+			})
+		})
+
+		Context("insecure cookies can be used", func() {
+			It("sets the cookie", func() {
+				subject.Config.RedirectURL = "http://localhost/somewhere"
+
+				err := subject.Execute(req.Request{
+					RawRequest:  httptest.NewRequest("GET", "http://localhost/auth/initiate?client_port=12345", nil),
+					RawResponse: res,
+				})
+
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+
+				portCookie := strings.SplitN(res.Header()["Set-Cookie"][1], "=", 2)
+				Expect(portCookie).To(HaveLen(2))
+				Expect(portCookie[1]).To(Equal("12345; Path=/auth/; Domain=localhost"))
+			})
+		})
+
+		Context("an aliased host is accessed", func() {
+			It("redirects to the correct server", func() {
+				subject.Config.RedirectURL = "https://elsewhere.com:54321/somewhere"
+
+				err := subject.Execute(req.Request{
+					RawRequest:  httptest.NewRequest("GET", "http://localhost:12345/auth/initiate?client_port=12345", nil),
+					RawResponse: res,
+				})
+
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(res.Header()["Set-Cookie"]).To(HaveLen(0))
+
+				Expect(res.Header()["Location"]).To(HaveLen(1))
+				Expect(res.Header()["Location"][0]).To(Equal("https://elsewhere.com:54321/auth/initiate?client_port=12345"))
 			})
 		})
 	})
