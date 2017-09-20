@@ -70,115 +70,121 @@
           }
         }
 
-        $.getJSON('../env/info', function(data) {
-          var dom;
+        $.ajax({
+          url: '../env/info',
+          cache: false,
+          dataType: 'json',
+          success: function(data) {
+            var dom;
 
-          if (data['env']) {
-            if (data['env']['url']) {
-              $('.ssoca-env-url').text(data['env']['url']);
-            }
-
-            dom = $('.ssoca-env-name');
-            if (data['env']['name']) {
-              dom.text(data['env']['name']);
-            } else {
-              $('.ssoca-env-option').remove();
-            }
-
-            dom = $('#env-title');
-            if (data['env']['title']) {
-              dom.text(data['env']['title']);
-              $('title').text(data['env']['title'] + ' // ssoca')
-            } else {
-              dom.remove();
-            }
-
-            dom = $('#env-banner');
-            if (data['env']['banner']) {
-              dom.text(data['env']['banner']);
-            } else {
-              dom.remove();
-            }
-
-            if (data['env']['metadata']) {
-              if (data['env']['metadata']['ui.color']) {
-                $('body').addClass('bg-' + data['env']['metadata']['ui.color']);
+            if (data['env']) {
+              if (data['env']['url']) {
+                $('.ssoca-env-url').text(data['env']['url']);
               }
 
-              if (data['env']['metadata']['ui.usage']) {
-                $('#env-metadata-usage').html(data['env']['metadata']['ui.usage'].replace(/\n/g, "<br />"));
+              dom = $('.ssoca-env-name');
+              if (data['env']['name']) {
+                dom.text(data['env']['name']);
               } else {
+                $('.ssoca-env-option').remove();
+              }
+
+              dom = $('#env-title');
+              if (data['env']['title']) {
+                dom.text(data['env']['title']);
+                $('title').text(data['env']['title'] + ' // ssoca')
+              } else {
+                dom.remove();
+              }
+
+              dom = $('#env-banner');
+              if (data['env']['banner']) {
+                dom.text(data['env']['banner']);
+              } else {
+                dom.remove();
+              }
+
+              if (data['env']['metadata']) {
+                if (data['env']['metadata']['ui.color']) {
+                  $('body').addClass('bg-' + data['env']['metadata']['ui.color']);
+                }
+
+                if (data['env']['metadata']['ui.usage']) {
+                  $('#env-metadata-usage').html(data['env']['metadata']['ui.usage'].replace(/\n/g, "<br />"));
+                } else {
+                  $('#env-metadata-usage-topic').remove();
+                }
+
+                var links = 0;
+                dom = $('#env-metadata-links').empty();
+                $.each(data['env']['metadata'], function (key, value) {
+                  if (key.substring(0, 8) != 'ui.link.') {
+                    return;
+                  }
+
+                  if (links) {
+                    dom.append('&nbsp;&ndash;&nbsp;');
+                  }
+
+                  dom.append('<a class="ci" href="' + value + '">' + key.substring(8) + '</a>');
+
+                  links += 1;
+                });
+
+                if (links == 0) {
+                  dom.remove();
+                }
+              } else {
+                $('#env-metadata-links').remove();
                 $('#env-metadata-usage-topic').remove();
               }
 
-              var links = 0;
-              dom = $('#env-metadata-links').empty();
-              $.each(data['env']['metadata'], function (key, value) {
-                if (key.substring(0, 8) != 'ui.link.') {
-                  return;
-                }
+              if (data['env']['update_service']) {
+                var downloadPath = '../' + data['env']['update_service'];
 
-                if (links) {
-                  dom.append('&nbsp;&ndash;&nbsp;');
-                }
+                $.ajax({
+                  url: downloadPath + '/list',
+                  cache: false,
+                  dataType: 'json',
+                  success: function(data) {
+                    var dom = $('#download').empty();
 
-                dom.append('<a class="ci" href="' + value + '">' + key.substring(8) + '</a>');
+                    data['files'].forEach(function (file, index) {
+                      icon = 'doc-inv'
 
-                links += 1;
-              });
+                      if (file['name'].match(/\-windows\-/)) {
+                        icon = 'windows'
+                      } else if (file['name'].match(/\-linux\-/)) {
+                        icon = 'linux'
+                      } else if (file['name'].match(/\-darwin\-/)) {
+                        icon = 'apple'
+                      }
 
-              if (links == 0) {
-                dom.remove();
+                      dom.append([
+                        '<div class="ba br2 b bg-white-30 items-center mb3 pv2 ph2">',
+                          '<div class="fl w3 tc pv1 f2 black-80"><i class="fa-' + icon + '"></i></div>',
+                          '<span class="lh-copy">',
+                            '<a class="black-80" href="' + downloadPath + '/get?name=' + encodeURIComponent(file['name']) + '">' + file['name'] + '</a><br />',
+                            '<code class="f6 black-70">' + file['digest']['sha1'] + '</code>',
+                          '</span>',
+                        '</div>'
+                      ].join(''));
+                    });
+                  },
+                  error: function () {
+                    $('#download-topic').remove();
+                  },
+                  complete: done
+                });
+
+                waiting += 1;
+              } else {
+                $('#download-topic').remove();
               }
-            } else {
-              $('#env-metadata-links').remove();
-              $('#env-metadata-usage-topic').remove();
             }
 
-            if (data['env']['update_service']) {
-              var downloadPath = '../' + data['env']['update_service'];
-
-              $.ajax({
-                url: downloadPath + '/list',
-                dataType: 'json',
-                success: function(data) {
-                  var dom = $('#download').empty();
-
-                  data['files'].forEach(function (file, index) {
-                    icon = 'doc-inv'
-
-                    if (file['name'].match(/\-windows\-/)) {
-                      icon = 'windows'
-                    } else if (file['name'].match(/\-linux\-/)) {
-                      icon = 'linux'
-                    } else if (file['name'].match(/\-darwin\-/)) {
-                      icon = 'apple'
-                    }
-
-                    dom.append([
-                      '<div class="ba br2 b bg-white-30 items-center mb3 pv2 ph2">',
-                        '<div class="fl w3 tc pv1 f2 black-80"><i class="fa-' + icon + '"></i></div>',
-                        '<span class="lh-copy">',
-                          '<a class="black-80" href="' + downloadPath + '/get?name=' + encodeURIComponent(file['name']) + '">' + file['name'] + '</a><br />',
-                          '<code class="f6 black-70">' + file['digest']['sha1'] + '</code>',
-                        '</span>',
-                      '</div>'
-                    ].join(''));
-                  });
-                },
-                error: function () {
-                  $('#download-topic').remove();
-                },
-                complete: done
-              });
-
-              waiting += 1;
-            } else {
-              $('#download-topic').remove();
-            }
+            done();
           }
-
-          done();
         });
       })();
     </script>

@@ -31,27 +31,32 @@
     </article>
     <script type="text/javascript">
       (function () {
-        $.getJSON('../env/info', function(data) {
-          var dom;
+        $.ajax({
+          url: '../env/info',
+          cache: false,
+          dataType: 'json',
+          success: function(data) {
+            var dom;
 
-          if (data['env']) {
-            dom = $('#env-title');
-            if (data['env']['title']) {
-              dom.text(data['env']['title']);
-              $('title').text(data['env']['title'] + ' // ssoca')
-            } else {
-              dom.remove();
+            if (data['env']) {
+              dom = $('#env-title');
+              if (data['env']['title']) {
+                dom.text(data['env']['title']);
+                $('title').text(data['env']['title'] + ' // ssoca')
+              } else {
+                dom.remove();
+              }
+
+              dom = $('#env-banner');
+              if (data['env']['banner']) {
+                dom.text(data['env']['banner']);
+              } else {
+                dom.remove();
+              }
             }
 
-            dom = $('#env-banner');
-            if (data['env']['banner']) {
-              dom.text(data['env']['banner']);
-            } else {
-              dom.remove();
-            }
+            $('article').removeClass('dn');
           }
-
-          $('article').removeClass('dn');
         });
       })();
     </script>
