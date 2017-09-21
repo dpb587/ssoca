@@ -8,5 +8,3 @@ This service does not provide any client-side commands. Instead, when users are 
 ## Options
 
  * **`path`** - the directory which has browser frontend files and which will be served at the endpoint
-
-    path: /some/path/to/docroot

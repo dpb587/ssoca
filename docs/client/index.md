@@ -5,13 +5,13 @@ Most users will be executing the `ssoca` client binary from their workstations.
 
 ## First-time Setup
 
-Users should be given a URL for where to find the `ssoca` server. If they open the URL from a browser, they can download
+Users can download the `ssoca` client binary from the project's [latest release](https://github.com/dpb587/ssoca/releases/latest)...
 
-    $ wget -O- https://ssoca.example.com/download/useragent-bundle | tar -xzf-
-    $ cd ssoca.example.com
-    $ direnv allow
+    $ wget -O /usr/local/bin/ssoca https://github.com/dpb587/ssoca/releases/download/v0.7.0/ssoca-client-0.7.0-darwin-amd64
+    $ echo "34f8334120adc3028b685703531abc4044cb454f815c53f0f0a8cf85e86c07fb  /usr/local/bin/ssoca" | shasum -a 256 -c
+    $ chmod +x /usr/local/bin/ssoca
 
-Then `auth login` can be used to to login interactively using whatever authentication method has been configured by the server (typically a URL will be shown)...
+Then `auth login` can be used to login interactively using whichever authentication method has been configured by the server (typically a URL will be shown)...
 
     $ ssoca auth login
     Visit the following link to receive an authentication token...
@@ -29,10 +29,6 @@ Once authenticated, the user can review the available services...
     sshuttle  sshuttle  -
     vpn       openvpn   -
 
+And then directly use a service. For example...
 
-Or directly work with a service (some services may provide default endpoints making arguments optional)...
-
-    $ ssoca http curl https://app.acme-dev.example.com/
-    $ ssoca ssh -s jumpbox connect
-    $ ssoca openvpn -s vpn connect
-    $ ssoca sshuttle connect
+    $ ssoca openvpn -s vpn exec --sudo

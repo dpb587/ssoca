@@ -23,8 +23,8 @@ Some shortcuts instead of the built-in `go` commands...
 
 ### `go run`
 
- * `bin/client` - shortcut to run the client from source in any directory
- * `bin/server` - shortcut to run the server from source in any directory
+ * `bin/ssoca-client` - shortcut to run the client from source in any directory
+ * `bin/ssoca-server` - shortcut to run the server from source in any directory
 
 
 ### `go build`
@@ -33,8 +33,6 @@ Run `bin/build` to build both client and server for all supported architectures 
 
     ssoca-(client|server)-$VERSION-$GOOS-$GOARCH
     # e.g. ssoca-client-0.1.0-darwin-amd64
-
-    $ bin/pre-commit
 
 
 ## Certificate Authorities

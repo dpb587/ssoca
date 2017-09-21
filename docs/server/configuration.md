@@ -11,13 +11,13 @@ The server is configured through a YAML file with several sections. The first se
       host: 0.0.0.0 # default
       port: 18705   # default
 
-      # optional redirect of /
+      # optional redirects
       redirects:
-        root: ~ # optional
+        root: ~         # redirect of /; optional
         auth_failure: ~ # optional
         auth_success: ~ # optional
 
-The YAML configuration must also include an `auth` section referencing a [service type](../authn) and the service's options...
+The YAML configuration must also include an `auth` section referencing an [authentication service type](../auth/authn) and the service's options...
 
     auth:
       type: uaa

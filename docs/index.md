@@ -22,4 +22,4 @@
     * [OpenVPN](service/openvpn)
     * [SSH](service/ssh)
 
-There's also some [development notes](dev) if you're looking to make changes or work from source.
+There are some [development notes](dev) if you're looking to make changes or work from source.

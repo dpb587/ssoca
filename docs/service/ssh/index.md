@@ -12,7 +12,7 @@ This service provides a client command:
 ## Options
 
 * **`principals`** - an array of usernames to allow SSH sessions for (templatized)
-* *`certauth`* - the name of a configured certificate authority
+* `certauth` - the name of a configured certificate authority (default `default`)
 * `validity` - a [duration](https://golang.org/pkg/time/#ParseDuration) of time for which certificates are signed for (default `2m`)
 * `critical_options` - a *hash* of specific settings further restricting connections to the SSH server
   * `force-command` - a command which is forcefully executed on the SSH server (templatized)
