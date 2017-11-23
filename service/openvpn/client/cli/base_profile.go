@@ -25,7 +25,7 @@ func (c BaseProfile) Execute(_ []string) error {
 		return err
 	}
 
-	c.Runtime.GetUI().PrintBlock(profile)
+	c.Runtime.GetUI().PrintBlock([]byte(profile))
 
 	return nil
 }

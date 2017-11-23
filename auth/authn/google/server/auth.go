@@ -10,7 +10,7 @@ import (
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/auth"
-	cloudresourcemanager "github.com/google/google-api-go-client/cloudresourcemanager/v1"
+	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
 )
 
 type userinfoPayload struct {

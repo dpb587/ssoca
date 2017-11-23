@@ -58,7 +58,7 @@ func (c Logout) Execute(_ []string) error {
 
 	ui := c.Runtime.GetUI()
 
-	ui.PrintBlock("Successfully logged out\n")
+	ui.PrintBlock([]byte("Successfully logged out\n"))
 
 	return nil
 }

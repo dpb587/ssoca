@@ -18,9 +18,11 @@ var _ = Describe("Initiate", func() {
 	var subject Initiate
 
 	Describe("Route", func() {
-		subject = Initiate{}
+		It("works", func() {
+			subject = Initiate{}
 
-		Expect(subject.Route()).To(Equal("initiate"))
+			Expect(subject.Route()).To(Equal("initiate"))
+		})
 	})
 
 	Describe("Execute", func() {

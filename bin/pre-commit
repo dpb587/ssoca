@@ -6,6 +6,12 @@ cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
 exit=""
 
+if [[ "" != "$( which dep )" ]]; then
+  echo "Pruning dependencies"
+  dep prune
+  exit="$exit$?"
+fi
+
 bin/regenerate-code
 exit="$exit$?"
 

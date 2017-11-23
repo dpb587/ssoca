@@ -99,7 +99,7 @@ func (c Login) Execute(_ []string) error {
 		return errors.New("Failed to use authentication credentials")
 	}
 
-	ui.PrintBlock(fmt.Sprintf("Successfully logged in as %s\n", authInfo.ID))
+	ui.PrintBlock([]byte(fmt.Sprintf("Successfully logged in as %s\n", authInfo.ID)))
 
 	return nil
 }

@@ -28,8 +28,8 @@ func (c List) Execute(_ []string) error {
 	}
 
 	table := boshtbl.Table{
-		Header: []string{
-			"File",
+		Header: []boshtbl.Header{
+			{Title: "File"},
 		},
 	}
 

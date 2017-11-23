@@ -41,9 +41,11 @@ var _ = Describe("Callback", func() {
 	var subject Callback
 
 	Describe("Route", func() {
-		subject = Callback{}
+		It("works", func() {
+			subject = Callback{}
 
-		Expect(subject.Route()).To(Equal("callback"))
+			Expect(subject.Route()).To(Equal("callback"))
+		})
 	})
 
 	Describe("Execute", func() {

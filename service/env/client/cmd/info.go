@@ -29,10 +29,10 @@ func (c Info) Execute(_ []string) error {
 	}
 
 	table := boshtbl.Table{
-		HeaderVals: []boshtbl.Value{
-			boshtbl.NewValueString("Service"),
-			boshtbl.NewValueString("Type"),
-			boshtbl.NewValueString("Metadata"),
+		Header: []boshtbl.Header{
+			{Title: "Service"},
+			{Title: "Type"},
+			{Title: "Metadata"},
 		},
 		Rows: [][]boshtbl.Value{},
 	}

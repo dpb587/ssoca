@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -15,9 +16,11 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 }
 
 func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, _ error) {
+	ctx := context.Background()
+
 	ghclient := github.NewClient(client)
 
-	user, _, err := ghclient.Users.Get("")
+	user, _, err := ghclient.Users.Get(ctx, "")
 	if err != nil {
 		return token, bosherr.WrapError(err, "Fetching user info")
 	}
@@ -33,7 +36,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	token.Groups = []string{}
 
 	for nextPage := 1; nextPage != 0; {
-		teams, resp, err := ghclient.Organizations.ListUserTeams(&github.ListOptions{Page: nextPage})
+		teams, resp, err := ghclient.Organizations.ListUserTeams(ctx, &github.ListOptions{Page: nextPage})
 		if err != nil {
 			return token, bosherr.WrapError(err, "Listing user teams")
 		}
@@ -46,7 +49,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	}
 
 	for nextPage := 1; nextPage != 0; {
-		orgs, resp, err := ghclient.Organizations.List("", &github.ListOptions{Page: nextPage})
+		orgs, resp, err := ghclient.Organizations.List(ctx, "", &github.ListOptions{Page: nextPage})
 		if err != nil {
 			return token, bosherr.WrapError(err, "Listing user organizations")
 		}

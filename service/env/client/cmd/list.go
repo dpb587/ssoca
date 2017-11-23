@@ -15,9 +15,9 @@ var _ flags.Commander = List{}
 
 func (c List) Execute(_ []string) error {
 	table := boshtbl.Table{
-		Header: []string{
-			"URL",
-			"Alias",
+		Header: []boshtbl.Header{
+			{Title: "URL"},
+			{Title: "Alias"},
 		},
 	}
 

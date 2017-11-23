@@ -22,7 +22,9 @@ var _ = Describe("Factory", func() {
 	})
 
 	Describe("Type", func() {
-		Expect(subject.Type()).To(Equal("download"))
+		It("works", func() {
+			Expect(subject.Type()).To(Equal("download"))
+		})
 	})
 
 	Describe("Create", func() {
