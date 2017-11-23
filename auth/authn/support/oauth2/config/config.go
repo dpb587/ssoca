@@ -13,6 +13,7 @@ var JWTSigningMethod = jwt.SigningMethodRS256
 
 const CookieStateName = "ssoca_oauth_state"
 const CookieClientPortName = "ssoca_oauth_clientport"
+const CookieClientVersionName = "ssoca_client_version"
 
 type UserProfileLoader func(*http.Client) (auth.Token, error)
 

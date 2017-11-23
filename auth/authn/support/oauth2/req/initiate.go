@@ -71,6 +71,21 @@ func (h Initiate) Execute(req req.Request) error {
 		)
 	}
 
+	clientVersion := req.RawRequest.FormValue("client_version")
+
+	if clientVersion != "" {
+		http.SetCookie(
+			req.RawResponse,
+			&http.Cookie{
+				Domain: redirect_uri.Hostname(),
+				Name:   config.CookieClientVersionName,
+				Path:   "/",
+				Secure: redirect_uri.Scheme == "https",
+				Value:  clientVersion,
+			},
+		)
+	}
+
 	url := h.Config.AuthCodeURL(state)
 
 	http.Redirect(req.RawResponse, req.RawRequest, url, 302)

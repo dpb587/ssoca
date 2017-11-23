@@ -5,21 +5,25 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/dpb587/ssoca/version"
 )
 
 type ServerTokenRetrieval struct {
 	envURL      string
+	version     version.Version
 	cmdRunner   boshsys.CmdRunner
 	openCommand []string
 	stdout      io.Writer
 	stdin       io.Reader
 }
 
-func NewServerTokenRetrieval(envURL string, cmdRunner boshsys.CmdRunner, openCommand []string, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
+func NewServerTokenRetrieval(envURL string, ver version.Version, cmdRunner boshsys.CmdRunner, openCommand []string, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
 	return ServerTokenRetrieval{
 		envURL:      envURL,
+		version:     ver,
 		cmdRunner:   cmdRunner,
 		openCommand: openCommand,
 		stdout:      stdout,
@@ -91,7 +95,7 @@ func (str *ServerTokenRetrieval) waitForTokenInput(tokenChannel chan string, err
 	}
 }
 
-func (str *ServerTokenRetrieval) Retrieve(url string) (string, error) {
+func (str *ServerTokenRetrieval) Retrieve(baseurl string) (string, error) {
 	stdinChannel := make(chan string)
 	tokenChannel := make(chan string)
 	errorChannel := make(chan error)
@@ -101,7 +105,7 @@ func (str *ServerTokenRetrieval) Retrieve(url string) (string, error) {
 
 	port := <-portChannel
 
-	fullurl := fmt.Sprintf("%s%s?client_port=%s", str.envURL, url, port)
+	fullurl := fmt.Sprintf("%s%s?client_port=%s&client_version=%s", str.envURL, baseurl, port, url.QueryEscape(str.version.Semver))
 
 	openCommand := str.openCommand
 	foundURL := false
