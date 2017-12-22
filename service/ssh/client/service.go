@@ -2,12 +2,10 @@ package client
 
 import (
 	"github.com/dpb587/ssoca/client"
-	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
 	"github.com/dpb587/ssoca/httpclient"
 
 	svc "github.com/dpb587/ssoca/service/ssh"
-	svccmd "github.com/dpb587/ssoca/service/ssh/client/cmd"
 	svchttpclient "github.com/dpb587/ssoca/service/ssh/httpclient"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -16,6 +14,7 @@ import (
 type Service struct {
 	svc.Service
 
+	name      string
 	runtime   client.Runtime
 	fs        boshsys.FileSystem
 	cmdRunner boshsys.CmdRunner
@@ -23,50 +22,16 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
+func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
 	return Service{
+		name:      name,
 		runtime:   runtime,
 		fs:        fs,
 		cmdRunner: cmdRunner,
 	}
 }
 
-func (s Service) Description() string {
-	return "Interact with remote SSH servers"
-}
-
-func (s Service) GetCommand() interface{} {
-	cmd := clientcmd.ServiceCommand{
-		Runtime:     s.runtime,
-		ServiceName: s.Type(),
-	}
-
-	return &struct {
-		Agent         svccmd.Agent         `command:"agent" description:"Start an SSH agent"`
-		Exec          svccmd.Exec          `command:"exec" description:"Connect to a remote SSH server"`
-		SignPublicKey svccmd.SignPublicKey `command:"sign-public-key" description:"Create a certificate for a specific public key"`
-	}{
-		Agent: svccmd.Agent{
-			ServiceCommand: cmd,
-			CmdRunner:      s.cmdRunner,
-			FS:             s.fs,
-			GetClient:      s.GetClient,
-		},
-		Exec: svccmd.Exec{
-			ServiceCommand: cmd,
-			CmdRunner:      s.cmdRunner,
-			FS:             s.fs,
-			GetClient:      s.GetClient,
-		},
-		SignPublicKey: svccmd.SignPublicKey{
-			ServiceCommand: cmd,
-			FS:             s.fs,
-			GetClient:      s.GetClient,
-		},
-	}
-}
-
-func (s Service) GetClient(service string, skipAuthRetry bool) (svchttpclient.Client, error) {
+func (s Service) GetClient(skipAuthRetry bool) (svchttpclient.Client, error) {
 	var client httpclient.Client
 	var err error
 
@@ -80,5 +45,5 @@ func (s Service) GetClient(service string, skipAuthRetry bool) (svchttpclient.Cl
 		return nil, err
 	}
 
-	return svchttpclient.New(client, service)
+	return svchttpclient.New(client, s.name)
 }

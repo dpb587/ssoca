@@ -1,8 +1,8 @@
-package cmd
+package cli
 
 import (
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/dpb587/ssoca/service/ssh/api"
+	svc "github.com/dpb587/ssoca/service/ssh/client"
 	"github.com/jessevdk/go-flags"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
@@ -13,8 +13,8 @@ type SignPublicKey struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
-	GetClient GetClient
-	FS        boshsys.FileSystem
+	serviceFactory svc.ServiceFactory
+	fs             boshsys.FileSystem
 
 	Args SignPublicKeyArgs `positional-args:"true" required:"true"`
 }
@@ -26,32 +26,27 @@ type SignPublicKeyArgs struct {
 }
 
 func (c SignPublicKey) Execute(_ []string) error {
-	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
-	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
-	}
+	service := c.serviceFactory.New(c.ServiceName)
 
-	expandedPath, err := c.FS.ExpandPath(c.Args.Path)
+	expandedPath, err := c.fs.ExpandPath(c.Args.Path)
 	if err != nil {
 		return bosherr.WrapError(err, "Expanding path")
 	}
 
-	publicKey, err := c.FS.ReadFileString(expandedPath)
+	publicKey, err := c.fs.ReadFile(expandedPath)
 	if err != nil {
 		return bosherr.WrapError(err, "Reading public key")
 	}
 
-	requestPayload := api.SignPublicKeyRequest{
+	certificate, _, err := service.SignPublicKey(svc.SignPublicKeyOptions{
 		PublicKey: publicKey,
-	}
-
-	response, err := client.PostSignPublicKey(requestPayload)
+	})
 	if err != nil {
-		return bosherr.WrapError(err, "Requesting signed public keys")
+		return bosherr.WrapError(err, "Getting profile")
 	}
 
 	ui := c.Runtime.GetUI()
-	ui.PrintLinef("%s", response.Certificate)
+	ui.PrintLinef("%s", certificate)
 
 	return nil
 }

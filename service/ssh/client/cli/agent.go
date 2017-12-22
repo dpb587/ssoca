@@ -1,6 +1,6 @@
 // +build !windows
 
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -10,14 +10,13 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/dpb587/ssoca/cli/errors"
-	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/dpb587/ssoca/service/ssh/agent"
-	"github.com/jessevdk/go-flags"
-	sshagent "golang.org/x/crypto/ssh/agent"
-
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/dpb587/ssoca/cli/errors"
+	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	svc "github.com/dpb587/ssoca/service/ssh/client"
+	"github.com/jessevdk/go-flags"
+	sshagent "golang.org/x/crypto/ssh/agent"
 )
 
 type Agent struct {
@@ -27,14 +26,16 @@ type Agent struct {
 	Foreground bool   `long:"foreground" description:"Stay in foreground"`
 	Socket     string `long:"socket" description:"Socket path (ensure the directory has restricted permissions)"`
 
-	GetClient GetClient
-	CmdRunner boshsys.CmdRunner
-	FS        boshsys.FileSystem
+	serviceFactory svc.ServiceFactory
+	fs             boshsys.FileSystem
+	cmdRunner      boshsys.CmdRunner
 }
 
 var _ flags.Commander = Agent{}
 
 func (c Agent) Execute(args []string) error {
+	service := c.serviceFactory.New(c.ServiceName)
+
 	if c.Socket == "" {
 		tmpdir, err := ioutil.TempDir("", "ssoca-ssh-agent")
 		if err != nil {
@@ -48,18 +49,12 @@ func (c Agent) Execute(args []string) error {
 
 		c.Socket = fmt.Sprintf("%s/agent.sock", tmpdir)
 	} else {
-		socket, err := c.FS.ExpandPath(c.Socket)
+		socket, err := c.fs.ExpandPath(c.Socket)
 		if err != nil {
 			return bosherr.WrapError(err, "Expanding socket path")
 		}
 
 		c.Socket = socket
-	}
-
-	// do this early to detect misconfiguration before detachinig
-	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
-	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
 	}
 
 	if !c.Foreground && len(args) == 0 {
@@ -122,7 +117,7 @@ func (c Agent) Execute(args []string) error {
 		parentAgent = sshagent.NewClient(socket)
 	}
 
-	sshAgent := agent.NewAgent(parentAgent, client)
+	sshAgent := service.NewAgent(parentAgent)
 
 	socket, err := net.Listen("unix", c.Socket)
 	if err != nil {
@@ -136,9 +131,9 @@ func (c Agent) Execute(args []string) error {
 	os.Setenv("SSH_AGENT_PID", pid)
 
 	if len(args) > 0 {
-		go c.serveAgent(sshAgent, socket)
+		go sshAgent.Listen(socket)
 
-		_, _, exit, err := c.CmdRunner.RunComplexCommand(boshsys.Command{
+		_, _, exit, err := c.cmdRunner.RunComplexCommand(boshsys.Command{
 			Name: args[0],
 			Args: args[1:],
 
@@ -158,24 +153,7 @@ func (c Agent) Execute(args []string) error {
 
 	c.printEnv(pid)
 
-	c.serveAgent(sshAgent, socket)
-
-	return nil
-}
-
-func (c Agent) serveAgent(agent sshagent.Agent, socket net.Listener) {
-	for {
-		handle, err := socket.Accept()
-		if err != nil {
-			return
-		}
-
-		go func(handle net.Conn) {
-			defer handle.Close()
-
-			_ = sshagent.ServeAgent(agent, handle)
-		}(handle)
-	}
+	return sshAgent.Listen(socket)
 }
 
 func (c Agent) printEnv(pid string) {

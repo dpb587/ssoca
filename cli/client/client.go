@@ -25,6 +25,7 @@ import (
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
 	srv_openvpn_helper "github.com/dpb587/ssoca/service/openvpn/client/helper"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
+	srv_ssh_cli "github.com/dpb587/ssoca/service/ssh/client/cli"
 	// srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
 	// srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 )
@@ -48,7 +49,6 @@ func main() {
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_http_auth.NewService(&runtime))
-	serviceManager.Add(srv_ssh.NewService(&runtime, fs, cmdRunner))
 	// serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {
@@ -72,6 +72,13 @@ func main() {
 		"Establish OpenVPN connections to remote servers",
 		"Establish OpenVPN connections to remote servers",
 		srv_openvpn_cli.CreateCommands(&runtime, srv_openvpn.NewServiceFactory(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs})),
+	)
+
+	parser.AddCommand(
+		"ssh",
+		"Establish SSH connections to remote servers",
+		"Establish SSH connections to remote servers",
+		srv_ssh_cli.CreateCommands(&runtime, srv_ssh.NewServiceFactory(&runtime, fs, cmdRunner), fs, cmdRunner),
 	)
 
 	// execute
