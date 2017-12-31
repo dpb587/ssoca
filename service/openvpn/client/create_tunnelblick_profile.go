@@ -130,7 +130,7 @@ REM() { /bin/echo $( date -u +"%Y-%m-%dT%H:%M:%SZ" ) "$@"; }
 name="$( basename "$( dirname "$( dirname "$( dirname "$0" )" )" )" )"
 shadow="$( dirname "$0" )/config.ovpn"
 
-file="/Users/$USER/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
+file="$HOME/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
 
 REM "renewing profile"
 {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
