@@ -133,7 +133,7 @@ shadow="$( dirname "$0" )/config.ovpn"
 file="$HOME/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
 
 REM "renewing profile"
-{{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
+sudo -Hnu "$USER" -- {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
 exit=$?
 
 if [[ "0" != "$exit" ]]; then
@@ -152,7 +152,7 @@ REM "installing profile"
 mv -f "$file.tmp" "$file"
 
 REM "installing shadow copy"
-cp "$file" "$shadow"
+cat "$file" > "$shadow"
 
 REM done
 `))
