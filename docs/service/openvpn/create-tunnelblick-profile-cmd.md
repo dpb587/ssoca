@@ -18,6 +18,7 @@ Create a Tunnelblick profile
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --exec-ssoca=      Path to the ssoca binary (default: ssoca)
               --name=            Specific file name to use for *.tblk
+              --install          Install the profile (sudo may prompt for privileges)
     
     [create-tunnelblick-profile command arguments]
       DESTINATION-DIR:           Directory where the *.tblk profile will be created (default: $PWD)
@@ -25,11 +26,17 @@ Create a Tunnelblick profile
 
 ## Usage Details
 
-First, create a Tunnelblick profile package (it will create a `{service-name}.tblk` in your current directory)...
+To create and automatically install a Tunnelblick profile you may use the `--install` option...
+
+    $ ssoca openvpn create-tunnelblick-profile --install
+    The profile 'acme-prod-aws-use1' has successfully been installed.
+    If you do not see the profile listed, try restarting Tunnelblick.
+
+To create only the profile files, leave off `--install` (it will create a `{service-name}.tblk` in your current directory)...
 
     $ ssoca openvpn create-tunnelblick-profile
 
-Then, open the file to register it with Tunnelblick...
+Once you are ready to install the profile, open the file to register it with Tunnelblick...
 
     $ open openvpn.tblk
 

@@ -6,6 +6,8 @@ import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
+
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type Commands struct {
@@ -17,7 +19,7 @@ type Commands struct {
 	sf svc.ServiceFactory
 }
 
-func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory) *Commands {
+func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) *Commands {
 	cmd := clientcmd.ServiceCommand{
 		Runtime:     runtime,
 		ServiceName: svc.Service{}.Type(),
@@ -38,6 +40,8 @@ func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory) *Commands {
 		},
 		CreateTunnelblickProfile: CreateTunnelblickProfile{
 			serviceFactory: sf,
+			fs:             fs,
+			cmdRunner:      cmdRunner,
 			ServiceCommand: cmd,
 			SsocaExec:      os.Args[0],
 		},

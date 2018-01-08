@@ -1,10 +1,16 @@
 ## Usage Details
 
-First, create a Tunnelblick profile package (it will create a `{service-name}.tblk` in your current directory)...
+To create and automatically install a Tunnelblick profile you may use the `--install` option...
+
+    $ ssoca openvpn create-tunnelblick-profile --install
+    The profile 'acme-prod-aws-use1' has successfully been installed.
+    If you do not see the profile listed, try restarting Tunnelblick.
+
+To create only the profile files, leave off `--install` (it will create a `{service-name}.tblk` in your current directory)...
 
     $ ssoca openvpn create-tunnelblick-profile
 
-Then, open the file to register it with Tunnelblick...
+Once you are ready to install the profile, open the file to register it with Tunnelblick...
 
     $ open openvpn.tblk
 

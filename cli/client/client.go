@@ -71,7 +71,7 @@ func main() {
 		"openvpn",
 		"Establish OpenVPN connections to remote servers",
 		"Establish OpenVPN connections to remote servers",
-		srv_openvpn_cli.CreateCommands(&runtime, srv_openvpn.NewServiceFactory(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs})),
+		srv_openvpn_cli.CreateCommands(&runtime, srv_openvpn.NewServiceFactory(&runtime, fs, cmdRunner, srv_openvpn_helper.ExecutableFinder{FS: fs}), fs, cmdRunner),
 	)
 
 	parser.AddCommand(

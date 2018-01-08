@@ -16,5 +16,6 @@ Connect to a remote SSH server
     [exec command options]
           -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
-              --opts=            Options to pass through to SSH
+              --exec=            Path to the ssh binary
+              --opt=             Additional option to pass to ssh
     

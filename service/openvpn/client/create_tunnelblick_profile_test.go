@@ -44,7 +44,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 		It("errors", func() {
 			fakeruntime.GetConfigManagerReturns(nil, errors.New("fake-err1"))
 
-			err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{})
+			_, err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{})
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Getting config manager"))
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
@@ -53,7 +53,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 
 	Describe("resolvable ssoca paths", func() {
 		It("errors on invalid paths", func() {
-			err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
+			_, err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
 				SsocaExec: "nonexistant12345",
 			})
 			Expect(err).To(HaveOccurred())
@@ -65,7 +65,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 		It("errors", func() {
 			fakeclient.GetReturns(nil, errors.New("fake-err1"))
 
-			err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
+			_, err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
 				SsocaExec: "false",
 			})
 			Expect(err).To(HaveOccurred())
@@ -80,12 +80,13 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 			Body:       ioutil.NopCloser(strings.NewReader("line1\nline2\n")),
 		}, nil)
 
-		err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
+		profile, err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{
 			Directory: "/fake-tmp1",
 			FileName:  "custom1",
 			SsocaExec: "env",
 		})
 		Expect(err).ToNot(HaveOccurred())
+		Expect(profile).To(Equal("/fake-tmp1/custom1.tblk"))
 
 		configStat, err := fakefs.Stat("/fake-tmp1/custom1.tblk/config.ovpn")
 		Expect(err).ToNot(HaveOccurred())

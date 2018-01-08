@@ -18,10 +18,10 @@ type CreateTunnelblickProfileOpts struct {
 	FileName  string
 }
 
-func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) error {
+func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) (string, error) {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting config manager")
+		return "", bosherr.WrapError(err, "Getting config manager")
 	}
 
 	ssocaExec := opts.SsocaExec
@@ -31,14 +31,14 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) err
 
 	ssocaExec, err = exec.LookPath(ssocaExec)
 	if err != nil {
-		return bosherr.WrapError(err, "Resolving ssoca executable")
+		return "", bosherr.WrapError(err, "Resolving ssoca executable")
 	}
 
 	dir := opts.Directory
 	if dir == "" {
 		dir, err = os.Getwd()
 		if err != nil {
-			return bosherr.WrapError(err, "Getting working directory")
+			return "", bosherr.WrapError(err, "Getting working directory")
 		}
 	}
 
@@ -55,34 +55,34 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) err
 
 	dirAbs, err := s.fs.ExpandPath(dir)
 	if err != nil {
-		return bosherr.WrapError(err, "Expanding path")
+		return "", bosherr.WrapError(err, "Expanding path")
 	}
 
 	err = s.fs.MkdirAll(dirAbs, 0700)
 	if err != nil {
-		return bosherr.WrapError(err, "Creating target directory")
+		return "", bosherr.WrapError(err, "Creating target directory")
 	}
 
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return "", bosherr.WrapError(err, "Getting client")
 	}
 
 	profile, err := client.BaseProfile()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting base profile")
+		return "", bosherr.WrapError(err, "Getting base profile")
 	}
 
 	pathConfigOvpn := fmt.Sprintf("%s/config.ovpn", dirAbs)
 
 	err = s.fs.WriteFileString(pathConfigOvpn, profile)
 	if err != nil {
-		return bosherr.WrapError(err, "Writing config.ovpn")
+		return "", bosherr.WrapError(err, "Writing config.ovpn")
 	}
 
 	err = s.fs.Chmod(pathConfigOvpn, 0400)
 	if err != nil {
-		return bosherr.WrapError(err, "Chmoding config.ovpn")
+		return "", bosherr.WrapError(err, "Chmoding config.ovpn")
 	}
 
 	pathPreConnect := fmt.Sprintf("%s/pre-connect.sh", dirAbs)
@@ -103,22 +103,34 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) err
 		},
 	)
 	if err != nil {
-		return bosherr.WrapError(err, "Generating Tunnelblick pre-connect.sh")
+		return "", bosherr.WrapError(err, "Generating Tunnelblick pre-connect.sh")
 	}
 
 	preconnectScript := preconnectScriptBuf.String()
 
 	err = s.fs.WriteFileString(pathPreConnect, preconnectScript)
 	if err != nil {
-		return bosherr.WrapError(err, "Writing pre-connect.sh")
+		return "", bosherr.WrapError(err, "Writing pre-connect.sh")
 	}
 
 	err = s.fs.Chmod(pathPreConnect, 0500)
 	if err != nil {
-		return bosherr.WrapError(err, "Chmoding pre-connect.sh")
+		return "", bosherr.WrapError(err, "Chmoding pre-connect.sh")
 	}
 
-	return nil
+	pathInstall := fmt.Sprintf("%s/ssoca-install.sh", dirAbs)
+
+	err = s.fs.WriteFileString(pathInstall, tunnelblickInstallScript)
+	if err != nil {
+		return "", bosherr.WrapError(err, "Writing ssoca-install.sh")
+	}
+
+	err = s.fs.Chmod(pathInstall, 0500)
+	if err != nil {
+		return "", bosherr.WrapError(err, "Chmoding ssoca-install.sh")
+	}
+
+	return dir, nil
 }
 
 var tunnelblickPreConnectScript = template.Must(template.New("script").Parse(`#!/bin/bash
@@ -156,3 +168,69 @@ cat "$file" > "$shadow"
 
 REM done
 `))
+
+var tunnelblickInstallScript = `#!/bin/bash
+
+set -eu
+
+[ -n "${SUDO_USER:-}" ] || ( echo "This install script be run with sudo" >&2 && exit 1 )
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+name="$( basename "$DIR" )"
+profileDir="$HOME/Library/Application Support/Tunnelblick/Configurations/$name"
+shadowDir="/Library/Application Support/Tunnelblick/Users/$SUDO_USER/$name"
+
+#
+# profile
+#
+
+mkdir -p "$profileDir/Contents/Resources"
+
+chown "$SUDO_USER":admin "$profileDir"
+chmod 750 "$profileDir"
+
+chown "$SUDO_USER":admin "$profileDir/Contents"
+chmod 750 "$profileDir/Contents"
+
+chown "$SUDO_USER":admin "$profileDir/Contents/Resources"
+chmod 750 "$profileDir/Contents/Resources"
+
+cp "$DIR/config.ovpn" "$profileDir/Contents/Resources/config.ovpn"
+chown "$SUDO_USER":admin "$profileDir/Contents/Resources/config.ovpn"
+chmod 740 "$profileDir/Contents/Resources/config.ovpn"
+
+cp "$DIR/pre-connect.sh" "$profileDir/Contents/Resources/pre-connect.sh"
+chown "$SUDO_USER":admin "$profileDir/Contents/Resources/pre-connect.sh"
+chmod 750 "$profileDir/Contents/Resources/pre-connect.sh"
+
+#
+# shadow
+#
+
+mkdir -p "$shadowDir/Contents/Resources"
+
+chown root:wheel "$shadowDir"
+chmod 755 "$shadowDir"
+
+chown root:wheel "$shadowDir/Contents"
+chmod 755 "$shadowDir/Contents"
+
+chown root:wheel "$shadowDir/Contents/Resources"
+chmod 755 "$shadowDir/Contents/Resources"
+
+cp "$DIR/config.ovpn" "$shadowDir/Contents/Resources/config.ovpn"
+chown root:wheel "$shadowDir/Contents/Resources/config.ovpn"
+chmod 700 "$shadowDir/Contents/Resources/config.ovpn"
+
+cp "$DIR/pre-connect.sh" "$shadowDir/Contents/Resources/pre-connect.sh"
+chown root:wheel "$shadowDir/Contents/Resources/pre-connect.sh"
+chmod 700 "$shadowDir/Contents/Resources/pre-connect.sh"
+
+#
+# fyi
+#
+
+echo "The profile '${name%.tblk}' has successfully been installed."
+echo "If you do not see the profile listed, try restarting Tunnelblick."
+`
