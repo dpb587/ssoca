@@ -38,6 +38,14 @@ type FakeManager struct {
 	setEnvironmentReturns struct {
 		result1 error
 	}
+	UnsetEnvironmentStub        func(string) error
+	unsetEnvironmentMutex       sync.RWMutex
+	unsetEnvironmentArgsForCall []struct {
+		arg1 string
+	}
+	unsetEnvironmentReturns struct {
+		result1 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -156,6 +164,38 @@ func (fake *FakeManager) SetEnvironmentReturns(result1 error) {
 	}{result1}
 }
 
+func (fake *FakeManager) UnsetEnvironment(arg1 string) error {
+	fake.unsetEnvironmentMutex.Lock()
+	fake.unsetEnvironmentArgsForCall = append(fake.unsetEnvironmentArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("UnsetEnvironment", []interface{}{arg1})
+	fake.unsetEnvironmentMutex.Unlock()
+	if fake.UnsetEnvironmentStub != nil {
+		return fake.UnsetEnvironmentStub(arg1)
+	}
+	return fake.unsetEnvironmentReturns.result1
+}
+
+func (fake *FakeManager) UnsetEnvironmentCallCount() int {
+	fake.unsetEnvironmentMutex.RLock()
+	defer fake.unsetEnvironmentMutex.RUnlock()
+	return len(fake.unsetEnvironmentArgsForCall)
+}
+
+func (fake *FakeManager) UnsetEnvironmentArgsForCall(i int) string {
+	fake.unsetEnvironmentMutex.RLock()
+	defer fake.unsetEnvironmentMutex.RUnlock()
+	return fake.unsetEnvironmentArgsForCall[i].arg1
+}
+
+func (fake *FakeManager) UnsetEnvironmentReturns(result1 error) {
+	fake.UnsetEnvironmentStub = nil
+	fake.unsetEnvironmentReturns = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -167,6 +207,8 @@ func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	defer fake.getEnvironmentMutex.RUnlock()
 	fake.setEnvironmentMutex.RLock()
 	defer fake.setEnvironmentMutex.RUnlock()
+	fake.unsetEnvironmentMutex.RLock()
+	defer fake.unsetEnvironmentMutex.RUnlock()
 	return fake.invocations
 }
 

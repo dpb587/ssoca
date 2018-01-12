@@ -1,9 +1,9 @@
-# `ssoca env add ...`
+# `ssoca env unset ...`
 
-Add a new environment
+Remove configuration all for an environment (aliases: remove)
 
     Usage:
-      ssoca [OPTIONS] env add [add-OPTIONS] [URI]
+      ssoca [OPTIONS] env unset [unset-OPTIONS]
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -13,10 +13,6 @@ Add a new environment
     Help Options:
       -h, --help         Show this help message
     
-    [add command options]
+    [unset command options]
           -s, --service= Service name (default: env) [$SSOCA_SERVICE]
-              --ca-cert= Environment CA certificate path
-    
-    [add command arguments]
-      URI:               Environment URL
     

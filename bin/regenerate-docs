@@ -4,7 +4,9 @@ set -eu
 
 cli_list=client os_list=darwin bin/build 0.0.0
 
-alias ssoca=tmp/ssoca-client-0.0.0-darwin-amd64
+mkdir -p tmp/docs-bin
+mv tmp/ssoca-client-0.0.0-darwin-amd64 tmp/docs-bin/ssoca
+export PATH="$PWD/tmp/docs-bin:$PATH"
 
 for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
   mkdir -p docs/service/$cmd

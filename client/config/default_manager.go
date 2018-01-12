@@ -85,3 +85,27 @@ func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 
 	return nil
 }
+
+func (m DefaultManager) UnsetEnvironment(name string) error {
+	envs, err := m.GetEnvironments()
+	if err != nil {
+		return bosherr.WrapError(err, "Getting environment")
+	}
+
+	newState := State{}
+
+	for _, env := range envs {
+		if env.Alias == name || env.URL == name {
+			continue
+		}
+
+		newState.Environments = append(newState.Environments, env)
+	}
+
+	_, err = m.storage.Put(m.path, newState)
+	if err != nil {
+		return bosherr.WrapError(err, "Putting environment")
+	}
+
+	return nil
+}

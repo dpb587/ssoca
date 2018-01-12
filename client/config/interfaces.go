@@ -6,4 +6,5 @@ type Manager interface {
 	GetEnvironments() (EnvironmentsState, error)
 	GetEnvironment(string) (EnvironmentState, error)
 	SetEnvironment(EnvironmentState) error
+	UnsetEnvironment(string) error
 }

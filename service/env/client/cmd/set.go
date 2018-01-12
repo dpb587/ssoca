@@ -10,22 +10,22 @@ import (
 	"github.com/dpb587/ssoca/client/config"
 )
 
-type Add struct {
+type Set struct {
 	clientcmd.ServiceCommand
 
-	Args              AddArgs `positional-args:"true"`
+	Args              SetArgs `positional-args:"true"`
 	CACertificatePath string  `long:"ca-cert" description:"Environment CA certificate path"`
 
 	FS boshsys.FileSystem
 }
 
-var _ flags.Commander = Add{}
+var _ flags.Commander = Set{}
 
-type AddArgs struct {
+type SetArgs struct {
 	URL string `positional-arg-name:"URI" description:"Environment URL"`
 }
 
-func (c Add) Execute(_ []string) error {
+func (c Set) Execute(_ []string) error {
 	env := config.EnvironmentState{
 		Alias: c.Runtime.GetEnvironmentName(),
 		URL:   c.Args.URL,
@@ -52,7 +52,7 @@ func (c Add) Execute(_ []string) error {
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return bosherr.WrapError(err, "Adding environment")
+		return bosherr.WrapError(err, "Setting environment")
 	}
 
 	return nil
