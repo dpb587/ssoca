@@ -1,6 +1,6 @@
 # `ssoca env unset ...`
 
-Remove configuration all for an environment (aliases: remove)
+Remove all configuration for an environment (aliases: remove)
 
     Usage:
       ssoca [OPTIONS] env unset [unset-OPTIONS]
