@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authz"
 	. "github.com/dpb587/ssoca/auth/authz/filter/or"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
@@ -40,8 +41,10 @@ var _ = Describe("Requirement", func() {
 
 			It("does not satisfy", func() {
 				err := subject.VerifyAuthorization(&request, token)
-
 				Expect(err).To(HaveOccurred())
+
+				err, ok := err.(authz.Error)
+				Expect(ok).To(BeTrue())
 				Expect(err.Error()).To(Equal("No filters authorized access"))
 			})
 		})

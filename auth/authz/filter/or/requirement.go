@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authz"
 	"github.com/dpb587/ssoca/auth/authz/filter"
 )
 
@@ -22,5 +23,5 @@ func (r Requirement) VerifyAuthorization(req *http.Request, token *auth.Token) e
 		}
 	}
 
-	return errors.New("No filters authorized access")
+	return authz.NewError(errors.New("No filters authorized access"))
 }
