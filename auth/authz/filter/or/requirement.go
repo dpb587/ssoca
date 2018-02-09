@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authz"
 	"github.com/dpb587/ssoca/auth/authz/filter"
 )
@@ -17,7 +18,10 @@ func (r Requirement) VerifyAuthorization(req *http.Request, token *auth.Token) e
 	for _, requirement := range r.Requirements {
 		err := requirement.VerifyAuthorization(req, token)
 		if err != nil {
-			continue
+			if _, ok := err.(authn.Error); ok {
+				// authentication errors take precedent
+				return err
+			}
 		} else {
 			return nil
 		}

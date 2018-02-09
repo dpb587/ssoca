@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authz"
 	. "github.com/dpb587/ssoca/auth/authz/filter/or"
 
@@ -91,6 +92,27 @@ var _ = Describe("Requirement", func() {
 				err := subject.VerifyAuthorization(&request, token)
 
 				Expect(err).ToNot(HaveOccurred())
+				Expect(dissatisfyRequirement.VerifyAuthorizationCallCount()).To(Equal(0))
+			})
+
+			It("errors quickly with authn errors", func() {
+				authnErroringRequirement := &filterfakes.FakeRequirement{}
+				authnErroringRequirement.VerifyAuthorizationReturns(authn.NewError(errors.New("faked error")))
+
+				subject = Requirement{
+					Requirements: []filter.Requirement{
+						authnErroringRequirement,
+						dissatisfyRequirement,
+					},
+				}
+
+				err := subject.VerifyAuthorization(&request, token)
+				Expect(err).To(HaveOccurred())
+
+				aerr, ok := err.(authn.Error)
+				Expect(ok).To(BeTrue())
+				Expect(aerr.Error()).To(Equal("faked error"))
+
 				Expect(dissatisfyRequirement.VerifyAuthorizationCallCount()).To(Equal(0))
 			})
 		})
