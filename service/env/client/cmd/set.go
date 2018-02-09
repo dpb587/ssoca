@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -27,13 +28,21 @@ type Set struct {
 var _ flags.Commander = Set{}
 
 type SetArgs struct {
-	URL string `positional-arg-name:"URI" description:"Environment URL"`
+	URL string `positional-arg-name:"URL" description:"Environment URL"`
 }
 
 func (c Set) Execute(_ []string) error {
+	envURL := c.Args.URL
+
+	if !strings.Contains(envURL, "://") {
+		envURL = fmt.Sprintf("https://%s", envURL)
+	} else if !strings.HasPrefix(envURL, "https://") {
+		return fmt.Errorf("Environment URL must use https scheme: %s", envURL)
+	}
+
 	env := config.EnvironmentState{
 		Alias: c.Runtime.GetEnvironmentName(),
-		URL:   c.Args.URL,
+		URL:   envURL,
 	}
 
 	if c.CACertificatePath != "" {
