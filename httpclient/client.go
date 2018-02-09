@@ -45,7 +45,7 @@ func (c client) Get(url string) (*http.Response, error) {
 
 	res, err := c.do(req)
 	if err == nil && res.StatusCode >= 400 {
-		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
+		return nil, fmt.Errorf("HTTP %s", res.Status)
 	}
 
 	return res, err
@@ -61,7 +61,7 @@ func (c client) Post(url string, contentType string, body io.Reader) (*http.Resp
 
 	res, err := c.do(req)
 	if err == nil && res.StatusCode >= 400 {
-		return nil, fmt.Errorf("HTTP %d", res.StatusCode)
+		return nil, fmt.Errorf("HTTP %s", res.Status)
 	}
 
 	return res, err
@@ -101,7 +101,7 @@ func (c client) apiReadResponse(res *http.Response, out interface{}) error {
 	}
 
 	if res.StatusCode >= 400 {
-		return fmt.Errorf("HTTP %d: %s", res.StatusCode, body)
+		return fmt.Errorf("HTTP %s: %s", res.Status, body)
 	}
 
 	err = json.Unmarshal(body, &out)

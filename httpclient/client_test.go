@@ -105,6 +105,7 @@ var _ = Describe("Client", func() {
 					switch r.URL.String() {
 					case "https://example.com/subpath/test1":
 						return &http.Response{
+							Status:     "403 Forbidden",
 							StatusCode: 403,
 							Body:       ioutil.NopCloser(strings.NewReader(`Forbidden`)),
 						}, nil
@@ -119,7 +120,7 @@ var _ = Describe("Client", func() {
 			err := subject.APIGet("/test1", &jsonResponse{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("HTTP 403"))
+			Expect(err.Error()).To(ContainSubstring("HTTP 403 Forbidden"))
 		})
 	})
 
@@ -190,6 +191,7 @@ var _ = Describe("Client", func() {
 					switch r.URL.String() {
 					case "https://example.com/subpath/test1":
 						return &http.Response{
+							Status:     "403 Forbidden",
 							StatusCode: 403,
 							Body:       ioutil.NopCloser(strings.NewReader(`Forbidden`)),
 						}, nil
