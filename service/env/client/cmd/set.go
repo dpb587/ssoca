@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/jessevdk/go-flags"
@@ -13,8 +15,11 @@ import (
 type Set struct {
 	clientcmd.ServiceCommand
 
+	GetClient GetClient
+
 	Args              SetArgs `positional-args:"true"`
 	CACertificatePath string  `long:"ca-cert" description:"Environment CA certificate path"`
+	SkipVerify        bool    `long:"skip-verify" description:"Skip verification of environment availability"`
 
 	FS boshsys.FileSystem
 }
@@ -54,6 +59,33 @@ func (c Set) Execute(_ []string) error {
 	if err != nil {
 		return bosherr.WrapError(err, "Setting environment")
 	}
+
+	if c.SkipVerify {
+		return nil
+	}
+
+	err = c.verify()
+	if err != nil {
+		return bosherr.WrapError(err, "Verifying environment")
+	}
+
+	return nil
+}
+
+func (c Set) verify() error {
+	ui := c.Runtime.GetUI()
+
+	client, err := c.GetClient()
+	if err != nil {
+		return bosherr.WrapError(err, "Getting client")
+	}
+
+	info, err := client.GetInfo()
+	if err != nil {
+		return bosherr.WrapError(err, "Getting remote environment info")
+	}
+
+	ui.PrintBlock([]byte(fmt.Sprintf("Successfully connected to %s\n", info.Env.Title)))
 
 	return nil
 }

@@ -17,6 +17,8 @@ import (
 type Login struct {
 	clientcmd.ServiceCommand
 
+	SkipVerify bool `long:"skip-verify" description:"Skip verification of authentication, once complete"`
+
 	ServiceManager service.Manager
 	GetClient      GetClient
 }
@@ -81,8 +83,19 @@ func (c Login) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Updating environment")
 	}
 
-	// show confirmation of the new user
+	if c.SkipVerify {
+		return nil
+	}
 
+	err = c.verify()
+	if err != nil {
+		return bosherr.WrapError(err, "Verifying authentication")
+	}
+
+	return nil
+}
+
+func (c Login) verify() error {
 	ui := c.Runtime.GetUI()
 
 	client, err := c.GetClient()

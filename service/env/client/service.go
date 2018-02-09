@@ -54,6 +54,7 @@ func (s Service) GetCommand() interface{} {
 		Set: svccmd.Set{
 			ServiceCommand: cmd,
 			FS:             s.fs,
+			GetClient:      s.GetClient,
 		},
 		Info: svccmd.Info{
 			ServiceCommand: cmd,
