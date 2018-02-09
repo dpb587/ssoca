@@ -49,6 +49,10 @@ func (c CreateTunnelblickProfile) Execute(_ []string) error {
 		return nil
 	}
 
+	ui := c.Runtime.GetUI()
+
+	ui.PrintLinef("Attempting to install profile with sudo (your workstation password may be required).")
+
 	defer c.fs.RemoveAll(profile)
 
 	_, _, exit, err := c.cmdRunner.RunComplexCommand(boshsys.Command{
