@@ -96,5 +96,9 @@ func (c Set) verify() error {
 
 	ui.PrintBlock([]byte(fmt.Sprintf("Successfully connected to %s\n", info.Env.Title)))
 
+	if info.Env.Banner != "" {
+		ui.PrintBlock([]byte(fmt.Sprintf("\n%s\n", info.Env.Banner)))
+	}
+
 	return nil
 }
