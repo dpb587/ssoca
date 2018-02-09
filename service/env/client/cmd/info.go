@@ -6,7 +6,6 @@ import (
 	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	svcapi "github.com/dpb587/ssoca/service/env/api"
 )
 
 type Info struct {
@@ -28,34 +27,35 @@ func (c Info) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Getting remote environment info")
 	}
 
-	table := boshtbl.Table{
-		Header: []boshtbl.Header{
-			{Title: "Service"},
-			{Title: "Type"},
-			{Title: "Metadata"},
+	table := boshtbl.Table{}
+
+	table.Rows = append(
+		table.Rows,
+		[]boshtbl.Value{
+			boshtbl.NewValueString("Title"),
+			boshtbl.NewValueString(info.Env.Title),
 		},
-		Rows: [][]boshtbl.Value{},
-	}
+	)
 
-	info.Auth.Name = "auth"
-	c.appendServiceRow(&table, info.Auth)
+	table.Rows = append(
+		table.Rows,
+		[]boshtbl.Value{
+			boshtbl.NewValueString("URL"),
+			boshtbl.NewValueString(info.Env.URL),
+		},
+	)
 
-	for _, service := range info.Services {
-		c.appendServiceRow(&table, service)
+	if info.Env.Banner != "" {
+		table.Rows = append(
+			table.Rows,
+			[]boshtbl.Value{
+				boshtbl.NewValueString("Banner"),
+				boshtbl.NewValueString(info.Env.Banner),
+			},
+		)
 	}
 
 	c.Runtime.GetUI().PrintTable(table)
 
 	return nil
-}
-
-func (c Info) appendServiceRow(table *boshtbl.Table, service svcapi.InfoServiceResponse) {
-	table.Rows = append(
-		table.Rows,
-		[]boshtbl.Value{
-			boshtbl.NewValueString(service.Name),
-			boshtbl.NewValueString(service.Type),
-			boshtbl.NewValueStrings([]string{}),
-		},
-	)
 }

@@ -26,9 +26,7 @@ func (c Info) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Getting remote authentication info")
 	}
 
-	table := boshtbl.Table{
-	// Rows: [][]boshtbl.Value{},
-	}
+	table := boshtbl.Table{}
 
 	if info.ID != "" {
 		table.Rows = append(
