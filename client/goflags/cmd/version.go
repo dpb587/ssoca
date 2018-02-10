@@ -25,22 +25,14 @@ func (c Version) Execute(_ []string) error {
 	ui := c.Runtime.GetUI()
 
 	if c.Name {
-		ui.PrintLinef(c.Version.Name)
-	}
-
-	if c.Semver {
-		ui.PrintLinef(c.Version.Semver)
-	}
-
-	if c.Commit {
-		ui.PrintLinef(c.Version.Commit)
-	}
-
-	if c.Built {
-		ui.PrintLinef(c.Version.Built.Format(time.RFC3339))
-	}
-
-	if !c.Name && !c.Semver && !c.Commit && !c.Built {
+		ui.PrintBlock(append([]byte(c.Version.Name), '\n'))
+	} else if c.Semver {
+		ui.PrintBlock(append([]byte(c.Version.Semver), '\n'))
+	} else if c.Commit {
+		ui.PrintBlock(append([]byte(c.Version.Commit), '\n'))
+	} else if c.Built {
+		ui.PrintBlock(append([]byte(c.Version.Built.Format(time.RFC3339)), '\n'))
+	} else {
 		ui.PrintLinef(c.Version.String())
 	}
 
