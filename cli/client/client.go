@@ -45,7 +45,7 @@ func main() {
 
 	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))
 	serviceManager.Add(srv_download.NewService(&runtime, fs))
-	serviceManager.Add(srv_env.NewService(&runtime, fs))
+	serviceManager.Add(srv_env.NewService(&runtime, fs, cmdRunner))
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_http_auth.NewService(&runtime))

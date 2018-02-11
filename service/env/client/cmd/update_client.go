@@ -24,6 +24,7 @@ type UpdateClient struct {
 
 	FS        boshsys.FileSystem
 	SsocaExec string
+	CmdRunner boshsys.CmdRunner
 
 	GetClient         GetClient
 	GetDownloadClient GetDownloadClient
@@ -88,20 +89,37 @@ func (c UpdateClient) Execute(_ []string) error {
 		return fmt.Errorf("Unable to find client (%s, %s)", runtime.GOOS, runtime.GOARCH)
 	}
 
-	return c.update(downloadClient, found)
-}
-
-func (c UpdateClient) update(downloadClient downloadhttpclient.Client, fileName string) error {
 	executable := c.SsocaExec
 	if executable == "" {
 		executable = "ssoca"
 	}
 
-	executable, err := exec.LookPath(executable)
+	executable, err = exec.LookPath(executable)
 	if err != nil {
 		return bosherr.WrapError(err, "Expanding path")
 	}
 
+	err = c.update(downloadClient, executable, found)
+	if err != nil {
+		return bosherr.WrapError(err, "Updating binary")
+	}
+
+	_, _, exit, err := c.CmdRunner.RunComplexCommand(boshsys.Command{
+		Name:   executable,
+		Args:   []string{"version"},
+		Stderr: c.Runtime.GetStderr(),
+		Stdout: c.Runtime.GetStdout(),
+	})
+	if err != nil {
+		return bosherr.WrapError(err, "Verifying updated binary")
+	} else if exit != 0 {
+		return fmt.Errorf("Unexpected exit from updated binary: %d", exit)
+	}
+
+	return nil
+}
+
+func (c UpdateClient) update(downloadClient downloadhttpclient.Client, executable string, fileName string) error {
 	tmpfile, err := c.FS.TempFile("ssoca-update-client-")
 	if err != nil {
 		return bosherr.WrapError(err, "Creating temporary file for download")

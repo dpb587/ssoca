@@ -19,16 +19,18 @@ import (
 type Service struct {
 	svc.Service
 
-	runtime client.Runtime
-	fs      boshsys.FileSystem
+	runtime   client.Runtime
+	fs        boshsys.FileSystem
+	cmdRunner boshsys.CmdRunner
 }
 
 var _ service.Service = Service{}
 
-func NewService(runtime client.Runtime, fs boshsys.FileSystem) Service {
+func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
 	return Service{
-		runtime: runtime,
-		fs:      fs,
+		runtime:   runtime,
+		fs:        fs,
+		cmdRunner: cmdRunner,
 	}
 }
 
@@ -74,6 +76,7 @@ func (s Service) GetCommand() interface{} {
 			ServiceCommand:    cmd,
 			SsocaExec:         os.Args[0],
 			FS:                s.fs,
+			CmdRunner:         s.cmdRunner,
 			GetClient:         s.GetClient,
 			GetDownloadClient: s.getDownloadClient,
 		},
