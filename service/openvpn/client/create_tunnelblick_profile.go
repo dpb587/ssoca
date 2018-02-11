@@ -139,10 +139,10 @@ set -u
 
 REM() { /bin/echo $( date -u +"%Y-%m-%dT%H:%M:%SZ" ) "$@"; }
 
-name="$( basename "$( dirname "$( dirname "$( dirname "$0" )" )" )" )"
+profile="$( basename "$( dirname "$( dirname "$( dirname "$0" )" )" )" )"
 shadow="$( dirname "$0" )/config.ovpn"
 
-file="$HOME/Library/Application Support/Tunnelblick/Configurations/$name/Contents/Resources/config.ovpn"
+file="$HOME/Library/Application Support/Tunnelblick/Configurations/$profile/Contents/Resources/config.ovpn"
 
 REM "renewing profile"
 sudo -Hnu "$USER" -- {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
@@ -173,17 +173,39 @@ var tunnelblickInstallScript = `#!/bin/bash
 
 set -eu
 
-[ -n "${SUDO_USER:-}" ] || ( echo "This install script be run with sudo" >&2 && exit 1 )
+[ -n "${SUDO_USER:-}" ] || ( echo "ERROR: This install script must be run with sudo" >&2 && exit 1 )
+
+if [[ "$( ps aux | grep Tunnelblick.app | grep -v grep )" != "" ]]; then
+	# Tunnelblick rewrites its preferences at exit, overwriting our Keep Connected option.
+	# Profiles also do not automatically show up when adding new ones.
+	echo "ERROR: Tunnelblick appears to be running. To ensure this profile is installed" >&2
+	echo "       correctly, please quit the application before trying again." >&2
+
+	exit 1
+fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-name="$( basename "$DIR" )"
-profileDir="$HOME/Library/Application Support/Tunnelblick/Configurations/$name"
-shadowDir="/Library/Application Support/Tunnelblick/Users/$SUDO_USER/$name"
+profile="$( basename "$DIR" )"
+name="${profile%.tblk}"
+preferencesFile="$HOME/Library/Preferences/net.tunnelblick.tunnelblick.plist"
+profileDir="$HOME/Library/Application Support/Tunnelblick/Configurations/$profile"
+shadowDir="/Library/Application Support/Tunnelblick/Users/$SUDO_USER/$profile"
 
 #
 # profile
 #
+
+# create and secure profile directory in case Tunnelblick has never been run before
+if [ ! -e "$HOME/Library/Application Support/Tunnelblick/Configurations" ]; then
+  mkdir -p "$HOME/Library/Application Support/Tunnelblick/Configurations"
+
+  chown "$SUDO_USER":admin "$HOME/Library/Application Support/Tunnelblick"
+  chmod 750 "$HOME/Library/Application Support/Tunnelblick"
+
+  chown "$SUDO_USER":admin "$HOME/Library/Application Support/Tunnelblick/Configurations"
+  chmod 750 "$HOME/Library/Application Support/Tunnelblick/Configurations"
+fi
 
 mkdir -p "$profileDir/Contents/Resources"
 
@@ -208,6 +230,20 @@ chmod 750 "$profileDir/Contents/Resources/pre-connect.sh"
 # shadow
 #
 
+# create and secure shadow directory in case Tunnelblick has never been run before
+if [ ! -e "/Library/Application Support/Tunnelblick/Users/$SUDO_USER" ]; then
+  mkdir -p "/Library/Application Support/Tunnelblick/Users/$SUDO_USER"
+
+  chown "root:wheel" "/Library/Application Support/Tunnelblick"
+  chmod 755 "/Library/Application Support/Tunnelblick"
+
+  chown "root:wheel" "/Library/Application Support/Tunnelblick/Users"
+  chmod 755 "/Library/Application Support/Tunnelblick/Users"
+
+  chown "root:wheel" "/Library/Application Support/Tunnelblick/Users/$SUDO_USER"
+  chmod 755 "/Library/Application Support/Tunnelblick/Users/$SUDO_USER"
+fi
+
 mkdir -p "$shadowDir/Contents/Resources"
 
 chown root:wheel "$shadowDir"
@@ -228,9 +264,24 @@ chown root:wheel "$shadowDir/Contents/Resources/pre-connect.sh"
 chmod 700 "$shadowDir/Contents/Resources/pre-connect.sh"
 
 #
+# preferences
+#
+
+# the configuration is generated; don't confuse people into thinking they can edit it
+sudo -u "$SUDO_USER" -- defaults write net.tunnelblick.tunnelblick "$name-disableEditConfiguration" -bool yes
+
+# since we cannot live-reload new certs here, we "unexpectedly" exit and want Tunnelblick to restart us
+sudo -u "$SUDO_USER" -- defaults write net.tunnelblick.tunnelblick "$name-keepConnected" -bool yes
+
+# by default, avoid checking if IP changed after connection to avoid alerts and monitoring
+sudo -u "$SUDO_USER" -- defaults write net.tunnelblick.tunnelblick "$name-notOKToCheckThatIPAddressDidNotChangeAfterConnection" -bool yes
+
+# be helpful and pre-select our new profile in case they want to change more options
+sudo -u "$SUDO_USER" -- defaults write net.tunnelblick.tunnelblick leftNavSelectedDisplayName -string "$name"
+
+#
 # fyi
 #
 
-echo "The profile '${name%.tblk}' has successfully been installed."
-echo "If you do not see the profile listed, try restarting Tunnelblick."
+echo "The profile '$name' has successfully been installed."
 `
