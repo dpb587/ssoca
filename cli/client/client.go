@@ -18,6 +18,7 @@ import (
 	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
 	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
 	srv_http_auth "github.com/dpb587/ssoca/auth/authn/http/client"
+	srv_saml_auth "github.com/dpb587/ssoca/auth/authn/saml/client"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
@@ -49,6 +50,7 @@ func main() {
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_http_auth.NewService(&runtime))
+	serviceManager.Add(srv_saml_auth.NewService(&runtime, cmdRunner))
 	// serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {

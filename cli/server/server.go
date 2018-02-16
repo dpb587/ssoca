@@ -22,6 +22,7 @@ import (
 	srv_github_authn "github.com/dpb587/ssoca/auth/authn/github/server"
 	srv_google_authn "github.com/dpb587/ssoca/auth/authn/google/server"
 	srv_http_authn "github.com/dpb587/ssoca/auth/authn/http/server"
+	srv_saml_authn "github.com/dpb587/ssoca/auth/authn/saml/server"
 	srv_uaa_authn "github.com/dpb587/ssoca/auth/authn/uaa/server"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
@@ -85,6 +86,7 @@ func main() {
 	serviceFactory.Register(srv_github_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
 	serviceFactory.Register(srv_google_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
 	serviceFactory.Register(srv_http_authn.NewServiceFactory())
+	serviceFactory.Register(srv_saml_authn.NewServiceFactory())
 	serviceFactory.Register(srv_uaa_authn.NewServiceFactory())
 
 	serviceFactory.Register(srv_download.NewServiceFactory(fs))
