@@ -4,6 +4,7 @@ The environments can be managed through the `env` commands.
 
  * `info` ([details](info-cmd)) - show environment information
  * `list` ([details](list-cmd)) - list all locally-configured environments
+ * `rename` ([details](rename-cmd)) - set a new name for the environment
  * `services` ([details](services-cmd)) - show current services available from the environment
  * `set` ([details](set-cmd)) - configure the connection to an environment
  * `set-option` ([details](set-option-cmd)) - set a local client option in the environment
