@@ -49,6 +49,7 @@ func (s Service) GetCommand() interface{} {
 		Info         svccmd.Info         `command:"info" description:"Show environment information"`
 		Services     svccmd.Services     `command:"services" description:"Show current services available from the environment"`
 		List         svccmd.List         `command:"list" description:"List all locally-configured environments"`
+		Rename       svccmd.Rename       `command:"rename" description:"Set a new name for the environment"`
 		SetOption    svccmd.SetOption    `command:"set-option" description:"Set a local client option in the environment"`
 		UpdateClient svccmd.UpdateClient `command:"update-client" description:"Download the latest client from the environment"`
 		Unset        svccmd.Unset        `command:"unset" description:"Remove all configuration for an environment" alias:"remove"`
@@ -67,6 +68,9 @@ func (s Service) GetCommand() interface{} {
 			GetClient:      s.GetClient,
 		},
 		List: svccmd.List{
+			ServiceCommand: cmd,
+		},
+		Rename: svccmd.Rename{
 			ServiceCommand: cmd,
 		},
 		SetOption: svccmd.SetOption{

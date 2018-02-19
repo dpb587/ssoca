@@ -2,7 +2,6 @@ package cmd
 
 import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/jessevdk/go-flags"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
@@ -14,8 +13,6 @@ type SetOption struct {
 
 	Args              SetOptionArgs `positional-args:"true"`
 	CACertificatePath string        `long:"ca-cert" description:"Environment CA certificate path"`
-
-	FS boshsys.FileSystem
 }
 
 var _ flags.Commander = SetOption{}
