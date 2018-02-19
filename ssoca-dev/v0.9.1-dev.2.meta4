@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="ssoca-client-0.9.1-dev.2-darwin-amd64">
+    <hash type="md5">7744e27d92468e533ca34f63a82244f6</hash>
+    <hash type="sha-1">3f566c805676c41ed3e6d78bc4374a015e38ae3b</hash>
+    <hash type="sha-256">7f20f1e9934edcaca7802d13d10853988ed8df3804ddf62aa610b6653c3a971b</hash>
+    <hash type="sha-512">c8f318ba0f490aaad7e965f6d37d6e71065693c4a32843aea38ae4fad203985b893886c9704d75b6a284539035353293a345ef5f40b6829a27899f7223484b8d</hash>
+    <size>11416688</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/3f566c805676c41ed3e6d78bc4374a015e38ae3b</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <file name="ssoca-client-0.9.1-dev.2-linux-amd64">
+    <hash type="md5">5ffa37544c5128daa0bca21dab5e441c</hash>
+    <hash type="sha-1">e2393b8af86dd75404fbdc4b8167ce81673eb984</hash>
+    <hash type="sha-256">de8895816d607955497b450bcb1c99f221d534d7becbbbceb498b34789022921</hash>
+    <hash type="sha-512">5833d81e8d10ebe540ab314c2639e31b1c948b95928b3c249795645b9e803fa8730fa97ee7563a4b804c1d2ccda3c8463dc3dc3c486fe7c20ab068113df2d632</hash>
+    <size>11586306</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/e2393b8af86dd75404fbdc4b8167ce81673eb984</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <file name="ssoca-client-0.9.1-dev.2-windows-amd64.exe">
+    <hash type="md5">478f2390cdd32e5e3ad815c3874a1f44</hash>
+    <hash type="sha-1">bb38d3dcae52b8cdfed1939b86b29995536c6d53</hash>
+    <hash type="sha-256">0402629cf2038fbc1ab2b84436ab8b97e28c76c9ef3d64b5903690df6c40e02d</hash>
+    <hash type="sha-512">50fd2370e0fac3bd04c8774ef3f33dd64c528c66eae4e96866586fd496e024bfaa0ed3f92ed3c727eea5456bb53b4941fa56b021178a4ac024d264aae559ea40</hash>
+    <size>11607040</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/bb38d3dcae52b8cdfed1939b86b29995536c6d53</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <file name="ssoca-server-0.9.1-dev.2-darwin-amd64">
+    <hash type="md5">d206b3f52ab4a74538048f7aecf132eb</hash>
+    <hash type="sha-1">7c38a94b2a86da0452fe3b7e9e97f779e75f3190</hash>
+    <hash type="sha-256">e8342b6853042bbf921b3d3015ab85633704b6e4468dd179ac8616ec62f11be6</hash>
+    <hash type="sha-512">6b73349d71516bb5c890e364e453871271b7d029373f06f5b8507ca4e3ab41d148ba034439643c64ce808a3bdaae999563e98c0b186fbc278b83cb9c8d72c93e</hash>
+    <size>13353936</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/7c38a94b2a86da0452fe3b7e9e97f779e75f3190</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <file name="ssoca-server-0.9.1-dev.2-linux-amd64">
+    <hash type="md5">7098dc94b0747bf81c8c94d404ffcc49</hash>
+    <hash type="sha-1">92a19f30452b7fc4b01873e1026ed8f5c19e37aa</hash>
+    <hash type="sha-256">7f1f773c19fe787427a95863d384ff1770c618420eefff950334dee9938e586d</hash>
+    <hash type="sha-512">c0e4005e844646be3e5f228e38d728d7bac542ee8420e867c8808a8e62e491423be3e4277da9a69a0faba9ff71cdb72bd0139f59f5cd8d9281573ba60e07fd2d</hash>
+    <size>13529260</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/92a19f30452b7fc4b01873e1026ed8f5c19e37aa</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <file name="ssoca-server-0.9.1-dev.2-windows-amd64.exe">
+    <hash type="md5">edc00c51de6d77f50979e8bf02012e42</hash>
+    <hash type="sha-1">21b89c3c4ad0efa3d8b359ab0091acc749f4daa0</hash>
+    <hash type="sha-256">c2b4f7614c1d0591f63a5f8542b7bceacec0695a067c2d5327a84c9a38e320cc</hash>
+    <hash type="sha-512">1159399acfe5622790e2e3c4b6b99b7cbcf74a79c7d9d4ffb9bb4f482d0af04f3c001987c98bfb48e95237d498ea4ceeabcdd34c6b2e9bb8526ed5f17066d570</hash>
+    <size>13495296</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.9.1-dev.2/21b89c3c4ad0efa3d8b359ab0091acc749f4daa0</url>
+    <version>0.9.1-dev.2</version>
+  </file>
+  <generator>metalink.dpb587.github.io/0.0.0</generator>
+  <published>2018-02-19T23:42:29Z</published>
+</metalink>
