@@ -148,7 +148,7 @@ REM "renewing profile"
 sudo -Hnu "$USER" -- {{.Exec}} --config "{{.Config}}" --environment "{{.Environment}}" openvpn create-profile --service "{{.Service}}" > "$file.tmp"
 exit=$?
 
-if [[ "0" != "$exit" ]]; then
+if [[ "0" != "$exit" ]] || [[ ! -s "$file.tmp" ]]; then
   rm "$file.tmp"
 
   REM "exiting with failure"
