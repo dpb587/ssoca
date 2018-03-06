@@ -1,14 +1,26 @@
 jobs:
-  - name: "default-image"
+  - name: "ci-unit-image"
     serial: true
     plan:
       - get: "repo"
         resource: "repo-ci-images"
         trigger: true
       - aggregate:
-          - put: "unit-ci-docker-image"
+          - put: "ci-unit-docker-image"
             params:
               build: "repo/ci/images/unit"
+            get_params:
+              skip_download: true
+  - name: "ci-build-image"
+    serial: true
+    plan:
+      - get: "repo"
+        resource: "repo-ci-images"
+        trigger: true
+      - aggregate:
+          - put: "ci-build-docker-image"
+            params:
+              build: "repo/ci/images/build"
             get_params:
               skip_download: true
   - name: unit-tests
@@ -180,11 +192,18 @@ resources:
       branch: master
       access_token: {{repo_github_token}}
       context: unit-tests
-  - name: "unit-ci-docker-image"
+  - name: "ci-unit-docker-image"
     type: "docker-image"
     source:
       repository: dpb587/ssoca
       tag: ci-unit
+      username: {{docker_username}}
+      password: {{docker_password}}
+  - name: "ci-build-docker-image"
+    type: "docker-image"
+    source:
+      repository: dpb587/ssoca
+      tag: ci-build
       username: {{docker_username}}
       password: {{docker_password}}
   - name: "version"
