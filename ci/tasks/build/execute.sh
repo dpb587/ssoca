@@ -23,7 +23,7 @@ meta4 set-published --metalink="$metalink_path" "$( date -u +%Y-%m-%dT%H:%M:%SZ 
 
 cd tmp
 
-for file in $( find . -type f -perm +111 -maxdepth 1 -name "ssoca-*-$version-*" | cut -c3- | sort ); do
+for file in $( find . -maxdepth 1 -type f -perm -111 -name "ssoca-*-$version-*" | cut -c3- | sort ); do
   echo "$file"
 
   meta4 import-file --metalink="$metalink_path" --file="$file" --version="$version" "$file"
