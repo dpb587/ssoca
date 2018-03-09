@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="ssoca-client-0.10.0-darwin-amd64">
+    <hash type="md5">c8562df524b85bd91828fe8346a9efdd</hash>
+    <hash type="sha-1">8a8b869e0fd18906fbec9479cf1e5c06317c7569</hash>
+    <hash type="sha-256">6d7d6c5330606b6e015506f83dcc49ebe2179d1520b43e23479b6847356b2dc1</hash>
+    <hash type="sha-512">ea8c70c011b568f81938421f97f71f9c7e476025e307338c0efafb7a57057dd0cdea626e965d61edd3a9a3c8d25917e96c022bd5c09a6e70670354c1f435f3c9</hash>
+    <size>12459056</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/8a8b869e0fd18906fbec9479cf1e5c06317c7569</url>
+    <version>0.10.0</version>
+  </file>
+  <file name="ssoca-client-0.10.0-linux-amd64">
+    <hash type="md5">01af71afb2c85a5ff922386e1cf88d8d</hash>
+    <hash type="sha-1">5f23e030ae0cf490bdeee5889691dc354288e930</hash>
+    <hash type="sha-256">cf8840343a97f58542d592c1b8c7e8371a7263041b86b744daa5ec959836eca0</hash>
+    <hash type="sha-512">9e4fe127b9ed388fe6f5dc02eb0ff7401c2a72590377eb8e24bacf5adb3550c7846fc668eb02e2a93ecc9a9c53c895bbc81bc923aac0d1135a6ef149cd288e54</hash>
+    <size>12687369</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/5f23e030ae0cf490bdeee5889691dc354288e930</url>
+    <version>0.10.0</version>
+  </file>
+  <file name="ssoca-client-0.10.0-windows-amd64.exe">
+    <hash type="md5">b2f510f129fadafa84184d18f2d04783</hash>
+    <hash type="sha-1">396f1419cc01d642e6a491bc6168189d47bbf242</hash>
+    <hash type="sha-256">3d07cfcb838bb585bba8f4847bfecd715ba987001e17c329aecde89b9d7f01d0</hash>
+    <hash type="sha-512">a6a1b698197e332447cb6d3a4f0241557343e2e54d8932200bae41419943cf1bdde51e5bc50bf01ca012687024117106bff02f068aec2f8c6b2b267e8b615ab2</hash>
+    <size>12512256</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/396f1419cc01d642e6a491bc6168189d47bbf242</url>
+    <version>0.10.0</version>
+  </file>
+  <file name="ssoca-server-0.10.0-darwin-amd64">
+    <hash type="md5">b7e13abfbad1aa413aa8e3ac172e2347</hash>
+    <hash type="sha-1">ee192c07f687346f2c343badb79435e5f35b386a</hash>
+    <hash type="sha-256">3980b64088696a6196ce973e7ba489f8f4824ff81c6667f83af5fb679a72efc3</hash>
+    <hash type="sha-512">7bc75fefb58a8f90b053c4c51da1374d6f297b3d03ccdbff71d222b3119fb826d07eec41b3b07643d8d37e55adb7519e842974e48efb624dda45400fc0cbbdb5</hash>
+    <size>14353392</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/ee192c07f687346f2c343badb79435e5f35b386a</url>
+    <version>0.10.0</version>
+  </file>
+  <file name="ssoca-server-0.10.0-linux-amd64">
+    <hash type="md5">7372d31356a14c3fd78627b52187022c</hash>
+    <hash type="sha-1">b161f76c7cba0484ce07d6eb2349a5be33cfa1e0</hash>
+    <hash type="sha-256">9a0f7c06d9f99e1a2cfeb893456bd613fadf1f48e205f3b873d9098f04e22dac</hash>
+    <hash type="sha-512">17e0afadf5e5710091521fba57090775a232a9781136d3f4ab7ee43873b82171f50303a162cd7cff8cdecdca21e85269aa3b40238ad7809a6d043ea0b15e3ba2</hash>
+    <size>14561145</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/b161f76c7cba0484ce07d6eb2349a5be33cfa1e0</url>
+    <version>0.10.0</version>
+  </file>
+  <file name="ssoca-server-0.10.0-windows-amd64.exe">
+    <hash type="md5">526ac0a26643533bc5316ea582375988</hash>
+    <hash type="sha-1">6511caa6fbca7510dbe582da52055938f1c029dd</hash>
+    <hash type="sha-256">aaffe97ca39482b1eb62f315db184ec1f889b8992eee35560a81145c811dc2fe</hash>
+    <hash type="sha-512">00ffaef915938d5230f17f743ad4c5c20ca33c2452b09e66b8cb628477f82629b97f287ab59012396b65d41b0e0dc6c0e28ac828e6806cc9c1d6ff7989c47035</hash>
+    <size>14342144</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.10.0/6511caa6fbca7510dbe582da52055938f1c029dd</url>
+    <version>0.10.0</version>
+  </file>
+  <generator>metalink.dpb587.github.io/0.0.0</generator>
+  <published>2018-03-09T13:00:18Z</published>
+</metalink>
