@@ -110,10 +110,10 @@ jobs:
           skip_download: true
       - put: repo
         params:
-          annotate: /tmp/build/put/release/title
-          repository: /tmp/build/put/repo
+          annotate: release/title
+          repository: repo
           only_tag: true
-          tag: /tmp/build/put/release/tag
+          tag: release/tag
       - put: github-release
         params:
           body: release/notes.md
