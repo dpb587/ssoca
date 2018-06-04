@@ -45,16 +45,18 @@ func CreateFromConfig(
 		return Server{}, errors.New("Configuration missing: env.url")
 	}
 
-	if cfg.Server.CertificatePath == "" {
-		return Server{}, errors.New("Configuration missing: server.certificate_path")
-	} else if !fs.FileExists(cfg.Server.CertificatePath) {
-		return Server{}, fmt.Errorf("Configuration key invalid: server.certificate_path: file does not exist: %s", cfg.Server.CertificatePath)
-	}
-
-	if cfg.Server.PrivateKeyPath == "" {
-		return Server{}, errors.New("Configuration key missing: server.private_key_path:")
-	} else if !fs.FileExists(cfg.Server.PrivateKeyPath) {
-		return Server{}, fmt.Errorf("Configuration key invalid: server.private_key_path: file does not exist: %s", cfg.Server.PrivateKeyPath)
+	if cfg.Server.CertificatePath != "" {
+		if cfg.Server.PrivateKeyPath == "" {
+			return Server{}, errors.New("Configuration missing: server.private_key_path")
+		} else if !fs.FileExists(cfg.Server.CertificatePath) {
+			return Server{}, fmt.Errorf("Configuration key invalid: server.certificate_path: file does not exist: %s", cfg.Server.CertificatePath)
+		}
+	} else if cfg.Server.PrivateKeyPath != "" {
+		if cfg.Server.CertificatePath == "" {
+			return Server{}, errors.New("Configuration missing: server.certificate_path")
+		} else if !fs.FileExists(cfg.Server.CertificatePath) {
+			return Server{}, fmt.Errorf("Configuration key invalid: server.private_key_path: file does not exist: %s", cfg.Server.CertificatePath)
+		}
 	}
 
 	knownCertAuths := map[string]bool{}
@@ -202,10 +204,20 @@ func (s Server) Run() error {
 		Handler: mux,
 	}
 
+	scheme := "http"
+
+	if s.config.CertificatePath != "" && s.config.PrivateKeyPath != "" {
+		scheme = "https"
+	}
+
 	s.logger.WithFields(logrus.Fields{
 		"server.local_addr": s.server.Addr,
-	}).Info("Server is ready")
+	}).Infof("Server is ready for %s connections", scheme)
 
 	// @todo gofunc
-	return s.server.ListenAndServeTLS(s.config.CertificatePath, s.config.PrivateKeyPath)
+	if scheme == "http" {
+		return s.server.ListenAndServeTLS(s.config.CertificatePath, s.config.PrivateKeyPath)
+	}
+
+	return s.server.ListenAndServe()
 }
