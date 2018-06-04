@@ -215,7 +215,7 @@ func (s Server) Run() error {
 	}).Infof("Server is ready for %s connections", scheme)
 
 	// @todo gofunc
-	if scheme == "http" {
+	if scheme == "https" {
 		return s.server.ListenAndServeTLS(s.config.CertificatePath, s.config.PrivateKeyPath)
 	}
 
