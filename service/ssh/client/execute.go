@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -94,7 +95,7 @@ func (s Service) Execute(opts ExecuteOptions) (int, error) {
 
 	if target != nil {
 		if target.Port != 0 {
-			sshargs = append(sshargs, "-p", string(target.Port))
+			sshargs = append(sshargs, "-p", strconv.Itoa(target.Port))
 		}
 
 		if target.User != "" {
