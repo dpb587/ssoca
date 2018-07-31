@@ -1,7 +1,6 @@
 package client
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -21,7 +20,7 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 		return nil, bosherr.WrapError(err, "Parsing metadata")
 	}
 
-	client, err := s.uaaClientFactory.CreateClient(metadata.URL, metadata.CACertificate, "bosh_cli", "")
+	client, err := s.uaaClientFactory.CreateClient(metadata.URL, "bosh_cli", "", metadata.CACertificate)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Creating UAA client")
 	}
@@ -78,12 +77,13 @@ func (s Service) AuthRequest(req *http.Request) error {
 		return bosherr.WrapError(err, "Getting environment")
 	}
 
-	authConfig, ok := env.Auth.Options.(AuthConfig)
-	if !ok {
-		return errors.New("Parsing auth config")
+	authConfig := AuthConfig{}
+	err = env.Auth.UnmarshalOptions(&authConfig)
+	if err != nil {
+		return bosherr.WrapError(err, "Parsing authentication options")
 	}
 
-	client, err := s.uaaClientFactory.CreateClient(authConfig.URL, authConfig.CACertificate, "bosh_cli", "")
+	client, err := s.uaaClientFactory.CreateClient(authConfig.URL, "bosh_cli", "", authConfig.CACertificate)
 	if err != nil {
 		return bosherr.WrapError(err, "Creating UAA client")
 	}

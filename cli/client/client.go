@@ -18,6 +18,8 @@ import (
 	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
 	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
 	srv_http_auth "github.com/dpb587/ssoca/auth/authn/http/client"
+	srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
+	srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
@@ -26,8 +28,6 @@ import (
 	srv_openvpn_helper "github.com/dpb587/ssoca/service/openvpn/client/helper"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
 	srv_ssh_cli "github.com/dpb587/ssoca/service/ssh/client/cli"
-	// srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
-	// srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 )
 
 var appName = "ssoca-client"
@@ -49,7 +49,7 @@ func main() {
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_http_auth.NewService(&runtime))
-	// serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
+	serviceManager.Add(srv_uaa_auth.NewService(&runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {
 		svc, err := serviceManager.Get(name)

@@ -51,6 +51,7 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 
 	token := auth.Token{}
 	token.ID = intTok.Username
+	token.Attributes = map[auth.TokenAttribute]*string{}
 	token.Attributes[auth.TokenUsernameAttribute] = &intTok.Username
 
 	for _, scope := range intTok.Scopes {
