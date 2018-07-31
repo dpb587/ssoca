@@ -3,9 +3,9 @@ package client
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"os"
 	"os/exec"
+	"text/template"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )

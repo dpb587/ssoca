@@ -4,7 +4,6 @@ To create and automatically install a Tunnelblick profile you may use the `--ins
 
     $ ssoca openvpn create-tunnelblick-profile --install
     The profile 'acme-prod-aws-use1' has successfully been installed.
-    If you do not see the profile listed, try restarting Tunnelblick.
 
 To create only the profile files, leave off `--install` (it will create a `{service-name}.tblk` in your current directory)...
 

@@ -15,6 +15,7 @@ type Commands struct {
 	Exec                     Exec                     `command:"exec" description:"Execute openvpn to connect to the remote server" alias:"connect"`
 	CreateProfile            CreateProfile            `command:"create-profile" description:"Create and sign an OpenVPN configuration profile"`
 	CreateTunnelblickProfile CreateTunnelblickProfile `command:"create-tunnelblick-profile" description:"Create a Tunnelblick profile"`
+	CreateLaunchdService     CreateLaunchdService     `command:"create-launchd-service" description:"Create a launchd service"`
 
 	sf svc.ServiceFactory
 }
@@ -39,6 +40,13 @@ func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory, fs boshsys.Fi
 			ServiceCommand: cmd,
 		},
 		CreateTunnelblickProfile: CreateTunnelblickProfile{
+			serviceFactory: sf,
+			fs:             fs,
+			cmdRunner:      cmdRunner,
+			ServiceCommand: cmd,
+			SsocaExec:      os.Args[0],
+		},
+		CreateLaunchdService: CreateLaunchdService{
 			serviceFactory: sf,
 			fs:             fs,
 			cmdRunner:      cmdRunner,
