@@ -16,24 +16,4 @@ source .envrc
 
 ./bin/build "$version"
 
-metalink_path="$build_dir/v$version.meta4"
-
-meta4 create --metalink="$metalink_path"
-meta4 set-published --metalink="$metalink_path" "$( date -u +%Y-%m-%dT%H:%M:%SZ )"
-
-cd tmp
-
-for file in $( find . -maxdepth 1 -type f -perm -111 -name "ssoca-*-$version-*" | cut -c3- | sort ); do
-  echo "$file"
-
-  meta4 import-file --metalink="$metalink_path" --file="$file" --version="$version" "$file"
-
-  if [ -n "$s3_host" ]; then
-    sha1=$( meta4 file-hash --metalink=$metalink_path --file="$file" sha-1 )
-    meta4 file-upload --metalink="$metalink_path" --file="$file" "$file" "s3://$s3_host/$s3_bucket/${s3_prefix}v$version/$sha1"
-  fi
-
-  mv "$file" "$build_dir/$file"
-done
-
-cat "$metalink_path"
+mv tmp/ssoca-client-* tmp/ssoca-server-* "$build_dir/"
