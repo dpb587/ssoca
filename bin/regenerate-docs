@@ -2,10 +2,10 @@
 
 set -eu
 
-cli_list=client os_list=darwin bin/build 0.0.0
-
 mkdir -p tmp/docs-bin
-mv tmp/ssoca-client-0.0.0-darwin-amd64 tmp/docs-bin/ssoca
+
+go build -o tmp/docs-bin/ssoca cli/client/client.go
+
 export PATH="$PWD/tmp/docs-bin:$PATH"
 
 for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do

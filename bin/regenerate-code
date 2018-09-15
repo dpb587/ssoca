@@ -17,7 +17,7 @@ for package in $_packages; do
     ginkgo bootstrap
     mv *_suite_test.go ginkgo_test.go
 
-    gsed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/ginkgo_test.go
+    sed -E -i "s#RunSpecs\\(t, \".*\"\\)#RunSpecs\\(t, \"$package\"\\)#" $GOPATH/src/$package/ginkgo_test.go
 
     popd > /dev/null
   fi
