@@ -1,10 +1,10 @@
 package download_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestDownload(t *testing.T) {

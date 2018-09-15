@@ -1,10 +1,10 @@
 package github_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestGithub(t *testing.T) {

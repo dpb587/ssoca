@@ -1,10 +1,10 @@
 package fs_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestFs(t *testing.T) {
