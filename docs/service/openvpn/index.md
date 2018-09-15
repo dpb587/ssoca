@@ -7,6 +7,7 @@ This service provides a client command:
 * `base-profile` ([details](base-profile-cmd)) - show the base connection profile of the OpenVPN server
 * `connect` ([details](connect-cmd)) - connect to a remote OpenVPN server
 * `create-launchd-service` ([details](create-launchd-service-cmd)) - create a launchd service
+* `create-onc-profile` ([details](create-onc-profile-cmd)) - create an ONC profile
 * `create-profile` ([details](create-profile-cmd)) - create and sign an OpenVPN configuration profile
 * `create-tunnelblick-profile` ([details](create-tunnelblick-profile-cmd)) - create a Tunnelblick profile
 
