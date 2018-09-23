@@ -10,6 +10,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
+const EnvironmentOptionAuthBind string = "auth.bind"
 const EnvironmentOptionAuthOpenCommand string = "auth.open_command"
 
 type State struct {

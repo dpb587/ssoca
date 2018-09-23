@@ -10,6 +10,36 @@ type EnvironmentOption interface {
 	SetValue(interface{}) error
 }
 
+type StringEnvironmentOption struct {
+	key   string
+	value string
+}
+
+var _ EnvironmentOption = &StringEnvironmentOption{}
+
+func NewStringEnvironmentOption(key string) StringEnvironmentOption {
+	return StringEnvironmentOption{key: key}
+}
+
+func (eo *StringEnvironmentOption) Key() string {
+	return eo.key
+}
+
+func (eo *StringEnvironmentOption) SetValue(value interface{}) error {
+	stringValue, ok := value.(string)
+	if !ok {
+		return fmt.Errorf("Cannot convert option value to string: %#+v", value)
+	}
+
+	eo.value = stringValue
+
+	return nil
+}
+
+func (eo *StringEnvironmentOption) GetValue() string {
+	return eo.value
+}
+
 type StringSliceEnvironmentOption struct {
 	key   string
 	value []string

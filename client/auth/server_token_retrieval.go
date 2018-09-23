@@ -15,16 +15,18 @@ type ServerTokenRetrieval struct {
 	envURL      string
 	version     version.Version
 	cmdRunner   boshsys.CmdRunner
+	bindAddress string
 	openCommand []string
 	stdout      io.Writer
 	stdin       io.Reader
 }
 
-func NewServerTokenRetrieval(envURL string, ver version.Version, cmdRunner boshsys.CmdRunner, openCommand []string, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
+func NewServerTokenRetrieval(envURL string, ver version.Version, cmdRunner boshsys.CmdRunner, bindAddress string, openCommand []string, stdout io.Writer, stdin io.Reader) ServerTokenRetrieval {
 	return ServerTokenRetrieval{
 		envURL:      envURL,
 		version:     ver,
 		cmdRunner:   cmdRunner,
+		bindAddress: bindAddress,
 		openCommand: openCommand,
 		stdout:      stdout,
 		stdin:       stdin,
@@ -33,7 +35,7 @@ func NewServerTokenRetrieval(envURL string, ver version.Version, cmdRunner boshs
 
 func (str *ServerTokenRetrieval) listenForTokenCallback(tokenChannel chan string, errorChannel chan error, portChannel chan string) {
 	s := &http.Server{
-		Addr: "127.0.0.1:0",
+		Addr: str.bindAddress,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if r.Method != "POST" {
 				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

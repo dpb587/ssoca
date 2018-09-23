@@ -17,13 +17,19 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 		return nil, bosherr.WrapError(err, "Getting environment")
 	}
 
+	authBind := config.NewStringEnvironmentOption(config.EnvironmentOptionAuthBind)
+	err = env.GetOption(&authBind, "0.0.0.0:0")
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Loading bind option")
+	}
+
 	openCommand := config.NewStringSliceEnvironmentOption(config.EnvironmentOptionAuthOpenCommand)
 	err = env.GetOption(&openCommand, []string{"open"})
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading option")
+		return nil, bosherr.WrapError(err, "Loading open option")
 	}
 
-	str := auth.NewServerTokenRetrieval(env.URL, s.runtime.GetVersion(), s.cmdRunner, openCommand.GetValue(), s.runtime.GetStderr(), s.runtime.GetStdin())
+	str := auth.NewServerTokenRetrieval(env.URL, s.runtime.GetVersion(), s.cmdRunner, authBind.GetValue(), openCommand.GetValue(), s.runtime.GetStderr(), s.runtime.GetStdin())
 
 	token, err := str.Retrieve("/auth/initiate")
 	if err != nil {
