@@ -12,6 +12,6 @@ Chrome OS uses [Open Network Configuration](https://chromium.googlesource.com/ch
 
 ## Troubleshooting
 
-If the VPN connection is not added or updated, visit `chrome://system/` and review `Profile[0] chrome_user_log` for details (search for `onc_validator.cc` or `onc`).
+If the VPN connection is not added or updated, visit `chrome://system` and review `Profile[0] chrome_user_log` for details (search for `onc_validator.cc` or `onc`).
 
-If the VPN connection will not successfully connect, visit `chrome://system/` and review `netlog` for `openvpn` for connection details (search for `openvpn`).
+If the VPN connection will not successfully connect, visit `chrome://system` and review `netlog` for `openvpn` for connection details (search for `openvpn`).
