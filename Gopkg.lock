@@ -109,14 +109,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:21d2220740d7c0f7425d870311509980c8448a708b1491a702facd2d2be714e2"
+  digest = "1:77b3986b3e759bd84c30acc997947494f37d63d0d293550f4f72b4574d9a058f"
   name = "github.com/dpb587/go-openvpn"
   packages = [
     "ovpn",
     "ovpn/onc",
   ]
   pruneopts = ""
-  revision = "b17007dfd1301661d79c8aa02a79d152791f080b"
+  revision = "1167a52705a808ac4d2b5ed07bc34b2a300e8afb"
 
 [[projects]]
   branch = "master"

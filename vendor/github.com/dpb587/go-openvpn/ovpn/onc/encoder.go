@@ -60,6 +60,8 @@ func Encode(profile *ovpn.Profile) (*onc.ONC, error) {
 				openvpnConfig.NsCertType = pe.Args()[0]
 			case "push-peer-info":
 				openvpnConfig.PushPeerInfo = true
+			case "proto":
+				openvpnConfig.Proto = pe.Args()[0]
 			case "remote":
 				subpieced := whitespaceRE.Split(pe.Args()[0], 3)
 				if networkConfigurationConfig.VPN.Host == "" {
