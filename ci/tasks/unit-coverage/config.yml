@@ -5,8 +5,8 @@ image_resource:
     repository: dpb587/ssoca
     tag: ci-unit
 inputs:
-  - name: repo
-    path: src/github.com/dpb587/ssoca
+- name: repo
+  path: src/github.com/dpb587/ssoca
 run:
   path: src/github.com/dpb587/ssoca/ci/tasks/unit-coverage/execute.sh
 params:

@@ -1,191 +1,191 @@
 jobs:
-  - name: "ci-build-image"
-    serial: true
-    plan:
-      - get: "repo"
-        resource: "repo-ci-images"
-        trigger: true
-      - aggregate:
-          - put: "ci-build-docker-image"
-            params:
-              build: "repo/ci/images/build"
-            get_params:
-              skip_download: true
-  - name: unit-tests
-    plan:
-      - get: repo
-        trigger: true
-      - put: unit-tests-github-status
-        params:
-          state: pending
-          commit: repo
-      - task: unit-tests
-        file: repo/ci/tasks/unit-tests/config.yml
-        on_failure:
-          put: unit-tests-github-status
-          params:
-            state: failure
-            commit: repo
-        on_success:
-          put: unit-tests-github-status
-          params:
-            state: success
-            commit: repo
-  - name: unit-coverage
-    plan:
-      - get: repo
-        trigger: true
-      - task: unit-coverage
-        file: repo/ci/tasks/unit-coverage/config.yml
-        params:
-          COVERALLS_TOKEN: ((coveralls_token))
-  - name: build
-    serial_groups:
-      - version
-    plan:
-      - get: repo
-        trigger: true
-        passed:
-          - unit-tests
-      - put: version
-        params:
-          pre: dev
-      - task: build
-        file: repo/ci/tasks/build/config.yml
-      - put: repo-dev-artifacts
-        params:
-          files:
-          - build/ssoca-*
-          version: version/version
-        get_params:
-          skip_download: true
-  - name: promote
-    serial_groups:
-      - version
-    plan:
-      - get: repo
-        passed:
-          - build
-      - put: version
-        params:
-          bump: final
-      - task: build
-        file: repo/ci/tasks/build/config.yml
-      - task: build-release
-        file: repo/ci/tasks/build-release/config.yml
-      - put: repo-final-artifacts
-        params:
-          files:
-          - build/ssoca-*
-          version: version/version
-        get_params:
-          skip_download: true
-      - put: repo
-        params:
-          annotate: release/title
-          repository: repo
-          only_tag: true
-          tag: release/tag
-      - put: github-release
-        params:
-          body: release/notes.md
-          commitish: release/commit
-          name: release/tag
-          tag: release/tag
-          globs:
-            - release/blobs/*
-        get_params:
-          globs:
-            - none
-  - name: bump-major
-    serial_groups:
-      - version
-    plan:
-      - put: version
-        params:
-          bump: major
-  - name: bump-minor
-    serial_groups:
-      - version
-    plan:
-      - put: version
-        params:
-          bump: minor
-  - name: bump-patch
-    serial_groups:
-      - version
-    plan:
-      - get: version
-        trigger: true
-        passed:
-          - promote
-      - put: version
-        params:
-          bump: patch
+- name: "ci-build-image"
+  serial: true
+  plan:
+  - get: "repo"
+    resource: "repo-ci-images"
+    trigger: true
+  - aggregate:
+    - put: "ci-build-docker-image"
+      params:
+        build: "repo/ci/images/build"
+      get_params:
+        skip_download: true
+- name: unit-tests
+  plan:
+  - get: repo
+    trigger: true
+  - put: unit-tests-github-status
+    params:
+      state: pending
+      commit: repo
+  - task: unit-tests
+    file: repo/ci/tasks/unit-tests/config.yml
+    on_failure:
+      put: unit-tests-github-status
+      params:
+        state: failure
+        commit: repo
+    on_success:
+      put: unit-tests-github-status
+      params:
+        state: success
+        commit: repo
+- name: unit-coverage
+  plan:
+  - get: repo
+    trigger: true
+  - task: unit-coverage
+    file: repo/ci/tasks/unit-coverage/config.yml
+    params:
+      COVERALLS_TOKEN: ((coveralls_token))
+- name: build
+  serial_groups:
+  - version
+  plan:
+  - get: repo
+    trigger: true
+    passed:
+      - unit-tests
+  - put: version
+    params:
+      pre: dev
+  - task: build
+    file: repo/ci/tasks/build/config.yml
+  - put: repo-dev-artifacts
+    params:
+      files:
+      - build/ssoca-*
+      version: version/version
+    get_params:
+      skip_download: true
+- name: promote
+  serial_groups:
+  - version
+  plan:
+  - get: repo
+    passed:
+      - build
+  - put: version
+    params:
+      bump: final
+  - task: build
+    file: repo/ci/tasks/build/config.yml
+  - task: build-release
+    file: repo/ci/tasks/build-release/config.yml
+  - put: repo-final-artifacts
+    params:
+      files:
+      - build/ssoca-*
+      version: version/version
+    get_params:
+      skip_download: true
+  - put: repo
+    params:
+      annotate: release/title
+      repository: repo
+      only_tag: true
+      tag: release/tag
+  - put: github-release
+    params:
+      body: release/notes.md
+      commitish: release/commit
+      name: release/tag
+      tag: release/tag
+      globs:
+      - release/blobs/*
+    get_params:
+      globs:
+      - none
+- name: bump-major
+  serial_groups:
+  - version
+  plan:
+  - put: version
+    params:
+      bump: major
+- name: bump-minor
+  serial_groups:
+  - version
+  plan:
+  - put: version
+    params:
+      bump: minor
+- name: bump-patch
+  serial_groups:
+  - version
+  plan:
+  - get: version
+    trigger: true
+    passed:
+      - promote
+  - put: version
+    params:
+      bump: patch
 
 resources:
-  - name: repo
-    type: git
-    source: &repo
-      uri: git@github.com:dpb587/ssoca.git
-      branch: master
-      private_key: ((git_private_key))
-  - name: repo-dev-artifacts
-    type: metalink-repository
-    source:
-      << : *release_artifacts
-      uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-dev#artifacts
-  - name: repo-final-artifacts
-    type: metalink-repository
-    source:
-      << : *release_artifacts
-      uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-final#artifacts
-  - name: "repo-ci-images"
-    type: "git"
-    source:
-      uri: git@github.com:dpb587/ssoca.git
-      branch: master
-      private_key: ((git_private_key))
-      paths:
-        - "ci/images/*"
-        - "ci/images/**/*"
-  - name: github-release
-    type: github-release
-    source:
-      access_token: ((repo_github_token))
-      repository: ssoca
-      user: dpb587
-  - name: unit-tests-github-status
-    type: github-status
-    source:
-      repository: dpb587/ssoca
-      branch: master
-      access_token: ((repo_github_token))
-      context: unit-tests
-  - name: "ci-build-docker-image"
-    type: "docker-image"
-    source:
-      repository: dpb587/ssoca
-      tag: ci-build
-      username: ((docker_username))
-      password: ((docker_password))
-  - name: "version"
-    type: "semver"
-    source:
-      <<: *repo
-      driver: git
-      branch: ci-state
-      file: version/master
+- name: repo
+  type: git
+  source: &repo
+    uri: git@github.com:dpb587/ssoca.git
+    branch: master
+    private_key: ((git_private_key))
+- name: repo-dev-artifacts
+  type: metalink-repository
+  source:
+    << : *release_artifacts
+    uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-dev#artifacts
+- name: repo-final-artifacts
+  type: metalink-repository
+  source:
+    << : *release_artifacts
+    uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-final#artifacts
+- name: "repo-ci-images"
+  type: "git"
+  source:
+    uri: git@github.com:dpb587/ssoca.git
+    branch: master
+    private_key: ((git_private_key))
+    paths:
+    - "ci/images/*"
+    - "ci/images/**/*"
+- name: github-release
+  type: github-release
+  source:
+    access_token: ((repo_github_token))
+    repository: ssoca
+    user: dpb587
+- name: unit-tests-github-status
+  type: github-status
+  source:
+    repository: dpb587/ssoca
+    branch: master
+    access_token: ((repo_github_token))
+    context: unit-tests
+- name: "ci-build-docker-image"
+  type: "docker-image"
+  source:
+    repository: dpb587/ssoca
+    tag: ci-build
+    username: ((docker_username))
+    password: ((docker_password))
+- name: "version"
+  type: "semver"
+  source:
+    <<: *repo
+    driver: git
+    branch: ci-state
+    file: version/master
 resource_types:
-  - name: github-status
-    type: docker-image
-    source:
-      repository: dpb587/github-status-resource
-      tag: master
-  - name: metalink-repository
-    type: docker-image
-    source:
-      repository: dpb587/metalink-repository-resource
+- name: github-status
+  type: docker-image
+  source:
+    repository: dpb587/github-status-resource
+    tag: master
+- name: metalink-repository
+  type: docker-image
+  source:
+    repository: dpb587/metalink-repository-resource
 shared:
   release_artifacts: &release_artifacts
     mirror_files:

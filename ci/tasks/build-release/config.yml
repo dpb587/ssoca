@@ -5,10 +5,10 @@ image_resource:
     repository: dpb587/ssoca
     tag: ci-build
 inputs:
-  - name: build
-  - name: repo
-  - name: version
+- name: build
+- name: repo
+- name: version
 outputs:
-  - name: release
+- name: release
 run:
   path: repo/ci/tasks/build-release/execute.sh

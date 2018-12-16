@@ -5,10 +5,10 @@ image_resource:
     repository: dpb587/ssoca
     tag: ci-build
 inputs:
-  - name: repo
-    path: src/github.com/dpb587/ssoca
-  - name: version
+- name: repo
+  path: src/github.com/dpb587/ssoca
+- name: version
 outputs:
-  - name: build
+- name: build
 run:
   path: src/github.com/dpb587/ssoca/ci/tasks/build/execute.sh
