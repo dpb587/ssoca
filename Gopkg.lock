@@ -220,6 +220,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:434b20da8d78a016bc3d8f30c7d15874a7da0c7be4e00f0cd37e83e101eddd8d"
+  name = "github.com/modocache/gover"
+  packages = [
+    ".",
+    "gover",
+  ]
+  pruneopts = ""
+  revision = "b58185e213c533169f76aa366e6c68fe56f2881b"
+
+[[projects]]
+  branch = "master"
   digest = "1:55c48c9cfdf8bab6f4911f621616fbe223c0b72a6df9aab6b172ab7e5cfc6bd2"
   name = "github.com/nu7hatch/gouuid"
   packages = ["."]
@@ -467,6 +478,7 @@
     "github.com/inconshreveable/go-update",
     "github.com/jessevdk/go-flags",
     "github.com/maxbrunsfeld/counterfeiter",
+    "github.com/modocache/gover",
     "github.com/nu7hatch/gouuid",
     "github.com/onsi/ginkgo",
     "github.com/onsi/ginkgo/ginkgo",

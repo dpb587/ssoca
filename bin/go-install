@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-go install github.com/onsi/ginkgo/ginkgo
-go install github.com/maxbrunsfeld/counterfeiter

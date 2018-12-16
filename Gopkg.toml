@@ -20,7 +20,7 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
-required = ["github.com/onsi/ginkgo/ginkgo", "github.com/maxbrunsfeld/counterfeiter"]
+required = ["github.com/onsi/ginkgo/ginkgo", "github.com/maxbrunsfeld/counterfeiter", "github.com/modocache/gover"]
 
 [[constraint]]
   name = "github.com/cheggaaa/pb"
