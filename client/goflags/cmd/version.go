@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/dpb587/ssoca/client"
@@ -15,6 +17,8 @@ type Version struct {
 	Semver bool `long:"semver" description:"Show only the semver version value"`
 	Commit bool `long:"commit" description:"Show only the versioning commit reference"`
 	Built  bool `long:"built" description:"Show only the build date"`
+
+	Debug bool `long:"debug" description:"Show additional debug information with standard output"`
 
 	Version version.Version
 }
@@ -33,7 +37,11 @@ func (c Version) Execute(_ []string) error {
 	} else if c.Built {
 		ui.PrintBlock(append([]byte(c.Version.Built.Format(time.RFC3339)), '\n'))
 	} else {
-		ui.PrintLinef(c.Version.String())
+		ui.PrintBlock(append([]byte(c.Version.String()), '\n'))
+
+		if c.Debug {
+			ui.PrintBlock(append([]byte(fmt.Sprintf("go/%s (%s; %s)", runtime.Version(), runtime.GOOS, runtime.GOARCH)), '\n'))
+		}
 	}
 
 	return nil

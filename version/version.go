@@ -45,5 +45,5 @@ func (v Version) Version() string {
 }
 
 func (v Version) String() string {
-	return fmt.Sprintf("%s/%s (commit %s, built %s)", v.Name, v.Semver, v.Commit, v.Built.Format(time.RFC3339))
+	return fmt.Sprintf("%s/%s (commit %s; built %s)", v.Name, v.Semver, v.Commit, v.Built.Format(time.RFC3339))
 }
