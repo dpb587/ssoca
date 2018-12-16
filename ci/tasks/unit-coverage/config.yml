@@ -3,7 +3,7 @@ image_resource:
   type: docker-image
   source:
     repository: dpb587/ssoca
-    tag: ci-unit
+    tag: ci-build
 inputs:
 - name: repo
   path: src/github.com/dpb587/ssoca
