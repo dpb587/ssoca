@@ -203,6 +203,14 @@
   version = "v0.0.2"
 
 [[projects]]
+  digest = "1:e678dc289d4e9b4fc821b65509adb8df3bb96ce1db027dbf9e1bffda6167b0e7"
+  name = "github.com/mattn/goveralls"
+  packages = ["."]
+  pruneopts = ""
+  revision = "b71a1e4855f87991aff01c2c833a75a07059c61c"
+  version = "v0.0.2"
+
+[[projects]]
   digest = "1:3e1511c5f5b0c1572cee6bd97ba027770834fdb42961bf84a0d54e1c41ced6e7"
   name = "github.com/maxbrunsfeld/counterfeiter"
   packages = [
@@ -413,6 +421,7 @@
   digest = "1:3fb1e52d981ace7965dcaf3e32a61a7a3e56ded1ec21a1a71f13448078010861"
   name = "golang.org/x/tools"
   packages = [
+    "cover",
     "go/ast/astutil",
     "imports",
   ]
@@ -477,6 +486,7 @@
     "github.com/google/go-github/github",
     "github.com/inconshreveable/go-update",
     "github.com/jessevdk/go-flags",
+    "github.com/mattn/goveralls",
     "github.com/maxbrunsfeld/counterfeiter",
     "github.com/modocache/gover",
     "github.com/nu7hatch/gouuid",
