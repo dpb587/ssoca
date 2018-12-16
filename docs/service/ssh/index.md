@@ -11,12 +11,12 @@ This service provides a client command:
 
 ## Options
 
-* **`principals`** - an array of usernames to allow SSH sessions for (templatized)
+* **`principals`** - an array of usernames to allow SSH sessions for ([templatized](../../server/templating))
 * `certauth` - the name of a configured certificate authority (default `default`)
 * `validity` - a [duration](https://golang.org/pkg/time/#ParseDuration) of time for which certificates are signed for (default `2m`)
 * `critical_options` - a *hash* of specific settings further restricting connections to the SSH server
-  * `force-command` - a command which is forcefully executed on the SSH server (templatized)
-  * `source-address` - a CSV list of source addresses in CIDR format which certificates can come from for authentication (templatized)
+  * `force-command` - a command which is forcefully executed on the SSH server ([templatized](../../server/templating))
+  * `source-address` - a CSV list of source addresses in CIDR format which certificates can come from for authentication ([templatized](../../server/templating))
 * `extensions` - an *array* of session features for the server to enforce on the connection (default all)
   * `permit-X11-forwarding`
   * `permit-agent-forwarding`
@@ -29,7 +29,7 @@ This service provides a client command:
 * `client` - a hash of settings influencing client behavior
   * `host` - the remote host of the SSH server
   * `port` - the remote port of the SSH server (default `22`)
-  * `user` - the remote user to authenticate as (templatized)
+  * `user` - the remote user to authenticate as ([templatized](../../server/templating))
   * `public_key` - the public key of the remote SSH server (requires `host`)
 
 

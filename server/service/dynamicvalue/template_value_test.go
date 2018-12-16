@@ -67,6 +67,47 @@ var _ = Describe("TemplateValue", func() {
 					Expect(subject.Evaluate(req, token)).To(Equal("user"))
 				})
 			})
+
+			Context("groups", func() {
+				Context("contains", func() {
+					It("include", func() {
+						subject, err := CreateTemplateValue(`{{ if .Token.Groups.Contains "scope1" }}true{{ else }}false{{ end }}`)
+
+						Expect(err).ToNot(HaveOccurred())
+						Expect(subject.Evaluate(req, token)).To(Equal("true"))
+					})
+
+					It("exclude", func() {
+						subject, err := CreateTemplateValue(`{{ if .Token.Groups.Contains "scope0" }}true{{ else }}false{{ end }}`)
+
+						Expect(err).ToNot(HaveOccurred())
+						Expect(subject.Evaluate(req, token)).To(Equal("false"))
+					})
+				})
+
+				Context("matches", func() {
+					It("exact matches", func() {
+						subject, err := CreateTemplateValue(`{{ if .Token.Groups.Matches "scope1" }}true{{ else }}false{{ end }}`)
+
+						Expect(err).ToNot(HaveOccurred())
+						Expect(subject.Evaluate(req, token)).To(Equal("true"))
+					})
+
+					It("include", func() {
+						subject, err := CreateTemplateValue(`{{ if .Token.Groups.Matches "scope*" }}true{{ else }}false{{ end }}`)
+
+						Expect(err).ToNot(HaveOccurred())
+						Expect(subject.Evaluate(req, token)).To(Equal("true"))
+					})
+
+					It("exclude", func() {
+						subject, err := CreateTemplateValue(`{{ if .Token.Groups.Matches "unscoped*" }}true{{ else }}false{{ end }}`)
+
+						Expect(err).ToNot(HaveOccurred())
+						Expect(subject.Evaluate(req, token)).To(Equal("false"))
+					})
+				})
+			})
 		})
 	})
 })
