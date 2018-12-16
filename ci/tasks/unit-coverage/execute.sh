@@ -4,7 +4,7 @@ set -eu
 
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../.."
 
-source .envrc
+export GOPATH=$PWD/../../../..
 
 ginkgo -r -cover -covermode count
 

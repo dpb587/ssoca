@@ -7,7 +7,7 @@ version="$( cat version/version )"
 
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../.."
 
-source .envrc
+export GOPATH=$PWD/../../../..
 
 ./bin/build "$version"
 
