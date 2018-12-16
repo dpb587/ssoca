@@ -11,6 +11,15 @@ For more details configuring the underlying authentication provider, see the ser
 
 ## Client Options
 
+### `bind` (Web-based Bind Address)
+
+If the authentication service needs to start a local web server during authentication, by default, a random port will be bound on `localhost`. This behavior can be overridden with the `bind` option to specify a specific IP or port.
+
+For example, to force binding to port `8085` to enable static tunneling configuration, you might use...
+
+    ssoca env set-option auth.bind "localhost:8085"
+
+
 ### `open_command` (Interactive Login)
 
 If the user needs to visit a URL during authentication, the CLI will attempt to open the URL automatically. By default, the system's `open` command is invoked, but this can be overridden with the `open_command` option if advanced usage is required. The URL will be appended to the command.
