@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
 	"net/http/httptest"
 	"strings"
 	"time"
@@ -42,7 +41,6 @@ var _ = Describe("SignPublicKey", func() {
 		var realcertauth certauth.Provider
 		var token *auth.Token
 		var loggerContext logrus.Fields
-		var req *http.Request
 		var res httptest.ResponseRecorder
 
 		Context("common configuration", func() {
@@ -52,7 +50,6 @@ var _ = Describe("SignPublicKey", func() {
 				}
 
 				token = &auth.Token{ID: "fake-user"}
-				req = httptest.NewRequest("GET", "/sign-public-key", nil)
 				fakecertauth = certauthfakes.FakeProvider{}
 				realcertauth = memoryfakes.CreateMock1()
 				res = *httptest.NewRecorder()
@@ -216,7 +213,6 @@ var _ = Describe("SignPublicKey", func() {
 				}
 
 				token = &auth.Token{ID: "fake-user"}
-				req = httptest.NewRequest("GET", "/sign-public-key", nil)
 				fakecertauth = certauthfakes.FakeProvider{}
 				realcertauth = memoryfakes.CreateMock1()
 
