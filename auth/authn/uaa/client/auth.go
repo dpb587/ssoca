@@ -20,7 +20,7 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 		return nil, bosherr.WrapError(err, "Parsing metadata")
 	}
 
-	client, err := s.uaaClientFactory.CreateClient(metadata.URL, "bosh_cli", "", metadata.CACertificate)
+	client, err := s.uaaClientFactory.CreateClient(metadata.URL, metadata.ClientID, metadata.ClientSecret, metadata.CACertificate)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Creating UAA client")
 	}
@@ -34,6 +34,22 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 	var answers []boshuaa.PromptAnswer
 
 	for _, prompt := range prompts {
+		if len(metadata.Prompts) > 0 {
+			var matchedPrompt bool
+
+			for _, expectedKey := range metadata.Prompts {
+				if prompt.Key == expectedKey {
+					matchedPrompt = true
+
+					break
+				}
+			}
+
+			if !matchedPrompt {
+				continue
+			}
+		}
+
 		var askFunc func(string) (string, error)
 
 		if prompt.IsPassword() {
@@ -61,6 +77,8 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 	auth := AuthConfig{
 		URL:           metadata.URL,
 		CACertificate: metadata.CACertificate,
+		ClientID:      metadata.ClientID,
+		ClientSecret:  metadata.ClientSecret,
 		RefreshToken:  accessToken.RefreshToken().Value(),
 	}
 
@@ -83,7 +101,7 @@ func (s Service) AuthRequest(req *http.Request) error {
 		return bosherr.WrapError(err, "Parsing authentication options")
 	}
 
-	client, err := s.uaaClientFactory.CreateClient(authConfig.URL, "bosh_cli", "", authConfig.CACertificate)
+	client, err := s.uaaClientFactory.CreateClient(authConfig.URL, authConfig.ClientID, authConfig.ClientSecret, authConfig.CACertificate)
 	if err != nil {
 		return bosherr.WrapError(err, "Creating UAA client")
 	}

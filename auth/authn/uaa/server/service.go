@@ -32,6 +32,9 @@ func (s Service) Metadata() interface{} {
 	return svcapi.Metadata{
 		URL:           s.config.URL,
 		CACertificate: s.config.CACertificate,
+		ClientID:      s.config.ClientID,
+		ClientSecret:  s.config.ClientSecret,
+		Prompts:       s.config.Prompts,
 	}
 }
 
