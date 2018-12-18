@@ -7,17 +7,11 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth"
+	uaainternal "github.com/dpb587/ssoca/auth/authn/uaa/internal"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 )
-
-type internalToken struct {
-	jwt.StandardClaims
-
-	Audience []string `json:"aud"`
-	Username string   `json:"user_name"`
-	Scopes   []string `json:"scope"`
-}
 
 func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	authHeader := req.Header.Get("Authorization")
@@ -27,26 +21,26 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 
 	authHeaderPieces := strings.SplitN(authHeader, " ", 2)
 	if len(authHeaderPieces) != 2 {
-		return nil, errors.New("Invalid Authorization header format")
+		return nil, apierr.NewError(errors.New("Invalid Authorization format"), http.StatusForbidden, "")
 	} else if strings.ToLower(authHeaderPieces[0]) != "bearer" {
-		return nil, errors.New("Invalid Authorization method")
+		return nil, apierr.NewError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
 	}
 
-	intTok := internalToken{}
+	intTok := uaainternal.Token{}
 
 	_, err := jwt.ParseWithClaims(
 		authHeaderPieces[1],
 		&intTok,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method == jwt.SigningMethodNone {
-				return nil, errors.New("No signing method used")
+				return nil, apierr.NewError(errors.New("No signing method used"), http.StatusForbidden, "")
 			}
 
 			return jwt.ParseRSAPublicKeyFromPEM([]byte(s.config.PublicKey))
 		},
 	)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing claims")
+		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
 	token := auth.Token{}
