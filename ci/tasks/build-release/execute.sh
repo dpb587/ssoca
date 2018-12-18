@@ -8,8 +8,8 @@ version="$( cat version/version )"
 
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../.."
 
-build_dir="$task_dir/build"
-metalink_path="$build_dir/v$version.meta4"
+build_dir="$task_dir/artifacts"
+metalink_path="$build_dir/.resource/metalink.meta4"
 
 mkdir "$release_dir/blobs"
 

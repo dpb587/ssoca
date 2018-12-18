@@ -5,9 +5,9 @@ image_resource:
     repository: dpb587/ssoca
     tag: ci-build
 inputs:
-- name: build
 - name: repo
 - name: version
+- name: artifacts
 outputs:
 - name: release
 run:

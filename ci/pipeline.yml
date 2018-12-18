@@ -71,15 +71,15 @@ jobs:
       bump: final
   - task: build
     file: repo/ci/tasks/build/config.yml
-  - task: build-release
-    file: repo/ci/tasks/build-release/config.yml
   - put: repo-final-artifacts
     params:
       files:
       - build/ssoca-*
       version: version/version
-    get_params:
-      skip_download: true
+  - task: build-release
+    file: repo/ci/tasks/build-release/config.yml
+    input_mapping:
+      artifacts: repo-final-artifacts
   - put: repo
     params:
       annotate: release/title
