@@ -78,7 +78,7 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	principals, err := h.Principals.Evaluate(request.RawRequest, request.AuthToken)
 	if err != nil {
-		return bosherr.WrapError(err, "Evaulating principals")
+		return bosherr.WrapError(err, "Evaluating principals")
 	}
 
 	principalsFiltered := []string{}
@@ -93,7 +93,16 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	certificate.ValidPrincipals = principalsFiltered
 
-	for criticalOption, criticalOptionData := range h.CriticalOptions {
+	criticalOptions, err := h.CriticalOptions.Evaluate(request.RawRequest, request.AuthToken)
+	if err != nil {
+		return bosherr.WrapError(err, "Evaluating critical options")
+	}
+
+	for criticalOption, criticalOptionData := range criticalOptions {
+		if criticalOptionData == "" {
+			continue
+		}
+
 		certificate.Permissions.CriticalOptions[string(criticalOption)] = criticalOptionData
 	}
 

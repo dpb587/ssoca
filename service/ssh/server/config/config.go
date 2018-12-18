@@ -1,8 +1,11 @@
 package config
 
 import (
+	"net/http"
 	"time"
 
+	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
 )
@@ -57,7 +60,10 @@ type Config struct {
 	Extensions      Extensions      `yaml:"extensions,omitempty"`
 }
 
-type CriticalOptions map[configCriticalOption]string
+type CriticalOptions struct {
+	factory dynamicvalue.Factory
+	values  map[configCriticalOption]dynamicvalue.Value
+}
 
 type Extensions []configExtension
 
@@ -75,4 +81,49 @@ func (c *Config) ApplyDefaults() {
 			panic(err)
 		}
 	}
+}
+
+func NewCriticalOptions(factory dynamicvalue.Factory) CriticalOptions {
+	return CriticalOptions{
+		factory: factory,
+		values:  map[configCriticalOption]dynamicvalue.Value{},
+	}
+}
+
+func (co *CriticalOptions) Set(option configCriticalOption, value dynamicvalue.Value) {
+	co.values[option] = value
+}
+
+func (co *CriticalOptions) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var dataSlice map[configCriticalOption]string
+
+	if err := unmarshal(&dataSlice); err != nil {
+		return err
+	}
+
+	for dataIdx, data := range dataSlice {
+		value, err := co.factory.Create(data)
+		if err != nil {
+			return bosherr.WrapError(err, "Parsing dynamic value")
+		}
+
+		co.values[dataIdx] = value
+	}
+
+	return nil
+}
+
+func (co CriticalOptions) Evaluate(arg0 *http.Request, arg1 *auth.Token) (map[configCriticalOption]string, error) {
+	values := map[configCriticalOption]string{}
+
+	for valueIdx, value := range co.values {
+		res, err := value.Evaluate(arg0, arg1)
+		if err != nil {
+			return nil, bosherr.WrapError(err, "Evaluating template")
+		}
+
+		values[valueIdx] = res
+	}
+
+	return values, nil
 }

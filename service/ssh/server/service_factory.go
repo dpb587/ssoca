@@ -43,6 +43,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	cfg.CertAuth = certauth.NewConfigValue(f.caManager)
 	cfg.Extensions = svcconfig.ExtensionDefaults
 	cfg.Principals = dynamicvalue.NewMultiConfigValue(f.dynamicvalueFactory)
+	cfg.CriticalOptions = svcconfig.NewCriticalOptions(f.dynamicvalueFactory)
 	cfg.Target = svcconfig.Target{
 		User: dynamicvalue.NewConfigValue(f.dynamicvalueFactory),
 	}

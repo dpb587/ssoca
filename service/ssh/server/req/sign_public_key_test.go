@@ -54,15 +54,19 @@ var _ = Describe("SignPublicKey", func() {
 				realcertauth = memoryfakes.CreateMock1()
 				res = *httptest.NewRecorder()
 
+				criticalOptionSourceAddress := dynamicvalue.ConfigValue{}
+				criticalOptionSourceAddress.WithDefault(dynamicvalue.NewStringValue("127.0.0.1"))
+
+				criticalOptions := svcconfig.NewCriticalOptions(nil)
+				criticalOptions.Set(svcconfig.CriticalOptionSourceAddress, criticalOptionSourceAddress)
+
 				subject = SignPublicKey{
 					Validity: time.Duration(3600),
 					Principals: dynamicvalue.MultiAnyValue{
 						dynamicvalue.NewStringValue("vcap"),
 					},
-					CertAuth: &fakecertauth,
-					CriticalOptions: svcconfig.CriticalOptions{
-						svcconfig.CriticalOptionSourceAddress: "127.0.0.1",
-					},
+					CertAuth:        &fakecertauth,
+					CriticalOptions: criticalOptions,
 					Extensions: svcconfig.Extensions{
 						svcconfig.ExtensionPermitAgentForwarding,
 						svcconfig.ExtensionPermitPTY,
@@ -219,6 +223,12 @@ var _ = Describe("SignPublicKey", func() {
 				targetUser := dynamicvalue.ConfigValue{}
 				targetUser.WithDefault(dynamicvalue.MustCreateTemplateValue("{{ .Token.ID }}-suffixed"))
 
+				criticalOptionsForceCommand := dynamicvalue.ConfigValue{}
+				criticalOptionsForceCommand.WithDefault(dynamicvalue.MustCreateTemplateValue("echo {{ .Token.ID }}"))
+
+				criticalOptions := svcconfig.NewCriticalOptions(nil)
+				criticalOptions.Set(svcconfig.CriticalOptionForceCommand, criticalOptionsForceCommand)
+
 				subject = SignPublicKey{
 					Validity: time.Duration(3600),
 					Principals: dynamicvalue.MultiAnyValue{
@@ -226,10 +236,8 @@ var _ = Describe("SignPublicKey", func() {
 						dynamicvalue.MustCreateTemplateValue("{{ .Token.ID }}"),
 						dynamicvalue.MustCreateTemplateValue("{{ if false }}something{{ end }}"),
 					},
-					CertAuth: &fakecertauth,
-					CriticalOptions: svcconfig.CriticalOptions{
-						svcconfig.CriticalOptionSourceAddress: "127.0.0.1",
-					},
+					CertAuth:        &fakecertauth,
+					CriticalOptions: criticalOptions,
 					Extensions: svcconfig.Extensions{
 						svcconfig.ExtensionPermitAgentForwarding,
 						svcconfig.ExtensionPermitPTY,
@@ -264,6 +272,8 @@ var _ = Describe("SignPublicKey", func() {
 				Expect(cert.ValidPrincipals).To(HaveLen(2))
 				Expect(cert.ValidPrincipals).To(ContainElement("static"))
 				Expect(cert.ValidPrincipals).To(ContainElement("fake-user"))
+				Expect(cert.Permissions.CriticalOptions).To(HaveLen(1))
+				Expect(cert.Permissions.CriticalOptions[string(svcconfig.CriticalOptionForceCommand)]).To(Equal("echo fake-user"))
 				Expect(resPayload.Target).ToNot(BeNil())
 				Expect(resPayload.Target.User).To(Equal("fake-user-suffixed"))
 			})
