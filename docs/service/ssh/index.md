@@ -87,3 +87,13 @@ If a signed certificate is not working, sometimes it's helpful to inspect the si
 To convert a X509 private key to an OpenSSH public key...
 
     $ ssh-keygen -f ca-private.pem -y > ca-cert.pub
+
+To show the RSA fingerprint of an OpenSSH public key...
+
+    $ ssh-keygen -lf ca-cert.pub
+    4096 SHA256:9cqZE53uBj8fA5MBg9OBU9fzQ6L10G4O90x0ETgFp7E no comment (RSA)
+
+
+## Known Issues
+
+ * A recent OS X update introduces a new version of `ssh` which does not correctly check for supported algorithms. Using `brew install openssh` to install a newer version seems to fix the issue ([related](https://bugs.launchpad.net/ubuntu/+source/openssh/+bug/1790963) [bug](http://bugzilla.mindrot.org/show_bug.cgi?id=2799)).
