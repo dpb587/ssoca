@@ -20,7 +20,7 @@ jobs:
   - aggregate:
     - put: "ci-docs-docker-image"
       params:
-        docs: "repo/ci/images/docs"
+        build: "repo/ci/images/docs"
       get_params:
         skip_download: true
 - name: build-docs
@@ -28,7 +28,7 @@ jobs:
   plan:
   - aggregate:
     - get: repo
-      resource: repo-docs
+    - get: repo-docs
       trigger: true
     - get: artifacts
       resource: repo-artifacts
@@ -41,7 +41,7 @@ jobs:
   - put: repo-gh-pages
     params:
       repository: public
-      # force: true
+      force: true
 - name: unit-tests
   plan:
   - get: repo
