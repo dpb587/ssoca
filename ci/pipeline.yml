@@ -222,16 +222,14 @@ resources:
     context: unit-tests
 - name: "ci-build-docker-image"
   type: "docker-image"
-  source: &docker
-    repository: dpb587/ssoca
+  source:
+    << : *docker
     tag: ci-build
-    username: ((docker_username))
-    password: ((docker_password))
 - name: "ci-docs-docker-image"
   type: "docker-image"
   source:
     << : *docker
-    tag: ci-build
+    tag: ci-docs
 - name: "version"
   type: "semver"
   source:
@@ -258,3 +256,7 @@ shared:
         AWS_SECRET_ACCESS_KEY: ((artifacts_s3_secret_key))
     options:
       private_key: ((git_private_key))
+  docker: &docker
+    repository: dpb587/ssoca
+    username: ((docker_username))
+    password: ((docker_password))
