@@ -11,6 +11,37 @@ jobs:
         build: "repo/ci/images/build"
       get_params:
         skip_download: true
+- name: "ci-docs-image"
+  serial: true
+  plan:
+  - get: "repo"
+    resource: "repo-ci-images"
+    trigger: true
+  - aggregate:
+    - put: "ci-docs-docker-image"
+      params:
+        docs: "repo/ci/images/docs"
+      get_params:
+        skip_download: true
+- name: build-docs
+  serial: true
+  plan:
+  - aggregate:
+    - get: repo
+      resource: repo-docs
+      trigger: true
+    - get: artifacts
+      resource: repo-artifacts
+      trigger: true
+    - get: hugo-site
+      resource: repo-docs-hugo-site
+      trigger: true
+  - task: build-docs
+    file: repo/ci/tasks/build-docs/config.yml
+  - put: repo-gh-pages
+    params:
+      repository: public
+      # force: true
 - name: unit-tests
   plan:
   - get: repo
@@ -149,6 +180,33 @@ resources:
     paths:
     - "ci/images/*"
     - "ci/images/**/*"
+- name: "repo-docs"
+  type: "git"
+  source:
+    uri: git@github.com:dpb587/ssoca.git
+    branch: master
+    private_key: ((git_private_key))
+    paths:
+    - "docs/*"
+    - "docs/**/*"
+- name: "repo-docs-hugo-site"
+  type: "git"
+  source:
+    uri: git@github.com:dpb587/ssoca.git
+    branch: docs-hugo-site
+    private_key: ((git_private_key))
+- name: "repo-artifacts"
+  type: "git"
+  source:
+    uri: git@github.com:dpb587/ssoca.git
+    branch: artifacts
+    private_key: ((git_private_key))
+- name: "repo-gh-pages"
+  type: "git"
+  source:
+    uri: git@github.com:dpb587/ssoca.git
+    branch: gh-pages
+    private_key: ((git_private_key))
 - name: github-release
   type: github-release
   source:
@@ -164,11 +222,16 @@ resources:
     context: unit-tests
 - name: "ci-build-docker-image"
   type: "docker-image"
-  source:
+  source: &docker
     repository: dpb587/ssoca
     tag: ci-build
     username: ((docker_username))
     password: ((docker_password))
+- name: "ci-docs-docker-image"
+  type: "docker-image"
+  source:
+    << : *docker
+    tag: ci-build
 - name: "version"
   type: "semver"
   source:
