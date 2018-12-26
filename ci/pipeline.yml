@@ -28,7 +28,7 @@ jobs:
   plan:
   - aggregate:
     - get: repo
-    - get: repo-docs
+      resource: repo-docs
       trigger: true
     - get: artifacts
       resource: repo-artifacts
@@ -187,6 +187,7 @@ resources:
     branch: master
     private_key: ((git_private_key))
     paths:
+    - "ci/tasks/build-docs/*"
     - "docs/*"
     - "docs/**/*"
 - name: "repo-docs-hugo-site"
