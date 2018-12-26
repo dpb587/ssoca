@@ -20,7 +20,7 @@ The SSH workflows can be managed through `ssh` subcommands.
 
 ## Server Configuration Options
 
-The following may be configured in the `options` section when configuring an `openvpn` [service]({{< ref "/reference/server/configuration.md#services" >}}).
+The following may be configured in the `options` section when configuring an `ssh` [service]({{< ref "/reference/server/configuration.md#services" >}}).
 
 * **`principals`** - an array of usernames to allow SSH sessions for ([templatized](../../server/templating))
 * `certauth` - the name of a configured certificate authority (default `default`)
