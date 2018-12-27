@@ -10,20 +10,20 @@ Create an ONC profile
 
     Usage:
       ssoca [OPTIONS] openvpn create-onc-profile [create-onc-profile-OPTIONS]
-
+    
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
           --log-level=           Log level (default: WARN) [$SSOCA_LOG_LEVEL]
-
+    
     Help Options:
       -h, --help                 Show this help message
-
+    
     [create-onc-profile command options]
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --name=            Specific network configuration name to use
-
+    
 
 ## Usage Details
 
@@ -39,6 +39,6 @@ Chrome OS uses [Open Network Configuration](https://chromium.googlesource.com/ch
 
 ## Troubleshooting
 
-If the VPN connection is not added or updated, visit `chrome://system/` and review `Profile[0] chrome_user_log` for details (search for `onc_validator.cc` or `onc`).
+If the VPN connection is not added or updated, visit `chrome://system` and review `Profile[0] chrome_user_log` for details (search for `onc_validator.cc` or `onc`).
 
-If the VPN connection will not successfully connect, visit `chrome://system/` and review `netlog` for `openvpn` for connection details (search for `openvpn`).
+If the VPN connection will not successfully connect, visit `chrome://system` and review `netlog` for `openvpn` for connection details (search for `openvpn`).

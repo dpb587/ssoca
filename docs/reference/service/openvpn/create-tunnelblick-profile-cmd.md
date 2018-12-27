@@ -10,25 +10,25 @@ Create a Tunnelblick profile
 
     Usage:
       ssoca [OPTIONS] openvpn create-tunnelblick-profile [create-tunnelblick-profile-OPTIONS] [DESTINATION-DIR]
-
+    
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
           --log-level=           Log level (default: WARN) [$SSOCA_LOG_LEVEL]
-
+    
     Help Options:
       -h, --help                 Show this help message
-
+    
     [create-tunnelblick-profile command options]
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --exec-ssoca=      Path to the ssoca binary (default: ssoca)
               --name=            Specific file name to use for *.tblk
               --install          Install the profile (sudo may prompt for privileges)
-
+    
     [create-tunnelblick-profile command arguments]
       DESTINATION-DIR:           Directory where the *.tblk profile will be created (default: $PWD)
-
+    
 
 ## Usage Details
 

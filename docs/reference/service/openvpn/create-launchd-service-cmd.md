@@ -10,15 +10,15 @@ Create a launchd service
 
     Usage:
       ssoca [OPTIONS] openvpn create-launchd-service [create-launchd-service-OPTIONS] [DESTINATION-DIR]
-
+    
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
           --log-level=           Log level (default: WARN) [$SSOCA_LOG_LEVEL]
-
+    
     Help Options:
       -h, --help                 Show this help message
-
+    
     [create-launchd-service command options]
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
@@ -28,10 +28,10 @@ Create a launchd service
               --run-at-load      Run the service at load
               --log-dir=         Log directory for the service (default: ~/Library/Logs)
               --start            Load and start the service after installation
-
+    
     [create-launchd-service command arguments]
       DESTINATION-DIR:           Directory where the *.plist service will be created (default: ~/Library/LaunchAgents)
-
+    
 
 ## Usage Details
 

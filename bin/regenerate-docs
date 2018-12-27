@@ -13,9 +13,20 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
   rm -fr docs/service/$cmd/*-cmd.md
 
   for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
-    echo docs/service/$cmd/$subcmd-cmd.md
+    target=docs/reference/service/$cmd/$subcmd-cmd.md
+
+    echo $target
+
+    subcmdname=$( echo "$subcmd" | sed "s/-/_/g" )
 
     (
+      echo '---'
+      echo "title: ssoca $cmd $subcmd"
+      echo 'aliases:'
+      echo "- /service/$cmd/$subcmd-cmd/"
+      echo '---'
+      echo
+
       echo '# `ssoca' $cmd $subcmd '...`'
       echo
       ssoca $cmd --help | grep "^  $subcmd " | sed -E 's/^ +[^ ]+ +//'
@@ -35,6 +46,6 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
         echo
         cat "$codemd"
       fi
-    ) > docs/service/$cmd/$subcmd-cmd.md
+    ) > $target
   done
 done
