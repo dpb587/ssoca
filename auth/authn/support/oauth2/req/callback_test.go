@@ -169,34 +169,68 @@ var _ = Describe("Callback", func() {
 			})
 
 			Context("client port", func() {
-				It("sends html", func() {
-					r.Header.Add("Cookie", "ssoca_oauth_clientport=12345")
+				Context("older, POST-style", func() {
+					It("sends html", func() {
+						r.Header.Add("Cookie", "ssoca_oauth_clientport=12345;ssoca_client_version=0.13.0")
 
-					err := subject.Execute(req.Request{
-						RawRequest:  r,
-						RawResponse: &res,
+						err := subject.Execute(req.Request{
+							RawRequest:  r,
+							RawResponse: &res,
+						})
+
+						Expect(err).ToNot(HaveOccurred())
+
+						Expect(res.Header()["Content-Type"]).To(HaveLen(1))
+						Expect(res.Header()["Content-Type"][0]).To(Equal("text/html"))
+
+						Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+						Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
+						Expect(res.Header()["Set-Cookie"][1]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
+
+						body := res.Body.String()
+
+						Expect(body).To(ContainSubstring(` action="http://127.0.0.1:12345"`))
+						Expect(body).To(ContainSubstring(` value="/fake-ui/auth-success.html"`))
+
+						re := regexp.MustCompile(` name="token" value="([^"]+)"`)
+						tokenMatch := re.FindStringSubmatch(body)
+
+						claims := parseClaims(tokenMatch[1])
+
+						Expect(claims["scid"]).To(Equal("fake-id"))
 					})
+				})
 
-					Expect(err).ToNot(HaveOccurred())
+				Context("newer, GET-style", func() {
+					It("sends GET by default", func() {
+						r.Header.Add("Cookie", "ssoca_oauth_clientport=12345")
 
-					Expect(res.Header()["Content-Type"]).To(HaveLen(1))
-					Expect(res.Header()["Content-Type"][0]).To(Equal("text/html"))
+						err := subject.Execute(req.Request{
+							RawRequest:  r,
+							RawResponse: &res,
+						})
 
-					Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
-					Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
-					Expect(res.Header()["Set-Cookie"][1]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
+						Expect(err).ToNot(HaveOccurred())
 
-					body := res.Body.String()
+						Expect(res.Header()["Content-Type"]).To(HaveLen(1))
+						Expect(res.Header()["Content-Type"][0]).To(Equal("text/html"))
 
-					Expect(body).To(ContainSubstring(` action="http://127.0.0.1:12345"`))
-					Expect(body).To(ContainSubstring(` value="/fake-ui/auth-success.html"`))
+						Expect(res.Header()["Set-Cookie"]).To(HaveLen(2))
+						Expect(res.Header()["Set-Cookie"][0]).To(Equal("ssoca_oauth_state=; Max-Age=0"))
+						Expect(res.Header()["Set-Cookie"][1]).To(Equal("ssoca_oauth_clientport=; Max-Age=0"))
 
-					re := regexp.MustCompile(` name="token" value="([^"]+)"`)
-					tokenMatch := re.FindStringSubmatch(body)
+						body := res.Body.String()
 
-					claims := parseClaims(tokenMatch[1])
+						Expect(body).To(ContainSubstring(`return_to=%2ffake-ui%2fauth-success.html`))
 
-					Expect(claims["scid"]).To(Equal("fake-id"))
+						re := regexp.MustCompile(`token=([^&]+)`)
+						tokenMatch := re.FindStringSubmatch(body)
+
+						Expect(tokenMatch).ToNot(BeNil())
+						claims := parseClaims(tokenMatch[1])
+
+						Expect(claims["scid"]).To(Equal("fake-id"))
+					})
 				})
 			})
 		})

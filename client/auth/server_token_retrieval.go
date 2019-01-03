@@ -37,15 +37,26 @@ func (str *ServerTokenRetrieval) listenForTokenCallback(tokenChannel chan string
 	s := &http.Server{
 		Addr: str.bindAddress,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
-				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			var token, returnTo string
 
-				return
+			switch r.Method {
+			case "POST":
+				token = r.PostFormValue("token")
+				returnTo = r.PostFormValue("return_to")
+			case "GET":
+				token = r.FormValue("token")
+				returnTo = r.FormValue("return_to")
+			default:
+				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			}
 
-			http.Redirect(w, r, fmt.Sprintf("%s%s", str.envURL, r.PostFormValue("return_to")), http.StatusTemporaryRedirect)
+			if token == "" {
+				http.Error(w, "Missing token", http.StatusBadRequest)
+			}
 
-			tokenChannel <- r.PostFormValue("token")
+			http.Redirect(w, r, fmt.Sprintf("%s%s", str.envURL, returnTo), http.StatusTemporaryRedirect)
+
+			tokenChannel <- token
 		}),
 	}
 

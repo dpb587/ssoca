@@ -19,7 +19,27 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-var clientRedirectTemplate = template.Must(template.New("html").Parse(`
+var clientRedirectTemplateGET = template.Must(template.New("html").Parse(`
+	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+		<head>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8">
+			<title>ssoca</title>
+		</head>
+		<body onload="self.location=document.getElementById('redirect').href">
+			<p style="color:#666666;font-family:sans-serif">Redirecting to ssoca at <a id="redirect" href="http://127.0.0.1:{{.Port}}/?token={{.Token}}&return_to={{.Redirect}}" style="color:#000099">127.0.0.1:{{.Port}}</a>...</p>
+			<noscript>
+				<pre style="color:#333333;width:100%;overflow-wrap:break-word;white-space:pre-wrap;word-break:break-all"><code>{{.Token}}</code></pre>
+			</noscript>
+		</body>
+	</html>
+`))
+
+// Historically we relied on POSTing (initially to avoid the chance of an
+// authentication token ending up in browser history; also POST is more correct
+// for this behavior); but some browsers (e.g. Safari) are giving errors about
+// redirecting to an insecure form. To avoid relying on JavaScript, this moved
+// to using GET.
+var clientRedirectTemplatePOST = template.Must(template.New("html").Parse(`
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -123,6 +143,18 @@ func (h Callback) Execute(request req.Request) error {
 		)
 
 		var buf bytes.Buffer
+
+		var clientRedirectTemplate *template.Template = clientRedirectTemplateGET
+
+		clientVersion, _ := request.RawRequest.Cookie(config.CookieClientVersionName)
+
+		if clientVersion != nil {
+			switch clientVersion.Value {
+			case "0.13.0", "0.12.0", "0.11.0", "0.10.0", "0.9.0", "0.8.0", "0.7.1", "0.7.0":
+				// hard-coding these older versions as simpler-lazier than version parsing
+				clientRedirectTemplate = clientRedirectTemplatePOST
+			}
+		}
 
 		err = clientRedirectTemplate.Execute(
 			&buf,
