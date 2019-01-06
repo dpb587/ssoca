@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"bytes"
 	"fmt"
+	"html/template"
 	"io"
 	"net"
 	"net/http"
@@ -33,6 +35,46 @@ func NewServerTokenRetrieval(envURL string, ver version.Version, cmdRunner boshs
 	}
 }
 
+var htmlReceiverPostback = template.Must(template.New("html").Parse(`
+	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+		<head>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8">
+			<title>ssoca</title>
+			<script>
+				window.addEventListener(
+					"message",
+					function (event)
+					{
+						if (event.origin != "{{.EnvURL}}") {
+					    return;
+						} else if (event.data.action != "set_token") {
+							return;
+						}
+
+						var http = new XMLHttpRequest();
+						http.open('POST', "/", true);
+						http.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+						http.onreadystatechange = function() {
+							if (http.readyState != 4) {
+								return;
+							} else if (http.status < 200 || http.status >= 300) {
+								return;
+							}
+
+							event.source.postMessage({"action":"done"}, "{{.EnvURL}}");
+						};
+						http.send("token=" + encodeURIComponent(event.data.params.token));
+					},
+					false
+				);
+			</script>
+		</head>
+		<body>
+			Waiting for token&hellip;
+		</body>
+	</html>
+`))
+
 func (str *ServerTokenRetrieval) listenForTokenCallback(tokenChannel chan string, errorChannel chan error, portChannel chan string) {
 	s := &http.Server{
 		Addr: str.bindAddress,
@@ -40,23 +82,46 @@ func (str *ServerTokenRetrieval) listenForTokenCallback(tokenChannel chan string
 			var token, returnTo string
 
 			switch r.Method {
+			case "GET":
+				var buf bytes.Buffer
+
+				err := htmlReceiverPostback.Execute(
+					&buf,
+					struct {
+						EnvURL string
+					}{
+						EnvURL: str.envURL,
+					},
+				)
+				if err != nil {
+					http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+
+					return
+				}
+
+				w.Header().Add("content-type", "text/html")
+				w.WriteHeader(200)
+				w.Write(buf.Bytes())
+
+				return
 			case "POST":
 				token = r.PostFormValue("token")
 				returnTo = r.PostFormValue("return_to")
-			case "GET":
-				token = r.FormValue("token")
-				returnTo = r.FormValue("return_to")
+
+				if token == "" {
+					http.Error(w, "Missing token", http.StatusBadRequest)
+				}
+
+				tokenChannel <- token
+
+				if returnTo != "" {
+					http.Redirect(w, r, fmt.Sprintf("%s%s", str.envURL, returnTo), http.StatusTemporaryRedirect)
+				} else {
+					w.WriteHeader(http.StatusNoContent)
+				}
 			default:
 				http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			}
-
-			if token == "" {
-				http.Error(w, "Missing token", http.StatusBadRequest)
-			}
-
-			http.Redirect(w, r, fmt.Sprintf("%s%s", str.envURL, returnTo), http.StatusTemporaryRedirect)
-
-			tokenChannel <- token
 		}),
 	}
 

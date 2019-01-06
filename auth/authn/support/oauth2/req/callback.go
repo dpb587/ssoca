@@ -19,17 +19,59 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
-var clientRedirectTemplateGET = template.Must(template.New("html").Parse(`
+var clientRedirectTemplateV2 = template.Must(template.New("html").Parse(`
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8">
 			<title>ssoca</title>
-		</head>
-		<body onload="self.location=document.getElementById('redirect').href">
-			<p style="color:#666666;font-family:sans-serif">Redirecting to ssoca at <a id="redirect" href="http://127.0.0.1:{{.Port}}/?token={{.Token}}&return_to={{.Redirect}}" style="color:#000099">127.0.0.1:{{.Port}}</a>...</p>
+			<script>
+				setTimeout(function () {document.getElementById("token").style.display = "block"}, 5000);
+				window.addEventListener(
+					"message",
+					function (event)
+					{
+					  if (event.origin != "http://127.0.0.1:{{.Port}}") {
+					    return;
+						} else if (event.data.action != "done") {
+							return;
+						}
+
+						self.location = "{{.Redirect}}";
+					},
+					false
+				);
+			</script>
+			<style type="text/css">
+				body {
+					color: #666666;
+					font-family: sans-serif;
+				}
+				iframe {
+					border: none;
+					height: 0;
+					width: 0;
+				}
+				pre {
+					color: #333333;
+					display: none;
+					overflow-wrap: break-word;
+					white-space: pre-wrap;
+					width: 100%;
+					word-break: break-all;
+				}
+			</style>
 			<noscript>
-				<pre style="color:#333333;width:100%;overflow-wrap:break-word;white-space:pre-wrap;word-break:break-all"><code>{{.Token}}</code></pre>
+				<style type="text/css">
+					pre {
+						display: block !important;
+					}
+				</style>
 			</noscript>
+		</head>
+		<body>
+			<p>Sending token to ssoca at 127.0.0.1:{{.Port}}&hellip;</p>
+			<pre id="token"><code>{{.Token}}</code></pre>
+			<iframe src="http://127.0.0.1:{{.Port}}/" onload="this.contentWindow.postMessage({'action':'set_token','params':{'token':document.getElementById('token').innerText}}, 'http://127.0.0.1:{{.Port}}')"></iframe>
 		</body>
 	</html>
 `))
@@ -38,7 +80,7 @@ var clientRedirectTemplateGET = template.Must(template.New("html").Parse(`
 // authentication token ending up in browser history; also POST is more correct
 // for this behavior); but some browsers (e.g. Safari) are giving errors about
 // redirecting to an insecure form. To avoid relying on JavaScript, this moved
-// to using GET.
+// to using GET and postMessage.
 var clientRedirectTemplatePOST = template.Must(template.New("html").Parse(`
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 		<head>
@@ -144,7 +186,7 @@ func (h Callback) Execute(request req.Request) error {
 
 		var buf bytes.Buffer
 
-		var clientRedirectTemplate *template.Template = clientRedirectTemplateGET
+		var clientRedirectTemplate *template.Template = clientRedirectTemplateV2
 
 		clientVersion, _ := request.RawRequest.Cookie(config.CookieClientVersionName)
 
