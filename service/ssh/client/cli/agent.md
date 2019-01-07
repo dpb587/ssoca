@@ -31,8 +31,8 @@ If the `SSH_AUTH_SOCK` environment variable is defined, key and signing operatio
 
 You may find the following SSH client options useful...
 
- * `IdentityAgent` - configure a specific path to the agent socket
- * `PasswordAuthentication` - disable password authentication
+ * `IdentityAgent` -- configure a specific path to the agent socket
+ * `PasswordAuthentication` -- disable password authentication
 
 To use an agent for a specific VM, you could use the following configuration...
 

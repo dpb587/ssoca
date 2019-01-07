@@ -13,9 +13,9 @@ Several different types of authentication are supported and the server will conf
 
 Authentication workflows can be managed through `auth` subcommands.
 
- * `info` ([details]({{< ref "/reference/service/auth/info-cmd.md" >}})) - show current authentication information
- * `login` ([details]({{< ref "/reference/service/auth/login-cmd.md" >}})) - authenticate for a new token
- * `logout` ([details]({{< ref "/reference/service/auth/logout-cmd.md" >}})) - revoke an authentication token
+ * `info` ([details]({{< ref "/reference/service/auth/info-cmd.md" >}})) -- show current authentication information
+ * `login` ([details]({{< ref "/reference/service/auth/login-cmd.md" >}})) -- authenticate for a new token
+ * `logout` ([details]({{< ref "/reference/service/auth/logout-cmd.md" >}})) -- revoke an authentication token
 
 
 ## Client Options

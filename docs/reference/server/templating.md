@@ -13,14 +13,14 @@ Configuration settings which support templating are noted with `templatized` in 
 
 ## Context
 
- * `Request` ([`net/http.Request`](https://golang.org/pkg/net/http/#Request)) - the current request
- * `Token` - the current authentication token
-    * `Name` - personal name (if available)
-    * `Email` - email address (if available)
-    * `Username` - username (if available)
-    * `Groups` - a list of scopes
-       * `Contains(string)` - check if a scope is available
-       * `Matches(string)` - check if a scope [matches](https://golang.org/pkg/path/filepath/#Match) the given pattern
+ * `Request` ([`net/http.Request`](https://golang.org/pkg/net/http/#Request)) -- the current request
+ * `Token` -- the current authentication token
+    * `Name` -- personal name (if available)
+    * `Email` -- email address (if available)
+    * `Username` -- username (if available)
+    * `Groups` -- a list of scopes
+       * `Contains(string)` -- check if a scope is available
+       * `Matches(string)` -- check if a scope [matches](https://golang.org/pkg/path/filepath/#Match) the given pattern
 
 
 ## Examples

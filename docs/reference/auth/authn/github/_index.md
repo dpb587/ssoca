@@ -11,13 +11,13 @@ GitHub authenticates users through their GitHub accounts. Users are redirected t
 
 ## Server Configuration Options
 
- * **`client_id`** - Client ID from registered application
- * **`client_secret`** - Client Secret from registered application
- * **`jwt`** - a hash of JWT signing details
-    * **`private_key`** - a PEM-formatted private key
-    * `validity` - a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
- * `auth_url` - authentication URL (default `https://github.com/login/oauth/authorize`)
- * `token_url` - token URL (default `https://github.com/login/oauth/access_token`)
+ * **`client_id`** -- Client ID from registered application
+ * **`client_secret`** -- Client Secret from registered application
+ * **`jwt`** -- a hash of JWT signing details
+    * **`private_key`** -- a PEM-formatted private key
+    * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
+ * `auth_url` -- authentication URL (default `https://github.com/login/oauth/authorize`)
+ * `token_url` -- token URL (default `https://github.com/login/oauth/access_token`)
 
 
 ## Authentication Scopes

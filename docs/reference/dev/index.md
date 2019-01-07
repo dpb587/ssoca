@@ -29,8 +29,8 @@ Some shortcuts instead of the built-in `go` commands...
 
 ### `go run`
 
- * `bin/ssoca-client` - shortcut to run the client from source in any directory
- * `bin/ssoca-server` - shortcut to run the server from source in any directory
+ * `bin/ssoca-client` -- shortcut to run the client from source in any directory
+ * `bin/ssoca-server` -- shortcut to run the server from source in any directory
 
 
 ### `go build`

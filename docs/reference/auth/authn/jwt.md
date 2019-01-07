@@ -5,8 +5,8 @@ Some authentication providers will use [JWT](https://jwt.io/) to create a signed
 
 ## Options
 
- * **`private_key`** - a PEM-formatted private key
- * `validity` - a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
+ * **`private_key`** -- a PEM-formatted private key
+ * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
 
 
 ## General Notes

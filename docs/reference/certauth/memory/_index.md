@@ -11,5 +11,5 @@ The in-memory certificate authority is configured directly in the options hash a
 
 ## Server Configuration Options
 
- * **`certificate`** - PEM-encoded certificate
- * **`private_key`** - PEM-encoded private key
+ * **`certificate`** -- PEM-encoded certificate
+ * **`private_key`** -- PEM-encoded private key

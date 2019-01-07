@@ -11,17 +11,17 @@ Google authenticates users through their Google accounts. Users are redirected t
 
 ## Server Configuration Options
 
- * **`client_id`** - Client ID from registered application
- * **`client_secret`** - Client Secret from registered application
- * **`jwt`** - a hash of JWT signing details
-    * **`private_key`** - a PEM-formatted private key
-    * `validity` - a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
- * `auth_url` - authentication URL (default `https://accounts.google.com/o/oauth2/v2/auth`)
- * `token_url` - token URL (default `https://www.googleapis.com/oauth2/v4/token`)
- * `scopes` - optionally load additional profile information for extended scopes
-    * `cloud_project` - request information from Google Cloud (requires the [Google Cloud Resource Manager API](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview) to be enabled)
-       * `projects` - a list of project identifiers to check for membership; if left empty, all projects will be checked
-       * `roles` - a list of roles (e.g. `roles/owner`) to check for access; if left empty, all roles will be included
+ * **`client_id`** -- Client ID from registered application
+ * **`client_secret`** -- Client Secret from registered application
+ * **`jwt`** -- a hash of JWT signing details
+    * **`private_key`** -- a PEM-formatted private key
+    * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
+ * `auth_url` -- authentication URL (default `https://accounts.google.com/o/oauth2/v2/auth`)
+ * `token_url` -- token URL (default `https://www.googleapis.com/oauth2/v4/token`)
+ * `scopes` -- optionally load additional profile information for extended scopes
+    * `cloud_project` -- request information from Google Cloud (requires the [Google Cloud Resource Manager API](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview) to be enabled)
+       * `projects` -- a list of project identifiers to check for membership; if left empty, all projects will be checked
+       * `roles` -- a list of roles (e.g. `roles/owner`) to check for access; if left empty, all roles will be included
 
 
 ## Authentication Scopes

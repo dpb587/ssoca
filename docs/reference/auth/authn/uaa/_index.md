@@ -11,12 +11,12 @@ Cloud Foundry UAA authenticates users from an external UAA server. Users authent
 
 ## Server Configuration Options
 
- * **`url`** - the address of the UAA server
- * **`public_key`** - a PEM-formatted public key for verifying JWT tokens
- * **`client_id`** - the Client ID for authenticating users
- * `client_secret` - the Client secret for authenticating users
- * `ca_certificate` - a PEM-formatted certificate for trusting HTTPS connections to the UAA server
- * `prompts` - a list of prompts to show the user when they are authenticating
+ * **`url`** -- the address of the UAA server
+ * **`public_key`** -- a PEM-formatted public key for verifying JWT tokens
+ * **`client_id`** -- the Client ID for authenticating users
+ * `client_secret` -- the Client secret for authenticating users
+ * `ca_certificate` -- a PEM-formatted certificate for trusting HTTPS connections to the UAA server
+ * `prompts` -- a list of prompts to show the user when they are authenticating
 
 *Reminder*: Client ID and Secret are provided to `ssoca-client` in order for them to be able to connect to UAA. These tokens must not be considered secret.
 
