@@ -20,3 +20,4 @@
   - [Deployment]({{< ref "/reference/server/deployment.md" >}})
 - [Official Releases]({{< ref "/release" >}})
 - [Development Notes]({{< ref "/reference/dev" >}})
+- [View on GitHub](https://github.com/dpb587/ssoca)
