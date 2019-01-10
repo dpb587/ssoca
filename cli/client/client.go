@@ -21,6 +21,7 @@ import (
 	srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
 	srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
+	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
 	srv_download "github.com/dpb587/ssoca/service/download/client"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
@@ -43,7 +44,9 @@ func main() {
 	runtime := goflags.NewRuntime(version.MustVersion(appName, appSemver, appCommit, appBuilt), serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs, logger)
 	var parser = flags.NewParser(&runtime, flags.Default)
 
-	serviceManager.Add(srv_auth.NewService(&runtime, serviceManager))
+	authService := srv_auth.NewService(&runtime, serviceManager)
+
+	serviceManager.Add(authService)
 	serviceManager.Add(srv_download.NewService(&runtime, fs))
 	serviceManager.Add(srv_env.NewService(&runtime, fs, cmdRunner))
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
@@ -57,7 +60,10 @@ func main() {
 			panic(err)
 		}
 
-		svccmd := svc.(service.CommandService)
+		svccmd, ok := svc.(service.CommandService)
+		if !ok {
+			continue
+		}
 
 		command := svccmd.GetCommand()
 		if command != nil {
@@ -66,6 +72,13 @@ func main() {
 	}
 
 	// new style
+
+	parser.AddCommand(
+		"auth",
+		"Manage authentication",
+		"Manage authentication",
+		srv_auth_cli.CreateCommands(&runtime, authService),
+	)
 
 	parser.AddCommand(
 		"openvpn",
