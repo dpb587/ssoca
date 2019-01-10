@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
@@ -10,6 +11,7 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/api"
 	"github.com/dpb587/ssoca/server/config"
+	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/sirupsen/logrus"
 
@@ -165,6 +167,10 @@ func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.
 	return res
 }
 
+func (s Server) getClientIP(r *http.Request) (net.IP, error) {
+	return requtil.GetClientIP(r, s.config.TrustedProxies.AsIPNet())
+}
+
 func (s Server) Run() error {
 	authSvc, err := s.services.GetAuth()
 	if err != nil {
@@ -178,7 +184,7 @@ func (s Server) Run() error {
 
 		for _, handler := range svc.GetRoutes() {
 			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
-			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.logger)
+			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.getClientIP, s.logger)
 			if err != nil {
 				return bosherr.WrapErrorf(err, "Creating handler for %s", apiPath)
 			}

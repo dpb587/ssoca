@@ -6,6 +6,7 @@ import (
 	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authz"
 	. "github.com/dpb587/ssoca/server/api"
+	"github.com/dpb587/ssoca/server/requtil"
 
 	"net/http"
 	"net/http/httptest"
@@ -44,7 +45,7 @@ var _ = Describe("Handler", func() {
 
 				handler := &reqfakes.FakeRouteHandler{}
 
-				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+				wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 				Expect(err).ToNot(HaveOccurred())
 
@@ -62,7 +63,7 @@ var _ = Describe("Handler", func() {
 
 					handler := &reqfakes.FakeRouteHandler{}
 
-					wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -79,7 +80,7 @@ var _ = Describe("Handler", func() {
 
 					handler := &reqfakes.FakeRouteHandler{}
 
-					wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -96,7 +97,7 @@ var _ = Describe("Handler", func() {
 
 					handler := &reqfakes.FakeRouteHandler{}
 
-					wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -113,7 +114,7 @@ var _ = Describe("Handler", func() {
 
 					handler := &reqfakes.FakeRouteHandler{}
 
-					wrapper, err := CreateHandler(authService, apiService, handler, logger)
+					wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -131,7 +132,7 @@ var _ = Describe("Handler", func() {
 				handler := &reqfakes.FakeRouteHandler{}
 				handler.ExecuteReturns(errors.New("fake-err1"))
 
-				wrapper, err := CreateHandler(authService, apiService, handler, logger)
+				wrapper, err := CreateHandler(authService, apiService, handler, requtil.GetClientIPWithoutProxies, logger)
 
 				Expect(err).ToNot(HaveOccurred())
 

@@ -6,6 +6,7 @@ import (
 	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authz"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
+	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/sirupsen/logrus"
@@ -14,18 +15,26 @@ import (
 )
 
 type apiHandler struct {
-	authService service.AuthService
-	apiService  service.Service
-	handler     req.RouteHandler
-	logger      logrus.FieldLogger
+	authService    service.AuthService
+	apiService     service.Service
+	handler        req.RouteHandler
+	clientIPGetter requtil.ClientIPGetter
+	logger         logrus.FieldLogger
 }
 
-func CreateHandler(authService service.AuthService, apiService service.Service, handler req.RouteHandler, logger logrus.FieldLogger) (http.Handler, error) {
+func CreateHandler(
+	authService service.AuthService,
+	apiService service.Service,
+	handler req.RouteHandler,
+	clientIPGetter requtil.ClientIPGetter,
+	logger logrus.FieldLogger,
+) (http.Handler, error) {
 	return apiHandler{
-		authService: authService,
-		apiService:  apiService,
-		handler:     handler,
-		logger:      logger,
+		authService:    authService,
+		apiService:     apiService,
+		handler:        handler,
+		clientIPGetter: clientIPGetter,
+		logger:         logger,
 	}, nil
 }
 
@@ -42,9 +51,15 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	clientIP, err := h.clientIPGetter(r)
+	if err != nil {
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Determining Client IP"))
+	}
+
 	request.ID = requestUUID.String()
 	request.LoggerContext = logrus.Fields{
 		"server.request.id":              request.ID,
+		"server.request.client_ip":       clientIP.String(),
 		"server.request.remote_addr":     r.RemoteAddr,
 		"server.request.x_forwarded_for": r.Header.Get("x-forwarded-for"),
 		"server.request.user_agent":      r.Header.Get("user-agent"),

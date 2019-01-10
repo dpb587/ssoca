@@ -1,9 +1,15 @@
 package config
 
 import (
+	"fmt"
+	"net"
+	"strings"
+
+	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/certauth"
 	envconfig "github.com/dpb587/ssoca/service/env/server/config"
+	yaml "gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -26,6 +32,50 @@ type ServerConfig struct {
 	Port            int                  `yaml:"port"`
 	PrivateKeyPath  string               `yaml:"private_key_path"`
 	Redirect        ServerRedirectConfig `yaml:"redirect"`
+	TrustedProxies  ServerTrustedProxies `yaml:"trusted_proxies"`
+}
+
+type ServerTrustedProxies []ServerTrustedProxy
+
+func (v ServerTrustedProxies) AsIPNet() []*net.IPNet {
+	var convert []*net.IPNet
+
+	for _, r := range v {
+		n := net.IPNet(r)
+		convert = append(convert, &n)
+	}
+
+	return convert
+}
+
+type ServerTrustedProxy net.IPNet
+
+var _ yaml.Unmarshaler = &ServerTrustedProxy{}
+
+func (v *ServerTrustedProxy) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var data string
+	if err := unmarshal(&data); err != nil {
+		return err
+	}
+
+	if !strings.Contains(data, "/") {
+		ip := net.ParseIP(data)
+
+		if ip.To4() != nil {
+			data = fmt.Sprintf("%s/32", data)
+		} else {
+			data = fmt.Sprintf("%s/128", data)
+		}
+	}
+
+	_, proxy, err := net.ParseCIDR(data)
+	if err != nil {
+		return bosherr.WrapError(err, "Parsing trusted proxy CIDR")
+	}
+
+	*v = ServerTrustedProxy(*proxy)
+
+	return nil
 }
 
 type ServerRedirectConfig struct {
