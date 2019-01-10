@@ -44,11 +44,12 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	request.ID = requestUUID.String()
 	request.LoggerContext = logrus.Fields{
-		"server.request.id":          request.ID,
-		"server.request.remote_addr": r.RemoteAddr,
-		"server.request.user_agent":  r.Header.Get("user-agent"),
-		"service.name":               h.apiService.Name(),
-		"service.type":               h.apiService.Type(),
+		"server.request.id":              request.ID,
+		"server.request.remote_addr":     r.RemoteAddr,
+		"server.request.x_forwarded_for": r.Header.Get("x-forwarded-for"),
+		"server.request.user_agent":      r.Header.Get("user-agent"),
+		"service.name":                   h.apiService.Name(),
+		"service.type":                   h.apiService.Type(),
 	}
 
 	token, err := h.authService.ParseRequestAuth(*r)

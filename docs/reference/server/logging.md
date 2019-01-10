@@ -26,6 +26,7 @@ The following fields will be present on messages related to an HTTP request or r
  * `server.request.method` -- the HTTP method used (e.g. `POST`)
  * `server.request.path` -- the URL path requested (e.g. `/ssh/sign-public-key`)
  * `server.request.remote_addr` -- the remote address of the connecting client (e.g. `[::1]:50520`)
+ * `server.request.x_forwarded_for` -- the `X-Forwarded-For` header, typically provided by reverse proxies (e.g. `203.0.113.178, 172.20.78.8`)
  * `server.request.user_agent` -- the user agent of the connecting client (e.g. `ssoca-client/0.7.0`)
 
 
