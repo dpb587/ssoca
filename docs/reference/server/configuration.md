@@ -30,6 +30,11 @@ The first section is `server` which configures the HTTPS listener...
         auth_failure: ~ # optional
         auth_success: ~ # optional
 
+      # optionally configure proxies you expect to receive traffic from
+      trusted_proxies:
+      - 127.0.0.1/8
+      - ::1
+
 
 ## `auth`
 
