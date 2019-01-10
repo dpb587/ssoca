@@ -31,6 +31,7 @@ type Runtime struct {
 
 	Version cmd.Version `command:"version" description:"Show the current version"`
 
+	exec           string
 	version        version.Version
 	serviceManager service.Manager
 	fs             boshsys.FileSystem
@@ -46,8 +47,9 @@ type Runtime struct {
 
 var _ client.Runtime = Runtime{}
 
-func NewRuntime(version_ version.Version, serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
+func NewRuntime(exec string, version_ version.Version, serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
 	runtime := Runtime{
+		exec:           exec,
 		version:        version_,
 		serviceManager: serviceManager,
 		fs:             fs,
@@ -78,6 +80,10 @@ func (r Runtime) GetLogger() logrus.FieldLogger {
 		"cli.name":   r.Version.Version.Name,
 		"cli.semver": r.Version.Version.Semver,
 	})
+}
+
+func (r Runtime) GetExec() string {
+	return r.exec
 }
 
 func (r Runtime) GetVersion() version.Version {
@@ -161,12 +167,7 @@ func (r Runtime) GetAuthInterceptClient() (httpclient.Client, error) {
 		return nil, err
 	}
 
-	configManager, err := r.GetConfigManager()
-	if err != nil {
-		return nil, err
-	}
-
-	return authintercept.NewClient(client, r.serviceManager, configManager, r.GetEnvironmentName()), nil
+	return authintercept.NewClient(client, r), nil
 }
 
 func (r Runtime) GetConfigManager() (config.Manager, error) {

@@ -14,6 +14,15 @@ import (
 )
 
 type FakeRuntime struct {
+	GetExecStub        func() string
+	getExecMutex       sync.RWMutex
+	getExecArgsForCall []struct{}
+	getExecReturns     struct {
+		result1 string
+	}
+	getExecReturnsOnCall map[int]struct {
+		result1 string
+	}
 	GetVersionStub        func() version.Version
 	getVersionMutex       sync.RWMutex
 	getVersionArgsForCall []struct{}
@@ -123,6 +132,46 @@ type FakeRuntime struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeRuntime) GetExec() string {
+	fake.getExecMutex.Lock()
+	ret, specificReturn := fake.getExecReturnsOnCall[len(fake.getExecArgsForCall)]
+	fake.getExecArgsForCall = append(fake.getExecArgsForCall, struct{}{})
+	fake.recordInvocation("GetExec", []interface{}{})
+	fake.getExecMutex.Unlock()
+	if fake.GetExecStub != nil {
+		return fake.GetExecStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.getExecReturns.result1
+}
+
+func (fake *FakeRuntime) GetExecCallCount() int {
+	fake.getExecMutex.RLock()
+	defer fake.getExecMutex.RUnlock()
+	return len(fake.getExecArgsForCall)
+}
+
+func (fake *FakeRuntime) GetExecReturns(result1 string) {
+	fake.GetExecStub = nil
+	fake.getExecReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeRuntime) GetExecReturnsOnCall(i int, result1 string) {
+	fake.GetExecStub = nil
+	if fake.getExecReturnsOnCall == nil {
+		fake.getExecReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.getExecReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
 }
 
 func (fake *FakeRuntime) GetVersion() version.Version {
@@ -580,6 +629,8 @@ func (fake *FakeRuntime) GetStdinReturnsOnCall(i int, result1 io.Reader) {
 func (fake *FakeRuntime) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getExecMutex.RLock()
+	defer fake.getExecMutex.RUnlock()
 	fake.getVersionMutex.RLock()
 	defer fake.getVersionMutex.RUnlock()
 	fake.getEnvironmentMutex.RLock()

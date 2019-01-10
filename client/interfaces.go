@@ -12,6 +12,7 @@ import (
 
 //go:generate counterfeiter . Runtime
 type Runtime interface {
+	GetExec() string
 	GetVersion() version.Version
 	GetEnvironment() (config.EnvironmentState, error)
 	GetEnvironmentName() string

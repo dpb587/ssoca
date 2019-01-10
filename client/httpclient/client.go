@@ -1,34 +1,28 @@
 package httpclient
 
 import (
-	"fmt"
 	"io"
 	"net/http"
+	"os/exec"
 	"strings"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	envclient "github.com/dpb587/ssoca/service/env/client"
 
-	"github.com/dpb587/ssoca/client/config"
-	"github.com/dpb587/ssoca/client/service"
+	ssocaclient "github.com/dpb587/ssoca/client"
 	baseclient "github.com/dpb587/ssoca/httpclient"
 )
 
 type client struct {
-	upstream        baseclient.Client
-	serviceManager  service.Manager
-	configManager   config.Manager
-	environmentName string
+	upstream baseclient.Client
+	runtime  ssocaclient.Runtime
 }
 
 var _ baseclient.Client = client{}
 
-func NewClient(upstream baseclient.Client, serviceManager service.Manager, configManager config.Manager, environmentName string) baseclient.Client {
+func NewClient(upstream baseclient.Client, runtime ssocaclient.Runtime) baseclient.Client {
 	return client{
-		upstream:        upstream,
-		serviceManager:  serviceManager,
-		configManager:   configManager,
-		environmentName: environmentName,
+		upstream: upstream,
+		runtime:  runtime,
 	}
 }
 
@@ -73,56 +67,33 @@ func (c client) attemptReauthenticate(err error) error {
 		return err
 	}
 
-	rawEnvService, err := c.serviceManager.Get("env")
+	configManager, err := c.runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting env service")
+		return err
 	}
 
-	envService, ok := rawEnvService.(envclient.Service)
-	if !ok {
-		return bosherr.WrapError(err, "Expecting env service")
-	}
+	// this assumes runtime has a specific CLI; probably not optimal
+	cmd := exec.Command(
+		c.runtime.GetExec(),
+		"--config", configManager.GetSource(),
+		"--environment", c.runtime.GetEnvironmentName(),
+		"auth",
+		"login",
+	)
 
-	envClient, err := envService.GetClient()
+	// It is weird for us to be shelling out instead of handling auth in process.
+	// We fork to a new process and propagate I/O because some auth supports
+	// optional stdin (e.g. server_token_retrieval.go). However, you can't really
+	// do non-blocking I/O, so if no user input was provided, it would hang in
+	// post-auth commands. Separate process indirectly fixes it by returning
+	// ownership of stdin when its done. https://github.com/dpb587/ssoca/issues/8
+	cmd.Stdin = c.runtime.GetStdin()
+	cmd.Stdout = c.runtime.GetStdout()
+	cmd.Stderr = c.runtime.GetStderr()
+
+	err = cmd.Run()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting env HTTP client")
-	}
-
-	envInfo, err := envClient.GetInfo()
-	if err != nil {
-		return bosherr.WrapError(err, "Getting environment info")
-	}
-
-	authServiceType := envInfo.Auth.Type
-
-	svc, err := c.serviceManager.Get(authServiceType)
-	if err != nil {
-		return bosherr.WrapError(err, "Loading auth service")
-	}
-
-	authService, ok := svc.(service.AuthService)
-	if !ok {
-		return fmt.Errorf("Cannot authenticate with service: %s", authServiceType)
-	}
-
-	auth, err := authService.AuthLogin(envInfo.Auth)
-	if err != nil {
-		return bosherr.WrapError(err, "Authenticating")
-	}
-
-	env, err := c.configManager.GetEnvironment(c.environmentName)
-	if err != nil {
-		return bosherr.WrapError(err, "Getting environment state")
-	}
-
-	env.Auth = &config.EnvironmentAuthState{
-		Type:    authServiceType,
-		Options: auth,
-	}
-
-	err = c.configManager.SetEnvironment(env)
-	if err != nil {
-		return bosherr.WrapError(err, "Updating environment")
+		return bosherr.WrapError(err, "auth exec")
 	}
 
 	return nil
