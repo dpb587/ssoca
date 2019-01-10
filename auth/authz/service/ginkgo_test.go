@@ -1,10 +1,10 @@
 package authorized_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"testing"
 )
 
 func TestService(t *testing.T) {

@@ -1,10 +1,10 @@
 package req_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"testing"
 )
 
 func TestReq(t *testing.T) {

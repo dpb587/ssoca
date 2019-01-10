@@ -1,10 +1,10 @@
 package username_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"testing"
 )
 
 func TestUsername(t *testing.T) {

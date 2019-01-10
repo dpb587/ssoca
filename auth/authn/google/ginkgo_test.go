@@ -1,10 +1,10 @@
 package google_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"testing"
 )
 
 func TestGoogle(t *testing.T) {

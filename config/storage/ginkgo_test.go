@@ -1,10 +1,10 @@
 package storage_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"testing"
 )
 
 func TestStorage(t *testing.T) {
