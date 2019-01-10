@@ -27,13 +27,22 @@ var _ = Describe("Config", func() {
 	})
 
 	Describe("ServerTrustedProxies", func() {
-		It("parses IPs", func() {
+		It("parses IPv4", func() {
 			err := yaml.Unmarshal([]byte(`--- { server: { trusted_proxies: [ 127.0.0.1 ] } }`), &subject)
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(subject.Server.TrustedProxies).To(HaveLen(1))
 			Expect(subject.Server.TrustedProxies[0].IP.String()).To(Equal("127.0.0.1"))
 			Expect(subject.Server.TrustedProxies[0].Mask.String()).To(Equal("ffffffff"))
+		})
+
+		It("parses IPv6", func() {
+			err := yaml.Unmarshal([]byte(`--- { server: { trusted_proxies: [ "::1" ] } }`), &subject)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(subject.Server.TrustedProxies).To(HaveLen(1))
+			Expect(subject.Server.TrustedProxies[0].IP.String()).To(Equal("::1"))
+			Expect(subject.Server.TrustedProxies[0].Mask.String()).To(Equal("ffffffffffffffffffffffffffffffff"))
 		})
 
 		It("parses CIDRs", func() {
@@ -43,6 +52,17 @@ var _ = Describe("Config", func() {
 			Expect(subject.Server.TrustedProxies).To(HaveLen(1))
 			Expect(subject.Server.TrustedProxies[0].IP.String()).To(Equal("127.0.0.0"))
 			Expect(subject.Server.TrustedProxies[0].Mask.String()).To(Equal("ff000000"))
+		})
+
+		It("parses multiple entries", func() {
+			err := yaml.Unmarshal([]byte(`--- { server: { trusted_proxies: [ 127.0.0.0/8, "2001:db8::/32" ] } }`), &subject)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(subject.Server.TrustedProxies).To(HaveLen(2))
+			Expect(subject.Server.TrustedProxies[0].IP.String()).To(Equal("127.0.0.0"))
+			Expect(subject.Server.TrustedProxies[0].Mask.String()).To(Equal("ff000000"))
+			Expect(subject.Server.TrustedProxies[1].IP.String()).To(Equal("2001:db8::"))
+			Expect(subject.Server.TrustedProxies[1].Mask.String()).To(Equal("ffffffff000000000000000000000000"))
 		})
 
 		It("converts to IPNet", func() {

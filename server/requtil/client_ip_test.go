@@ -45,6 +45,21 @@ var _ = Describe("GetClientIP", func() {
 		Expect(ip.String()).To(Equal("203.0.113.123"))
 	})
 
+	It("supports IPv6", func() {
+		ip, err := GetClientIP(
+			&http.Request{
+				RemoteAddr: "[::1]:1234",
+				Header: http.Header{
+					"X-Forwarded-For": []string{"2001:db8:85a3:8d3:1319:8a2e:370:7348"},
+				},
+			},
+			[]*net.IPNet{mustParseCIDR("::1/128")},
+		)
+
+		Expect(err).ToNot(HaveOccurred())
+		Expect(ip.String()).To(Equal("2001:db8:85a3:8d3:1319:8a2e:370:7348"))
+	})
+
 	It("trusts a multiple proxies", func() {
 		ip, err := GetClientIP(
 			&http.Request{
