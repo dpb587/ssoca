@@ -14,7 +14,7 @@ metalink_path="$build_dir/.resource/metalink.meta4"
 mkdir "$release_dir/blobs"
 
 if [ -e "$task_dir/repo/docs/release-notes/v${version}.md" ]; then
-  sed -E 's/^# .+//' "$task_dir/repo/docs/release-notes/v${version}.md" > $release_dir/notes.md
+  sed '1{/^---$/!q;};1,/^---$/d' "$task_dir/repo/docs/release-notes/v${version}.md" > $release_dir/notes.md
   echo "" >> $release_dir/notes.md
 fi
 
