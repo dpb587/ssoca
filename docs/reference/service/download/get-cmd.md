@@ -25,5 +25,5 @@ Get an artifact
     
     [get command arguments]
       FILE:                      File name
-      TARGET-FILE:               Target path to write download
+      TARGET-FILE:               Target path to write download (use '-' for STDOUT)
     

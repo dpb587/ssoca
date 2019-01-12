@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io"
 	"os"
 	"time"
 
@@ -25,7 +26,7 @@ var _ flags.Commander = Get{}
 
 type GetArgs struct {
 	File       string `positional-arg-name:"FILE" description:"File name" required:"true"`
-	TargetFile string `positional-arg-name:"TARGET-FILE" description:"Target path to write download"`
+	TargetFile string `positional-arg-name:"TARGET-FILE" description:"Target path to write download (use '-' for STDOUT)"`
 }
 
 func (c Get) Execute(_ []string) error {
@@ -40,14 +41,47 @@ func (c Get) Execute(_ []string) error {
 		filePath = c.Args.File
 	}
 
-	file, err := c.FS.OpenFile(filePath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
-	if err != nil {
-		return bosherr.WrapError(err, "Opening file")
+	var file io.ReadWriteSeeker
+
+	if filePath == "-" {
+		fileTemp, err := c.FS.TempFile("ssoca-download-stdout")
+		if err != nil {
+			return bosherr.WrapError(err, "Creating temp file for stdout")
+		}
+
+		defer os.RemoveAll(fileTemp.Name())
+
+		file = fileTemp
+	} else {
+		file, err = c.FS.OpenFile(filePath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+		if err != nil {
+			return bosherr.WrapError(err, "Opening file")
+		}
 	}
 
 	downloadStatus := pb.New(0).SetRefreshRate(250 * time.Millisecond).SetWidth(80)
 	downloadStatus.Output = c.Runtime.GetStderr()
 	downloadStatus.ShowPercent = false
 
-	return client.Download(c.Args.File, file, downloadStatus)
+	err = client.Download(c.Args.File, file, downloadStatus)
+	if err != nil {
+		return err
+	}
+
+	if filePath != "-" {
+		return nil
+	}
+
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		return bosherr.WrapError(err, "Seeking downloaded temp file")
+	}
+
+	// TODO stdout should use runtime.GetStdout()?
+	_, err = io.Copy(os.Stdout, file)
+	if err != nil {
+		return bosherr.WrapError(err, "Writing download to STDOUT")
+	}
+
+	return nil
 }
