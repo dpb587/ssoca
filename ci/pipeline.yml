@@ -251,7 +251,7 @@ resource_types:
 shared:
   release_artifacts: &release_artifacts
     mirror_files:
-    - destination: s3://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v{{.Version}}/{{.SHA1}}
+    - destination: s3://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v{{.Version}}/{{.Name}}
       env:
         AWS_ACCESS_KEY_ID: ((artifacts_s3_access_key))
         AWS_SECRET_ACCESS_KEY: ((artifacts_s3_secret_key))
