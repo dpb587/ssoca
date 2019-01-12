@@ -24,7 +24,7 @@ type Get struct {
 var _ flags.Commander = Get{}
 
 type GetArgs struct {
-	File       string `positional-arg-name:"FILE" description:"File name"`
+	File       string `positional-arg-name:"FILE" description:"File name" required:"true"`
 	TargetFile string `positional-arg-name:"TARGET-FILE" description:"Target path to write download"`
 }
 
@@ -34,7 +34,13 @@ func (c Get) Execute(_ []string) error {
 		return bosherr.WrapError(err, "Getting client")
 	}
 
-	file, err := c.FS.OpenFile(c.Args.TargetFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+	filePath := c.Args.TargetFile
+
+	if filePath == "" {
+		filePath = c.Args.File
+	}
+
+	file, err := c.FS.OpenFile(filePath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
 	if err != nil {
 		return bosherr.WrapError(err, "Opening file")
 	}
