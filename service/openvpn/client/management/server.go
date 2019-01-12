@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -33,7 +33,7 @@ func NewServer(handler ServerHandler, bindProtocol, bindAddress string, logger l
 func (cs *Server) Start() error {
 	listener, err := net.Listen(cs.bindProtocol, cs.bindAddress)
 	if err != nil {
-		return bosherr.WrapError(err, "Binding")
+		return errors.Wrap(err, "Binding")
 	}
 
 	cs.listener = listener

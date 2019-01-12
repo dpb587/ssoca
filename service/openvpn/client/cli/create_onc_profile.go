@@ -3,10 +3,11 @@ package cli
 import (
 	"encoding/json"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
-	"github.com/jessevdk/go-flags"
 )
 
 type CreateONCProfile struct {
@@ -28,12 +29,12 @@ func (c CreateONCProfile) Execute(_ []string) error {
 		Name:          c.Name,
 	})
 	if err != nil {
-		return bosherr.WrapError(err, "Getting profile")
+		return errors.Wrap(err, "Getting profile")
 	}
 
 	oncBytes, err := json.MarshalIndent(onc, "", "  ")
 	if err != nil {
-		return bosherr.WrapError(err, "Encoding ONC")
+		return errors.Wrap(err, "Encoding ONC")
 	}
 
 	oncBytes = append(oncBytes, '\n')

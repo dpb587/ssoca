@@ -5,9 +5,9 @@ import (
 	"io"
 	"time"
 
-	"github.com/dpb587/ssoca/service/openvpn/client/profile"
+	"github.com/pkg/errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/service/openvpn/client/profile"
 )
 
 type DefaultHandler struct {
@@ -33,7 +33,7 @@ func NewDefaultHandler(profileManager profile.Manager) *DefaultHandler {
 func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ServerHandlerCallback, error) {
 	profile, err := ch.profileManager.GetProfile()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Retrieving profile")
+		return nil, errors.Wrap(err, "Retrieving profile")
 	} else if ch.exceedsRecentAttempts() {
 		// internally throttle ourselves after repeated certificate lookups
 		// typically this would mean non-expired certs are expired/invalid and should be reloaded
@@ -59,12 +59,12 @@ func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ServerHandlerCallba
 
 	data64, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Decoding signing token")
+		return nil, errors.Wrap(err, "Decoding signing token")
 	}
 
 	signature, err := ch.profileManager.Sign(data64)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Signing token")
+		return nil, errors.Wrap(err, "Signing token")
 	}
 
 	signature64 := base64.StdEncoding.EncodeToString(signature)

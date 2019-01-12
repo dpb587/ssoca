@@ -1,8 +1,8 @@
 package fs
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/certauth"
@@ -28,7 +28,7 @@ func (f Factory) Create(name string, options map[string]interface{}) (certauth.P
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	provider := NewProvider(

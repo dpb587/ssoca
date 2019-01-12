@@ -3,10 +3,10 @@ package client
 import (
 	"fmt"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/go-onc/onc"
 	"github.com/dpb587/go-openvpn/ovpn"
 	ovpnonc "github.com/dpb587/go-openvpn/ovpn/onc"
+	"github.com/pkg/errors"
 )
 
 type CreateONCProfileOptions struct {
@@ -24,12 +24,12 @@ func (s Service) CreateONCProfile(opts CreateONCProfileOptions) (*onc.ONC, error
 
 	parsedProfile, err := ovpn.Parse([]byte(profile.StaticConfig()))
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing profile")
+		return nil, errors.Wrap(err, "Parsing profile")
 	}
 
 	oncEncoded, err := ovpnonc.Encode(parsedProfile)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Building ONC")
+		return nil, errors.Wrap(err, "Building ONC")
 	}
 
 	name := opts.Name

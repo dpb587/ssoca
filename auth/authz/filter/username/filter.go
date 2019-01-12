@@ -1,9 +1,7 @@
 package username
 
 import (
-	"errors"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/config"
@@ -16,7 +14,7 @@ func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
 
 	err := config.RemarshalYAML(cfg, &requirement)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	if requirement.Is == "" {

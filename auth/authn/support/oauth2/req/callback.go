@@ -3,20 +3,19 @@ package req
 import (
 	"bytes"
 	"context"
-	"errors"
 	"html/template"
 	"net/http"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	uuid "github.com/nu7hatch/gouuid"
+	"github.com/pkg/errors"
+	"golang.org/x/oauth2"
+
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
-	uuid "github.com/nu7hatch/gouuid"
-	"golang.org/x/oauth2"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 var clientRedirectTemplate = template.Must(template.New("html").Parse(`
@@ -66,7 +65,7 @@ func (h Callback) Execute(request req.Request) error {
 
 	oauthToken, err := h.Config.Exchange(h.Context, request.RawRequest.URL.Query().Get("code"))
 	if err != nil {
-		return bosherr.WrapError(err, "Exchanging token")
+		return errors.Wrap(err, "Exchanging token")
 	}
 
 	if !oauthToken.Valid() {
@@ -75,12 +74,12 @@ func (h Callback) Execute(request req.Request) error {
 
 	userProfile, err := h.UserProfileLoader(h.Config.Client(h.Context, oauthToken))
 	if err != nil {
-		return bosherr.WrapError(err, "Loading user profile")
+		return errors.Wrap(err, "Loading user profile")
 	}
 
 	tokenUUID, err := uuid.NewV4()
 	if err != nil {
-		return bosherr.WrapError(err, "Generating local token ID")
+		return errors.Wrap(err, "Generating local token ID")
 	}
 
 	token := jwt.NewWithClaims(config.JWTSigningMethod, selfsignedjwt.Token{
@@ -99,7 +98,7 @@ func (h Callback) Execute(request req.Request) error {
 
 	tokenString, err := token.SignedString(&h.JWT.PrivateKey)
 	if err != nil {
-		return bosherr.WrapError(err, "Signing token")
+		return errors.Wrap(err, "Signing token")
 	}
 
 	// remove the cookie

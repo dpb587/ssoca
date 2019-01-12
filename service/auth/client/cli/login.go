@@ -1,17 +1,15 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/dpb587/ssoca/client/config"
-	"github.com/dpb587/ssoca/client/service"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/client/config"
+	"github.com/dpb587/ssoca/client/service"
 	envclient "github.com/dpb587/ssoca/service/env/client"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type Login struct {
@@ -28,29 +26,29 @@ var _ flags.Commander = Login{}
 func (c Login) Execute(_ []string) error {
 	rawEnvService, err := c.ServiceManager.Get("env")
 	if err != nil {
-		return bosherr.WrapError(err, "Getting env service")
+		return errors.Wrap(err, "Getting env service")
 	}
 
 	envService, ok := rawEnvService.(envclient.Service)
 	if !ok {
-		return bosherr.WrapError(err, "Expecting env service")
+		return errors.Wrap(err, "Expecting env service")
 	}
 
 	envClient, err := envService.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting env HTTP client")
+		return errors.Wrap(err, "Getting env HTTP client")
 	}
 
 	envInfo, err := envClient.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment info")
+		return errors.Wrap(err, "Getting environment info")
 	}
 
 	authServiceType := envInfo.Auth.Type
 
 	svc, err := c.ServiceManager.Get(authServiceType)
 	if err != nil {
-		return bosherr.WrapError(err, "Loading auth service")
+		return errors.Wrap(err, "Loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)
@@ -60,12 +58,12 @@ func (c Login) Execute(_ []string) error {
 
 	auth, err := authService.AuthLogin(envInfo.Auth)
 	if err != nil {
-		return bosherr.WrapError(err, "Authenticating")
+		return errors.Wrap(err, "Authenticating")
 	}
 
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment state")
+		return errors.Wrap(err, "Getting environment state")
 	}
 
 	env.Auth = &config.EnvironmentAuthState{
@@ -75,12 +73,12 @@ func (c Login) Execute(_ []string) error {
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting config manager")
+		return errors.Wrap(err, "Getting config manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return bosherr.WrapError(err, "Updating environment")
+		return errors.Wrap(err, "Updating environment")
 	}
 
 	if c.SkipVerify {
@@ -89,7 +87,7 @@ func (c Login) Execute(_ []string) error {
 
 	err = c.verify()
 	if err != nil {
-		return bosherr.WrapError(err, "Verifying authentication")
+		return errors.Wrap(err, "Verifying authentication")
 	}
 
 	return nil
@@ -100,12 +98,12 @@ func (c Login) verify() error {
 
 	client, err := c.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	authInfo, err := client.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting remote authentication info")
+		return errors.Wrap(err, "Getting remote authentication info")
 	}
 
 	if authInfo.ID == "" {

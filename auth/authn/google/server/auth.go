@@ -2,15 +2,15 @@ package server
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	"github.com/dpb587/ssoca/auth"
+	"github.com/pkg/errors"
 	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
+
+	"github.com/dpb587/ssoca/auth"
 )
 
 type userinfoPayload struct {
@@ -26,7 +26,7 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, _ error) {
 	resp, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
-		return token, bosherr.WrapError(err, "Fetching user info")
+		return token, errors.Wrap(err, "Fetching user info")
 	}
 
 	defer resp.Body.Close()
@@ -37,13 +37,13 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return token, bosherr.WrapError(err, "Reading user info")
+		return token, errors.Wrap(err, "Reading user info")
 	}
 
 	userinfo := userinfoPayload{}
 	err = json.Unmarshal(data, &userinfo)
 	if err != nil {
-		return token, bosherr.WrapError(err, "Unmarshaling user info")
+		return token, errors.Wrap(err, "Unmarshaling user info")
 	}
 
 	if !userinfo.EmailVerified {
@@ -68,7 +68,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	if s.config.Scopes.CloudProject != nil {
 		err = s.oauthUserProfileCloudProjectLoader(client, &token)
 		if err != nil {
-			return token, bosherr.WrapError(err, "Loading Cloud project scopes")
+			return token, errors.Wrap(err, "Loading Cloud project scopes")
 		}
 	}
 
@@ -78,12 +78,12 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 func (s Service) oauthUserProfileCloudProjectLoader(client *http.Client, token *auth.Token) error {
 	cloudresourcemanagerService, err := cloudresourcemanager.New(client)
 	if err != nil {
-		return bosherr.WrapError(err, "Creating API client")
+		return errors.Wrap(err, "Creating API client")
 	}
 
 	res, err := cloudresourcemanagerService.Projects.List().PageSize(1024).Do()
 	if err != nil {
-		return bosherr.WrapError(err, "Listing projects")
+		return errors.Wrap(err, "Listing projects")
 	}
 
 	allProjects := len(s.config.Scopes.CloudProject.Projects) == 0
@@ -107,7 +107,7 @@ func (s Service) oauthUserProfileCloudProjectLoader(client *http.Client, token *
 
 		projectIam, err := cloudresourcemanagerService.Projects.GetIamPolicy(project.ProjectId, &cloudresourcemanager.GetIamPolicyRequest{}).Do()
 		if err != nil {
-			return bosherr.WrapError(err, "Getting IAM policy")
+			return errors.Wrap(err, "Getting IAM policy")
 		}
 
 		for _, binding := range projectIam.Bindings {

@@ -1,15 +1,14 @@
 package server
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/auth"
 	uaainternal "github.com/dpb587/ssoca/auth/authn/uaa/internal"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 )
 
@@ -40,7 +39,7 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		},
 	)
 	if err != nil {
-		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.Wrap(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
 	token := auth.Token{}

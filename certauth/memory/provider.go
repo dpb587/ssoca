@@ -6,11 +6,11 @@ import (
 	"encoding/pem"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/sirupsen/logrus"
 )
 
 type Provider struct {
@@ -45,7 +45,7 @@ func (p Provider) SignCertificate(template *x509.Certificate, publicKey interfac
 		caPrivateKey,
 	)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Signing x509 certificate")
+		return nil, errors.Wrap(err, "Signing x509 certificate")
 	}
 
 	p.logger.WithFields(loggerContext).WithFields(logrus.Fields{
@@ -65,12 +65,12 @@ func (p Provider) SignSSHCertificate(certificate *ssh.Certificate, loggerContext
 
 	signer, err := ssh.NewSignerFromKey(caPrivateKey)
 	if err != nil {
-		return bosherr.WrapError(err, "Creating ssh signer")
+		return errors.Wrap(err, "Creating ssh signer")
 	}
 
 	err = certificate.SignCert(rand.Reader, signer)
 	if err != nil {
-		return bosherr.WrapError(err, "Signing ssh certificate")
+		return errors.Wrap(err, "Signing ssh certificate")
 	}
 
 	p.logger.WithFields(loggerContext).WithFields(logrus.Fields{

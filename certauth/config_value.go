@@ -2,12 +2,10 @@ package certauth
 
 import (
 	"crypto/x509"
-	"errors"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 var configValueMissing = errors.New("no certificate provider configured")
@@ -37,7 +35,7 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 func (cv *ConfigValue) Configure(name string) error {
 	provider, err := cv.manager.Get(name)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting certificate authority")
+		return errors.Wrap(err, "Getting certificate authority")
 	}
 
 	cv.provider = provider

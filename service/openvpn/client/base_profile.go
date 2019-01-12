@@ -1,7 +1,7 @@
 package client
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 type BaseProfileOptions struct {
@@ -11,7 +11,7 @@ type BaseProfileOptions struct {
 func (s Service) BaseProfile(opts BaseProfileOptions) (string, error) {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return "", bosherr.WrapError(err, "Getting client")
+		return "", errors.Wrap(err, "Getting client")
 	}
 
 	return client.BaseProfile()

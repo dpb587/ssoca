@@ -2,9 +2,9 @@ package cmd
 
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 )
 
 type List struct {
@@ -23,12 +23,12 @@ func (c List) Execute(_ []string) error {
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting state manager")
+		return errors.Wrap(err, "Getting state manager")
 	}
 
 	envs, err := configManager.GetEnvironments()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environments")
+		return errors.Wrap(err, "Getting environments")
 	}
 
 	for _, env := range envs {

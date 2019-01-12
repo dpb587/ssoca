@@ -3,7 +3,7 @@ package certauth
 import (
 	"fmt"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 type defaultFactory struct {
@@ -31,7 +31,7 @@ func (f defaultFactory) Create(name string, sType string, options map[string]int
 
 	provider, err := factory.Create(name, options)
 	if err != nil {
-		return nil, bosherr.WrapErrorf(err, "Creating provider %s", sType)
+		return nil, errors.Wrapf(err, "Creating provider %s", sType)
 	}
 
 	return provider, nil

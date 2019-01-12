@@ -8,9 +8,9 @@ import (
 	"time"
 
 	boshui "github.com/cloudfoundry/bosh-cli/ui"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/client"
@@ -93,7 +93,7 @@ func (r Runtime) GetVersion() version.Version {
 func (r Runtime) GetEnvironment() (config.EnvironmentState, error) {
 	configManager, err := r.GetConfigManager()
 	if err != nil {
-		return config.EnvironmentState{}, bosherr.WrapError(err, "Getting config manager")
+		return config.EnvironmentState{}, errors.Wrap(err, "Getting config manager")
 	}
 
 	return configManager.GetEnvironment(r.GetEnvironmentName())
@@ -122,7 +122,7 @@ func (r Runtime) GetStderr() io.Writer {
 func (r Runtime) GetClient() (httpclient.Client, error) {
 	env, err := r.GetEnvironment()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Getting environment")
+		return nil, errors.Wrap(err, "Getting environment")
 	}
 
 	var certPool *x509.CertPool
@@ -132,14 +132,14 @@ func (r Runtime) GetClient() (httpclient.Client, error) {
 
 		cert, err := env.GetCACertificate()
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Getting CA certificate")
+			return nil, errors.Wrap(err, "Getting CA certificate")
 		}
 
 		certPool.AddCert(cert)
 	} else {
 		certPool, err = x509.SystemCertPool()
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Loading trusted system CA certificates")
+			return nil, errors.Wrap(err, "Loading trusted system CA certificates")
 		}
 	}
 

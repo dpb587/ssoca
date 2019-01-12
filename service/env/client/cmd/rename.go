@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 )
@@ -24,19 +24,19 @@ type RenameArgs struct {
 func (c Rename) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment")
+		return errors.Wrap(err, "Getting environment")
 	}
 
 	env.Alias = c.Args.Name
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting state manager")
+		return errors.Wrap(err, "Getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return bosherr.WrapError(err, "Setting environment")
+		return errors.Wrap(err, "Setting environment")
 	}
 
 	return nil

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/client/auth"
 	"github.com/dpb587/ssoca/client/config"
@@ -14,26 +14,26 @@ import (
 func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Getting environment")
+		return nil, errors.Wrap(err, "Getting environment")
 	}
 
 	authBind := config.NewStringEnvironmentOption(config.EnvironmentOptionAuthBind)
 	err = env.GetOption(&authBind, "0.0.0.0:0")
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading bind option")
+		return nil, errors.Wrap(err, "Loading bind option")
 	}
 
 	openCommand := config.NewStringSliceEnvironmentOption(config.EnvironmentOptionAuthOpenCommand)
 	err = env.GetOption(&openCommand, []string{"open"})
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading open option")
+		return nil, errors.Wrap(err, "Loading open option")
 	}
 
 	str := auth.NewServerTokenRetrieval(env.URL, s.runtime.GetVersion(), s.cmdRunner, authBind.GetValue(), openCommand.GetValue(), s.runtime.GetStderr(), s.runtime.GetStdin())
 
 	token, err := str.Retrieve("/auth/initiate")
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Waiting for user token")
+		return nil, errors.Wrap(err, "Waiting for user token")
 	}
 
 	authConfig := AuthConfig{
@@ -50,13 +50,13 @@ func (s Service) AuthLogout() error {
 func (s Service) AuthRequest(req *http.Request) error {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment")
+		return errors.Wrap(err, "Getting environment")
 	}
 
 	authConfig := AuthConfig{}
 	err = env.Auth.UnmarshalOptions(&authConfig)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing authentication options")
+		return errors.Wrap(err, "Parsing authentication options")
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("bearer %s", authConfig.Token))

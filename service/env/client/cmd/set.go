@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 
@@ -48,12 +48,12 @@ func (c Set) Execute(_ []string) error {
 	if c.CACertificatePath != "" {
 		absPath, err := c.FS.ExpandPath(c.CACertificatePath)
 		if err != nil {
-			return bosherr.WrapError(err, "Expanding path")
+			return errors.Wrap(err, "Expanding path")
 		}
 
 		cacert, err := c.FS.ReadFileString(absPath)
 		if err != nil {
-			return bosherr.WrapError(err, "Reading file")
+			return errors.Wrap(err, "Reading file")
 		}
 
 		env.CACertificate = cacert
@@ -61,12 +61,12 @@ func (c Set) Execute(_ []string) error {
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting state manager")
+		return errors.Wrap(err, "Getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return bosherr.WrapError(err, "Setting environment")
+		return errors.Wrap(err, "Setting environment")
 	}
 
 	if c.SkipVerify {
@@ -75,7 +75,7 @@ func (c Set) Execute(_ []string) error {
 
 	err = c.verify()
 	if err != nil {
-		return bosherr.WrapError(err, "Verifying environment")
+		return errors.Wrap(err, "Verifying environment")
 	}
 
 	return nil
@@ -86,12 +86,12 @@ func (c Set) verify() error {
 
 	client, err := c.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting remote environment info")
+		return errors.Wrap(err, "Getting remote environment info")
 	}
 
 	ui.PrintBlock([]byte(fmt.Sprintf("Successfully connected to %s\n", info.Env.Title)))

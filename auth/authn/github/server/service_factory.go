@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
 	svc "github.com/dpb587/ssoca/auth/authn/github"
@@ -43,12 +43,12 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(cfg.JWT.PrivateKey))
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing private key")
+		return nil, errors.Wrap(err, "Parsing private key")
 	}
 
 	backend := oauth2support.NewBackend(

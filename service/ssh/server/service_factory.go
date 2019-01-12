@@ -3,13 +3,11 @@ package server
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/config"
@@ -50,7 +48,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	if cfg.Target.PublicKey != "" && strings.Contains(cfg.Target.PublicKey, "-----") {
@@ -61,12 +59,12 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 		rsa, err := x509.ParsePKIXPublicKey(publicKeyPEM.Bytes)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Parsing public key")
+			return nil, errors.Wrap(err, "Parsing public key")
 		}
 
 		publicKey, err := ssh.NewPublicKey(rsa)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Parsing ssh public key")
+			return nil, errors.Wrap(err, "Parsing ssh public key")
 		}
 
 		cfg.Target.PublicKey = string(ssh.MarshalAuthorizedKey(publicKey))

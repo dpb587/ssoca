@@ -3,7 +3,8 @@ package config
 import (
 	"fmt"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/config/storage"
 )
 
@@ -30,7 +31,7 @@ func (m DefaultManager) GetEnvironments() (EnvironmentsState, error) {
 
 	err := m.storage.Get(m.path, &state)
 	if err != nil {
-		return EnvironmentsState{}, bosherr.WrapError(err, "Getting environments")
+		return EnvironmentsState{}, errors.Wrap(err, "Getting environments")
 	}
 
 	return state.Environments, nil
@@ -39,7 +40,7 @@ func (m DefaultManager) GetEnvironments() (EnvironmentsState, error) {
 func (m DefaultManager) GetEnvironment(name string) (EnvironmentState, error) {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return EnvironmentState{}, bosherr.WrapError(err, "Getting environment")
+		return EnvironmentState{}, errors.Wrap(err, "Getting environment")
 	}
 
 	for _, env := range envs {
@@ -54,7 +55,7 @@ func (m DefaultManager) GetEnvironment(name string) (EnvironmentState, error) {
 func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environments")
+		return errors.Wrap(err, "Getting environments")
 	}
 
 	newState := State{}
@@ -80,7 +81,7 @@ func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 
 	_, err = m.storage.Put(m.path, newState)
 	if err != nil {
-		return bosherr.WrapError(err, "Putting environment")
+		return errors.Wrap(err, "Putting environment")
 	}
 
 	return nil
@@ -89,7 +90,7 @@ func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 func (m DefaultManager) UnsetEnvironment(name string) error {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment")
+		return errors.Wrap(err, "Getting environment")
 	}
 
 	newState := State{}
@@ -104,7 +105,7 @@ func (m DefaultManager) UnsetEnvironment(name string) error {
 
 	_, err = m.storage.Put(m.path, newState)
 	if err != nil {
-		return bosherr.WrapError(err, "Putting environment")
+		return errors.Wrap(err, "Putting environment")
 	}
 
 	return nil

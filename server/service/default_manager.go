@@ -1,10 +1,9 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 type defaultManager struct {
@@ -36,7 +35,7 @@ func (f defaultManager) Get(name string) (Service, error) {
 func (f defaultManager) GetAuth() (AuthService, error) {
 	svc, err := f.Get("auth")
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Getting auth service")
+		return nil, errors.Wrap(err, "Getting auth service")
 	}
 
 	authSvc, ok := svc.(AuthService)

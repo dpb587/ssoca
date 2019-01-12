@@ -1,12 +1,12 @@
 package cli
 
 import (
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/ssh/client"
-	"github.com/jessevdk/go-flags"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type SignPublicKey struct {
@@ -30,19 +30,19 @@ func (c SignPublicKey) Execute(_ []string) error {
 
 	expandedPath, err := c.fs.ExpandPath(c.Args.Path)
 	if err != nil {
-		return bosherr.WrapError(err, "Expanding path")
+		return errors.Wrap(err, "Expanding path")
 	}
 
 	publicKey, err := c.fs.ReadFile(expandedPath)
 	if err != nil {
-		return bosherr.WrapError(err, "Reading public key")
+		return errors.Wrap(err, "Reading public key")
 	}
 
 	certificate, _, err := service.SignPublicKey(svc.SignPublicKeyOptions{
 		PublicKey: publicKey,
 	})
 	if err != nil {
-		return bosherr.WrapError(err, "Getting profile")
+		return errors.Wrap(err, "Getting profile")
 	}
 
 	ui := c.Runtime.GetUI()

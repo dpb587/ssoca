@@ -4,15 +4,14 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 	"time"
 
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/dpb587/ssoca/certauth"
-	"github.com/sirupsen/logrus"
 )
 
 type Provider struct {
@@ -40,12 +39,12 @@ func (p Provider) Name() string {
 func (p Provider) SignCertificate(template *x509.Certificate, publicKey interface{}, loggerContext logrus.Fields) ([]byte, error) {
 	caCertificate, err := p.GetCertificate()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Getting CA certificate")
+		return nil, errors.Wrap(err, "Getting CA certificate")
 	}
 
 	caPrivateKey, err := p.getPrivateKey()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Getting CA private key")
+		return nil, errors.Wrap(err, "Getting CA private key")
 	}
 
 	certificate, err := x509.CreateCertificate(
@@ -56,7 +55,7 @@ func (p Provider) SignCertificate(template *x509.Certificate, publicKey interfac
 		caPrivateKey,
 	)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Signing x509 certificate")
+		return nil, errors.Wrap(err, "Signing x509 certificate")
 	}
 
 	p.logger.WithFields(loggerContext).WithFields(logrus.Fields{
@@ -74,17 +73,17 @@ func (p Provider) SignCertificate(template *x509.Certificate, publicKey interfac
 func (p Provider) SignSSHCertificate(certificate *ssh.Certificate, loggerContext logrus.Fields) error {
 	caPrivateKey, err := p.getPrivateKey()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting CA private key")
+		return errors.Wrap(err, "Getting CA private key")
 	}
 
 	signer, err := ssh.NewSignerFromKey(caPrivateKey)
 	if err != nil {
-		return bosherr.WrapError(err, "Creating ssh signer")
+		return errors.Wrap(err, "Creating ssh signer")
 	}
 
 	err = certificate.SignCert(rand.Reader, signer)
 	if err != nil {
-		return bosherr.WrapError(err, "Signing ssh certificate")
+		return errors.Wrap(err, "Signing ssh certificate")
 	}
 
 	p.logger.WithFields(loggerContext).WithFields(logrus.Fields{
@@ -99,7 +98,7 @@ func (p Provider) SignSSHCertificate(certificate *ssh.Certificate, loggerContext
 func (p Provider) GetCertificate() (*x509.Certificate, error) {
 	str, err := p.GetCertificatePEM()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Reading certificate")
+		return nil, errors.Wrap(err, "Reading certificate")
 	}
 
 	certificatePEM, _ := pem.Decode([]byte(str))
@@ -109,7 +108,7 @@ func (p Provider) GetCertificate() (*x509.Certificate, error) {
 
 	certificate, err := x509.ParseCertificate(certificatePEM.Bytes)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing certificate")
+		return nil, errors.Wrap(err, "Parsing certificate")
 	}
 
 	return certificate, nil
@@ -122,7 +121,7 @@ func (p Provider) GetCertificatePEM() (string, error) {
 func (p Provider) getPrivateKey() (interface{}, error) {
 	str, err := p.fs.ReadFileString(p.config.PrivateKeyPath)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Reading private key")
+		return nil, errors.Wrap(err, "Reading private key")
 	}
 
 	privateKeyPEM, _ := pem.Decode([]byte(str))
@@ -132,7 +131,7 @@ func (p Provider) getPrivateKey() (interface{}, error) {
 
 	privateKey, e := x509.ParsePKCS1PrivateKey(privateKeyPEM.Bytes)
 	if e != nil {
-		return nil, bosherr.WrapError(e, "Parsing private key")
+		return nil, errors.Wrap(e, "Parsing private key")
 	}
 
 	return privateKey, nil

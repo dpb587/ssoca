@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os/exec"
 	"runtime"
@@ -9,10 +8,10 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/inconshreveable/go-update"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	downloadhttpclient "github.com/dpb587/ssoca/service/download/httpclient"
@@ -35,12 +34,12 @@ var _ flags.Commander = UpdateClient{}
 func (c UpdateClient) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting remote environment info")
+		return errors.Wrap(err, "Getting remote environment info")
 	}
 
 	if info.Env.UpdateService == "" {
@@ -49,12 +48,12 @@ func (c UpdateClient) Execute(_ []string) error {
 
 	downloadClient, err := c.GetDownloadClient(info.Env.UpdateService, c.SkipAuthRetry)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting download client")
+		return errors.Wrap(err, "Getting download client")
 	}
 
 	metadata, err := downloadClient.GetMetadata()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting download metadata")
+		return errors.Wrap(err, "Getting download metadata")
 	}
 
 	version, ok := metadata.Metadata["version"]
@@ -68,7 +67,7 @@ func (c UpdateClient) Execute(_ []string) error {
 
 	files, err := downloadClient.GetList()
 	if err != nil {
-		return bosherr.WrapError(err, "Listing client files")
+		return errors.Wrap(err, "Listing client files")
 	}
 
 	var found string
@@ -96,12 +95,12 @@ func (c UpdateClient) Execute(_ []string) error {
 
 	executable, err = exec.LookPath(executable)
 	if err != nil {
-		return bosherr.WrapError(err, "Expanding path")
+		return errors.Wrap(err, "Expanding path")
 	}
 
 	err = c.update(downloadClient, executable, found)
 	if err != nil {
-		return bosherr.WrapError(err, "Updating binary")
+		return errors.Wrap(err, "Updating binary")
 	}
 
 	_, _, exit, err := c.CmdRunner.RunComplexCommand(boshsys.Command{
@@ -111,7 +110,7 @@ func (c UpdateClient) Execute(_ []string) error {
 		Stdout: c.Runtime.GetStdout(),
 	})
 	if err != nil {
-		return bosherr.WrapError(err, "Verifying updated binary")
+		return errors.Wrap(err, "Verifying updated binary")
 	} else if exit != 0 {
 		return fmt.Errorf("Unexpected exit from updated binary: %d", exit)
 	}
@@ -122,7 +121,7 @@ func (c UpdateClient) Execute(_ []string) error {
 func (c UpdateClient) update(downloadClient downloadhttpclient.Client, executable string, fileName string) error {
 	tmpfile, err := c.FS.TempFile("ssoca-update-client-")
 	if err != nil {
-		return bosherr.WrapError(err, "Creating temporary file for download")
+		return errors.Wrap(err, "Creating temporary file for download")
 	}
 
 	defer tmpfile.Close()
@@ -133,17 +132,17 @@ func (c UpdateClient) update(downloadClient downloadhttpclient.Client, executabl
 
 	err = downloadClient.Download(fileName, tmpfile, downloadStatus)
 	if err != nil {
-		return bosherr.WrapError(err, "Downloading file")
+		return errors.Wrap(err, "Downloading file")
 	}
 
 	_, err = tmpfile.Seek(0, 0)
 	if err != nil {
-		return bosherr.WrapError(err, "Rewinding download")
+		return errors.Wrap(err, "Rewinding download")
 	}
 
 	err = update.Apply(tmpfile, update.Options{TargetPath: executable})
 	if err != nil {
-		return bosherr.WrapError(err, "Updating file")
+		return errors.Wrap(err, "Updating file")
 	}
 
 	return nil

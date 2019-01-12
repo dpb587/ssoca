@@ -2,11 +2,11 @@ package req
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 
 	"github.com/dpb587/ssoca/certauth"
@@ -15,8 +15,6 @@ import (
 	"github.com/dpb587/ssoca/server/service/req"
 	svcapi "github.com/dpb587/ssoca/service/ssh/api"
 	svcconfig "github.com/dpb587/ssoca/service/ssh/server/config"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type SignPublicKey struct {
@@ -53,12 +51,12 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	decoded, err := base64.StdEncoding.DecodeString(parts[1])
 	if err != nil {
-		return apierr.NewError(bosherr.WrapErrorf(err, "Decoding public key"), 400, "Failed to decode public key")
+		return apierr.NewError(errors.Wrapf(err, "Decoding public key"), 400, "Failed to decode public key")
 	}
 
 	publicKey, err := ssh.ParsePublicKey([]byte(decoded))
 	if err != nil {
-		return apierr.NewError(bosherr.WrapErrorf(err, "Parsing public key"), 400, "Failed to parse public key")
+		return apierr.NewError(errors.Wrapf(err, "Parsing public key"), 400, "Failed to parse public key")
 	}
 
 	now := time.Now()
@@ -78,7 +76,7 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	principals, err := h.Principals.Evaluate(request.RawRequest, request.AuthToken)
 	if err != nil {
-		return bosherr.WrapError(err, "Evaluating principals")
+		return errors.Wrap(err, "Evaluating principals")
 	}
 
 	principalsFiltered := []string{}
@@ -95,7 +93,7 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	criticalOptions, err := h.CriticalOptions.Evaluate(request.RawRequest, request.AuthToken)
 	if err != nil {
-		return bosherr.WrapError(err, "Evaluating critical options")
+		return errors.Wrap(err, "Evaluating critical options")
 	}
 
 	for criticalOption, criticalOptionData := range criticalOptions {
@@ -112,7 +110,7 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 	err = h.CertAuth.SignSSHCertificate(&certificate, request.LoggerContext)
 	if err != nil {
-		return bosherr.WrapError(err, "Signing certificate")
+		return errors.Wrap(err, "Signing certificate")
 	}
 
 	response.Certificate = fmt.Sprintf("%s %s", certificate.Type(), base64.StdEncoding.EncodeToString(certificate.Marshal()))
@@ -126,7 +124,7 @@ func (h SignPublicKey) Execute(request req.Request) error {
 
 		targetUser, err := h.Target.User.Evaluate(request.RawRequest, request.AuthToken)
 		if err != nil {
-			return bosherr.WrapError(err, "Evaluting target user")
+			return errors.Wrap(err, "Evaluting target user")
 		}
 
 		target.User = targetUser

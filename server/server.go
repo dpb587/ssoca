@@ -1,10 +1,13 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
+
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/auth/authz/service"
@@ -13,12 +16,7 @@ import (
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
-	"github.com/sirupsen/logrus"
-
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type Server struct {
@@ -99,7 +97,7 @@ func CreateFromConfig(
 		ca, err := certauthFactory.Create(caConfig.Name, caConfig.Type, caConfig.Options)
 
 		if err != nil {
-			return Server{}, bosherr.WrapErrorf(err, "Creating certauth (%s)", caConfig.Name)
+			return Server{}, errors.Wrapf(err, "Creating certauth (%s)", caConfig.Name)
 		}
 
 		certauthManager.Add(ca)
@@ -108,12 +106,12 @@ func CreateFromConfig(
 	for _, svcConfig := range cfg.Services {
 		svc, err := serviceFactory.Create(svcConfig.Type, svcConfig.Name, svcConfig.Options)
 		if err != nil {
-			return Server{}, bosherr.WrapError(err, "Creating service")
+			return Server{}, errors.Wrap(err, "Creating service")
 		}
 
 		filteredService, err := filterService(svc, svcConfig, cfg.Auth.Require, filterManager)
 		if err != nil {
-			return Server{}, bosherr.WrapErrorf(err, "Applying authorization filters to %s", svc.Name())
+			return Server{}, errors.Wrapf(err, "Applying authorization filters to %s", svc.Name())
 		}
 
 		serviceManager.Add(filteredService)
@@ -121,7 +119,7 @@ func CreateFromConfig(
 
 	svc, err := serviceFactory.Create(fmt.Sprintf("%s_authn", cfg.Auth.Type), "auth", cfg.Auth.Options)
 	if err != nil {
-		return Server{}, bosherr.WrapError(err, "Creating auth service")
+		return Server{}, errors.Wrap(err, "Creating auth service")
 	}
 
 	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
@@ -174,7 +172,7 @@ func (s Server) getClientIP(r *http.Request) (net.IP, error) {
 func (s Server) Run() error {
 	authSvc, err := s.services.GetAuth()
 	if err != nil {
-		return bosherr.WrapError(err, "Loading authentication service")
+		return errors.Wrap(err, "Loading authentication service")
 	}
 
 	mux := http.NewServeMux()
@@ -186,7 +184,7 @@ func (s Server) Run() error {
 			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
 			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.getClientIP, s.logger)
 			if err != nil {
-				return bosherr.WrapErrorf(err, "Creating handler for %s", apiPath)
+				return errors.Wrapf(err, "Creating handler for %s", apiPath)
 			}
 
 			mux.Handle(apiPath, apiHandler)

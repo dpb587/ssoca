@@ -3,7 +3,8 @@ package dynamicvalue
 import (
 	"net/http"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/auth"
 )
 
@@ -29,7 +30,7 @@ func (mcv *MultiConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) er
 	for _, data := range dataSlice {
 		value, err := mcv.factory.Create(data)
 		if err != nil {
-			return bosherr.WrapError(err, "Parsing dynamic value")
+			return errors.Wrap(err, "Parsing dynamic value")
 		}
 
 		mcv.values = append(mcv.values, value)
@@ -44,7 +45,7 @@ func (mcv MultiConfigValue) Evaluate(arg0 *http.Request, arg1 *auth.Token) ([]st
 	for _, value := range mcv.values {
 		res, err := value.Evaluate(arg0, arg1)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Evaluating template")
+			return nil, errors.Wrap(err, "Evaluating template")
 		}
 
 		values = append(values, res)

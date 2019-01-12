@@ -1,12 +1,11 @@
 package dynamicvalue
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/dpb587/ssoca/auth"
+	"github.com/pkg/errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/auth"
 )
 
 var configValueMissing = errors.New("no template configured")
@@ -32,7 +31,7 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	value, err := cv.factory.Create(data)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing dynamic value")
+		return errors.Wrap(err, "Parsing dynamic value")
 	}
 
 	cv.value = value

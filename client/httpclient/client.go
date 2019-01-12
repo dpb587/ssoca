@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 
 	ssocaclient "github.com/dpb587/ssoca/client"
 	baseclient "github.com/dpb587/ssoca/httpclient"
@@ -93,7 +93,7 @@ func (c client) attemptReauthenticate(err error) error {
 
 	err = cmd.Run()
 	if err != nil {
-		return bosherr.WrapError(err, "auth exec")
+		return errors.Wrap(err, "auth exec")
 	}
 
 	return nil

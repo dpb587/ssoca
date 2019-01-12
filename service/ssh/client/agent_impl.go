@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 	sshagent "golang.org/x/crypto/ssh/agent"
 )
@@ -30,7 +30,7 @@ func (a Agent) List() ([]*sshagent.Key, error) {
 	for keyIdx, key := range keys {
 		parsedKey, err := ssh.ParsePublicKey(key.Blob)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "parsing public key")
+			return nil, errors.Wrap(err, "parsing public key")
 		}
 
 		allKeys = append(allKeys, key)
@@ -44,7 +44,7 @@ func (a Agent) List() ([]*sshagent.Key, error) {
 			PublicKey: []byte(fmt.Sprintf("%s %s", parsedKey.Type(), base64.StdEncoding.EncodeToString(parsedKey.Marshal()))),
 		})
 		if err != nil {
-			return nil, bosherr.WrapErrorf(err, "signing public key %d", keyIdx+1)
+			return nil, errors.Wrapf(err, "signing public key %d", keyIdx+1)
 		}
 
 		split := strings.SplitN(string(certificate), " ", 2)
@@ -54,7 +54,7 @@ func (a Agent) List() ([]*sshagent.Key, error) {
 
 		decoded, err := base64.StdEncoding.DecodeString(split[1])
 		if err != nil {
-			return nil, bosherr.WrapErrorf(err, "decoding certificate")
+			return nil, errors.Wrapf(err, "decoding certificate")
 		}
 
 		allKeys = append(allKeys, &sshagent.Key{

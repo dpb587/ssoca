@@ -1,17 +1,16 @@
 package httpclient
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net/url"
 
 	"github.com/cheggaaa/pb"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/httpclient"
 	"github.com/dpb587/ssoca/service/download/api"
-
-	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 func New(baseclient httpclient.Client, service string) (Client, error) {
@@ -36,7 +35,7 @@ func (c client) GetList() (api.ListResponse, error) {
 
 	err := c.client.APIGet(path, &out)
 	if err != nil {
-		return out, bosherr.WrapErrorf(err, "Getting %s", path)
+		return out, errors.Wrapf(err, "Getting %s", path)
 	}
 
 	return out, nil
@@ -48,7 +47,7 @@ func (c client) GetMetadata() (api.MetadataResponse, error) {
 
 	err := c.client.APIGet(path, &out)
 	if err != nil {
-		return out, bosherr.WrapErrorf(err, "Getting %s", path)
+		return out, errors.Wrapf(err, "Getting %s", path)
 	}
 
 	return out, nil
@@ -57,7 +56,7 @@ func (c client) GetMetadata() (api.MetadataResponse, error) {
 func (c client) Download(name string, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
 	list, err := c.GetList()
 	if err != nil {
-		return bosherr.WrapError(err, "Listing artifacts")
+		return errors.Wrap(err, "Listing artifacts")
 	}
 
 	for _, file := range list.Files {
@@ -76,7 +75,7 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 
 	res, err := c.client.Get(path)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting file")
+		return errors.Wrap(err, "Getting file")
 	}
 
 	downloadStatus.Total = file.Size
@@ -86,7 +85,7 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 
 	_, err = io.Copy(target, downloadStatus.NewProxyReader(res.Body))
 	if err != nil {
-		return bosherr.WrapError(err, "Streaming to file")
+		return errors.Wrap(err, "Streaming to file")
 	}
 
 	var algo boshcrypto.Algorithm
@@ -107,7 +106,7 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 
 	digest, err := algo.CreateDigest(target)
 	if err != nil {
-		return bosherr.WrapError(err, "Creating digest")
+		return errors.Wrap(err, "Creating digest")
 	}
 
 	if digest.String() != hash {

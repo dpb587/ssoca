@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	yaml "gopkg.in/yaml.v2"
@@ -25,7 +25,7 @@ type SetOptionArgs struct {
 func (c SetOption) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment")
+		return errors.Wrap(err, "Getting environment")
 	}
 
 	rawValue := c.Args.Value
@@ -33,19 +33,19 @@ func (c SetOption) Execute(_ []string) error {
 
 	err = yaml.Unmarshal([]byte(rawValue), &parsedValue)
 	if err != nil {
-		return bosherr.WrapError(err, "Unmarshaling YAML value")
+		return errors.Wrap(err, "Unmarshaling YAML value")
 	}
 
 	env.SetOption(c.Args.Name, parsedValue)
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting state manager")
+		return errors.Wrap(err, "Getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return bosherr.WrapError(err, "Setting environment")
+		return errors.Wrap(err, "Setting environment")
 	}
 
 	return nil

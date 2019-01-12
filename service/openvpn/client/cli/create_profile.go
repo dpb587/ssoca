@@ -1,11 +1,11 @@
 package cli
 
 import (
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
-	"github.com/jessevdk/go-flags"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type CreateProfile struct {
@@ -24,7 +24,7 @@ func (c CreateProfile) Execute(_ []string) error {
 		SkipAuthRetry: c.SkipAuthRetry,
 	})
 	if err != nil {
-		return bosherr.WrapError(err, "Getting profile")
+		return errors.Wrap(err, "Getting profile")
 	}
 
 	c.Runtime.GetUI().PrintBlock([]byte(profile.StaticConfig()))

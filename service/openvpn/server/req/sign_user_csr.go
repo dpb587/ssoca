@@ -5,20 +5,19 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"errors"
 	"fmt"
 	"math/big"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/certauth"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/openvpn"
 	svcapi "github.com/dpb587/ssoca/service/openvpn/api"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type SignUserCSR struct {
@@ -52,12 +51,12 @@ func (h SignUserCSR) Execute(request req.Request) error {
 
 	csr, err := x509.ParseCertificateRequest(csrPEM.Bytes)
 	if err != nil {
-		return apierr.NewError(bosherr.WrapError(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
+		return apierr.NewError(errors.Wrap(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
 	}
 
 	serialNumber, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 	if err != nil {
-		return bosherr.WrapError(err, "Generating serial number")
+		return errors.Wrap(err, "Generating serial number")
 	}
 
 	now := time.Now()
@@ -78,14 +77,14 @@ func (h SignUserCSR) Execute(request req.Request) error {
 
 	certificatePEM, err := h.CertAuth.SignCertificate(&template, csr.PublicKey, request.LoggerContext)
 	if err != nil {
-		return bosherr.WrapError(err, "Signing certificate")
+		return errors.Wrap(err, "Signing certificate")
 	}
 
 	response.Certificate = strings.TrimSpace(string(certificatePEM))
 
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
-		return bosherr.WrapError(err, "Loading CA certificate")
+		return errors.Wrap(err, "Loading CA certificate")
 	}
 
 	response.Profile = fmt.Sprintf(

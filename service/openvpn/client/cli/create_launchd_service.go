@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
-	"github.com/jessevdk/go-flags"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type CreateLaunchdService struct {
@@ -73,7 +73,7 @@ func (c CreateLaunchdService) Execute(_ []string) error {
 		err = fmt.Errorf("exit code %d", exit)
 	}
 	if err != nil {
-		return bosherr.WrapError(err, "loading service")
+		return errors.Wrap(err, "loading service")
 	}
 
 	_, _, exit, err = c.cmdRunner.RunComplexCommand(boshsys.Command{
@@ -93,7 +93,7 @@ func (c CreateLaunchdService) Execute(_ []string) error {
 		err = fmt.Errorf("exit code %d", exit)
 	}
 	if err != nil {
-		return bosherr.WrapError(err, "starting service")
+		return errors.Wrap(err, "starting service")
 	}
 
 	ui := c.Runtime.GetUI()

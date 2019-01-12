@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/dpb587/ssoca/auth"
-	apierr "github.com/dpb587/ssoca/server/api/errors"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/auth"
+	apierr "github.com/dpb587/ssoca/server/api/errors"
 )
 
 type Request struct {
@@ -25,7 +25,7 @@ type Request struct {
 func (r *Request) ReadPayload(data interface{}) error {
 	bytes, err := ioutil.ReadAll(r.RawRequest.Body)
 	if err != nil {
-		return bosherr.WrapError(err, "Reading request body")
+		return errors.Wrap(err, "Reading request body")
 	}
 
 	err = json.Unmarshal(bytes, data)
@@ -39,7 +39,7 @@ func (r *Request) ReadPayload(data interface{}) error {
 func (r *Request) WritePayload(data interface{}) error {
 	bytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		return bosherr.WrapError(err, "Marshalling response payload")
+		return errors.Wrap(err, "Marshalling response payload")
 	}
 
 	r.RawResponse.Header().Add("Content-Type", "application/json")

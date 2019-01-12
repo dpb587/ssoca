@@ -6,9 +6,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/dpb587/ssoca/auth"
+	"github.com/pkg/errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/auth"
 )
 
 type templateValue struct {
@@ -27,7 +27,7 @@ func CreateTemplateValue(value string) (Value, error) {
 		"split": strings.Split,
 	}).Parse(value)
 	if err != nil {
-		return templateValue{}, bosherr.WrapErrorf(err, "Parsing template: %s", value)
+		return templateValue{}, errors.Wrapf(err, "Parsing template: %s", value)
 	}
 
 	return NewTemplateValue(tpl), nil

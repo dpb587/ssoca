@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/service/req"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type BaseProfile struct {
@@ -26,7 +26,7 @@ func (h BaseProfile) Route() string {
 func (h BaseProfile) Execute(request req.Request) error {
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
-		return bosherr.WrapError(err, "Loading CA certificate")
+		return errors.Wrap(err, "Loading CA certificate")
 	}
 
 	request.RawResponse.Header().Add("Content-Type", "text/plain")

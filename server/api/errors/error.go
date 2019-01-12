@@ -3,7 +3,7 @@ package errors
 import (
 	"net/http"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 type Error struct {
@@ -37,13 +37,13 @@ func WrapError(err error, msg string) error {
 
 	if ok {
 		return Error{
-			error:       bosherr.WrapError(apiError.error, msg),
+			error:       errors.Wrap(apiError.error, msg),
 			Status:      apiError.Status,
 			PublicError: apiError.PublicError,
 		}
 	}
 
-	return bosherr.WrapError(err, msg)
+	return errors.Wrap(err, msg)
 }
 
 func WrapErrorf(err error, msg string, args ...interface{}) error {
@@ -51,11 +51,11 @@ func WrapErrorf(err error, msg string, args ...interface{}) error {
 
 	if ok {
 		return Error{
-			error:       bosherr.WrapErrorf(apiError.error, msg, args...),
+			error:       errors.Wrapf(apiError.error, msg, args...),
 			Status:      apiError.Status,
 			PublicError: apiError.PublicError,
 		}
 	}
 
-	return bosherr.WrapErrorf(err, msg, args...)
+	return errors.Wrapf(err, msg, args...)
 }

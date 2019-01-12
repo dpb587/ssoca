@@ -3,7 +3,7 @@ package server
 import (
 	"time"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/config"
@@ -35,7 +35,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	return NewService(name, cfg), nil

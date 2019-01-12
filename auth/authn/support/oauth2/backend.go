@@ -1,16 +1,14 @@
 package oauth2backend
 
 import (
-	"errors"
+	"context"
 	"net/http"
 	"strings"
 
-	"context"
-
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	oauth2supportreq "github.com/dpb587/ssoca/auth/authn/support/oauth2/req"
@@ -65,10 +63,10 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	)
 	if err != nil {
 		if _, ok := err.(*jwt.ValidationError); ok {
-			return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims (ignorable validation error)"), http.StatusUnauthorized, "")
+			return nil, apierr.NewError(errors.Wrap(err, "Parsing claims (ignorable validation error)"), http.StatusUnauthorized, "")
 		}
 
-		return nil, apierr.NewError(bosherr.WrapError(err, "Parsing claims"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.Wrap(err, "Parsing claims"), http.StatusForbidden, "")
 	}
 
 	authToken := auth.Token{

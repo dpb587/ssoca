@@ -1,8 +1,8 @@
 package storage
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
 )
 
 type FormattedFS struct {
@@ -28,12 +28,12 @@ func (s FormattedFS) Get(path string, get interface{}) error {
 	if s.fs.FileExists(absPath) {
 		bytes, err := s.fs.ReadFile(absPath)
 		if err != nil {
-			return bosherr.WrapErrorf(err, "Reading config file '%s'", absPath)
+			return errors.Wrapf(err, "Reading config file '%s'", absPath)
 		}
 
 		err = s.parser.Get(string(bytes), get)
 		if err != nil {
-			return bosherr.WrapError(err, "Parsing config")
+			return errors.Wrap(err, "Parsing config")
 		}
 	}
 
@@ -48,12 +48,12 @@ func (s FormattedFS) Put(path string, put interface{}) (string, error) {
 
 	bytes, err := s.parser.Put("", put)
 	if err != nil {
-		return "", bosherr.WrapError(err, "Serializing config")
+		return "", errors.Wrap(err, "Serializing config")
 	}
 
 	err = s.fs.WriteFileString(absPath, bytes)
 	if err != nil {
-		return "", bosherr.WrapErrorf(err, "Writing config file '%s'", absPath)
+		return "", errors.Wrapf(err, "Writing config file '%s'", absPath)
 	}
 
 	return path, nil

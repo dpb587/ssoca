@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
-	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
+	clientcmd "github.com/dpb587/ssoca/client/cmd"
 )
 
 type Get struct {
@@ -32,7 +33,7 @@ type GetArgs struct {
 func (c Get) Execute(_ []string) error {
 	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	filePath := c.Args.TargetFile
@@ -46,7 +47,7 @@ func (c Get) Execute(_ []string) error {
 	if filePath == "-" {
 		fileTemp, err := c.FS.TempFile("ssoca-download-stdout")
 		if err != nil {
-			return bosherr.WrapError(err, "Creating temp file for stdout")
+			return errors.Wrap(err, "Creating temp file for stdout")
 		}
 
 		defer os.RemoveAll(fileTemp.Name())
@@ -55,7 +56,7 @@ func (c Get) Execute(_ []string) error {
 	} else {
 		file, err = c.FS.OpenFile(filePath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
 		if err != nil {
-			return bosherr.WrapError(err, "Opening file")
+			return errors.Wrap(err, "Opening file")
 		}
 	}
 
@@ -74,13 +75,13 @@ func (c Get) Execute(_ []string) error {
 
 	_, err = file.Seek(0, io.SeekStart)
 	if err != nil {
-		return bosherr.WrapError(err, "Seeking downloaded temp file")
+		return errors.Wrap(err, "Seeking downloaded temp file")
 	}
 
 	// TODO stdout should use runtime.GetStdout()?
 	_, err = io.Copy(os.Stdout, file)
 	if err != nil {
-		return bosherr.WrapError(err, "Writing download to STDOUT")
+		return errors.Wrap(err, "Writing download to STDOUT")
 	}
 
 	return nil

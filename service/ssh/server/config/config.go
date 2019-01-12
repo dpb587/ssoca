@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
@@ -104,7 +105,7 @@ func (co *CriticalOptions) UnmarshalYAML(unmarshal func(interface{}) error) erro
 	for dataIdx, data := range dataSlice {
 		value, err := co.factory.Create(data)
 		if err != nil {
-			return bosherr.WrapError(err, "Parsing dynamic value")
+			return errors.Wrap(err, "Parsing dynamic value")
 		}
 
 		co.values[dataIdx] = value
@@ -119,7 +120,7 @@ func (co CriticalOptions) Evaluate(arg0 *http.Request, arg1 *auth.Token) (map[co
 	for valueIdx, value := range co.values {
 		res, err := value.Evaluate(arg0, arg1)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Evaluating template")
+			return nil, errors.Wrap(err, "Evaluating template")
 		}
 
 		values[valueIdx] = res

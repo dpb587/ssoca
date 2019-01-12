@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
@@ -38,7 +38,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	paths, err := f.fs.Glob(cfg.Glob)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Globbing")
+		return nil, errors.Wrap(err, "Globbing")
 	}
 
 	cfg.Paths = []svcconfig.PathConfig{}
@@ -46,29 +46,29 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	for _, path := range paths {
 		stat, err := f.fs.Stat(path)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Stat file")
+			return nil, errors.Wrap(err, "Stat file")
 		}
 
 		file, err := f.fs.OpenFile(path, os.O_RDONLY, 0)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Opening file for digest")
+			return nil, errors.Wrap(err, "Opening file for digest")
 		}
 
 		defer file.Close()
 
 		digestSHA1, err := boshcrypto.DigestAlgorithmSHA1.CreateDigest(file)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Creating sha1 digest")
+			return nil, errors.Wrap(err, "Creating sha1 digest")
 		}
 
 		digestSHA256, err := boshcrypto.DigestAlgorithmSHA256.CreateDigest(file)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Creating sha256 digest")
+			return nil, errors.Wrap(err, "Creating sha256 digest")
 		}
 
 		digestSHA512, err := boshcrypto.DigestAlgorithmSHA512.CreateDigest(file)
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Creating sha512 digest")
+			return nil, errors.Wrap(err, "Creating sha512 digest")
 		}
 
 		cfg.Paths = append(

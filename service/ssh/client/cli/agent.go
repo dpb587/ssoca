@@ -10,13 +10,14 @@ import (
 	"strconv"
 	"syscall"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
-	"github.com/dpb587/ssoca/cli/errors"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+	sshagent "golang.org/x/crypto/ssh/agent"
+
+	clierrors "github.com/dpb587/ssoca/cli/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/ssh/client"
-	"github.com/jessevdk/go-flags"
-	sshagent "golang.org/x/crypto/ssh/agent"
 )
 
 type Agent struct {
@@ -39,19 +40,19 @@ func (c Agent) Execute(args []string) error {
 	if c.Socket == "" {
 		tmpdir, err := ioutil.TempDir("", "ssoca-ssh-agent")
 		if err != nil {
-			return bosherr.WrapError(err, "Creating temporary directory")
+			return errors.Wrap(err, "Creating temporary directory")
 		}
 
 		err = os.Chmod(tmpdir, 0700)
 		if err != nil {
-			return bosherr.WrapError(err, "Setting temporary directory permissions")
+			return errors.Wrap(err, "Setting temporary directory permissions")
 		}
 
 		c.Socket = fmt.Sprintf("%s/agent.sock", tmpdir)
 	} else {
 		socket, err := c.fs.ExpandPath(c.Socket)
 		if err != nil {
-			return bosherr.WrapError(err, "Expanding socket path")
+			return errors.Wrap(err, "Expanding socket path")
 		}
 
 		c.Socket = socket
@@ -60,12 +61,12 @@ func (c Agent) Execute(args []string) error {
 	if !c.Foreground && len(args) == 0 {
 		configManager, err := c.Runtime.GetConfigManager()
 		if err != nil {
-			return bosherr.WrapError(err, "Getting config manager")
+			return errors.Wrap(err, "Getting config manager")
 		}
 
 		executable, err := os.Executable()
 		if err != nil {
-			return bosherr.WrapError(err, "Finding executable")
+			return errors.Wrap(err, "Finding executable")
 		}
 
 		process, err := os.StartProcess(
@@ -88,14 +89,14 @@ func (c Agent) Execute(args []string) error {
 			},
 		)
 		if err != nil {
-			return bosherr.WrapError(err, "Starting agent in background")
+			return errors.Wrap(err, "Starting agent in background")
 		}
 
 		pid := process.Pid
 
 		err = process.Release()
 		if err != nil {
-			return bosherr.WrapError(err, "Detaching from agent")
+			return errors.Wrap(err, "Detaching from agent")
 		}
 
 		c.printEnv(strconv.Itoa(pid))
@@ -111,7 +112,7 @@ func (c Agent) Execute(args []string) error {
 	} else {
 		socket, err := net.Dial("unix", envAuthSock)
 		if err != nil {
-			return bosherr.WrapErrorf(err, "Connecting to current SSH agent", envAuthSock)
+			return errors.Wrapf(err, "Connecting to current SSH agent (%s)", envAuthSock)
 		}
 
 		parentAgent = sshagent.NewClient(socket)
@@ -121,7 +122,7 @@ func (c Agent) Execute(args []string) error {
 
 	socket, err := net.Listen("unix", c.Socket)
 	if err != nil {
-		return bosherr.WrapError(err, "Opening socket")
+		return errors.Wrap(err, "Opening socket")
 	}
 
 	defer socket.Close()
@@ -145,10 +146,10 @@ func (c Agent) Execute(args []string) error {
 		// @todo doesn't seem to get here
 
 		if err != nil && exit == 0 {
-			return bosherr.WrapError(err, "Executing command")
+			return errors.Wrap(err, "Executing command")
 		}
 
-		return errors.Exit{Code: exit}
+		return clierrors.Exit{Code: exit}
 	}
 
 	c.printEnv(pid)

@@ -3,9 +3,8 @@ package memory
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/dpb587/ssoca/certauth"
@@ -29,12 +28,12 @@ func (f Factory) Create(name string, options map[string]interface{}) (certauth.P
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	err = f.validateConfig(&cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Validating config")
+		return nil, errors.Wrap(err, "Validating config")
 	}
 
 	provider := NewProvider(
@@ -60,7 +59,7 @@ func (f Factory) validateConfig(config *Config) error {
 
 	certificate, err := x509.ParseCertificate(certificatePEM.Bytes)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing certificate")
+		return errors.Wrap(err, "Parsing certificate")
 	}
 
 	config.Certificate = *certificate
@@ -76,7 +75,7 @@ func (f Factory) validateConfig(config *Config) error {
 
 	privateKey, e := x509.ParsePKCS1PrivateKey(privateKeyPEM.Bytes)
 	if e != nil {
-		return bosherr.WrapError(e, "Parsing private key")
+		return errors.Wrap(e, "Parsing private key")
 	}
 
 	config.PrivateKey = privateKey

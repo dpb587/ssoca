@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"net/url"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+	"golang.org/x/oauth2"
+
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	"github.com/dpb587/ssoca/server/service/req"
-	"golang.org/x/oauth2"
 )
 
 type Initiate struct {
@@ -27,7 +28,7 @@ func (h Initiate) Route() string {
 func (h Initiate) Execute(req req.Request) error {
 	redirect_uri, err := url.Parse(h.Config.RedirectURL)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing redirect URL")
+		return errors.Wrap(err, "Parsing redirect URL")
 	}
 
 	if req.RawRequest.Host != redirect_uri.Host {

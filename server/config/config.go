@@ -5,11 +5,12 @@ import (
 	"net"
 	"strings"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+	yaml "gopkg.in/yaml.v2"
+
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/certauth"
 	envconfig "github.com/dpb587/ssoca/service/env/server/config"
-	yaml "gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -70,7 +71,7 @@ func (v *ServerTrustedProxy) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	_, proxy, err := net.ParseCIDR(data)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing trusted proxy CIDR")
+		return errors.Wrap(err, "Parsing trusted proxy CIDR")
 	}
 
 	*v = ServerTrustedProxy(*proxy)

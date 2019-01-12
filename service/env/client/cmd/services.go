@@ -2,8 +2,8 @@ package cmd
 
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svcapi "github.com/dpb587/ssoca/service/env/api"
@@ -20,12 +20,12 @@ var _ flags.Commander = Info{}
 func (c Services) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting remote environment info")
+		return errors.Wrap(err, "Getting remote environment info")
 	}
 
 	table := boshtbl.Table{

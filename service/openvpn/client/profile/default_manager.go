@@ -7,16 +7,15 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
-	"errors"
 	"fmt"
 	"os"
 	"os/user"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/service/openvpn/api"
 	"github.com/dpb587/ssoca/service/openvpn/httpclient"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 type DefaultManager struct {
@@ -44,7 +43,7 @@ func NewDefaultManager(client httpclient.Client, service string, privateKey *rsa
 func CreateManagerAndPrivateKey(client httpclient.Client, service string) (DefaultManager, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return DefaultManager{}, bosherr.WrapError(err, "Generating private key")
+		return DefaultManager{}, errors.Wrap(err, "Generating private key")
 	}
 
 	return NewDefaultManager(client, service, privateKey), nil
@@ -58,7 +57,7 @@ func (m *DefaultManager) GetProfile() (Profile, error) {
 	if !m.IsCertificateValid() {
 		err := m.Renew()
 		if err != nil {
-			return Profile{}, bosherr.WrapError(err, "Renewing certificate")
+			return Profile{}, errors.Wrap(err, "Renewing certificate")
 		}
 	}
 
@@ -72,14 +71,14 @@ func (m DefaultManager) IsCertificateValid() bool {
 func (m *DefaultManager) Renew() error {
 	csrBytes, err := m.createCSR()
 	if err != nil {
-		return bosherr.WrapError(err, "Creating CSR")
+		return errors.Wrap(err, "Creating CSR")
 	}
 
 	response, err := m.client.SignUserCSR(api.SignUserCSRRequest{
 		CSR: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})),
 	})
 	if err != nil {
-		return bosherr.WrapError(err, "Requesting signed profile")
+		return errors.Wrap(err, "Requesting signed profile")
 	}
 
 	m.profile = response.Profile
@@ -92,7 +91,7 @@ func (m *DefaultManager) Renew() error {
 
 	certificate, err := x509.ParseCertificate(pem.Bytes)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing certificate")
+		return errors.Wrap(err, "Parsing certificate")
 	}
 
 	m.certificate = certificate
@@ -103,12 +102,12 @@ func (m *DefaultManager) Renew() error {
 func (m DefaultManager) createCSR() ([]byte, error) {
 	localuser, err := user.Current()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Checking local user")
+		return nil, errors.Wrap(err, "Checking local user")
 	}
 
 	localhost, err := os.Hostname()
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Checking local hostname")
+		return nil, errors.Wrap(err, "Checking local hostname")
 	}
 
 	emailAddress := fmt.Sprintf("%s@%s", localuser.Username, localhost)
@@ -132,7 +131,7 @@ func (m DefaultManager) createCSR() ([]byte, error) {
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, &template, m.privateKey)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Creating certificate request")
+		return nil, errors.Wrap(err, "Creating certificate request")
 	}
 
 	return csrBytes, nil

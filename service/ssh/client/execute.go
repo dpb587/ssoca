@@ -6,14 +6,13 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strconv"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -37,43 +36,43 @@ func (s Service) Execute(opts ExecuteOptions) (int, error) {
 
 	tmpdir, err := s.fs.TempDir("ssh")
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Creating certificate tmpdir")
+		return -1, errors.Wrap(err, "Creating certificate tmpdir")
 	}
 
 	defer s.fs.RemoveAll(tmpdir)
 
 	privateKeyBytes, publicKeyBytes, err := makeSSHKeyPair()
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Creating ephemeral ssh key")
+		return -1, errors.Wrap(err, "Creating ephemeral ssh key")
 	}
 
 	tmpPrivateKey := fmt.Sprintf("%s/id_rsa", tmpdir)
 
 	err = s.fs.WriteFile(tmpPrivateKey, nil)
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Touching private key")
+		return -1, errors.Wrap(err, "Touching private key")
 	}
 
 	err = s.fs.Chmod(tmpPrivateKey, 0600)
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Setting permissions of private key")
+		return -1, errors.Wrap(err, "Setting permissions of private key")
 	}
 
 	err = s.fs.WriteFile(tmpPrivateKey, privateKeyBytes)
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Writing private key")
+		return -1, errors.Wrap(err, "Writing private key")
 	}
 
 	err = s.fs.WriteFile(fmt.Sprintf("%s/id_rsa.pub", tmpdir), publicKeyBytes)
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Writing public key")
+		return -1, errors.Wrap(err, "Writing public key")
 	}
 
 	certificate, target, err := s.SignPublicKey(SignPublicKeyOptions{
 		PublicKey: publicKeyBytes,
 	})
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Requesting signed public keys")
+		return -1, errors.Wrap(err, "Requesting signed public keys")
 	}
 
 	sshargs := []string{
@@ -86,7 +85,7 @@ func (s Service) Execute(opts ExecuteOptions) (int, error) {
 
 	err = s.fs.WriteFile(tmpCertificate, certificate)
 	if err != nil {
-		return -1, bosherr.WrapError(err, "Writing certificate")
+		return -1, errors.Wrap(err, "Writing certificate")
 	}
 
 	sshargs = append(sshargs, "-o", fmt.Sprintf("IdentityFile=%s", tmpPrivateKey))
@@ -109,7 +108,7 @@ func (s Service) Execute(opts ExecuteOptions) (int, error) {
 
 			err = s.fs.WriteFileString(tmpKnownHosts, fmt.Sprintf("%s %s\n", target.Host, target.PublicKey))
 			if err != nil {
-				return -1, bosherr.WrapError(err, "Writing certificate")
+				return -1, errors.Wrap(err, "Writing certificate")
 			}
 
 			sshargs = append(sshargs, "-o", fmt.Sprintf("UserKnownHostsFile=%s", tmpKnownHosts))

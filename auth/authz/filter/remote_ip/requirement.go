@@ -1,11 +1,11 @@
 package remote_ip
 
 import (
-	"errors"
 	"net"
 	"net/http"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/auth/authz"
 )
@@ -18,7 +18,7 @@ type Requirement struct {
 func (r Requirement) VerifyAuthorization(req *http.Request, _ *auth.Token) error {
 	host, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
-		return bosherr.WrapError(err, "Parsing remote address")
+		return errors.Wrap(err, "Parsing remote address")
 	}
 
 	ip := net.ParseIP(host)

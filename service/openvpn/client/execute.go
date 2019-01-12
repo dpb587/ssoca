@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/service/openvpn/client/management"
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type ExecuteOptions struct {
@@ -30,30 +30,30 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 		executable, err = s.executableFinder.Find()
 		if err != nil {
-			return bosherr.WrapError(err, "Finding executable")
+			return errors.Wrap(err, "Finding executable")
 		}
 	}
 
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	profileManager, err := profile.CreateManagerAndPrivateKey(client, s.name)
 	if err != nil {
-		return bosherr.WrapError(err, "Getting profile manager")
+		return errors.Wrap(err, "Getting profile manager")
 	}
 
 	tmpdir, err := s.fs.TempDir("openvpn")
 	if err != nil {
-		return bosherr.WrapError(err, "Creating tmpdir")
+		return errors.Wrap(err, "Creating tmpdir")
 	}
 
 	defer s.fs.RemoveAll(tmpdir)
 
 	err = s.fs.Chmod(tmpdir, 0700)
 	if err != nil {
-		return bosherr.WrapError(err, "Chmod'ing tmpdir")
+		return errors.Wrap(err, "Chmod'ing tmpdir")
 	}
 
 	configPath := fmt.Sprintf("%s/openvpn.ovpn", tmpdir)
@@ -84,7 +84,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 	profile, err := profileManager.GetProfile()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting profile")
+		return errors.Wrap(err, "Getting profile")
 	}
 
 	if opts.StaticCertificate {
@@ -93,7 +93,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		err = s.fs.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue()))
 	}
 	if err != nil {
-		return bosherr.WrapError(err, "Writing certificate")
+		return errors.Wrap(err, "Writing certificate")
 	}
 
 	_, _, _, err = s.cmdRunner.RunComplexCommand(executeRewriteCommand(boshsys.Command{

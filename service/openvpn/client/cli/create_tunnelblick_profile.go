@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
-	"github.com/jessevdk/go-flags"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type CreateTunnelblickProfile struct {
@@ -72,7 +72,7 @@ func (c CreateTunnelblickProfile) Execute(_ []string) error {
 		err = fmt.Errorf("exit code %d", exit)
 	}
 	if err != nil {
-		return bosherr.WrapError(err, "Installing profile")
+		return errors.Wrap(err, "Installing profile")
 	}
 
 	return nil

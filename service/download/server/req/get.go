@@ -1,18 +1,17 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strconv"
 
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"github.com/pkg/errors"
+
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type Get struct {
@@ -38,7 +37,7 @@ func (h Get) Execute(request req.Request) error {
 		if file.Name == name {
 			fh, err := h.FS.OpenFile(file.Path, os.O_RDONLY, 0)
 			if err != nil {
-				return bosherr.WrapError(err, "Opening file for reading")
+				return errors.Wrap(err, "Opening file for reading")
 			}
 
 			defer fh.Close()

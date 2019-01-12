@@ -3,11 +3,9 @@ package config
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 
+	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 const EnvironmentOptionAuthBind string = "auth.bind"
@@ -41,7 +39,7 @@ func (e EnvironmentState) GetCACertificate() (*x509.Certificate, error) {
 
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
-		return cert, bosherr.WrapError(err, "Parsing CA certificate")
+		return cert, errors.Wrap(err, "Parsing CA certificate")
 	}
 
 	return cert, nil
@@ -72,12 +70,12 @@ type EnvironmentAuthState struct {
 func (ea EnvironmentAuthState) UnmarshalOptions(typed interface{}) error {
 	bytes, err := yaml.Marshal(ea.Options)
 	if err != nil {
-		return bosherr.WrapError(err, "Marshalling")
+		return errors.Wrap(err, "Marshalling")
 	}
 
 	err = yaml.Unmarshal(bytes, typed)
 	if err != nil {
-		return bosherr.WrapError(err, "Unmarshalling to typed options")
+		return errors.Wrap(err, "Unmarshalling to typed options")
 	}
 
 	return nil

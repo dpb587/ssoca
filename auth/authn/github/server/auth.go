@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/google/go-github/github"
+	"github.com/pkg/errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/dpb587/ssoca/auth"
 )
 
@@ -22,7 +22,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 
 	user, _, err := ghclient.Users.Get(ctx, "")
 	if err != nil {
-		return token, bosherr.WrapError(err, "Fetching user info")
+		return token, errors.Wrap(err, "Fetching user info")
 	}
 
 	token.ID = *user.Login
@@ -38,7 +38,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	for nextPage := 1; nextPage != 0; {
 		teams, resp, err := ghclient.Organizations.ListUserTeams(ctx, &github.ListOptions{Page: nextPage})
 		if err != nil {
-			return token, bosherr.WrapError(err, "Listing user teams")
+			return token, errors.Wrap(err, "Listing user teams")
 		}
 
 		for _, team := range teams {
@@ -51,7 +51,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	for nextPage := 1; nextPage != 0; {
 		orgs, resp, err := ghclient.Organizations.List(ctx, "", &github.ListOptions{Page: nextPage})
 		if err != nil {
-			return token, bosherr.WrapError(err, "Listing user organizations")
+			return token, errors.Wrap(err, "Listing user organizations")
 		}
 
 		for _, org := range orgs {

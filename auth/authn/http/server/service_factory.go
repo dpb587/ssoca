@@ -1,7 +1,7 @@
 package server
 
 import (
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 
 	svc "github.com/dpb587/ssoca/auth/authn/http"
 	svcconfig "github.com/dpb587/ssoca/auth/authn/http/config"
@@ -25,7 +25,7 @@ func (sf ServiceFactory) Create(name string, options map[string]interface{}) (se
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading config")
+		return nil, errors.Wrap(err, "Loading config")
 	}
 
 	return NewService(name, cfg), nil

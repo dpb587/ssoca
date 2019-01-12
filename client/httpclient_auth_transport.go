@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dpb587/ssoca/client/service"
+	"github.com/pkg/errors"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/dpb587/ssoca/client/service"
 )
 
 const AuthorizationNone = "none"
@@ -33,7 +33,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	} else {
 		env, err := t.Runtime.GetEnvironment()
 		if err != nil {
-			return nil, bosherr.WrapError(err, "Retrieving environment")
+			return nil, errors.Wrap(err, "Retrieving environment")
 		}
 
 		if env.Auth != nil {
@@ -41,7 +41,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 			svc, err := t.serviceManager.Get(authServiceType)
 			if err != nil {
-				return nil, bosherr.WrapError(err, "Getting authentication service")
+				return nil, errors.Wrap(err, "Getting authentication service")
 			}
 
 			authService, ok := svc.(service.AuthService)
@@ -51,7 +51,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 			err = authService.AuthRequest(req)
 			if err != nil {
-				return nil, bosherr.WrapError(err, "Authenticating request")
+				return nil, errors.Wrap(err, "Authenticating request")
 			}
 		}
 	}

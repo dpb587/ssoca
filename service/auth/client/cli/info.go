@@ -2,10 +2,11 @@ package cli
 
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
+
 	clierrors "github.com/dpb587/ssoca/cli/errors"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/jessevdk/go-flags"
 )
 
 type Info struct {
@@ -23,12 +24,12 @@ var _ flags.Commander = Info{}
 func (c Info) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting client")
+		return errors.Wrap(err, "Getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting remote authentication info")
+		return errors.Wrap(err, "Getting remote authentication info")
 	}
 
 	ui := c.Runtime.GetUI()

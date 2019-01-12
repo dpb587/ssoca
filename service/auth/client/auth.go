@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/pkg/errors"
+
 	"github.com/dpb587/ssoca/client/service"
 	env_api "github.com/dpb587/ssoca/service/env/api"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 
 var _ service.AuthService = Service{}
@@ -17,7 +17,7 @@ func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error
 
 	svc, err := s.serviceManager.Get(authServiceType)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Loading auth service")
+		return nil, errors.Wrap(err, "Loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)
@@ -36,14 +36,14 @@ func (s Service) AuthLogout() error {
 func (s Service) AuthRequest(req *http.Request) error {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return bosherr.WrapError(err, "Getting environment")
+		return errors.Wrap(err, "Getting environment")
 	}
 
 	authServiceType := env.Auth.Type
 
 	svc, err := s.serviceManager.Get(authServiceType)
 	if err != nil {
-		return bosherr.WrapError(err, "Loading auth service")
+		return errors.Wrap(err, "Loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)

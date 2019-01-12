@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 type defaultFactory struct {
@@ -31,7 +31,7 @@ func (f defaultFactory) Create(sType string, name string, options map[string]int
 
 	service, err := factory.Create(name, options)
 	if err != nil {
-		return nil, bosherr.WrapErrorf(err, "Creating service %s[%s]", sType, name)
+		return nil, errors.Wrapf(err, "Creating service %s[%s]", sType, name)
 	}
 
 	return service, nil
