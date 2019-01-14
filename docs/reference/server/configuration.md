@@ -35,6 +35,11 @@ The first section is `server` which configures the HTTPS listener...
       - 127.0.0.1/8
       - ::1
 
+      # optionally configure a robots.txt response (the following is default)
+      robotstxt: |
+        User-agent: *
+        Disallow: /
+
 
 ## `auth`
 

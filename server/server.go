@@ -203,6 +203,20 @@ func (s Server) Run() error {
 		})
 	}
 
+	if s.config.RobotsTXT != "" {
+		mux.HandleFunc("/robots.txt", func(res http.ResponseWriter, req *http.Request) {
+			if req.URL.Path != "/robots.txt" {
+				http.NotFound(res, req)
+
+				return
+			}
+
+			res.Header().Set("content-type", "text/plain")
+			res.WriteHeader(http.StatusOK)
+			res.Write([]byte(s.config.RobotsTXT))
+		})
+	}
+
 	s.server = &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", s.config.Host, s.config.Port),
 		Handler: mux,

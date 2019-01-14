@@ -34,6 +34,7 @@ type ServerConfig struct {
 	PrivateKeyPath  string               `yaml:"private_key_path"`
 	Redirect        ServerRedirectConfig `yaml:"redirect"`
 	TrustedProxies  ServerTrustedProxies `yaml:"trusted_proxies"`
+	RobotsTXT       string               `yaml:"robotstxt"`
 }
 
 type ServerTrustedProxies []ServerTrustedProxy
@@ -117,6 +118,10 @@ func (c *ServerConfig) ApplyDefaults() {
 
 	if c.Port == 0 {
 		c.Port = 18705
+	}
+
+	if c.RobotsTXT == "" {
+		c.RobotsTXT = "User-agent: *\nDisallow: /"
 	}
 }
 
