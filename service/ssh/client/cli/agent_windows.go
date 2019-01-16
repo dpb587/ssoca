@@ -10,7 +10,7 @@ import (
 )
 
 type Agent struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
 	serviceFactory svc.ServiceFactory
