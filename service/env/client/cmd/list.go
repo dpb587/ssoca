@@ -8,7 +8,7 @@ import (
 )
 
 type List struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 }
 
 var _ flags.Commander = List{}

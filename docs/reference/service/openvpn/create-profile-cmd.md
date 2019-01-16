@@ -9,7 +9,7 @@ aliases:
 Create and sign an OpenVPN configuration profile
 
     Usage:
-      ssoca [OPTIONS] openvpn create-profile [create-profile-OPTIONS]
+      ssoca [OPTIONS] openvpn [openvpn-OPTIONS] create-profile [create-profile-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,7 +19,11 @@ Create and sign an OpenVPN configuration profile
     Help Options:
       -h, --help                 Show this help message
     
-    [create-profile command options]
+    [openvpn command options]
+    
+        Establish OpenVPN connections to remote servers:
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
+    
+    [create-profile command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     

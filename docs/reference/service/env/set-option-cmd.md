@@ -20,7 +20,6 @@ Set a local client option in the environment
       -h, --help         Show this help message
     
     [set-option command options]
-          -s, --service= Service name (default: env) [$SSOCA_SERVICE]
               --ca-cert= Environment CA certificate path
     
     [set-option command arguments]

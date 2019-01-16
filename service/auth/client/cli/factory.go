@@ -7,18 +7,22 @@ import (
 )
 
 type Commands struct {
+	*clientcmd.ServiceCommand `no-flag:"true"`
+
 	Info   Info   `command:"info" description:"Show current authentication information"`
 	Login  Login  `command:"login" description:"Authenticate for a new token"`
 	Logout Logout `command:"logout" description:"Revoke an authentication token"`
 }
 
 func CreateCommands(runtime client.Runtime, s svc.Service) *Commands {
-	cmd := clientcmd.ServiceCommand{
+	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
 		ServiceName: svc.Service{}.Type(),
 	}
 
 	return &Commands{
+		ServiceCommand: cmd,
+
 		Info: Info{
 			ServiceCommand: cmd,
 			GetClient:      s.GetClient,

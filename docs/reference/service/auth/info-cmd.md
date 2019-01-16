@@ -20,7 +20,6 @@ Show current authentication information
       -h, --help               Show this help message
     
     [info command options]
-          -s, --service=       Service name (default: auth) [$SSOCA_SERVICE]
               --authenticated  Show only whether the user is authenticated
               --id             Show only the ID of the authenticated user
               --groups         Show only the groups of the authenticated user

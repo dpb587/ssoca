@@ -9,7 +9,7 @@ aliases:
 Start an SSH agent
 
     Usage:
-      ssoca [OPTIONS] ssh agent [agent-OPTIONS]
+      ssoca [OPTIONS] ssh [ssh-OPTIONS] agent [agent-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,8 +19,12 @@ Start an SSH agent
     Help Options:
       -h, --help                 Show this help message
     
-    [agent command options]
+    [ssh command options]
+    
+        Establish SSH connections to remote servers:
           -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
+    
+    [agent command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --foreground       Stay in foreground
               --socket=          Socket path (ensure the directory has restricted permissions)

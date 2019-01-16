@@ -9,7 +9,7 @@ aliases:
 Connect to a remote SSH server
 
     Usage:
-      ssoca [OPTIONS] ssh exec [exec-OPTIONS] [HOST]
+      ssoca [OPTIONS] ssh [ssh-OPTIONS] exec [exec-OPTIONS] [HOST]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,8 +19,12 @@ Connect to a remote SSH server
     Help Options:
       -h, --help                 Show this help message
     
-    [exec command options]
+    [ssh command options]
+    
+        Establish SSH connections to remote servers:
           -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
+    
+    [exec command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --exec=            Path to the ssh binary
               --opt=             Additional option to pass to ssh

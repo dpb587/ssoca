@@ -8,7 +8,7 @@ import (
 )
 
 type Rename struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 
 	GetClient GetClient
 

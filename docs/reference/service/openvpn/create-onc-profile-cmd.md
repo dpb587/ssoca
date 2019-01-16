@@ -9,7 +9,7 @@ aliases:
 Create an ONC profile
 
     Usage:
-      ssoca [OPTIONS] openvpn create-onc-profile [create-onc-profile-OPTIONS]
+      ssoca [OPTIONS] openvpn [openvpn-OPTIONS] create-onc-profile [create-onc-profile-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,8 +19,12 @@ Create an ONC profile
     Help Options:
       -h, --help                 Show this help message
     
-    [create-onc-profile command options]
+    [openvpn command options]
+    
+        Establish OpenVPN connections to remote servers:
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
+    
+    [create-onc-profile command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --name=            Specific network configuration name to use
     

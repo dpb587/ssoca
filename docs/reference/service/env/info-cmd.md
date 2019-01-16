@@ -9,7 +9,7 @@ aliases:
 Show environment information
 
     Usage:
-      ssoca [OPTIONS] env info [info-OPTIONS]
+      ssoca [OPTIONS] env info
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,7 +18,4 @@ Show environment information
     
     Help Options:
       -h, --help         Show this help message
-    
-    [info command options]
-          -s, --service= Service name (default: env) [$SSOCA_SERVICE]
     

@@ -18,7 +18,7 @@ import (
 )
 
 type UpdateClient struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	FS        boshsys.FileSystem

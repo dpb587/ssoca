@@ -20,7 +20,6 @@ Configure the connection to an environment (aliases: add)
       -h, --help             Show this help message
     
     [set command options]
-          -s, --service=     Service name (default: env) [$SSOCA_SERVICE]
               --ca-cert=     Environment CA certificate path
               --skip-verify  Skip verification of environment availability
     

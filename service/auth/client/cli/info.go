@@ -10,7 +10,7 @@ import (
 )
 
 type Info struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 
 	GetClient GetClient
 

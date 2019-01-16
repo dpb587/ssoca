@@ -9,7 +9,7 @@ aliases:
 Show the base connection profile of the OpenVPN server
 
     Usage:
-      ssoca [OPTIONS] openvpn base-profile [base-profile-OPTIONS]
+      ssoca [OPTIONS] openvpn [openvpn-OPTIONS] base-profile [base-profile-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,7 +19,11 @@ Show the base connection profile of the OpenVPN server
     Help Options:
       -h, --help                 Show this help message
     
-    [base-profile command options]
+    [openvpn command options]
+    
+        Establish OpenVPN connections to remote servers:
           -s, --service=         Service name (default: openvpn) [$SSOCA_SERVICE]
+    
+    [base-profile command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     

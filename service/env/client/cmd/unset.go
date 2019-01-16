@@ -8,7 +8,7 @@ import (
 )
 
 type Unset struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 }
 
 var _ flags.Commander = Unset{}

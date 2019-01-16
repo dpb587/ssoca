@@ -11,7 +11,8 @@ import (
 )
 
 type Logout struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
+
 	ServiceManager service.Manager
 }
 

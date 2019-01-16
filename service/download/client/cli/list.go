@@ -10,7 +10,7 @@ import (
 )
 
 type List struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	serviceFactory svc.ServiceFactory

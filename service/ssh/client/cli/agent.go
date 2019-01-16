@@ -21,7 +21,7 @@ import (
 )
 
 type Agent struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	Foreground bool   `long:"foreground" description:"Stay in foreground"`

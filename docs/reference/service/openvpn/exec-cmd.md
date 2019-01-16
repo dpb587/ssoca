@@ -9,7 +9,7 @@ aliases:
 Execute openvpn to connect to the remote server (aliases: connect)
 
     Usage:
-      ssoca [OPTIONS] openvpn exec [exec-OPTIONS] [EXTRA...]
+      ssoca [OPTIONS] openvpn [openvpn-OPTIONS] exec [exec-OPTIONS] [EXTRA...]
     
     Application Options:
           --config=                 Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,8 +19,12 @@ Execute openvpn to connect to the remote server (aliases: connect)
     Help Options:
       -h, --help                    Show this help message
     
-    [exec command options]
+    [openvpn command options]
+    
+        Establish OpenVPN connections to remote servers:
           -s, --service=            Service name (default: openvpn) [$SSOCA_SERVICE]
+    
+    [exec command options]
               --skip-auth-retry     Skip interactive authentication retries when logged out
               --exec=               Path to the openvpn binary
               --reconnect           Reconnect on connection disconnects

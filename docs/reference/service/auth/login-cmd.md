@@ -20,6 +20,5 @@ Authenticate for a new token
       -h, --help             Show this help message
     
     [login command options]
-          -s, --service=     Service name (default: auth) [$SSOCA_SERVICE]
               --skip-verify  Skip verification of authentication, once complete
     

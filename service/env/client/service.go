@@ -39,12 +39,14 @@ func (s Service) Description() string {
 }
 
 func (s Service) GetCommand() interface{} {
-	cmd := clientcmd.ServiceCommand{
+	cmd := &clientcmd.ServiceCommand{
 		Runtime:     s.runtime,
 		ServiceName: s.Type(),
 	}
 
 	return &struct {
+		*clientcmd.ServiceCommand `no-flag:"true"`
+
 		Set          svccmd.Set          `command:"set" description:"Configure the connection to an environment" alias:"add"`
 		Info         svccmd.Info         `command:"info" description:"Show environment information"`
 		Services     svccmd.Services     `command:"services" description:"Show current services available from the environment"`
@@ -54,6 +56,8 @@ func (s Service) GetCommand() interface{} {
 		UpdateClient svccmd.UpdateClient `command:"update-client" description:"Download the latest client from the environment"`
 		Unset        svccmd.Unset        `command:"unset" description:"Remove all configuration for an environment" alias:"remove"`
 	}{
+		ServiceCommand: cmd,
+
 		Set: svccmd.Set{
 			ServiceCommand: cmd,
 			FS:             s.fs,

@@ -13,7 +13,7 @@ import (
 )
 
 type CreateLaunchdService struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	SsocaExec   string `long:"exec-ssoca" description:"Path to the ssoca binary"`

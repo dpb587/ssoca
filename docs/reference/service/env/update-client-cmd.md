@@ -20,6 +20,5 @@ Download the latest client from the environment
       -h, --help                 Show this help message
     
     [update-client command options]
-          -s, --service=         Service name (default: env) [$SSOCA_SERVICE]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     

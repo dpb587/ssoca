@@ -9,7 +9,7 @@ aliases:
 List available artifacts
 
     Usage:
-      ssoca [OPTIONS] download list [list-OPTIONS]
+      ssoca [OPTIONS] download [download-OPTIONS] list [list-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,7 +19,11 @@ List available artifacts
     Help Options:
       -h, --help                 Show this help message
     
-    [list command options]
+    [download command options]
+    
+        Download environment artifacts:
           -s, --service=         Service name (default: download) [$SSOCA_SERVICE]
+    
+    [list command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     

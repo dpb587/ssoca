@@ -9,7 +9,7 @@ aliases:
 List all locally-configured environments
 
     Usage:
-      ssoca [OPTIONS] env list [list-OPTIONS]
+      ssoca [OPTIONS] env list
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,7 +18,4 @@ List all locally-configured environments
     
     Help Options:
       -h, --help         Show this help message
-    
-    [list command options]
-          -s, --service= Service name (default: env) [$SSOCA_SERVICE]
     

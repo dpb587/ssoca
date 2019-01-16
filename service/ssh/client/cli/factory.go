@@ -9,6 +9,8 @@ import (
 )
 
 type Commands struct {
+	*clientcmd.ServiceCommand
+
 	Agent         Agent         `command:"agent" description:"Start an SSH agent"`
 	Exec          Exec          `command:"exec" description:"Connect to a remote SSH server"`
 	SignPublicKey SignPublicKey `command:"sign-public-key" description:"Create a certificate for a specific public key"`
@@ -17,25 +19,27 @@ type Commands struct {
 }
 
 func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) *Commands {
-	cmd := clientcmd.ServiceCommand{
+	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
 		ServiceName: svc.Service{}.Type(),
 	}
 
 	return &Commands{
+		ServiceCommand: cmd,
+
 		Agent: Agent{
-			serviceFactory: sf,
 			ServiceCommand: cmd,
+			serviceFactory: sf,
 			cmdRunner:      cmdRunner,
 			fs:             fs,
 		},
 		Exec: Exec{
-			serviceFactory: sf,
 			ServiceCommand: cmd,
+			serviceFactory: sf,
 		},
 		SignPublicKey: SignPublicKey{
-			serviceFactory: sf,
 			ServiceCommand: cmd,
+			serviceFactory: sf,
 			fs:             fs,
 		},
 	}

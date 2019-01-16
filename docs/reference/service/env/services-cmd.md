@@ -9,7 +9,7 @@ aliases:
 Show current services available from the environment
 
     Usage:
-      ssoca [OPTIONS] env services [services-OPTIONS]
+      ssoca [OPTIONS] env services
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,7 +18,4 @@ Show current services available from the environment
     
     Help Options:
       -h, --help         Show this help message
-    
-    [services command options]
-          -s, --service= Service name (default: env) [$SSOCA_SERVICE]
     

@@ -9,7 +9,7 @@ import (
 )
 
 type SetOption struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 
 	Args              SetOptionArgs `positional-args:"true"`
 	CACertificatePath string        `long:"ca-cert" description:"Environment CA certificate path"`

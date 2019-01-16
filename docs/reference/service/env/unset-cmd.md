@@ -9,7 +9,7 @@ aliases:
 Remove all configuration for an environment (aliases: remove)
 
     Usage:
-      ssoca [OPTIONS] env unset [unset-OPTIONS]
+      ssoca [OPTIONS] env unset
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,7 +18,4 @@ Remove all configuration for an environment (aliases: remove)
     
     Help Options:
       -h, --help         Show this help message
-    
-    [unset command options]
-          -s, --service= Service name (default: env) [$SSOCA_SERVICE]
     

@@ -7,7 +7,7 @@ import (
 )
 
 type Exec struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	Exec              string      `long:"exec" description:"Path to the openvpn binary"`

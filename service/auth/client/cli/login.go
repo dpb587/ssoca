@@ -13,7 +13,7 @@ import (
 )
 
 type Login struct {
-	clientcmd.ServiceCommand
+	*clientcmd.ServiceCommand `no-flag:"true"`
 
 	SkipVerify bool `long:"skip-verify" description:"Skip verification of authentication, once complete"`
 
