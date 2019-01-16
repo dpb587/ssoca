@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"
@@ -6,26 +6,26 @@ import (
 	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	svc "github.com/dpb587/ssoca/service/download/client"
 )
 
 type List struct {
 	clientcmd.ServiceCommand
 	clientcmd.InteractiveAuthCommand
 
-	GetClient GetClient
+	serviceFactory svc.ServiceFactory
 }
 
 var _ flags.Commander = List{}
 
 func (c List) Execute(_ []string) error {
-	client, err := c.GetClient(c.ServiceName, c.SkipAuthRetry)
-	if err != nil {
-		return errors.Wrap(err, "Getting client")
-	}
+	service := c.serviceFactory.New(c.ServiceName)
 
-	list, err := client.GetList()
+	files, err := service.List(svc.ListOptions{
+		SkipAuthRetry: c.SkipAuthRetry,
+	})
 	if err != nil {
-		return errors.Wrap(err, "Getting remote environment info")
+		return errors.Wrap(err, "Listing files")
 	}
 
 	table := boshtbl.Table{
@@ -34,7 +34,7 @@ func (c List) Execute(_ []string) error {
 		},
 	}
 
-	for _, file := range list.Files {
+	for _, file := range files {
 		table.Rows = append(
 			table.Rows,
 			[]boshtbl.Value{

@@ -23,6 +23,7 @@ import (
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
 	srv_download "github.com/dpb587/ssoca/service/download/client"
+	srv_download_cli "github.com/dpb587/ssoca/service/download/client/cli"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
@@ -47,7 +48,6 @@ func main() {
 	authService := srv_auth.NewService(&runtime, serviceManager)
 
 	serviceManager.Add(authService)
-	serviceManager.Add(srv_download.NewService(&runtime, fs))
 	serviceManager.Add(srv_env.NewService(&runtime, fs, cmdRunner))
 	serviceManager.Add(srv_github_auth.NewService(&runtime, cmdRunner))
 	serviceManager.Add(srv_google_auth.NewService(&runtime, cmdRunner))
@@ -78,6 +78,13 @@ func main() {
 		"Manage authentication",
 		"Manage authentication",
 		srv_auth_cli.CreateCommands(&runtime, authService),
+	)
+
+	parser.AddCommand(
+		"download",
+		"Download environment artifacts",
+		"Download environment artifacts",
+		srv_download_cli.CreateCommands(&runtime, srv_download.NewServiceFactory(&runtime, fs)),
 	)
 
 	parser.AddCommand(
