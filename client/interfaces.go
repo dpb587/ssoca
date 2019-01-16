@@ -31,5 +31,5 @@ type Runtime interface {
 
 //go:generate counterfeiter . ExecutableFinder
 type ExecutableFinder interface {
-	Find() (string, error)
+	Find() (string, bool, error)
 }

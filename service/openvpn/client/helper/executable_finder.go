@@ -12,17 +12,17 @@ type ExecutableFinder struct {
 	FS    boshsys.FileSystem
 }
 
-func (ef ExecutableFinder) Find() (string, error) {
+func (ef ExecutableFinder) Find() (string, bool, error) {
 	path, err := exec.LookPath(guessExecutableName)
 	if err == nil {
-		return path, nil
+		return path, false, nil
 	}
 
 	for _, path := range guessExecutablePaths {
 		if ef.FS.FileExists(path) {
-			return path, nil
+			return path, true, nil
 		}
 	}
 
-	return "", errors.New("Failed to find the openvpn executable")
+	return "", false, errors.New("Failed to find the openvpn executable")
 }

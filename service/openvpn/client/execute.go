@@ -3,6 +3,7 @@ package client
 import (
 	"fmt"
 	"os"
+	"time"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/pkg/errors"
@@ -22,15 +23,25 @@ type ExecuteOptions struct {
 
 func (s Service) Execute(opts ExecuteOptions) error {
 	var executable string
+	var guessed bool
 
 	if opts.Exec != "" {
 		executable = opts.Exec
 	} else {
 		var err error
 
-		executable, err = s.executableFinder.Find()
+		executable, guessed, err = s.executableFinder.Find()
 		if err != nil {
 			return errors.Wrap(err, "Finding executable")
+		}
+
+		if guessed {
+			fmt.Fprintf(
+				s.runtime.GetStderr(),
+				"%s WARNING: ssoca: openvpn executable not automatically found in $PATH (falling back to %s)\n",
+				time.Now().Format("Mon Jan 02 15:04:05 2006"),
+				executable,
+			)
 		}
 	}
 

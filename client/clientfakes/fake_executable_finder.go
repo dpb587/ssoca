@@ -8,22 +8,24 @@ import (
 )
 
 type FakeExecutableFinder struct {
-	FindStub        func() (string, error)
+	FindStub        func() (string, bool, error)
 	findMutex       sync.RWMutex
 	findArgsForCall []struct{}
 	findReturns     struct {
 		result1 string
-		result2 error
+		result2 bool
+		result3 error
 	}
 	findReturnsOnCall map[int]struct {
 		result1 string
-		result2 error
+		result2 bool
+		result3 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeExecutableFinder) Find() (string, error) {
+func (fake *FakeExecutableFinder) Find() (string, bool, error) {
 	fake.findMutex.Lock()
 	ret, specificReturn := fake.findReturnsOnCall[len(fake.findArgsForCall)]
 	fake.findArgsForCall = append(fake.findArgsForCall, struct{}{})
@@ -33,9 +35,9 @@ func (fake *FakeExecutableFinder) Find() (string, error) {
 		return fake.FindStub()
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1, ret.result2, ret.result3
 	}
-	return fake.findReturns.result1, fake.findReturns.result2
+	return fake.findReturns.result1, fake.findReturns.result2, fake.findReturns.result3
 }
 
 func (fake *FakeExecutableFinder) FindCallCount() int {
@@ -44,26 +46,29 @@ func (fake *FakeExecutableFinder) FindCallCount() int {
 	return len(fake.findArgsForCall)
 }
 
-func (fake *FakeExecutableFinder) FindReturns(result1 string, result2 error) {
+func (fake *FakeExecutableFinder) FindReturns(result1 string, result2 bool, result3 error) {
 	fake.FindStub = nil
 	fake.findReturns = struct {
 		result1 string
-		result2 error
-	}{result1, result2}
+		result2 bool
+		result3 error
+	}{result1, result2, result3}
 }
 
-func (fake *FakeExecutableFinder) FindReturnsOnCall(i int, result1 string, result2 error) {
+func (fake *FakeExecutableFinder) FindReturnsOnCall(i int, result1 string, result2 bool, result3 error) {
 	fake.FindStub = nil
 	if fake.findReturnsOnCall == nil {
 		fake.findReturnsOnCall = make(map[int]struct {
 			result1 string
-			result2 error
+			result2 bool
+			result3 error
 		})
 	}
 	fake.findReturnsOnCall[i] = struct {
 		result1 string
-		result2 error
-	}{result1, result2}
+		result2 bool
+		result3 error
+	}{result1, result2, result3}
 }
 
 func (fake *FakeExecutableFinder) Invocations() map[string][][]interface{} {
