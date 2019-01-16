@@ -4,5 +4,7 @@
 package helper
 
 var guessExecutableName = "openvpn"
-var guessExecutablePaths = []string{}
+var guessExecutablePaths = []string{
+	"/usr/local/sbin/openvpn",
+}
 var guessExecutableSuggestions = ""

@@ -19,7 +19,12 @@ func (ef ExecutableFinder) Find() (string, bool, error) {
 	}
 
 	for _, path := range guessExecutablePaths {
-		if ef.FS.FileExists(path) {
+		paths, err := ef.FS.Glob(path)
+		if err != nil {
+			continue
+		}
+
+		for _, path := range paths {
 			return path, true, nil
 		}
 	}

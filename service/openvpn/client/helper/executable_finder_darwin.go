@@ -2,7 +2,8 @@ package helper
 
 var guessExecutableName = "openvpn"
 var guessExecutablePaths = []string{
-	"/Applications/Tunnelblick.app/Contents/Resources/openvpn/default",
+	"/usr/local/sbin/openvpn",
+	"/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.4.*-openssl-1.*/openvpn",
 	"/Applications/Shimo.app/Contents/MacOS/openvpn",
 	"/Applications/Viscosity.app/Contents/MacOS/openvpn",
 }
