@@ -11,7 +11,7 @@ meta4-repo filter --format=json file://$PWD/artifacts/ssoca-final > hugo-site/da
 
   echo 'dates:'
   echo '  v0.8.0: 2018-01-07 22:40:00 -0800' # lightweight tag; manual, pre-CI
-  git log --tags --simplify-by-decoration --pretty="format:%D: %ai" | grep -E '^tag: [^ ]+:' | sed 's/^tag: /  /'
+  git log --tags --simplify-by-decoration --pretty="format:%D: %ai" | sed 's#^HEAD -> master, ##' | sed 's#, origin/master:#:#' | grep -E '^tag: [^ ]+:' | sed 's#^tag: #  #'
 ) > hugo-site/data/repositoryTags.yml
 
 cd hugo-site
