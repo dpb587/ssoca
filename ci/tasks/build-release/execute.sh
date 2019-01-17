@@ -21,13 +21,13 @@ fi
 (
   echo "Artifacts"
   echo ""
-  echo "                                                              sha256 file"
+  echo "                                                              sha256  file"
 ) >> $release_dir/notes.md
 
 for file in $( meta4 files --metalink=$metalink_path ); do
   cp "$build_dir/$file" "$release_dir/blobs/$file"
 
-  echo "    $( meta4 file-hash --metalink=$metalink_path --file=$file sha-256 )" "$file" >> $release_dir/notes.md
+  echo "    $( meta4 file-hash --metalink=$metalink_path --file=$file sha-256 )  $file" >> $release_dir/notes.md
 done
 
 ( cd "$task_dir/repo" ; git rev-parse HEAD ) > "$release_dir/commit"
