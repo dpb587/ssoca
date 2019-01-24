@@ -8,6 +8,7 @@ meta4-repo filter --format=json file://$PWD/artifacts/ssoca-final > hugo-site/da
 
 (
   cd repo
+  git fetch --tags $( git remote get-url origin | sed 's#git@github.com:#https://github.com/#' ) # avoid stale concourse resource caches
 
   echo 'dates:'
   echo '  v0.8.0: 2018-01-07 22:40:00 -0800' # lightweight tag; manual, pre-CI
