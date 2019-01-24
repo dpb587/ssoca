@@ -153,7 +153,19 @@ jobs:
   - put: version
     params:
       bump: patch
-
+- name: upgrade-go-in-build-image
+  plan:
+  - aggregate:
+    - get: golang
+      trigger: true
+      params:
+        skip_download: true
+    - get: repo
+  - task: upgrade
+    file: repo/ci/tasks/upgrade-go-in-build-image/config.yml
+  - put: repo
+    params:
+      repository: repo
 resources:
 - name: repo
   type: git
@@ -238,7 +250,24 @@ resources:
     driver: git
     branch: ci-state
     file: version/master
+- name: golang
+  type: dynamic-metalink
+  source:
+    version_check: |
+      curl -s https://golang.org/dl/?mode=json | jq -r '.[].version[2:]'
+    metalink_get: |
+      curl -s https://golang.org/dl/?mode=json | jq '
+        map(select(.version[2:] == env.version)) | map({
+          "files": (.files | map({
+            "name": .filename,
+            "size": .size,
+            "urls": [ { "url": "https://dl.google.com/go/\(.filename)" } ],
+            "hashes": [ { "type": "sha-256", "hash": .sha256 } ] } ) ) } )[]'
 resource_types:
+- name: dynamic-metalink
+  type: docker-image
+  source:
+    repository: dpb587/dynamic-metalink-resource
 - name: github-status
   type: docker-image
   source:
