@@ -40,7 +40,7 @@ func (c Version) Execute(_ []string) error {
 		ui.PrintBlock(append([]byte(c.Version.String()), '\n'))
 
 		if c.Debug {
-			ui.PrintBlock(append([]byte(fmt.Sprintf("go/%s (%s; %s)", runtime.Version(), runtime.GOOS, runtime.GOARCH)), '\n'))
+			ui.PrintBlock(append([]byte(fmt.Sprintf("go/%s (os %s; arch %s)", runtime.Version(), runtime.GOOS, runtime.GOARCH)), '\n'))
 		}
 	}
 
