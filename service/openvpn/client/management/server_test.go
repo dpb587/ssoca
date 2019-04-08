@@ -34,7 +34,7 @@ var _ = Describe("Client", func() {
 		logger.Out = loggerOutput
 		logger.Formatter = &logrus.JSONFormatter{}
 
-		subject = NewClient(remoteConn, fakeHandler, logger)
+		subject = NewClient(remoteConn, fakeHandler, "", logger)
 
 		go subject.Run()
 	})

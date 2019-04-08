@@ -13,6 +13,7 @@ type Server struct {
 	handler      ServerHandler
 	bindProtocol string
 	bindAddress  string
+	password     string
 
 	logger logrus.FieldLogger
 
@@ -21,11 +22,12 @@ type Server struct {
 	stopError  chan error
 }
 
-func NewServer(handler ServerHandler, bindProtocol, bindAddress string, logger logrus.FieldLogger) Server {
+func NewServer(handler ServerHandler, bindProtocol, bindAddress, password string, logger logrus.FieldLogger) Server {
 	return Server{
 		handler:      handler,
 		bindProtocol: bindProtocol,
 		bindAddress:  bindAddress,
+		password:     password,
 		logger:       logger,
 	}
 }
@@ -47,6 +49,10 @@ func (cs *Server) Stop() error {
 	err := cs.listener.Close()
 
 	return err
+}
+
+func (cs *Server) ManagementPassword() string {
+	return cs.password
 }
 
 func (cs *Server) ManagementConfigValue() string {
@@ -73,8 +79,13 @@ func (cs *Server) listen() {
 
 	logger.Info("new openvpn management connection")
 
-	client := NewClient(conn, cs.handler, logger)
-	defer client.Run()
+	client := NewClient(conn, cs.handler, cs.password, logger)
+	defer func() {
+		err := client.Run()
+		if err != nil {
+			logger.Errorf("failed management client operation: %v", err)
+		}
+	}()
 
 	cs.Stop()
 }

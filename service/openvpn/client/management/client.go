@@ -2,6 +2,7 @@ package management
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -12,14 +13,16 @@ import (
 type Client struct {
 	conn      net.Conn
 	handler   ServerHandler
+	password  string
 	logger    logrus.FieldLogger
 	callbacks []ServerHandlerCallback
 }
 
-func NewClient(conn net.Conn, handler ServerHandler, logger logrus.FieldLogger) Client {
+func NewClient(conn net.Conn, handler ServerHandler, password string, logger logrus.FieldLogger) Client {
 	return Client{
 		conn:      conn,
 		handler:   handler,
+		password:  password,
 		logger:    logger,
 		callbacks: []ServerHandlerCallback{},
 	}
@@ -28,11 +31,34 @@ func NewClient(conn net.Conn, handler ServerHandler, logger logrus.FieldLogger) 
 func (cc *Client) Run() error {
 	defer cc.conn.Close()
 
-	for {
-		message, err := bufio.NewReader(cc.conn).ReadString('\n')
+	reader := bufio.NewReader(cc.conn)
+
+	if cc.password != "" {
+		message, err := reader.ReadString(':')
 		if err != nil {
 			return err
 		}
+
+		cc.logger.Debugf("openvpn management data recv: %s", message)
+
+		if message != "ENTER PASSWORD:" {
+			return errors.New("expected first client message to request password")
+		}
+
+		cc.conn.Write([]byte(cc.password + "\n"))
+
+		cc.callbacks = append(cc.callbacks, SuccessCallback)
+	}
+
+	for {
+		cc.logger.Debug("openvpn management waiting for data")
+
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			return err
+		}
+
+		cc.logger.Debugf("openvpn management data recv: %s", message)
 
 		var keepGoing bool
 
@@ -43,6 +69,8 @@ func (cc *Client) Run() error {
 		}
 
 		if !keepGoing {
+			cc.logger.Info("openvpn management exiting loop")
+
 			break
 		}
 	}

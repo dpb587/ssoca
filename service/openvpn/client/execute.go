@@ -3,11 +3,13 @@ package client
 import (
 	"fmt"
 	"os"
+	"path"
 	"time"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/pkg/errors"
 
+	"github.com/dpb587/ssoca/service/openvpn/client/internal"
 	"github.com/dpb587/ssoca/service/openvpn/client/management"
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
 )
@@ -86,6 +88,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 			management.NewDefaultHandler(&profileManager),
 			"tcp",
 			"127.0.0.1:0",
+			internal.GeneratePassword(32),
 			s.runtime.GetLogger(),
 		)
 
@@ -101,7 +104,21 @@ func (s Service) Execute(opts ExecuteOptions) error {
 	if opts.StaticCertificate {
 		err = s.fs.WriteFileString(configPath, profile.StaticConfig())
 	} else {
-		err = s.fs.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue()))
+		managementPasswordPath := path.Join(tmpdir, "management.pw")
+
+		err = s.fs.WriteFileString(managementPasswordPath, mgmt.ManagementPassword()+"\n")
+		if err != nil {
+			return errors.Wrap(err, "Writing management password file")
+		}
+
+		// the containing directory already has restricted permissions;
+		// this avoids a warning message from openvpn
+		err = s.fs.Chmod(managementPasswordPath, 0700)
+		if err != nil {
+			return errors.Wrap(err, "Chmod'ing management password file")
+		}
+
+		err = s.fs.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue(), managementPasswordPath))
 	}
 	if err != nil {
 		return errors.Wrap(err, "Writing certificate")

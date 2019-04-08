@@ -39,12 +39,14 @@ func (p Profile) StaticConfig() string {
 	return config
 }
 
-func (p Profile) ManagementConfig(managementAddress string) string {
+func (p Profile) ManagementConfig(managementAddress, managementPasswordFile string) string {
 	config := p.baseConfig
 
-	// management configuration
-	config = fmt.Sprintf("%s\nmanagement %s\nmanagement-client\n", config, managementAddress)
-	config = fmt.Sprintf("%s\nmanagement-external-cert ssoca\nmanagement-external-key\n", config)
+	config = config + "\n"
+	config = fmt.Sprintf("%smanagement %s %s\n", config, managementAddress, managementPasswordFile)
+	config = fmt.Sprintf("%smanagement-client\n", config)
+	config = fmt.Sprintf("%smanagement-external-cert ssoca\n", config)
+	config = fmt.Sprintf("%smanagement-external-key\n", config)
 
 	// force connection resets to flush credentials
 	config = fmt.Sprintf("%s\nremap-usr1 SIGHUP\n", config)

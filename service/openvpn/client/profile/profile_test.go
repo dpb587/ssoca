@@ -89,11 +89,10 @@ fake-cert-data
 
 	Describe("ManagementConfig", func() {
 		It("includes base config with management directives", func() {
-			Expect(subject.ManagementConfig("127.0.0.1:12345")).To(Equal(`fake-base-profile-line1
+			Expect(subject.ManagementConfig("127.0.0.1:12345", "stdin")).To(Equal(`fake-base-profile-line1
 fake-base-profile-line2
-management 127.0.0.1:12345
+management 127.0.0.1:12345 stdin
 management-client
-
 management-external-cert ssoca
 management-external-key
 
