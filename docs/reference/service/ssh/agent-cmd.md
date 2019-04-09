@@ -10,25 +10,25 @@ Start an SSH agent
 
     Usage:
       ssoca [OPTIONS] ssh [ssh-OPTIONS] agent [agent-OPTIONS]
-    
+
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
       -e, --environment=         Environment name [$SSOCA_ENVIRONMENT]
           --log-level=           Log level (default: WARN) [$SSOCA_LOG_LEVEL]
-    
+
     Help Options:
       -h, --help                 Show this help message
-    
+
     [ssh command options]
-    
+
         Establish SSH connections to remote servers:
           -s, --service=         Service name (default: ssh) [$SSOCA_SERVICE]
-    
+
     [agent command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
               --foreground       Stay in foreground
               --socket=          Socket path (ensure the directory has restricted permissions)
-    
+
 
 ## Usage Details
 
@@ -45,7 +45,7 @@ Once a key is added, each request to list keys will request a signed certificate
     4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (RSA)
     4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (ssoca agent) (RSA-CERT)
 
-If you [debug](./#debugging) the extra certificate, you'll see it is short-lived and changes every time.
+If you [debug]({{< relref "external-configuration.md#debugging" >}}) the extra certificate, you'll see it is short-lived and changes every time.
 
     $ ssh-keygen -L -f <( ssh-add -L | grep 'ssoca agent' ) | grep Valid
             Valid: from 2017-03-28T22:47:40 to 2017-03-28T22:49:45

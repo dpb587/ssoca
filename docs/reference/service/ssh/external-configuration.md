@@ -25,7 +25,7 @@ Once configured, restart the `ssh` service.
 For a BOSH-managed server, you may find the [ssh-conf](https://github.com/dpb587/ssh-conf-bosh-release) BOSH release useful.
 
 
-# Debugging
+## Debugging
 
 If a signed certificate is not working, sometimes it's helpful to inspect the signed certificate, taking particular interest in the principals...
 

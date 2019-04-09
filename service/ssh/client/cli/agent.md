@@ -13,7 +13,7 @@ Once a key is added, each request to list keys will request a signed certificate
     4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (RSA)
     4096 SHA256:00j1lkGyGsQWesSK+p52DzZqZk20frTza5hwqr+vGyQ /Users/me/.ssh/id_rsa (ssoca agent) (RSA-CERT)
 
-If you [debug](./#debugging) the extra certificate, you'll see it is short-lived and changes every time.
+If you [debug]({{< relref "external-configuration.md#debugging" >}}) the extra certificate, you'll see it is short-lived and changes every time.
 
     $ ssh-keygen -L -f <( ssh-add -L | grep 'ssoca agent' ) | grep Valid
             Valid: from 2017-03-28T22:47:40 to 2017-03-28T22:49:45

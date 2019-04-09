@@ -25,22 +25,24 @@ Configuration settings which support templating are noted with `templatized` in 
 
 ## Examples
 
-Using the [ssh service](../service/ssh) as an example:
+Using the [ssh service]({{< relref "../service/ssh" >}}) as an example:
 
-    services:
-    - name: ssh
-      type: ssh
-      options:
-        principals:
-        # allow the mailbox of an email-based authentication
-        - '{{ index ( split .Token.ID "@" ) 0 }}'
-        # allow root if a member of a specific group
-        - '{{ if .Token.Groups.Matches "bosh.4a12ea46-a526-4d32-8516-ed55feea5297.admin" }}jumpbox{{ end }}'
-        # allow root if a member of any team in an adminorg
-        - '{{ if .Token.Groups.Matches "adminorg/*" }}root{{ end }}'
-        critical_options:
-          # only allow connections from the client's current IP
-          source-address: '{{ index ( split .Request.RemoteAddr ":" ) 0 }}/32'
-        target:
-          user: '{{ index ( split .Token.ID "@" ) 0 }}'
-          host: 10.244.0.2
+```yaml
+services:
+- name: ssh
+  type: ssh
+  options:
+    principals:
+    # allow the mailbox of an email-based authentication
+    - '{{ index ( split .Token.ID "@" ) 0 }}'
+    # allow root if a member of a specific group
+    - '{{ if .Token.Groups.Matches "bosh.4a12ea46-a526-4d32-8516-ed55feea5297.admin" }}jumpbox{{ end }}'
+    # allow root if a member of any team in an adminorg
+    - '{{ if .Token.Groups.Matches "adminorg/*" }}root{{ end }}'
+    critical_options:
+      # only allow connections from the client's current IP
+      source-address: '{{ index ( split .Request.RemoteAddr ":" ) 0 }}/32'
+    target:
+      user: '{{ index ( split .Token.ID "@" ) 0 }}'
+      host: 10.244.0.2
+```

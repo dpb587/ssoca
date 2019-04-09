@@ -30,13 +30,15 @@ All scopes propagated by the UAA server will be available in the user's authenti
 
 In order for `ssoca-client` to connect to UAA, you will need to configure a UAA client for it to use. The following configures [`uaa`](https://bosh.io/jobs/uaa?source=github.com/cloudfoundry/uaa-release&version=67.0#p%3duaa.clients) with a `ssoca_client` ID (no secret), which is allowed to propagate scopes named `env.*`.
 
-    uaa:
-      clients:
-        ssoca_client:
-          override: true
-          authorized-grant-types: password,refresh_token
-          scope: openid,env.*
-          authorities: uaa.none
-          access-token-validity: 120 # 2 min
-          refresh-token-validity: 86400 # 1 day
-          secret: ""
+```yaml
+uaa:
+  clients:
+    ssoca_client:
+      override: true
+      authorized-grant-types: "password,refresh_token"
+      scope: "openid,env.*"
+      authorities: "uaa.none"
+      access-token-validity: 120 # 2 min
+      refresh-token-validity: 86400 # 1 day
+      secret: ""
+```

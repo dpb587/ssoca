@@ -1,3 +1,12 @@
+shared:
+  release_artifacts: &release_artifacts
+    mirror_files:
+    - destination: s3://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v{{.Version}}/{{.Name}}
+      env:
+        AWS_ACCESS_KEY_ID: ((artifacts_s3_access_key))
+        AWS_SECRET_ACCESS_KEY: ((artifacts_s3_secret_key))
+    options:
+      private_key: ((git_private_key))
 jobs:
 - name: "ci-build-image"
   serial: true
@@ -11,18 +20,6 @@ jobs:
         build: "repo/ci/images/build"
       get_params:
         skip_download: true
-- name: "ci-docs-image"
-  serial: true
-  plan:
-  - get: "repo"
-    resource: "repo-ci-images"
-    trigger: true
-  - aggregate:
-    - put: "ci-docs-docker-image"
-      params:
-        build: "repo/ci/images/docs"
-      get_params:
-        skip_download: true
 - name: build-docs
   serial: true
   plan:
@@ -34,7 +31,6 @@ jobs:
       resource: repo-artifacts
       trigger: true
     - get: hugo-site
-      resource: repo-docs-hugo-site
       trigger: true
   - task: build-docs
     file: repo/ci/tasks/build-docs/config.yml
@@ -202,12 +198,10 @@ resources:
     - "ci/tasks/build-docs/*"
     - "docs/*"
     - "docs/**/*"
-- name: "repo-docs-hugo-site"
+- name: "hugo-site"
   type: "git"
   source:
-    uri: git@github.com:dpb587/ssoca.git
-    branch: docs-hugo-site
-    private_key: ((git_private_key))
+    uri: https://github.com/dpb587/hugo-balmy-site.git
 - name: "repo-artifacts"
   type: "git"
   source:
@@ -236,13 +230,10 @@ resources:
 - name: "ci-build-docker-image"
   type: "docker-image"
   source:
-    << : *docker
+    repository: dpb587/ssoca
+    username: ((docker_username))
+    password: ((docker_password))
     tag: ci-build
-- name: "ci-docs-docker-image"
-  type: "docker-image"
-  source:
-    << : *docker
-    tag: ci-docs
 - name: "version"
   type: "semver"
   source:
@@ -277,16 +268,3 @@ resource_types:
   type: docker-image
   source:
     repository: dpb587/metalink-repository-resource
-shared:
-  release_artifacts: &release_artifacts
-    mirror_files:
-    - destination: s3://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v{{.Version}}/{{.Name}}
-      env:
-        AWS_ACCESS_KEY_ID: ((artifacts_s3_access_key))
-        AWS_SECRET_ACCESS_KEY: ((artifacts_s3_secret_key))
-    options:
-      private_key: ((git_private_key))
-  docker: &docker
-    repository: dpb587/ssoca
-    username: ((docker_username))
-    password: ((docker_password))

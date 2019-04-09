@@ -2,31 +2,48 @@
 
 set -eu
 
-mkdir -p hugo-site/data
-
-meta4-repo filter --format=json file://$PWD/artifacts/ssoca-final > hugo-site/data/releaseArtifacts.json
-
-(
-  cd repo
-  git fetch --tags $( git remote get-url origin | sed 's#git@github.com:#https://github.com/#' ) # avoid stale concourse resource caches
-
-  echo 'dates:'
-  echo '  v0.8.0: 2018-01-07 22:40:00 -0800' # lightweight tag; manual, pre-CI
-  git log --tags --simplify-by-decoration --pretty="format:%D: %ai" | sed 's#^HEAD -> master, ##' | sed 's#, origin/master:#:#' | grep -E '^tag: [^ ]+:' | sed 's#^tag: #  #'
-) > hugo-site/data/repositoryTags.yml
+task_dir="$PWD"
 
 cd hugo-site
 
-hugo --contentDir=../repo/docs
+./bin/generate-metalink-artifacts-data.sh "file://$task_dir/artifacts/ssoca-final"
 
-cd ..
+./bin/generate-repo-tags-data.sh "$task_dir/repo"
+ # accidental lightweight tag; manual, pre-CI
+echo '  v0.8.0: 2018-01-07 22:40:00 -0800' >> data/repo/tags.yml
 
-mv hugo-site/public/* public/
+mkdir -p static/img
+wget -qO static/img/dpb587.jpg https://dpb587.me/images/dpb587-20140313a~256.jpg
 
-cd public
+latest_version=$( grep '^  ' data/repo/tags.yml | awk '{ print $1 }' | sed -e 's/^v//' -e 's/:$//' | sort -rV | head -n1 )
 
-git config --global user.email "${git_user_email:-ci@localhost}"
-git config --global user.name "${git_user_name:-CI Bot}"
-git init
-git add .
-git commit -m 'build docs'
+cat > config.local.yml <<EOF
+title: ssoca
+baseURL: "https://dpb587.github.io/ssoca"
+googleAnalytics: "UA-37464314-3"
+theme:
+- balmy-release
+- balmy
+params:
+  ThemeBrandIcon: /img/dpb587.jpg
+  ThemeIncludeMenu: "/_menu"
+  ThemeNavBadges: []
+  ThemeNavItems:
+  - title: docs
+    url: /
+  - title: releases
+    url: /releases/
+  - title: github
+    url: "https://github.com/dpb587/ssoca"
+  GitRepo: "https://github.com/dpb587/ssoca"
+  GitEditPath: blob/master/docs
+  GitCommitPath: commit
+  releaseVersionLatest: "$latest_version"
+EOF
+
+hugo \
+  --config="config.yml,config.local.yml" \
+  --contentDir="$task_dir/repo/docs" \
+  --destination="$task_dir/public"
+
+./bin/git-commit.sh "$task_dir/public"

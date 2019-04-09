@@ -2,8 +2,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: dpb587/ssoca
-    tag: ci-docs
+    repository: dpb587/hugo-balmy-site
+    tag: latest
 inputs:
 - name: repo
 - name: artifacts

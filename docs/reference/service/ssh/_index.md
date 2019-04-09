@@ -22,12 +22,12 @@ The SSH workflows can be managed through `ssh` subcommands.
 
 The following may be configured in the `options` section when configuring an `ssh` [service]({{< ref "/reference/server/configuration.md#services" >}}).
 
-* **`principals`** -- an array of usernames to allow SSH sessions for ([templatized](../../server/templating))
+* **`principals`** -- an array of usernames to allow SSH sessions for ([templatized]({{< relref "../../server/templating.md" >}}))
 * `certauth` -- the name of a configured certificate authority (default `default`)
 * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) of time for which certificates are signed for (default `2m`)
 * `critical_options` -- a *hash* of specific settings further restricting connections to the SSH server
-  * `force-command` -- a command which is forcefully executed on the SSH server ([templatized](../../server/templating))
-  * `source-address` -- a CSV list of source addresses in CIDR format which certificates can come from for authentication ([templatized](../../server/templating))
+  * `force-command` -- a command which is forcefully executed on the SSH server ([templatized]({{< relref "../../server/templating.md" >}}))
+  * `source-address` -- a CSV list of source addresses in CIDR format which certificates can come from for authentication ([templatized]({{< relref "../../server/templating.md" >}}))
 * `extensions` -- an *array* of session features for the server to enforce on the connection (default all)
   * `permit-X11-forwarding`
   * `permit-agent-forwarding`
@@ -40,10 +40,12 @@ The following may be configured in the `options` section when configuring an `ss
 * `client` -- a hash of settings influencing client behavior
   * `host` -- the remote host of the SSH server
   * `port` -- the remote port of the SSH server (default `22`)
-  * `user` -- the remote user to authenticate as ([templatized](../../server/templating))
+  * `user` -- the remote user to authenticate as ([templatized]({{< relref "../../server/templating.md" >}}))
   * `public_key` -- the public key of the remote SSH server (requires `host`)
 
-*Tip*: the SSH server must be configured to trust certificates signed by ssoca ([learn more]({{< ref "/reference/service/ssh/external-configuration.md" >}})).
+{{< note type="info" >}}
+  The SSH server must be configured to trust certificates signed by ssoca ([learn more]({{< ref "/reference/service/ssh/external-configuration.md" >}})).
+{{< /note >}}
 
 
 ## General Notes

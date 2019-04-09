@@ -29,8 +29,9 @@ If the authentication service needs to start a local web server during authentic
 
 For example, to force binding to port `8085` to enable static tunneling configuration, you might use...
 
-    ssoca env set-option auth.bind "localhost:8085"
-
+```bash
+ssoca env set-option auth.bind "localhost:8085"
+```
 
 ### `open_command` (Interactive Login)
 
@@ -38,11 +39,15 @@ If the user needs to visit a URL during authentication, the CLI will attempt to 
 
 For example, to open the URL in Google Chrome with a specific profile for the user, you might use...
 
-    ssoca env set-option auth.open_command "[ sudo, -u, $USER, /Applications/Google Chrome.app/Contents/MacOS/Google Chrome, --profile-directory=Default, --disable-gpu ]"
+```bash
+ssoca env set-option auth.open_command "[ sudo, -u, $USER, /Applications/Google Chrome.app/Contents/MacOS/Google Chrome, --profile-directory=Default, --disable-gpu ]"
+```
 
-*Note*: shell environment variables are not interpolated by the client at runtime (i.e. `$USER` is parsed by shell here). The `sudo` usage allows the process to interact with the user's console UI if the command is run as `root`. The `--disable-gpu` suppresses a seemingly innocuous warning message.
+{{< note type="info" >}}
+  Shell environment variables are not interpolated by the client at runtime (i.e. `$USER` is parsed by shell here). The `sudo` usage allows the process to interact with the user's console UI if the command is run as `root`. The `--disable-gpu` suppresses a seemingly innocuous warning message.
+{{< /note >}}
 
 
 ## Server Configuration
 
-For more details configuring the underlying authentication provider, see the server-side [Authentication docs](../../auth/authn).
+For more details configuring the underlying authentication provider, see the server-side [Authentication docs]({{< relref "../../auth/authn" >}}).

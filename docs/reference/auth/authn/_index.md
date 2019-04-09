@@ -11,6 +11,6 @@ An external authentication system is used to gather user information and potenti
 
 ## Supported Providers
 
- * [Cloud Foundry UAA](uaa)
- * [GitHub](github)
- * [Google](google)
+ * [Cloud Foundry UAA]({{< relref "uaa" >}})
+ * [GitHub]({{< relref "github" >}})
+ * [Google]({{< relref "google" >}})

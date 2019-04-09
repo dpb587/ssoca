@@ -8,7 +8,7 @@ aliases:
 
 The OpenVPN service is used to sign a user's certificate request and receive a generated connection profile which can be used to connect to a VPN.
 
-Before a client can use this service, they must install OpenVPN ([learn more](https://github.com/dpb587/openvpn-bosh-release/blob/master/docs/ops/users/software.md)).
+Before a client can use this service, they must install OpenVPN ([learn more](https://dpb587.github.io/openvpn-bosh-release/docs/latest/client/end-user-software/)).
 
 
 ## Client Commands
@@ -31,4 +31,6 @@ The following may be configured in the `options` section when configuring an `op
  * `certauth` -- the name of a configured certificate authority (default `default`)
  * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) of time for which certificates are signed for (default `2m`)
 
-*Tip*: the OpenVPN server must be configured to trust certificates signed by ssoca and to optionally enforce extended certificate validity ([learn more]({{< ref "/reference/service/openvpn/external-configuration.md" >}})).
+{{< note type="info" >}}
+  The OpenVPN server must be configured to trust certificates signed by ssoca and to optionally enforce extended certificate validity ([learn more]({{< ref "/reference/service/openvpn/external-configuration.md" >}})).
+{{< /note >}}

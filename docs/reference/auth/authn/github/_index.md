@@ -6,7 +6,7 @@ aliases:
 
 # GitHub (`github`)
 
-GitHub authenticates users through their GitHub accounts. Users are redirected through GitHub's website and given a token for their CLI usage. Once authenticated, short-lived [JSON Web Tokens](../jwt) are used to persist and validate authentication state.
+GitHub authenticates users through their GitHub accounts. Users are redirected through GitHub's website and given a token for their CLI usage. Once authenticated, short-lived [JSON Web Tokens]({{< relref "../jwt.md" >}}) are used to persist and validate authentication state.
 
 
 ## Server Configuration Options

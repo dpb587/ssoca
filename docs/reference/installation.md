@@ -18,14 +18,18 @@ First, users must install the `ssoca` client binary. After you install using one
 
 For users of [Homebrew](https://brew.sh/) (macOS) or [Linuxbrew](http://linuxbrew.sh/), you may use the [dpb587/homebrew-tap](https://github.com/dpb587/homebrew-tap) tap to install the latest official binaries.
 
-    brew install dpb587/tap/ssoca
+```bash
+brew install dpb587/tap/ssoca
+```
 
 
-### GitHub Release
+### Official Releases
 
-Official binaries and their checksums may also be found from the [Official Releases]({{% ref "/release" %}}). Find the correct `ssoca-client-*` for your operating system and platform.
+Official binaries are listed on the [Official Releases]({{% ref "/releases/_index.md" %}}) page (you may also find the same artifacts from [GitHub Releases](https://github.com/dpb587/ssoca/releases)). Find the correct `ssoca-client-*` for your operating system and platform and install it.
 
-{{% install/download-binary-steps %}}
+For example, with the latest release on macOS:
+
+{{< release/download-install-artifact file="ssoca-client-.+-darwin-amd64" install="/usr/local/bin/ssoca" >}}
 
 
 ### Local Environment
@@ -37,10 +41,14 @@ Your local environment may also provide binaries for you to download as well. Vi
 
 Once you have the `ssoca` client available, you should configure your environment with an alias. Visiting the ssoca server from a browser may provide you with similar setup instructions. If your environment is using a custom CA certificate, use the `--ca-cert` option. This only needs to happen once per environment.
 
-    ssoca -e example-prod env set https://prod.example.com
+```bash
+ssoca -e example-prod env set https://prod.example.com
+```
 
 You will receive a confirmation once it has connected successfully, then you may authenticate to verify access.
 
-    ssoca -e example-prod auth login
+```bash
+ssoca -e example-prod auth login
+```
 
 After authenticating, you can use one of the services provided by the server (e.g. OpenVPN or SSH).

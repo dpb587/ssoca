@@ -11,5 +11,5 @@ Services are generally configured to trust a specific certificate authority. The
 
 ## Supported Providers
 
- * [In-Memory](memory)
- * [Local Filesystem](fs)
+ * [In-Memory]({{< relref "memory" >}})
+ * [Local Filesystem]({{< relref "fs" >}})

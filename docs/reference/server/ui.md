@@ -6,7 +6,7 @@ aliases:
 
 # Frontend UI
 
-A simple UI is included in the [`server/ui`](../../server/ui) directory to support users directly browsing the the ssoca endpoint. It can be configured with the [`docroot`](../service/docroot) service and supports showing initial configuration steps, binary downloads, and minor customizations.
+A simple UI is included in the `server/ui` directory to support users directly browsing the the ssoca endpoint. It can be configured with the [`docroot` service]({{< relref "../service/docroot" >}}) and supports showing initial configuration steps, binary downloads, and minor customizations.
 
 
 ## Parameters

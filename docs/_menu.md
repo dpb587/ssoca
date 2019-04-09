@@ -1,23 +1,27 @@
----
----
+ * [Overview]({{< relref "reference" >}})
+ * [Client Installation]({{< relref "reference/installation.md" >}})
+ * [Official Releases]({{< relref "releases/_index.md" >}})
 
-- [Overview]({{< ref "/reference" >}})
-- [Client Installation]({{< ref "/reference/installation.md" >}})
-- Services
-  - [Authentication]({{< ref "/reference/service/auth" >}})
-  - [Document Root]({{< ref "/reference/service/docroot" >}})
-  - [Download]({{< ref "/reference/service/download" >}})
-  - [Environment]({{< ref "/reference/service/env" >}})
-  - [OpenVPN]({{< ref "/reference/service/openvpn" >}})
-  - [SSH]({{< ref "/reference/service/ssh" >}})
-- Server Usage
-  - [Configuration]({{< ref "/reference/server/configuration.md" >}})
-  - [Authentication]({{< ref "/reference/auth/authn" >}})
-  - [Authorization]({{< ref "/reference/auth/authz" >}})
-  - [Certificate Authorities]({{< ref "/reference/certauth" >}})
-  - [Logging]({{< ref "/reference/server/logging.md" >}})
-  - [Frontend UI]({{< ref "/reference/server/ui.md" >}})
-  - [Deployment]({{< ref "/reference/server/deployment.md" >}})
-- [Official Releases]({{< ref "/release" >}})
-- [Development Notes]({{< ref "/reference/dev" >}})
-- [View on GitHub](https://github.com/dpb587/ssoca)
+Services
+
+ * [Authentication]({{< relref "reference/service/auth" >}})
+ * [Document Root]({{< relref "reference/service/docroot" >}})
+ * [Download]({{< relref "reference/service/download" >}})
+ * [Environment]({{< relref "reference/service/env" >}})
+ * [OpenVPN]({{< relref "reference/service/openvpn" >}})
+ * [SSH]({{< relref "reference/service/ssh" >}})
+
+Server Usage
+
+ * [Configuration]({{< relref "reference/server/configuration.md" >}})
+ * [Authentication]({{< relref "reference/auth/authn" >}})
+    * [Cloud Foundry UAA]({{< relref "reference/auth/authn/uaa" >}})
+    * [GitHub]({{< relref "reference/auth/authn/github" >}})
+    * [Google]({{< relref "reference/auth/authn/google" >}})
+ * [Authorization]({{< relref "reference/auth/authz" >}})
+ * [Certificate Authorities]({{< relref "reference/certauth" >}})
+    * [In-Memory]({{< relref "reference/certauth/memory" >}})
+    * [Local Filesystem]({{< relref "reference/certauth/fs" >}})
+ * [Logging]({{< relref "reference/server/logging.md" >}})
+ * [Frontend UI]({{< relref "reference/server/ui.md" >}})
+ * [Deployment]({{< relref "reference/server/deployment.md" >}})
