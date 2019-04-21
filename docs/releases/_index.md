@@ -1,7 +1,6 @@
 ---
 title: Official Releases
 reverse_ordering: true
-list_focus_first: true
 ---
 
 # Official Releases
