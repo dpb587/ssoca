@@ -10,6 +10,15 @@ import (
 	"github.com/dpb587/ssoca/service/openvpn/client/profile"
 )
 
+const attemptsUntilRenewal = 3
+const attemptsUntilRestart = 5
+
+type needCertificateAction int
+
+var needCertificateGetProfileAction needCertificateAction = 01
+var needCertificateRenewalAction needCertificateAction = 010
+var needCertificateRestartAction needCertificateAction = 0100
+
 type DefaultHandler struct {
 	profileManager profile.Manager
 
@@ -21,7 +30,7 @@ type DefaultHandler struct {
 var _ ServerHandler = &DefaultHandler{}
 
 func NewDefaultHandler(profileManager profile.Manager) *DefaultHandler {
-	attemptsMax := 5
+	attemptsMax := attemptsUntilRestart
 
 	return &DefaultHandler{
 		profileManager: profileManager,
@@ -31,19 +40,40 @@ func NewDefaultHandler(profileManager profile.Manager) *DefaultHandler {
 }
 
 func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ServerHandlerCallback, error) {
-	profile, err := ch.profileManager.GetProfile()
-	if err != nil {
-		return nil, errors.Wrap(err, "Retrieving profile")
-	} else if ch.exceedsRecentAttempts() {
-		// internally throttle ourselves after repeated certificate lookups
-		// typically this would mean non-expired certs are expired/invalid and should be reloaded
+	var err error
+
+	// internally we want to throttle openvpn when it's doing repeated certificate
+	// lookups
+	action := ch.planNeedCertificate()
+
+	if action&needCertificateRestartAction > 0 {
+		// we tried our best, but something seems terribly wrong after quite a few
+		// failures. tell openvpn to restart and hope that helps things.
 		w.Write([]byte("signal SIGHUP\n"))
 
 		return SuccessCallback, nil
+	} else if action&needCertificateRenewalAction > 0 {
+		// we failed a couple times, so let's optimistically assume openvn no longer
+		// likes our certificate and explicitly get a new one. Note that GetProfile
+		// already renews certificates when they expire, but the server might do
+		// additional time-based checks on it to force shorter use validities.
+		err := ch.profileManager.Renew()
+		if err != nil {
+			return nil, errors.Wrap(err, "Renewing profile")
+		}
+	}
+
+	var ovpn profile.Profile
+
+	if action&needCertificateGetProfileAction > 0 {
+		ovpn, err = ch.profileManager.GetProfile()
+		if err != nil {
+			return nil, errors.Wrap(err, "Retrieving profile")
+		}
 	}
 
 	w.Write([]byte("certificate\n"))
-	w.Write(profile.CertificatePEM())
+	w.Write(ovpn.CertificatePEM())
 	w.Write([]byte("\n"))
 	w.Write([]byte("END\n"))
 
@@ -77,11 +107,14 @@ func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ServerHandlerCallba
 	return SuccessCallback, nil
 }
 
-func (ch *DefaultHandler) exceedsRecentAttempts() bool {
+func (ch *DefaultHandler) planNeedCertificate() needCertificateAction {
 	ch.attemptsOffset = (ch.attemptsOffset + 1) % ch.attemptsMax
 	ch.attempts[ch.attemptsOffset] = time.Now()
 
-	since := time.Now().Add(-5 * time.Minute)
+	// fairly arbitrary time period: openvpn usually waits 5 seconds before
+	// reconnection, and then allow some extra pre-failure connection negotiation
+	// time.
+	since := time.Now().Add(-3 * time.Minute)
 	sinceCount := 0
 
 	for _, attempt := range ch.attempts {
@@ -92,5 +125,11 @@ func (ch *DefaultHandler) exceedsRecentAttempts() bool {
 		sinceCount++
 	}
 
-	return sinceCount >= ch.attemptsMax
+	if sinceCount == attemptsUntilRenewal {
+		return needCertificateRenewalAction | needCertificateGetProfileAction
+	} else if sinceCount >= attemptsUntilRestart {
+		return needCertificateRestartAction
+	}
+
+	return needCertificateGetProfileAction
 }

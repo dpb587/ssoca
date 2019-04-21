@@ -85,6 +85,72 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 
 			BehavesLikeSimpleHandler(cb)
 		})
+
+		Context("openvpn connection reattempts", func() {
+			It("renews certificates after 3 rapid failures", func() {
+				fakeProfileManager.GetProfileReturns(profile.NewProfile("base\nconfig", test1key, []byte("fake\ncertificate")), nil)
+				fakeProfileManager.RenewReturns(nil)
+
+				for i := 0; i < 2; i++ {
+					_, err := subject.NeedCertificate(fakeWriter, "")
+					Expect(err).ToNot(HaveOccurred())
+				}
+
+				fakeWriter.Reset()
+
+				_, err := subject.NeedCertificate(fakeWriter, "")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(fakeWriter.String()).To(Equal("certificate\nfake\ncertificate\nEND\n"))
+				Expect(fakeProfileManager.RenewCallCount()).To(Equal(1))
+
+				fakeWriter.Reset()
+
+				// shouldn't renew a subsequent time
+				_, err = subject.NeedCertificate(fakeWriter, "")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(fakeWriter.String()).To(Equal("certificate\nfake\ncertificate\nEND\n"))
+				Expect(fakeProfileManager.RenewCallCount()).To(Equal(1))
+			})
+
+			It("propagates renewal errors", func() {
+				fakeProfileManager.GetProfileReturns(profile.NewProfile("base\nconfig", test1key, []byte("fake\ncertificate")), nil)
+				fakeProfileManager.RenewReturns(errors.New("fake-err1"))
+
+				for i := 0; i < 2; i++ {
+					_, err := subject.NeedCertificate(fakeWriter, "")
+					Expect(err).ToNot(HaveOccurred())
+				}
+
+				_, err := subject.NeedCertificate(fakeWriter, "")
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("fake-err1"))
+				Expect(err.Error()).To(ContainSubstring("Renewing profile"))
+			})
+
+			It("restarts openvpn after 5 rapid failures", func() {
+				fakeProfileManager.GetProfileReturns(profile.NewProfile("base\nconfig", test1key, []byte("fake\ncertificate")), nil)
+				fakeProfileManager.RenewReturns(nil)
+
+				for i := 0; i < 4; i++ {
+					_, err := subject.NeedCertificate(fakeWriter, "")
+					Expect(fakeWriter.String()).To(Equal("certificate\nfake\ncertificate\nEND\n"))
+					Expect(err).ToNot(HaveOccurred())
+
+					fakeWriter.Reset()
+				}
+
+				_, err := subject.NeedCertificate(fakeWriter, "")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(fakeWriter.String()).To(Equal("signal SIGHUP\n"))
+
+				fakeWriter.Reset()
+
+				// should continuously respond with SIGHUP
+				_, err = subject.NeedCertificate(fakeWriter, "")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(fakeWriter.String()).To(Equal("signal SIGHUP\n"))
+			})
+		})
 	})
 
 	Describe("SignRSA", func() {
