@@ -165,22 +165,26 @@ jobs:
 resources:
 - name: repo
   type: git
+  icon: code-tags
   source: &repo
     uri: git@github.com:dpb587/ssoca.git
     branch: master
     private_key: ((git_private_key))
 - name: repo-dev-artifacts
   type: metalink-repository
+  icon: file-cloud
   source:
     << : *release_artifacts
     uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-dev#artifacts
 - name: repo-final-artifacts
   type: metalink-repository
+  icon: file-cloud
   source:
     << : *release_artifacts
     uri: git+ssh://git@github.com:dpb587/ssoca.git//ssoca-final#artifacts
 - name: "repo-ci-images"
   type: "git"
+  icon: code-tags
   source:
     uri: git@github.com:dpb587/ssoca.git
     branch: master
@@ -190,6 +194,7 @@ resources:
     - "ci/images/**/*"
 - name: "repo-docs"
   type: "git"
+  icon: code-tags
   source:
     uri: git@github.com:dpb587/ssoca.git
     branch: master
@@ -200,28 +205,33 @@ resources:
     - "docs/**/*"
 - name: "hugo-site"
   type: "git"
+  icon: palette-swatch
   source:
     uri: https://github.com/dpb587/hugo-balmy-site.git
 - name: "repo-artifacts"
   type: "git"
+  icon: file-cloud
   source:
     uri: git@github.com:dpb587/ssoca.git
     branch: artifacts
     private_key: ((git_private_key))
 - name: "repo-gh-pages"
   type: "git"
+  icon: file-eye
   source:
     uri: git@github.com:dpb587/ssoca.git
     branch: gh-pages
     private_key: ((git_private_key))
 - name: github-release
   type: github-release
+  icon: github-circle
   source:
     access_token: ((repo_github_token))
     repository: ssoca
     user: dpb587
 - name: unit-tests-github-status
   type: github-status
+  icon: adjust
   source:
     repository: dpb587/ssoca
     branch: master
@@ -229,6 +239,7 @@ resources:
     context: unit-tests
 - name: "ci-build-docker-image"
   type: "docker-image"
+  icon: docker
   source:
     repository: dpb587/ssoca
     username: ((docker_username))
@@ -236,6 +247,7 @@ resources:
     tag: ci-build
 - name: "version"
   type: "semver"
+  icon: label
   source:
     <<: *repo
     driver: git
@@ -243,6 +255,7 @@ resources:
     file: version/master
 - name: golang
   type: dynamic-metalink
+  icon: package-down
   source:
     version_check: |
       curl -s https://golang.org/dl/?mode=json | jq -r '.[].version[2:]'
