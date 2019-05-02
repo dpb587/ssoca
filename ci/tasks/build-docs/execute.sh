@@ -8,6 +8,7 @@ cd hugo-site
 
 ./bin/generate-metalink-artifacts-data.sh "file://$task_dir/artifacts/ssoca-final"
 
+./bin/git-fetch.sh "$task_dir/repo" # avoid stale concourse resource caches
 ./bin/generate-repo-tags-data.sh "$task_dir/repo"
  # accidental lightweight tag; manual, pre-CI
 echo '  v0.8.0: 2018-01-07 22:40:00 -0800' >> data/repo/tags.yml
