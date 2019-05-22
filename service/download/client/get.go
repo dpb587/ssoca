@@ -4,6 +4,8 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/cheggaaa/pb"
@@ -22,6 +24,27 @@ func (s Service) Get(opts GetOptions) error {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
 		return errors.Wrap(err, "Getting client")
+	}
+
+	if strings.Contains(opts.RemoteFile, "*") || strings.Contains(opts.RemoteFile, "?") {
+		listed, err := client.GetList()
+		if err != nil {
+			return errors.Wrap(err, "Listing files")
+		}
+
+		var matched bool
+
+		for _, listedMatch := range listed.Files {
+			matches, err := filepath.Match(opts.RemoteFile, listedMatch.Name)
+			if matches && err == nil {
+				if matched {
+					return errors.Wrapf(err, "Multiple matches found for: %s", opts.RemoteFile)
+				}
+
+				matched = true
+				opts.RemoteFile = listedMatch.Name
+			}
+		}
 	}
 
 	localFilePath := opts.LocalFile
