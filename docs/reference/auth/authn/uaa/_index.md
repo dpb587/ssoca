@@ -18,7 +18,9 @@ Cloud Foundry UAA authenticates users from an external UAA server. Users authent
  * `ca_certificate` -- a PEM-formatted certificate for trusting HTTPS connections to the UAA server
  * `prompts` -- a list of prompts to show the user when they are authenticating
 
-*Reminder*: Client ID and Secret are provided to `ssoca-client` in order for them to be able to connect to UAA. These tokens must not be considered secret.
+{{< note type="warning" >}}
+  Client ID and Secret are provided to `ssoca-client` in order for it to communicate with UAA during authentication. Because these tokens are available prior to authentication, they should not be considered secret.
+{{< /note >}}
 
 
 ## Authentication Scopes
