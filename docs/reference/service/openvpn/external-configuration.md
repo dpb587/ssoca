@@ -21,7 +21,9 @@ This behavior is due to OpenVPN not using TLS session renegotiation. Instead, wh
 
 To retain the default renegotiation behavior of OpenVPN (recommended), you can increase the lifetime that certificates are signed for. For example, setting `validity` to `24h` would allow renegotiations for a day before the connection would fail.
 
-**Note**: this goes against a core principal of `ssoca` which heavily promotes short-lived tokens - a certificate signed at 09:00 could still be used to connect at 21:00. However, the risk of these extended certificates can be reduced by configuring the OpenVPN server with additional verification checks.
+{{< note type="info" >}}
+  This goes against a core principal of `ssoca` which heavily promotes short-lived tokens. A `24h` certificate signed at 09:00 could still be used to connect at 21:00. However, the risk of these extended certificates can be reduced by configuring the OpenVPN server with additional verification checks (mentioned below).
+{{< /note >}}
 
 
 #### Extended Certificate Verification
@@ -37,4 +39,6 @@ OpenVPN supports a `tls-verify {cmd}` directive which executes external command 
 
 The renegotiation time is configured with the `reneg-sec {s}` directive where `{s}` is number of seconds and the default is `3600`. This can be increased (for example, `86400` to attempt and renegotiate once per day), which will delay the server from realizing a short-lived certificate was used. Alternatively, the time-based renegotiation can be disabled by setting the value to `0`.
 
-**Note**: disabling or increasing the renegotiation time can theoretically impact the security of your VPN connection.
+{{< note type="danger" >}}
+  Disabling or increasing the renegotiation time may impact the security of your VPN connection.
+{{< /note >}}
