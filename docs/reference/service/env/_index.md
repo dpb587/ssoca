@@ -32,4 +32,4 @@ These options must be configured with the top-level `env` section rather than a 
  * `name` -- a default alias name which may be suggested to users
  * `title` a human friendly name for the environment which may be shown to users
  * `metadata` -- a hash of arbitrary string keys and values which is opaque to the server and returned in the `/env/info` API endpoint
- * `update_service` -- the name of a configured `download` service which can provide `ssoca` client binaries
+ * `update_service` -- the name of a configured [`download` service]({{< ref "/reference/service/download" >}}) which can provide `ssoca` client binaries
