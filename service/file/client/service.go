@@ -7,8 +7,8 @@ import (
 	"github.com/dpb587/ssoca/httpclient"
 
 	"github.com/dpb587/ssoca/client/service"
-	svc "github.com/dpb587/ssoca/service/download"
-	svchttpclient "github.com/dpb587/ssoca/service/download/httpclient"
+	svc "github.com/dpb587/ssoca/service/file"
+	svchttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 )
 
 type Service struct {

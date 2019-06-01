@@ -3,7 +3,7 @@ package client
 import (
 	"github.com/pkg/errors"
 
-	"github.com/dpb587/ssoca/service/download/api"
+	"github.com/dpb587/ssoca/service/file/api"
 )
 
 type ListOptions struct {

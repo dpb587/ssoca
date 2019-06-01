@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/cheggaaa/pb"
-	"github.com/dpb587/ssoca/service/download/api"
-	"github.com/dpb587/ssoca/service/download/httpclient"
+	"github.com/dpb587/ssoca/service/file/api"
+	"github.com/dpb587/ssoca/service/file/httpclient"
 )
 
 type FakeClient struct {

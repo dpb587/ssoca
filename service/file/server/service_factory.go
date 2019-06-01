@@ -11,8 +11,8 @@ import (
 
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
-	svc "github.com/dpb587/ssoca/service/download"
-	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
+	svc "github.com/dpb587/ssoca/service/file"
+	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
 )
 
 type ServiceFactory struct {

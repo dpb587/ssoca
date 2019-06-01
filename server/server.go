@@ -104,6 +104,10 @@ func CreateFromConfig(
 	}
 
 	for _, svcConfig := range cfg.Services {
+		if svcConfig.Type == "download" {
+			svcConfig.Type = "file"
+		}
+
 		svc, err := serviceFactory.Create(svcConfig.Type, svcConfig.Name, svcConfig.Options)
 		if err != nil {
 			return Server{}, errors.Wrap(err, "Creating service")

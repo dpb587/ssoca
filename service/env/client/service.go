@@ -10,7 +10,7 @@ import (
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
-	svcdownloadhttpclient "github.com/dpb587/ssoca/service/download/httpclient"
+	svcdownloadhttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 	svc "github.com/dpb587/ssoca/service/env"
 	svccmd "github.com/dpb587/ssoca/service/env/client/cmd"
 	svchttpclient "github.com/dpb587/ssoca/service/env/httpclient"

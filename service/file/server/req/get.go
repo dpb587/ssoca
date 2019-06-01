@@ -11,7 +11,7 @@ import (
 
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
-	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
+	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
 )
 
 type Get struct {

@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/httpclient"
-	"github.com/dpb587/ssoca/service/download/api"
+	"github.com/dpb587/ssoca/service/file/api"
 )
 
 func New(baseclient httpclient.Client, service string) (Client, error) {

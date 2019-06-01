@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	apierr "github.com/dpb587/ssoca/server/api/errors"
-	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
-	. "github.com/dpb587/ssoca/service/download/server/req"
+	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
+	. "github.com/dpb587/ssoca/service/file/server/req"
 
 	"net/http/httptest"
 

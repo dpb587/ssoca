@@ -1,9 +1,9 @@
-package download
+package file
 
 type Service struct{}
 
 func (Service) Type() string {
-	return "download"
+	return "file"
 }
 
 func (Service) Version() string {

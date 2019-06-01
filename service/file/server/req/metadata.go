@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/dpb587/ssoca/server/service/req"
-	"github.com/dpb587/ssoca/service/download/api"
+	"github.com/dpb587/ssoca/service/file/api"
 )
 
 type Metadata struct {

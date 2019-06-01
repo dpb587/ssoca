@@ -22,9 +22,9 @@ import (
 	srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
-	srv_download "github.com/dpb587/ssoca/service/download/client"
-	srv_download_cli "github.com/dpb587/ssoca/service/download/client/cli"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
+	srv_file "github.com/dpb587/ssoca/service/file/client"
+	srv_file_cli "github.com/dpb587/ssoca/service/file/client/cli"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
 	srv_openvpn_executable_finder "github.com/dpb587/ssoca/service/openvpn/client/executable/finder"
@@ -82,11 +82,13 @@ func main() {
 	)
 
 	parser.AddCommand(
-		"download",
-		"Download environment artifacts",
-		"Download environment artifacts",
-		srv_download_cli.CreateCommands(runtime, srv_download.NewServiceFactory(runtime, fs)),
+		"file",
+		"Access files from the environment",
+		"Access files from the environment",
+		srv_file_cli.CreateCommands(runtime, srv_file.NewServiceFactory(runtime, fs)),
 	)
+
+	parser.Find("file").Aliases = []string{"download"}
 
 	openvpnFinder := srv_openvpn_executable_finder.Finder{FS: fs}
 	parser.AddCommand(

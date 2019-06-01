@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	downloadhttpclient "github.com/dpb587/ssoca/service/download/httpclient"
+	downloadhttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 )
 
 type UpdateClient struct {

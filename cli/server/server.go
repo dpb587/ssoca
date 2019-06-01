@@ -14,7 +14,7 @@ import (
 	certauth_memory "github.com/dpb587/ssoca/certauth/memory"
 
 	srv_docroot "github.com/dpb587/ssoca/service/docroot/server"
-	srv_download "github.com/dpb587/ssoca/service/download/server"
+	srv_file "github.com/dpb587/ssoca/service/file/server"
 	srv_env "github.com/dpb587/ssoca/service/env/server"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/server"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/server"
@@ -87,7 +87,7 @@ func main() {
 	serviceFactory.Register(srv_http_authn.NewServiceFactory())
 	serviceFactory.Register(srv_uaa_authn.NewServiceFactory())
 
-	serviceFactory.Register(srv_download.NewServiceFactory(fs))
+	serviceFactory.Register(srv_file.NewServiceFactory(fs))
 	serviceFactory.Register(srv_ssh.NewServiceFactory(cfgval, certauthManager))
 	serviceFactory.Register(srv_docroot.NewServiceFactory(fs))
 	serviceFactory.Register(srv_openvpn.NewServiceFactory(certauthManager))

@@ -3,10 +3,10 @@ package server_test
 import (
 	"errors"
 
-	. "github.com/dpb587/ssoca/service/download/server"
+	. "github.com/dpb587/ssoca/service/file/server"
 
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
-	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
+	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

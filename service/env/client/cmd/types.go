@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	downloadhttpclient "github.com/dpb587/ssoca/service/download/httpclient"
+	downloadhttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 	svchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
 )
 

@@ -6,9 +6,9 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
-	svc "github.com/dpb587/ssoca/service/download"
-	svcconfig "github.com/dpb587/ssoca/service/download/server/config"
-	svcreq "github.com/dpb587/ssoca/service/download/server/req"
+	svc "github.com/dpb587/ssoca/service/file"
+	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
+	svcreq "github.com/dpb587/ssoca/service/file/server/req"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )

@@ -1,7 +1,7 @@
-package download_test
+package file_test
 
 import (
-	. "github.com/dpb587/ssoca/service/download"
+	. "github.com/dpb587/ssoca/service/file"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -16,7 +16,7 @@ var _ = Describe("Service", func() {
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(svc.Type()).To(Equal("download"))
+			Expect(svc.Type()).To(Equal("file"))
 		})
 	})
 

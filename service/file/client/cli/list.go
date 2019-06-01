@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	svc "github.com/dpb587/ssoca/service/download/client"
+	svc "github.com/dpb587/ssoca/service/file/client"
 )
 
 type List struct {
