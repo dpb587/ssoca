@@ -33,3 +33,8 @@ type Runtime interface {
 type ExecutableFinder interface {
 	Find() (string, bool, error)
 }
+
+//go:generate counterfeiter . ExecutableInstaller
+type ExecutableInstaller interface {
+	Install(logrus.FieldLogger) error
+}

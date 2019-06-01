@@ -8,7 +8,6 @@ import (
 	"time"
 
 	boshui "github.com/cloudfoundry/bosh-cli/ui"
-	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -36,7 +35,7 @@ type Runtime struct {
 	serviceManager service.Manager
 	fs             boshsys.FileSystem
 	ui             boshui.UI
-	logger         boshlog.Logger
+	logger         logrus.FieldLogger
 
 	stdin  io.Reader
 	stdout io.Writer
@@ -47,14 +46,13 @@ type Runtime struct {
 
 var _ client.Runtime = Runtime{}
 
-func NewRuntime(exec string, version_ version.Version, serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem, logger boshlog.Logger) Runtime {
+func NewRuntime(exec string, version_ version.Version, serviceManager service.Manager, ui boshui.UI, stdin io.Reader, stdout io.Writer, stderr io.Writer, fs boshsys.FileSystem) *Runtime {
 	runtime := Runtime{
 		exec:           exec,
 		version:        version_,
 		serviceManager: serviceManager,
 		fs:             fs,
 		ui:             ui,
-		logger:         logger,
 		stdin:          stdin,
 		stdout:         stdout,
 		stderr:         stderr,
@@ -62,24 +60,28 @@ func NewRuntime(exec string, version_ version.Version, serviceManager service.Ma
 
 	runtime.Version = cmd.Version{Runtime: runtime, Version: runtime.version}
 
-	return runtime
+	return &runtime
 }
 
 func (r Runtime) GetLogger() logrus.FieldLogger {
-	logger := logrus.New()
+	if r.logger == nil {
+		logger := logrus.New()
 
-	level, err := logrus.ParseLevel(r.LogLevel)
-	if err != nil {
-		panic(err)
+		level, err := logrus.ParseLevel(r.LogLevel)
+		if err != nil {
+			panic(err)
+		}
+
+		logger.Level = level
+		// logger.Formatter = &logrus.JSONFormatter{}
+
+		r.logger = logger.WithFields(logrus.Fields{
+			"cli.name":   r.Version.Version.Name,
+			"cli.semver": r.Version.Version.Semver,
+		})
 	}
 
-	logger.Level = level
-	logger.Formatter = &logrus.JSONFormatter{}
-
-	return logger.WithFields(logrus.Fields{
-		"cli.name":   r.Version.Version.Name,
-		"cli.semver": r.Version.Version.Semver,
-	})
+	return r.logger
 }
 
 func (r Runtime) GetExec() string {

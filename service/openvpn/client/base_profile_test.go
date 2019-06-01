@@ -26,7 +26,7 @@ var _ = Describe("BaseProfile", func() {
 		fakeruntime.GetAuthInterceptClientReturns(fakeclient, nil)
 		fakeruntime.GetClientReturns(fakeclient, nil)
 
-		subject = NewService("fake-name", fakeruntime, nil, nil, nil)
+		subject = NewService("fake-name", fakeruntime, nil, nil, nil, nil, nil)
 	})
 
 	Describe("unavailable client", func() {

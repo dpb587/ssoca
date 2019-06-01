@@ -1,4 +1,4 @@
-package helper
+package finder
 
 import (
 	"errors"
@@ -7,19 +7,19 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
-type ExecutableFinder struct {
+type Finder struct {
 	Paths []string
 	FS    boshsys.FileSystem
 }
 
-func (ef ExecutableFinder) Find() (string, bool, error) {
+func (f Finder) Find() (string, bool, error) {
 	path, err := exec.LookPath(guessExecutableName)
 	if err == nil {
 		return path, false, nil
 	}
 
 	for _, path := range guessExecutablePaths {
-		paths, err := ef.FS.Glob(path)
+		paths, err := f.FS.Glob(path)
 		if err != nil {
 			continue
 		}
