@@ -6,17 +6,19 @@ import (
 )
 
 type ServiceFactory struct {
-	runtime client.Runtime
-	fs      boshsys.FileSystem
+	runtime   client.Runtime
+	fs        boshsys.FileSystem
+	cmdRunner boshsys.CmdRunner
 }
 
-func NewServiceFactory(runtime client.Runtime, fs boshsys.FileSystem) ServiceFactory {
+func NewServiceFactory(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) ServiceFactory {
 	return ServiceFactory{
-		runtime: runtime,
-		fs:      fs,
+		runtime:   runtime,
+		fs:        fs,
+		cmdRunner: cmdRunner,
 	}
 }
 
 func (sf ServiceFactory) New(name string) Service {
-	return NewService(name, sf.runtime, sf.fs)
+	return NewService(name, sf.runtime, sf.fs, sf.cmdRunner)
 }

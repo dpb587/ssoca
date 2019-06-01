@@ -85,7 +85,7 @@ func main() {
 		"file",
 		"Access files from the environment",
 		"Access files from the environment",
-		srv_file_cli.CreateCommands(runtime, srv_file.NewServiceFactory(runtime, fs)),
+		srv_file_cli.CreateCommands(runtime, srv_file.NewServiceFactory(runtime, fs, cmdRunner)),
 	)
 
 	parser.Find("file").Aliases = []string{"download"}

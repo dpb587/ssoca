@@ -14,18 +14,20 @@ import (
 type Service struct {
 	svc.Service
 
-	name    string
-	runtime client.Runtime
-	fs      boshsys.FileSystem
+	name      string
+	runtime   client.Runtime
+	fs        boshsys.FileSystem
+	cmdRunner boshsys.CmdRunner
 }
 
 var _ service.Service = Service{}
 
-func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem) Service {
+func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
 	return Service{
-		name:    name,
-		runtime: runtime,
-		fs:      fs,
+		name:      name,
+		runtime:   runtime,
+		fs:        fs,
+		cmdRunner: cmdRunner,
 	}
 }
 

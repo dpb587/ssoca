@@ -9,8 +9,9 @@ import (
 type Commands struct {
 	*clientcmd.ServiceCommand
 
-	Get  Get  `command:"get" description:"Get a file"`
-	List List `command:"list" description:"List files"`
+	Exec Exec `command:"exec" description:"Temporarily get and then execute a file"`
+	Get  Get  `command:"get" description:"Download a file and verify its checksum" alias:"download"`
+	List List `command:"list" description:"List available files"`
 }
 
 func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory) *Commands {
@@ -21,6 +22,10 @@ func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory) *Commands {
 
 	return &Commands{
 		ServiceCommand: cmd,
+		Exec: Exec{
+			ServiceCommand: cmd,
+			serviceFactory: sf,
+		},
 		Get: Get{
 			ServiceCommand: cmd,
 			serviceFactory: sf,
