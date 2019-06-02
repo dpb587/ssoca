@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eu
+
+repo_dir="$PWD"
+
+if ! [ -e tmp/hugo-root ]; then
+  git clone https://github.com/dpb587/hugo-balmy-site tmp/hugo-root
+fi
+
+mkdir -p tmp/hugo-root/data/repo
+(
+  echo 'dates:'
+  echo '  v0.8.0: 2018-01-07 22:40:00 -0800'
+) > tmp/hugo-root/data/repo/tags.yml
+
+(
+  cd tmp/hugo-root
+  ./bin/generate-repo-tags-data.sh "$repo_dir"
+  ./bin/generate-metalink-artifacts-data.sh "git+https://github.com/dpb587/ssoca.git//ssoca-final#artifacts"
+)
+
+hugo serve \
+  --source tmp/hugo-root \
+  --contentDir "$repo_dir/docs" \
+  --config "config.yml,$repo_dir/docs/config.yml"
