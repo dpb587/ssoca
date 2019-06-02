@@ -19,10 +19,10 @@ import (
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/server"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/server"
 
-	srv_github_authn "github.com/dpb587/ssoca/auth/authn/github/server"
-	srv_google_authn "github.com/dpb587/ssoca/auth/authn/google/server"
-	srv_http_authn "github.com/dpb587/ssoca/auth/authn/http/server"
-	srv_uaa_authn "github.com/dpb587/ssoca/auth/authn/uaa/server"
+	srv_githubauth "github.com/dpb587/ssoca/service/githubauth/server"
+	srv_googleauth "github.com/dpb587/ssoca/service/googleauth/server"
+	srv_httpauth "github.com/dpb587/ssoca/service/httpauth/server"
+	srv_uaaauth "github.com/dpb587/ssoca/service/uaaauth/server"
 
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	filter_and "github.com/dpb587/ssoca/auth/authz/filter/and"
@@ -82,10 +82,10 @@ func main() {
 	serviceManager.Add(srv_env.NewService(cfg.Env, &serviceManager))
 
 	serviceFactory := service.NewDefaultFactory()
-	serviceFactory.Register(srv_github_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
-	serviceFactory.Register(srv_google_authn.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
-	serviceFactory.Register(srv_http_authn.NewServiceFactory())
-	serviceFactory.Register(srv_uaa_authn.NewServiceFactory())
+	serviceFactory.Register(srv_githubauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
+	serviceFactory.Register(srv_googleauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
+	serviceFactory.Register(srv_httpauth.NewServiceFactory())
+	serviceFactory.Register(srv_uaaauth.NewServiceFactory())
 
 	serviceFactory.Register(srv_file.NewServiceFactory(fs))
 	serviceFactory.Register(srv_ssh.NewServiceFactory(cfgval, certauthManager))

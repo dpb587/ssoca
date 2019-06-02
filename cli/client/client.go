@@ -15,22 +15,22 @@ import (
 
 	clierrors "github.com/dpb587/ssoca/cli/errors"
 
-	srv_github_auth "github.com/dpb587/ssoca/auth/authn/github/client"
-	srv_google_auth "github.com/dpb587/ssoca/auth/authn/google/client"
-	srv_http_auth "github.com/dpb587/ssoca/auth/authn/http/client"
-	srv_uaa_auth "github.com/dpb587/ssoca/auth/authn/uaa/client"
-	srv_uaa_auth_helper "github.com/dpb587/ssoca/auth/authn/uaa/helper"
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
 	srv_file "github.com/dpb587/ssoca/service/file/client"
 	srv_file_cli "github.com/dpb587/ssoca/service/file/client/cli"
+	srv_githubauth "github.com/dpb587/ssoca/service/githubauth/client"
+	srv_googleauth "github.com/dpb587/ssoca/service/googleauth/client"
+	srv_httpauth "github.com/dpb587/ssoca/service/httpauth/client"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
 	srv_openvpn_executable_finder "github.com/dpb587/ssoca/service/openvpn/client/executable/finder"
 	srv_openvpn_executable_installer "github.com/dpb587/ssoca/service/openvpn/client/executable/installer"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
 	srv_ssh_cli "github.com/dpb587/ssoca/service/ssh/client/cli"
+	srv_uaaauth "github.com/dpb587/ssoca/service/uaaauth/client"
+	srv_uaaauth_helper "github.com/dpb587/ssoca/service/uaaauth/helper"
 )
 
 var appName = "ssoca-client"
@@ -50,10 +50,10 @@ func main() {
 
 	serviceManager.Add(authService)
 	serviceManager.Add(srv_env.NewService(runtime, fs, cmdRunner))
-	serviceManager.Add(srv_github_auth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_google_auth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_http_auth.NewService(runtime))
-	serviceManager.Add(srv_uaa_auth.NewService(runtime, srv_uaa_auth_helper.DefaultClientFactory{}))
+	serviceManager.Add(srv_githubauth.NewService(runtime, cmdRunner))
+	serviceManager.Add(srv_googleauth.NewService(runtime, cmdRunner))
+	serviceManager.Add(srv_httpauth.NewService(runtime))
+	serviceManager.Add(srv_uaaauth.NewService(runtime, srv_uaaauth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {
 		svc, err := serviceManager.Get(name)
