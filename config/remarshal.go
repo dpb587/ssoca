@@ -10,12 +10,12 @@ import (
 func RemarshalYAML(from interface{}, to interface{}) error {
 	bytes, err := yaml.Marshal(from)
 	if err != nil {
-		return errors.Wrap(err, "Marshaling")
+		return errors.Wrap(err, "marshaling")
 	}
 
 	err = yaml.Unmarshal(bytes, to)
 	if err != nil {
-		return errors.Wrap(err, "Unmarshalling")
+		return errors.Wrap(err, "unmarshalling")
 	}
 
 	defaultable, ok := to.(Defaultable)
@@ -29,12 +29,12 @@ func RemarshalYAML(from interface{}, to interface{}) error {
 func RemarshalJSON(from interface{}, to interface{}) error {
 	bytes, err := json.Marshal(from)
 	if err != nil {
-		return errors.Wrap(err, "Marshaling")
+		return errors.Wrap(err, "marshaling")
 	}
 
 	err = json.Unmarshal(bytes, to)
 	if err != nil {
-		return errors.Wrap(err, "Unmarshalling")
+		return errors.Wrap(err, "unmarshalling")
 	}
 
 	defaultable, ok := to.(Defaultable)

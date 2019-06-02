@@ -17,12 +17,12 @@ func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error
 
 	svc, err := s.serviceManager.Get(authServiceType)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading auth service")
+		return nil, errors.Wrap(err, "loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)
 	if !ok {
-		return nil, fmt.Errorf("Cannot authenticate with service: %s", authServiceType)
+		return nil, fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
 	return authService.AuthLogin(info)
@@ -36,19 +36,19 @@ func (s Service) AuthLogout() error {
 func (s Service) AuthRequest(req *http.Request) error {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	authServiceType := env.Auth.Type
 
 	svc, err := s.serviceManager.Get(authServiceType)
 	if err != nil {
-		return errors.Wrap(err, "Loading auth service")
+		return errors.Wrap(err, "loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)
 	if !ok {
-		return fmt.Errorf("Cannot authenticate with service: %s", authServiceType)
+		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
 	return authService.AuthRequest(req)

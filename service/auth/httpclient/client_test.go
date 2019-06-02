@@ -41,7 +41,7 @@ var _ = Describe("Client", func() {
 				_, err := subject.GetInfo()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting"))
+				Expect(err.Error()).To(ContainSubstring("getting"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})

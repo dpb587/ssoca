@@ -23,7 +23,7 @@ var _ = Describe("Factory", func() {
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(subject.Type()).To(Equal("download"))
+			Expect(subject.Type()).To(Equal("file"))
 		})
 	})
 
@@ -80,7 +80,7 @@ var _ = Describe("Factory", func() {
 					})
 
 					Expect(err).ToNot(BeNil())
-					Expect(err.Error()).To(ContainSubstring("Globbing"))
+					Expect(err.Error()).To(ContainSubstring("globbing"))
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
 				})
 			})
@@ -99,7 +99,7 @@ var _ = Describe("Factory", func() {
 					})
 
 					Expect(err).ToNot(BeNil())
-					Expect(err.Error()).To(ContainSubstring("Opening file for digest"))
+					Expect(err.Error()).To(ContainSubstring("opening file for digest"))
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
 				})
 			})

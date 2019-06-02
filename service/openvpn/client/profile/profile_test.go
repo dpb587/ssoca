@@ -33,7 +33,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 	BeforeEach(func() {
 		test1keyPEM, _ := pem.Decode([]byte(test1keyStr))
 		if test1keyPEM == nil {
-			panic(errors.New("Failed decoding private key PEM"))
+			panic(errors.New("failed decoding private key PEM"))
 		}
 
 		parsed, err := x509.ParsePKCS1PrivateKey(test1keyPEM.Bytes)

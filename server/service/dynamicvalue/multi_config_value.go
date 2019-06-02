@@ -30,7 +30,7 @@ func (mcv *MultiConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) er
 	for _, data := range dataSlice {
 		value, err := mcv.factory.Create(data)
 		if err != nil {
-			return errors.Wrap(err, "Parsing dynamic value")
+			return errors.Wrap(err, "parsing dynamic value")
 		}
 
 		mcv.values = append(mcv.values, value)
@@ -45,7 +45,7 @@ func (mcv MultiConfigValue) Evaluate(arg0 *http.Request, arg1 *auth.Token) ([]st
 	for _, value := range mcv.values {
 		res, err := value.Evaluate(arg0, arg1)
 		if err != nil {
-			return nil, errors.Wrap(err, "Evaluating template")
+			return nil, errors.Wrap(err, "evaluating template")
 		}
 
 		values = append(values, res)

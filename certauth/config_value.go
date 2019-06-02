@@ -35,7 +35,7 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 func (cv *ConfigValue) Configure(name string) error {
 	provider, err := cv.manager.Get(name)
 	if err != nil {
-		return errors.Wrap(err, "Getting certificate authority")
+		return errors.Wrap(err, "getting certificate authority")
 	}
 
 	cv.provider = provider

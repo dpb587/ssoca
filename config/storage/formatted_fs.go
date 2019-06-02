@@ -28,12 +28,12 @@ func (s FormattedFS) Get(path string, get interface{}) error {
 	if s.fs.FileExists(absPath) {
 		bytes, err := s.fs.ReadFile(absPath)
 		if err != nil {
-			return errors.Wrapf(err, "Reading config file '%s'", absPath)
+			return errors.Wrapf(err, "reading config file '%s'", absPath)
 		}
 
 		err = s.parser.Get(string(bytes), get)
 		if err != nil {
-			return errors.Wrap(err, "Parsing config")
+			return errors.Wrap(err, "parsing config")
 		}
 	}
 
@@ -48,12 +48,12 @@ func (s FormattedFS) Put(path string, put interface{}) (string, error) {
 
 	bytes, err := s.parser.Put("", put)
 	if err != nil {
-		return "", errors.Wrap(err, "Serializing config")
+		return "", errors.Wrap(err, "serializing config")
 	}
 
 	err = s.fs.WriteFileString(absPath, bytes)
 	if err != nil {
-		return "", errors.Wrapf(err, "Writing config file '%s'", absPath)
+		return "", errors.Wrapf(err, "writing config file '%s'", absPath)
 	}
 
 	return path, nil

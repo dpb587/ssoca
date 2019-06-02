@@ -26,23 +26,23 @@ func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
 
 	err := config.RemarshalYAML(cfg, &arr)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to parse 'and' config")
+		return nil, errors.Wrap(err, "failed to parse 'and' config")
 	}
 
 	for reqIdx, req := range arr {
 		if len(req) != 1 {
-			return nil, fmt.Errorf("Filter options for item %d of 'and' does not have 1 field", reqIdx)
+			return nil, fmt.Errorf("filter options for item %d of 'and' does not have 1 field", reqIdx)
 		}
 
 		for reqType, reqOptions := range req {
 			reqFilter, err := f.manager.Get(reqType)
 			if err != nil {
-				return nil, errors.Wrapf(err, "Loading filter '%s'", reqType)
+				return nil, errors.Wrapf(err, "loading filter '%s'", reqType)
 			}
 
 			req, err := reqFilter.Create(reqOptions)
 			if err != nil {
-				return nil, errors.Wrapf(err, "Creating requirement for item %d of 'and'", reqIdx)
+				return nil, errors.Wrapf(err, "creating requirement for item %d of 'and'", reqIdx)
 			}
 
 			requirement.Requirements = append(requirement.Requirements, req)

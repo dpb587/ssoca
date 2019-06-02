@@ -14,11 +14,11 @@ func (f Filter) Create(cfg interface{}) (filter.Requirement, error) {
 
 	err := config.RemarshalYAML(cfg, &requirement)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	if requirement.Present == "" {
-		return nil, errors.New("Property must be configured: present")
+		return nil, errors.New("property must be configured: present")
 	}
 
 	return requirement, nil

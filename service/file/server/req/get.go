@@ -30,14 +30,14 @@ func (h Get) Route() string {
 func (h Get) Execute(request req.Request) error {
 	name := request.RawRequest.URL.Query().Get("name")
 	if name == "" {
-		return apierr.NewError(errors.New("Missing query parameter: name"), 404, "")
+		return apierr.NewError(errors.New("missing query parameter: name"), 404, "")
 	}
 
 	for _, file := range h.Paths {
 		if file.Name == name {
 			fh, err := h.FS.OpenFile(file.Path, os.O_RDONLY, 0)
 			if err != nil {
-				return errors.Wrap(err, "Opening file for reading")
+				return errors.Wrap(err, "opening file for reading")
 			}
 
 			defer fh.Close()
@@ -50,5 +50,5 @@ func (h Get) Execute(request req.Request) error {
 		}
 	}
 
-	return apierr.NewError(fmt.Errorf("Invalid file name: %s", name), 404, "")
+	return apierr.NewError(fmt.Errorf("invalid file name: %s", name), 404, "")
 }

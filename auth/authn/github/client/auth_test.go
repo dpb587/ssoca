@@ -118,7 +118,7 @@ var _ = Describe("Auth", func() {
 				err := subject.AuthRequest(&req)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing authentication options"))
+				Expect(err.Error()).To(ContainSubstring("parsing authentication options"))
 			})
 		})
 	})

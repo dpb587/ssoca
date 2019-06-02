@@ -49,7 +49,7 @@ var _ = Describe("Request", func() {
 			err := subject.ReadPayload(struct{}{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Reading request body"))
+			Expect(err.Error()).To(ContainSubstring("reading request body"))
 			Expect(err.Error()).To(ContainSubstring(iotest.ErrTimeout.Error()))
 		})
 
@@ -61,7 +61,7 @@ var _ = Describe("Request", func() {
 			err := subject.ReadPayload(struct{}{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Unmarshaling request payload"))
+			Expect(err.Error()).To(ContainSubstring("unmarshaling request payload"))
 		})
 	})
 
@@ -93,7 +93,7 @@ var _ = Describe("Request", func() {
 			err := subject.WritePayload(payload)
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
-			Expect(err.Error()).To(ContainSubstring("Marshalling response payload"))
+			Expect(err.Error()).To(ContainSubstring("marshalling response payload"))
 		})
 	})
 })

@@ -72,7 +72,7 @@ func (v *ServerTrustedProxy) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	_, proxy, err := net.ParseCIDR(data)
 	if err != nil {
-		return errors.Wrap(err, "Parsing trusted proxy CIDR")
+		return errors.Wrap(err, "parsing trusted proxy CIDR")
 	}
 
 	*v = ServerTrustedProxy(*proxy)

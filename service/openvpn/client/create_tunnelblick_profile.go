@@ -21,7 +21,7 @@ type CreateTunnelblickProfileOpts struct {
 func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) (string, error) {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
-		return "", errors.Wrap(err, "Getting config manager")
+		return "", errors.Wrap(err, "getting config manager")
 	}
 
 	ssocaExec := opts.SsocaExec
@@ -31,14 +31,14 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) (st
 
 	ssocaExec, err = exec.LookPath(ssocaExec)
 	if err != nil {
-		return "", errors.Wrap(err, "Resolving ssoca executable")
+		return "", errors.Wrap(err, "resolving ssoca executable")
 	}
 
 	dir := opts.Directory
 	if dir == "" {
 		dir, err = os.Getwd()
 		if err != nil {
-			return "", errors.Wrap(err, "Getting working directory")
+			return "", errors.Wrap(err, "getting working directory")
 		}
 	}
 
@@ -55,34 +55,34 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) (st
 
 	dirAbs, err := s.fs.ExpandPath(dir)
 	if err != nil {
-		return "", errors.Wrap(err, "Expanding path")
+		return "", errors.Wrap(err, "expanding path")
 	}
 
 	err = s.fs.MkdirAll(dirAbs, 0700)
 	if err != nil {
-		return "", errors.Wrap(err, "Creating target directory")
+		return "", errors.Wrap(err, "creating target directory")
 	}
 
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return "", errors.Wrap(err, "Getting client")
+		return "", errors.Wrap(err, "getting client")
 	}
 
 	profile, err := client.BaseProfile()
 	if err != nil {
-		return "", errors.Wrap(err, "Getting base profile")
+		return "", errors.Wrap(err, "getting base profile")
 	}
 
 	pathConfigOvpn := fmt.Sprintf("%s/config.ovpn", dirAbs)
 
 	err = s.fs.WriteFileString(pathConfigOvpn, profile)
 	if err != nil {
-		return "", errors.Wrap(err, "Writing config.ovpn")
+		return "", errors.Wrap(err, "writing config.ovpn")
 	}
 
 	err = s.fs.Chmod(pathConfigOvpn, 0400)
 	if err != nil {
-		return "", errors.Wrap(err, "Chmoding config.ovpn")
+		return "", errors.Wrap(err, "chmoding config.ovpn")
 	}
 
 	pathPreConnect := fmt.Sprintf("%s/pre-connect.sh", dirAbs)
@@ -103,31 +103,31 @@ func (s Service) CreateTunnelblickProfile(opts CreateTunnelblickProfileOpts) (st
 		},
 	)
 	if err != nil {
-		return "", errors.Wrap(err, "Generating Tunnelblick pre-connect.sh")
+		return "", errors.Wrap(err, "generating Tunnelblick pre-connect.sh")
 	}
 
 	preconnectScript := preconnectScriptBuf.String()
 
 	err = s.fs.WriteFileString(pathPreConnect, preconnectScript)
 	if err != nil {
-		return "", errors.Wrap(err, "Writing pre-connect.sh")
+		return "", errors.Wrap(err, "writing pre-connect.sh")
 	}
 
 	err = s.fs.Chmod(pathPreConnect, 0500)
 	if err != nil {
-		return "", errors.Wrap(err, "Chmoding pre-connect.sh")
+		return "", errors.Wrap(err, "chmoding pre-connect.sh")
 	}
 
 	pathInstall := fmt.Sprintf("%s/ssoca-install.sh", dirAbs)
 
 	err = s.fs.WriteFileString(pathInstall, tunnelblickInstallScript)
 	if err != nil {
-		return "", errors.Wrap(err, "Writing ssoca-install.sh")
+		return "", errors.Wrap(err, "writing ssoca-install.sh")
 	}
 
 	err = s.fs.Chmod(pathInstall, 0500)
 	if err != nil {
-		return "", errors.Wrap(err, "Chmoding ssoca-install.sh")
+		return "", errors.Wrap(err, "chmoding ssoca-install.sh")
 	}
 
 	return dir, nil

@@ -30,19 +30,19 @@ func (c SignPublicKey) Execute(_ []string) error {
 
 	expandedPath, err := c.fs.ExpandPath(c.Args.Path)
 	if err != nil {
-		return errors.Wrap(err, "Expanding path")
+		return errors.Wrap(err, "expanding path")
 	}
 
 	publicKey, err := c.fs.ReadFile(expandedPath)
 	if err != nil {
-		return errors.Wrap(err, "Reading public key")
+		return errors.Wrap(err, "reading public key")
 	}
 
 	certificate, _, err := service.SignPublicKey(svc.SignPublicKeyOptions{
 		PublicKey: publicKey,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Getting profile")
+		return errors.Wrap(err, "getting profile")
 	}
 
 	ui := c.Runtime.GetUI()

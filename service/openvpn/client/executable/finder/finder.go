@@ -29,5 +29,5 @@ func (f Finder) Find() (string, bool, error) {
 		}
 	}
 
-	return "", false, errors.New("Failed to find the openvpn executable")
+	return "", false, errors.New("failed to find the openvpn executable")
 }

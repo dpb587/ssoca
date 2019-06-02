@@ -69,7 +69,7 @@ var _ = Describe("Get", func() {
 				)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Missing query parameter: name"))
+				Expect(err.Error()).To(ContainSubstring("missing query parameter: name"))
 
 				apiErr, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
@@ -87,7 +87,7 @@ var _ = Describe("Get", func() {
 				)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Invalid file name"))
+				Expect(err.Error()).To(ContainSubstring("invalid file name"))
 
 				apiErr, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
@@ -104,7 +104,7 @@ var _ = Describe("Get", func() {
 					)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Invalid file name"))
+					Expect(err.Error()).To(ContainSubstring("invalid file name"))
 
 					apiErr, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
@@ -125,7 +125,7 @@ var _ = Describe("Get", func() {
 				)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Opening file for reading"))
+				Expect(err.Error()).To(ContainSubstring("opening file for reading"))
 			})
 		})
 	})

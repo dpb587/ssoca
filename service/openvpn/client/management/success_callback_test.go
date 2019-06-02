@@ -17,6 +17,6 @@ var _ = Describe("SuccessCallback", func() {
 	It("failure response", func() {
 		_, err := SuccessCallback(nil, "FAILURE: data")
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("Bad management command result"))
+		Expect(err.Error()).To(ContainSubstring("bad management command result"))
 	})
 })

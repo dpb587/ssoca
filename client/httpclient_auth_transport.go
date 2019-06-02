@@ -33,7 +33,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	} else {
 		env, err := t.Runtime.GetEnvironment()
 		if err != nil {
-			return nil, errors.Wrap(err, "Retrieving environment")
+			return nil, errors.Wrap(err, "retrieving environment")
 		}
 
 		if env.Auth != nil {
@@ -41,17 +41,17 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 			svc, err := t.serviceManager.Get(authServiceType)
 			if err != nil {
-				return nil, errors.Wrap(err, "Getting authentication service")
+				return nil, errors.Wrap(err, "getting authentication service")
 			}
 
 			authService, ok := svc.(service.AuthService)
 			if !ok {
-				return nil, fmt.Errorf("Cannot authenticate with service: %s", authServiceType)
+				return nil, fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 			}
 
 			err = authService.AuthRequest(req)
 			if err != nil {
-				return nil, errors.Wrap(err, "Authenticating request")
+				return nil, errors.Wrap(err, "authenticating request")
 			}
 		}
 	}

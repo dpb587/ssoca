@@ -33,7 +33,7 @@ func (c Exec) Execute(_ []string) error {
 		ExtraArgs:     c.Args.Extra,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Executing file")
+		return errors.Wrap(err, "executing file")
 	}
 
 	return nil

@@ -14,14 +14,14 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 
 	username, err := ui.AskForText("username")
 	if err != nil {
-		return auth, errors.Wrap(err, "Requesting username")
+		return auth, errors.Wrap(err, "requesting username")
 	}
 
 	auth.Username = username
 
 	password, err := ui.AskForPassword("password")
 	if err != nil {
-		return auth, errors.Wrap(err, "Requesting password")
+		return auth, errors.Wrap(err, "requesting password")
 	}
 
 	auth.Password = password
@@ -36,13 +36,13 @@ func (s Service) AuthLogout() error {
 func (s Service) AuthRequest(req *http.Request) error {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	authConfig := AuthConfig{}
 	err = env.Auth.UnmarshalOptions(&authConfig)
 	if err != nil {
-		return errors.Wrap(err, "Parsing authentication options")
+		return errors.Wrap(err, "parsing authentication options")
 	}
 
 	req.SetBasicAuth(authConfig.Username, authConfig.Password)

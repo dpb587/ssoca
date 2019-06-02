@@ -21,7 +21,7 @@ var _ flags.Commander = Logout{}
 func (c Logout) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment state")
+		return errors.Wrap(err, "getting environment state")
 	}
 
 	if env.Auth == nil {
@@ -32,29 +32,29 @@ func (c Logout) Execute(_ []string) error {
 
 	svc, err := c.ServiceManager.Get(authServiceType)
 	if err != nil {
-		return errors.Wrap(err, "Loading auth service")
+		return errors.Wrap(err, "loading auth service")
 	}
 
 	authService, ok := svc.(service.AuthService)
 	if !ok {
-		return fmt.Errorf("Cannot authenticate with service: %s", authServiceType)
+		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
 	err = authService.AuthLogout()
 	if err != nil {
-		return errors.Wrap(err, "Unauthenticating")
+		return errors.Wrap(err, "unauthenticating")
 	}
 
 	env.Auth = nil
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return errors.Wrap(err, "Updating environment state")
+		return errors.Wrap(err, "updating environment state")
 	}
 
 	ui := c.Runtime.GetUI()

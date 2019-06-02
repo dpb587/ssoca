@@ -17,17 +17,17 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 
 	err := config.RemarshalJSON(remoteService.Metadata, &metadata)
 	if err != nil {
-		return nil, errors.Wrap(err, "Parsing metadata")
+		return nil, errors.Wrap(err, "parsing metadata")
 	}
 
 	client, err := s.uaaClientFactory.CreateClient(metadata.URL, metadata.ClientID, metadata.ClientSecret, metadata.CACertificate)
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating UAA client")
+		return nil, errors.Wrap(err, "creating UAA client")
 	}
 
 	prompts, err := client.Prompts()
 	if err != nil {
-		return nil, errors.Wrap(err, "Discovering UAA prompts")
+		return nil, errors.Wrap(err, "discovering UAA prompts")
 	}
 
 	ui := s.runtime.GetUI()
@@ -71,7 +71,7 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 
 	accessToken, err := client.OwnerPasswordCredentialsGrant(answers)
 	if err != nil {
-		return nil, errors.Wrap(err, "Fetching credentials grant")
+		return nil, errors.Wrap(err, "fetching credentials grant")
 	}
 
 	auth := AuthConfig{
@@ -92,24 +92,24 @@ func (s Service) AuthLogout() error {
 func (s Service) AuthRequest(req *http.Request) error {
 	env, err := s.runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	authConfig := AuthConfig{}
 	err = env.Auth.UnmarshalOptions(&authConfig)
 	if err != nil {
-		return errors.Wrap(err, "Parsing authentication options")
+		return errors.Wrap(err, "parsing authentication options")
 	}
 
 	client, err := s.uaaClientFactory.CreateClient(authConfig.URL, authConfig.ClientID, authConfig.ClientSecret, authConfig.CACertificate)
 	if err != nil {
-		return errors.Wrap(err, "Creating UAA client")
+		return errors.Wrap(err, "creating UAA client")
 	}
 
 	staleToken := client.NewStaleAccessToken(authConfig.RefreshToken)
 	accessToken, err := staleToken.Refresh()
 	if err != nil {
-		return errors.Wrap(err, "Refreshing token")
+		return errors.Wrap(err, "refreshing token")
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("%s %s", accessToken.Type(), accessToken.Value()))

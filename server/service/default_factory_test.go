@@ -56,7 +56,7 @@ var _ = Describe("DefaultFactory", func() {
 				_, err := factory.Create("fake1", "test1", map[string]interface{}{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Creating service fake1[test1]"))
+				Expect(err.Error()).To(ContainSubstring("creating service fake1[test1]"))
 			})
 		})
 	})

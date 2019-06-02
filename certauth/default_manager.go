@@ -22,7 +22,7 @@ func (f defaultManager) Add(certAuth Provider) {
 func (f defaultManager) Get(name string) (Provider, error) {
 	provider, ok := f.certAuths[name]
 	if !ok {
-		return nil, fmt.Errorf("Unrecognized name: %s", name)
+		return nil, fmt.Errorf("unrecognized name: %s", name)
 	}
 
 	return provider, nil

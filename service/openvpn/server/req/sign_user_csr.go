@@ -46,17 +46,17 @@ func (h SignUserCSR) Execute(request req.Request) error {
 
 	csrPEM, _ := pem.Decode([]byte(payload.CSR))
 	if csrPEM == nil {
-		return apierr.NewError(errors.New("Decoding CSR"), http.StatusBadRequest, "Failed to decode certificate signing request")
+		return apierr.NewError(errors.New("decoding CSR"), http.StatusBadRequest, "failed to decode certificate signing request")
 	}
 
 	csr, err := x509.ParseCertificateRequest(csrPEM.Bytes)
 	if err != nil {
-		return apierr.NewError(errors.Wrap(err, "Parsing CSR"), http.StatusBadRequest, "Failed to parse certificate signing request")
+		return apierr.NewError(errors.Wrap(err, "parsing CSR"), http.StatusBadRequest, "failed to parse certificate signing request")
 	}
 
 	serialNumber, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 	if err != nil {
-		return errors.Wrap(err, "Generating serial number")
+		return errors.Wrap(err, "generating serial number")
 	}
 
 	now := time.Now()
@@ -77,14 +77,14 @@ func (h SignUserCSR) Execute(request req.Request) error {
 
 	certificatePEM, err := h.CertAuth.SignCertificate(&template, csr.PublicKey, request.LoggerContext)
 	if err != nil {
-		return errors.Wrap(err, "Signing certificate")
+		return errors.Wrap(err, "signing certificate")
 	}
 
 	response.Certificate = strings.TrimSpace(string(certificatePEM))
 
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
-		return errors.Wrap(err, "Loading CA certificate")
+		return errors.Wrap(err, "loading CA certificate")
 	}
 
 	response.Profile = fmt.Sprintf(

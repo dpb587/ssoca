@@ -35,7 +35,7 @@ func NewServer(handler ServerHandler, bindProtocol, bindAddress, password string
 func (cs *Server) Start() error {
 	listener, err := net.Listen(cs.bindProtocol, cs.bindAddress)
 	if err != nil {
-		return errors.Wrap(err, "Binding")
+		return errors.Wrap(err, "binding")
 	}
 
 	cs.listener = listener

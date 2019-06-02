@@ -31,7 +31,7 @@ func (c client) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
 	path := fmt.Sprintf("/%s/ca-public-key", c.service)
 	err := c.client.APIGet(path, &out)
 	if err != nil {
-		return out, errors.Wrapf(err, "Getting %s", path)
+		return out, errors.Wrapf(err, "getting %s", path)
 	}
 
 	return out, nil
@@ -43,7 +43,7 @@ func (c client) PostSignPublicKey(in api.SignPublicKeyRequest) (api.SignPublicKe
 	path := fmt.Sprintf("/%s/sign-public-key", c.service)
 	err := c.client.APIPost(path, &out, in)
 	if err != nil {
-		return out, errors.Wrapf(err, "Posting %s", path)
+		return out, errors.Wrapf(err, "posting %s", path)
 	}
 
 	return out, nil

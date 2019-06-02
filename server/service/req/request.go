@@ -25,12 +25,12 @@ type Request struct {
 func (r *Request) ReadPayload(data interface{}) error {
 	bytes, err := ioutil.ReadAll(r.RawRequest.Body)
 	if err != nil {
-		return errors.Wrap(err, "Reading request body")
+		return errors.Wrap(err, "reading request body")
 	}
 
 	err = json.Unmarshal(bytes, data)
 	if err != nil {
-		return apierr.NewError(apierr.WrapError(err, "Unmarshaling request payload"), http.StatusBadRequest, "Invalid body")
+		return apierr.NewError(apierr.WrapError(err, "unmarshaling request payload"), http.StatusBadRequest, "invalid body")
 	}
 
 	return nil
@@ -39,7 +39,7 @@ func (r *Request) ReadPayload(data interface{}) error {
 func (r *Request) WritePayload(data interface{}) error {
 	bytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		return errors.Wrap(err, "Marshalling response payload")
+		return errors.Wrap(err, "marshalling response payload")
 	}
 
 	r.RawResponse.Header().Add("Content-Type", "application/json")

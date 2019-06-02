@@ -38,7 +38,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	paths, err := f.fs.Glob(cfg.Glob)
 	if err != nil {
-		return nil, errors.Wrap(err, "Globbing")
+		return nil, errors.Wrap(err, "globbing")
 	}
 
 	cfg.Paths = []svcconfig.PathConfig{}
@@ -46,29 +46,29 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 	for _, path := range paths {
 		stat, err := f.fs.Stat(path)
 		if err != nil {
-			return nil, errors.Wrap(err, "Stat file")
+			return nil, errors.Wrap(err, "stat file")
 		}
 
 		file, err := f.fs.OpenFile(path, os.O_RDONLY, 0)
 		if err != nil {
-			return nil, errors.Wrap(err, "Opening file for digest")
+			return nil, errors.Wrap(err, "opening file for digest")
 		}
 
 		defer file.Close()
 
 		digestSHA1, err := boshcrypto.DigestAlgorithmSHA1.CreateDigest(file)
 		if err != nil {
-			return nil, errors.Wrap(err, "Creating sha1 digest")
+			return nil, errors.Wrap(err, "creating sha1 digest")
 		}
 
 		digestSHA256, err := boshcrypto.DigestAlgorithmSHA256.CreateDigest(file)
 		if err != nil {
-			return nil, errors.Wrap(err, "Creating sha256 digest")
+			return nil, errors.Wrap(err, "creating sha256 digest")
 		}
 
 		digestSHA512, err := boshcrypto.DigestAlgorithmSHA512.CreateDigest(file)
 		if err != nil {
-			return nil, errors.Wrap(err, "Creating sha512 digest")
+			return nil, errors.Wrap(err, "creating sha512 digest")
 		}
 
 		cfg.Paths = append(

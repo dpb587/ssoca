@@ -29,12 +29,12 @@ func (h CAPublicKey) Execute(request req.Request) error {
 
 	certificate, err := h.CertAuth.GetCertificate()
 	if err != nil {
-		return errors.Wrap(err, "Loading certificate")
+		return errors.Wrap(err, "loading certificate")
 	}
 
 	sshcert, err := ssh.NewPublicKey(certificate.PublicKey)
 	if err != nil {
-		return errors.Wrap(err, "Parsing ssh public key")
+		return errors.Wrap(err, "parsing ssh public key")
 	}
 
 	payload.OpenSSH = fmt.Sprintf("%s %s", sshcert.Type(), base64.StdEncoding.EncodeToString(sshcert.Marshal()))

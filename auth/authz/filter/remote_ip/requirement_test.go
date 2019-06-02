@@ -54,7 +54,7 @@ var _ = Describe("Requirement", func() {
 
 				aerr, ok := err.(authz.Error)
 				Expect(ok).To(BeTrue())
-				Expect(aerr.Error()).To(Equal("Remote IP is not allowed"))
+				Expect(aerr.Error()).To(Equal("remote IP is not allowed"))
 			})
 		})
 
@@ -86,7 +86,7 @@ var _ = Describe("Requirement", func() {
 
 				aerr, ok := err.(authz.Error)
 				Expect(ok).To(BeTrue())
-				Expect(aerr.Error()).To(Equal("Remote IP is not allowed"))
+				Expect(aerr.Error()).To(Equal("remote IP is not allowed"))
 			})
 		})
 
@@ -100,7 +100,7 @@ var _ = Describe("Requirement", func() {
 				)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing remote address"))
+				Expect(err.Error()).To(ContainSubstring("parsing remote address"))
 			})
 		})
 	})

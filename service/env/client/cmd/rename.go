@@ -24,19 +24,19 @@ type RenameArgs struct {
 func (c Rename) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	env.Alias = c.Args.Name
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return errors.Wrap(err, "Setting environment")
+		return errors.Wrap(err, "setting environment")
 	}
 
 	return nil

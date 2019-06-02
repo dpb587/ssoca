@@ -27,9 +27,9 @@ func NewOriginToken(origin string) Token {
 func (t Token) Valid() error {
 	// these are not optional for us
 	if t.ExpiresAt == 0 {
-		return errors.New("Missing exp")
+		return errors.New("missing exp")
 	} else if t.NotBefore == 0 {
-		return errors.New("Missing nbf")
+		return errors.New("missing nbf")
 	}
 
 	// standard valdiations
@@ -40,9 +40,9 @@ func (t Token) Valid() error {
 
 	// must be self-signed by/for us
 	if t.Audience != t.origin {
-		return fmt.Errorf("Invalid audience: %s", t.Audience)
+		return fmt.Errorf("invalid audience: %s", t.Audience)
 	} else if t.Issuer != t.origin {
-		return fmt.Errorf("Invalid issuer: %s", t.Issuer)
+		return fmt.Errorf("invalid issuer: %s", t.Issuer)
 	}
 
 	return nil

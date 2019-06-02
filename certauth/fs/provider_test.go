@@ -58,7 +58,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 	pemToCertificate := func(bytes []byte) x509.Certificate {
 		pem, _ := pem.Decode(bytes)
 		if pem == nil {
-			panic("Failed decoding PEM")
+			panic("failed decoding PEM")
 		}
 
 		certificate, err := x509.ParseCertificate(pem.Bytes)
@@ -140,7 +140,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.SignCertificate(&template, &testKey.PublicKey, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA certificate"))
+				Expect(err.Error()).To(ContainSubstring("getting CA certificate"))
 			})
 
 			It("errors on missing private key", func() {
@@ -157,7 +157,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.SignCertificate(&template, &testKey.PublicKey, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 
 			It("errors on misconfigured private key", func() {
@@ -174,7 +174,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.SignCertificate(&template, &testKey.PublicKey, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 
 			It("errors on invalid private key", func() {
@@ -191,7 +191,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.SignCertificate(&template, &testKey.PublicKey, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 		})
 	})
@@ -255,7 +255,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				err := subject.SignSSHCertificate(&cert, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 
 			It("errors on misconfigured private key", func() {
@@ -272,7 +272,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				err := subject.SignSSHCertificate(&cert, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 
 			It("errors on invalid private key", func() {
@@ -289,7 +289,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				err := subject.SignSSHCertificate(&cert, logrus.Fields{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting CA private key"))
+				Expect(err.Error()).To(ContainSubstring("getting CA private key"))
 			})
 		})
 	})
@@ -329,7 +329,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.GetCertificate()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Reading certificate"))
+				Expect(err.Error()).To(ContainSubstring("reading certificate"))
 			})
 		})
 
@@ -348,7 +348,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.GetCertificate()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Failed decoding certificate PEM"))
+				Expect(err.Error()).To(ContainSubstring("failed decoding certificate PEM"))
 			})
 		})
 
@@ -367,7 +367,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				_, err := subject.GetCertificate()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing certificate"))
+				Expect(err.Error()).To(ContainSubstring("parsing certificate"))
 			})
 		})
 	})

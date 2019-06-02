@@ -26,12 +26,12 @@ func (f defaultFactory) Register(serviceFactory ServiceFactory) {
 func (f defaultFactory) Create(sType string, name string, options map[string]interface{}) (Service, error) {
 	factory, ok := f.services[sType]
 	if !ok {
-		return nil, fmt.Errorf("Unrecognized service type: %s", sType)
+		return nil, fmt.Errorf("unrecognized service type: %s", sType)
 	}
 
 	service, err := factory.Create(name, options)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Creating service %s[%s]", sType, name)
+		return nil, errors.Wrapf(err, "creating service %s[%s]", sType, name)
 	}
 
 	return service, nil

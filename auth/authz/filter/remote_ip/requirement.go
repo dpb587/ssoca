@@ -18,12 +18,12 @@ type Requirement struct {
 func (r Requirement) VerifyAuthorization(req *http.Request, _ *auth.Token) error {
 	host, _, err := net.SplitHostPort(req.RemoteAddr)
 	if err != nil {
-		return errors.Wrap(err, "Parsing remote address")
+		return errors.Wrap(err, "parsing remote address")
 	}
 
 	ip := net.ParseIP(host)
 	if !r.Within.Contains(ip) {
-		return authz.NewError(errors.New("Remote IP is not allowed"))
+		return authz.NewError(errors.New("remote IP is not allowed"))
 	}
 
 	return nil

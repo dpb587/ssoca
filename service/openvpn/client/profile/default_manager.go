@@ -43,7 +43,7 @@ func NewDefaultManager(client httpclient.Client, service string, privateKey *rsa
 func CreateManagerAndPrivateKey(client httpclient.Client, service string) (DefaultManager, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return DefaultManager{}, errors.Wrap(err, "Generating private key")
+		return DefaultManager{}, errors.Wrap(err, "generating private key")
 	}
 
 	return NewDefaultManager(client, service, privateKey), nil
@@ -57,7 +57,7 @@ func (m *DefaultManager) GetProfile() (Profile, error) {
 	if !m.IsCertificateValid() {
 		err := m.Renew()
 		if err != nil {
-			return Profile{}, errors.Wrap(err, "Renewing certificate")
+			return Profile{}, errors.Wrap(err, "renewing certificate")
 		}
 	}
 
@@ -71,14 +71,14 @@ func (m DefaultManager) IsCertificateValid() bool {
 func (m *DefaultManager) Renew() error {
 	csrBytes, err := m.createCSR()
 	if err != nil {
-		return errors.Wrap(err, "Creating CSR")
+		return errors.Wrap(err, "creating CSR")
 	}
 
 	response, err := m.client.SignUserCSR(api.SignUserCSRRequest{
 		CSR: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})),
 	})
 	if err != nil {
-		return errors.Wrap(err, "Requesting signed profile")
+		return errors.Wrap(err, "requesting signed profile")
 	}
 
 	m.profile = response.Profile
@@ -86,12 +86,12 @@ func (m *DefaultManager) Renew() error {
 
 	pem, _ := pem.Decode(m.certificateBytes)
 	if pem == nil {
-		return errors.New("Failed to decode PEM from certificate")
+		return errors.New("failed to decode PEM from certificate")
 	}
 
 	certificate, err := x509.ParseCertificate(pem.Bytes)
 	if err != nil {
-		return errors.Wrap(err, "Parsing certificate")
+		return errors.Wrap(err, "parsing certificate")
 	}
 
 	m.certificate = certificate
@@ -102,12 +102,12 @@ func (m *DefaultManager) Renew() error {
 func (m DefaultManager) createCSR() ([]byte, error) {
 	localuser, err := user.Current()
 	if err != nil {
-		return nil, errors.Wrap(err, "Checking local user")
+		return nil, errors.Wrap(err, "checking local user")
 	}
 
 	localhost, err := os.Hostname()
 	if err != nil {
-		return nil, errors.Wrap(err, "Checking local hostname")
+		return nil, errors.Wrap(err, "checking local hostname")
 	}
 
 	emailAddress := fmt.Sprintf("%s@%s", localuser.Username, localhost)
@@ -131,7 +131,7 @@ func (m DefaultManager) createCSR() ([]byte, error) {
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, &template, m.privateKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating certificate request")
+		return nil, errors.Wrap(err, "creating certificate request")
 	}
 
 	return csrBytes, nil

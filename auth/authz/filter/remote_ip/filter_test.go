@@ -82,7 +82,7 @@ var _ = Describe("Filter", func() {
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Loading config"))
+					Expect(err.Error()).To(ContainSubstring("loading config"))
 				})
 			})
 
@@ -93,7 +93,7 @@ var _ = Describe("Filter", func() {
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing CIDR"))
+					Expect(err.Error()).To(ContainSubstring("parsing CIDR"))
 				})
 			})
 		})

@@ -68,7 +68,7 @@ var _ = Describe("Requirement", func() {
 
 				aerr, ok := err.(authz.Error)
 				Expect(ok).To(BeTrue())
-				Expect(aerr.Error()).To(Equal("Scope is missing"))
+				Expect(aerr.Error()).To(Equal("scope is missing"))
 			})
 
 			It("does not satisfy when missing token", func() {
@@ -79,7 +79,7 @@ var _ = Describe("Requirement", func() {
 
 				aerr, ok := err.(authn.Error)
 				Expect(ok).To(BeTrue())
-				Expect(aerr.Error()).To(Equal("Authentication token missing"))
+				Expect(aerr.Error()).To(Equal("authentication token missing"))
 			})
 		})
 	})

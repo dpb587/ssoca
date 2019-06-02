@@ -25,7 +25,7 @@ func (c List) Execute(_ []string) error {
 		SkipAuthRetry: c.SkipAuthRetry,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Listing files")
+		return errors.Wrap(err, "listing files")
 	}
 
 	table := boshtbl.Table{

@@ -29,7 +29,7 @@ func (m defaultManager) Filters() []string {
 func (m *defaultManager) Get(name string) (Filter, error) {
 	filter, ok := m.filters[name]
 	if !ok {
-		return nil, fmt.Errorf("Unrecognized filter: %s", name)
+		return nil, fmt.Errorf("unrecognized filter: %s", name)
 	}
 
 	return filter, nil

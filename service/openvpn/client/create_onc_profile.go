@@ -24,12 +24,12 @@ func (s Service) CreateONCProfile(opts CreateONCProfileOptions) (*onc.ONC, error
 
 	parsedProfile, err := ovpn.Parse([]byte(profile.StaticConfig()))
 	if err != nil {
-		return nil, errors.Wrap(err, "Parsing profile")
+		return nil, errors.Wrap(err, "parsing profile")
 	}
 
 	oncEncoded, err := ovpnonc.Encode(parsedProfile)
 	if err != nil {
-		return nil, errors.Wrap(err, "Building ONC")
+		return nil, errors.Wrap(err, "building ONC")
 	}
 
 	name := opts.Name

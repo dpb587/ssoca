@@ -25,7 +25,7 @@ type SetOptionArgs struct {
 func (c SetOption) Execute(_ []string) error {
 	env, err := c.Runtime.GetEnvironment()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	rawValue := c.Args.Value
@@ -33,19 +33,19 @@ func (c SetOption) Execute(_ []string) error {
 
 	err = yaml.Unmarshal([]byte(rawValue), &parsedValue)
 	if err != nil {
-		return errors.Wrap(err, "Unmarshaling YAML value")
+		return errors.Wrap(err, "unmarshaling YAML value")
 	}
 
 	env.SetOption(c.Args.Name, parsedValue)
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return errors.Wrap(err, "Setting environment")
+		return errors.Wrap(err, "setting environment")
 	}
 
 	return nil

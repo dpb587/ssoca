@@ -79,7 +79,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 	BeforeEach(func() {
 		test1keyPEM, _ := pem.Decode([]byte(test1keyStr))
 		if test1keyPEM == nil {
-			panic(errors.New("Failed decoding private key PEM"))
+			panic(errors.New("failed decoding private key PEM"))
 		}
 
 		test1key, err := x509.ParsePKCS1PrivateKey(test1keyPEM.Bytes)
@@ -101,7 +101,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 				err := subject.Renew()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Requesting signed profile"))
+				Expect(err.Error()).To(ContainSubstring("requesting signed profile"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 
@@ -114,7 +114,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 				err := subject.Renew()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Failed to decode PEM from certificate"))
+				Expect(err.Error()).To(ContainSubstring("failed to decode PEM from certificate"))
 			})
 
 			It("wraps certificate pem errors", func() {
@@ -126,7 +126,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 				err := subject.Renew()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing certificate"))
+				Expect(err.Error()).To(ContainSubstring("parsing certificate"))
 			})
 		})
 
@@ -151,12 +151,12 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 			csrPEM, _ := pem.Decode([]byte(in.CSR))
 			if csrPEM == nil {
-				panic("Failed to decode certificate signing request")
+				panic("failed to decode certificate signing request")
 			}
 
 			csr, err := x509.ParseCertificateRequest(csrPEM.Bytes)
 			if err != nil {
-				panic("Failed to parse certificate signing request")
+				panic("failed to parse certificate signing request")
 			}
 
 			Expect(csr.Subject.CommonName).To(Equal("fake-service"))
@@ -198,7 +198,7 @@ D5ASZtCvQ6NPMPmlb2p2qCB8Ljk=
 
 				_, err := subject.GetProfile()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Renewing certificate"))
+				Expect(err.Error()).To(ContainSubstring("renewing certificate"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})

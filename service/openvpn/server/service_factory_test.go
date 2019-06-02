@@ -47,7 +47,7 @@ var _ = Describe("ServiceFactory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting certificate authority"))
+				Expect(err.Error()).To(ContainSubstring("getting certificate authority"))
 			})
 		})
 
@@ -68,7 +68,7 @@ var _ = Describe("ServiceFactory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Loading config"))
+				Expect(err.Error()).To(ContainSubstring("loading config"))
 			})
 		})
 	})

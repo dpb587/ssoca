@@ -25,7 +25,7 @@ type CreateLaunchdServiceOpts struct {
 func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, string, error) {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
-		return "", "", errors.Wrap(err, "Getting config manager")
+		return "", "", errors.Wrap(err, "getting config manager")
 	}
 
 	ssocaExec := opts.SsocaExec
@@ -35,7 +35,7 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 
 	ssocaExec, err = exec.LookPath(ssocaExec)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Resolving ssoca executable")
+		return "", "", errors.Wrap(err, "resolving ssoca executable")
 	}
 
 	openvpnExec := opts.OpenvpnExec
@@ -45,7 +45,7 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 
 	openvpnExec, err = exec.LookPath(openvpnExec)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Resolving openvpn executable")
+		return "", "", errors.Wrap(err, "resolving openvpn executable")
 	}
 
 	dir := opts.Directory
@@ -55,7 +55,7 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 
 	dirAbs, err := s.fs.ExpandPath(dir)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Expanding path")
+		return "", "", errors.Wrap(err, "expanding path")
 	}
 
 	logDir := opts.LogDir
@@ -65,7 +65,7 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 
 	logDir, err = s.fs.ExpandPath(logDir)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Expanding log directory")
+		return "", "", errors.Wrap(err, "expanding log directory")
 	}
 
 	name := opts.Name
@@ -81,7 +81,7 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 
 	err = s.fs.MkdirAll(dirAbs, 0700)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Creating target directory")
+		return "", "", errors.Wrap(err, "creating target directory")
 	}
 
 	pathLaunchdService := path.Join(dirAbs, fmt.Sprintf("%s.plist", name))
@@ -110,19 +110,19 @@ func (s Service) CreateLaunchdService(opts CreateLaunchdServiceOpts) (string, st
 		},
 	)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Generating launchd service")
+		return "", "", errors.Wrap(err, "generating launchd service")
 	}
 
 	launchdService := launchdServiceBuf.String()
 
 	err = s.fs.WriteFileString(pathLaunchdService, launchdService)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Writing service plist")
+		return "", "", errors.Wrap(err, "writing service plist")
 	}
 
 	err = s.fs.Chmod(pathLaunchdService, 0744)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Chmoding service plist")
+		return "", "", errors.Wrap(err, "chmoding service plist")
 	}
 
 	return pathLaunchdService, name, nil

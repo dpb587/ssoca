@@ -46,7 +46,7 @@ var _ = Describe("Requirement", func() {
 
 				err, ok := err.(authz.Error)
 				Expect(ok).To(BeTrue())
-				Expect(err.Error()).To(Equal("No filters authorized access"))
+				Expect(err.Error()).To(Equal("no filters authorized access"))
 			})
 		})
 

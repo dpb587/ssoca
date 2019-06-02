@@ -120,13 +120,13 @@ vqQ=
 					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Decoding CSR"))
+					Expect(err.Error()).To(ContainSubstring("decoding CSR"))
 
 					apiError, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
-					Expect(apiError.PublicError).To(Equal("Failed to decode certificate signing request"))
+					Expect(apiError.PublicError).To(Equal("failed to decode certificate signing request"))
 				})
 			})
 
@@ -142,13 +142,13 @@ vqQ=
 					err := subject.Execute(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing CSR"))
+					Expect(err.Error()).To(ContainSubstring("parsing CSR"))
 
 					apiError, ok := err.(apierr.Error)
 					Expect(ok).To(BeTrue())
 
 					Expect(apiError.Status).To(Equal(400))
-					Expect(apiError.PublicError).To(Equal("Failed to parse certificate signing request"))
+					Expect(apiError.PublicError).To(Equal("failed to parse certificate signing request"))
 				})
 			})
 		})
@@ -169,7 +169,7 @@ vqQ=
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
-					Expect(err.Error()).To(ContainSubstring("Signing certificate"))
+					Expect(err.Error()).To(ContainSubstring("signing certificate"))
 				})
 			})
 
@@ -189,7 +189,7 @@ vqQ=
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
-					Expect(err.Error()).To(ContainSubstring("Loading CA certificate"))
+					Expect(err.Error()).To(ContainSubstring("loading CA certificate"))
 				})
 			})
 		})

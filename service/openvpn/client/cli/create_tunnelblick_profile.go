@@ -72,7 +72,7 @@ func (c CreateTunnelblickProfile) Execute(_ []string) error {
 		err = fmt.Errorf("exit code %d", exit)
 	}
 	if err != nil {
-		return errors.Wrap(err, "Installing profile")
+		return errors.Wrap(err, "installing profile")
 	}
 
 	return nil

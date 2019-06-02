@@ -33,7 +33,7 @@ func (c Get) Execute(_ []string) error {
 		LocalFile:     c.Args.TargetFile,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Getting file")
+		return errors.Wrap(err, "getting file")
 	}
 
 	return nil

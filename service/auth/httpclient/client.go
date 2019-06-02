@@ -24,7 +24,7 @@ func (c client) GetInfo() (api.InfoResponse, error) {
 
 	err := c.client.APIGet("/auth/info", &out)
 	if err != nil {
-		return out, errors.Wrap(err, "Getting /auth/info")
+		return out, errors.Wrap(err, "getting /auth/info")
 	}
 
 	return out, nil

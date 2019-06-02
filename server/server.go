@@ -38,24 +38,24 @@ func CreateFromConfig(
 	logger logrus.FieldLogger,
 ) (Server, error) {
 	if cfg.Auth.Type == "" {
-		return Server{}, errors.New("Configuration missing: auth.type")
+		return Server{}, errors.New("configuration missing: auth.type")
 	}
 
 	if cfg.Env.URL == "" {
-		return Server{}, errors.New("Configuration missing: env.url")
+		return Server{}, errors.New("configuration missing: env.url")
 	}
 
 	if cfg.Server.CertificatePath != "" {
 		if cfg.Server.PrivateKeyPath == "" {
-			return Server{}, errors.New("Configuration missing: server.private_key_path")
+			return Server{}, errors.New("configuration missing: server.private_key_path")
 		} else if !fs.FileExists(cfg.Server.CertificatePath) {
-			return Server{}, fmt.Errorf("Configuration key invalid: server.certificate_path: file does not exist: %s", cfg.Server.CertificatePath)
+			return Server{}, fmt.Errorf("configuration key invalid: server.certificate_path: file does not exist: %s", cfg.Server.CertificatePath)
 		}
 	} else if cfg.Server.PrivateKeyPath != "" {
 		if cfg.Server.CertificatePath == "" {
-			return Server{}, errors.New("Configuration missing: server.certificate_path")
+			return Server{}, errors.New("configuration missing: server.certificate_path")
 		} else if !fs.FileExists(cfg.Server.CertificatePath) {
-			return Server{}, fmt.Errorf("Configuration key invalid: server.private_key_path: file does not exist: %s", cfg.Server.CertificatePath)
+			return Server{}, fmt.Errorf("configuration key invalid: server.private_key_path: file does not exist: %s", cfg.Server.CertificatePath)
 		}
 	}
 
@@ -69,7 +69,7 @@ func CreateFromConfig(
 
 		_, found := knownCertAuths[certauth.Name]
 		if found {
-			return Server{}, fmt.Errorf("Configuration value duplicated: certauths[%d].name: %s", certauthIdx, certauth.Name)
+			return Server{}, fmt.Errorf("configuration value duplicated: certauths[%d].name: %s", certauthIdx, certauth.Name)
 		}
 
 		knownCertAuths[certauth.Name] = true
@@ -85,7 +85,7 @@ func CreateFromConfig(
 
 		_, found := knownServices[service.Name]
 		if found {
-			return Server{}, fmt.Errorf("Configuration value duplicated: services[%d].name: %s", serviceIdx, service.Name)
+			return Server{}, fmt.Errorf("configuration value duplicated: services[%d].name: %s", serviceIdx, service.Name)
 		}
 
 		knownServices[service.Name] = true
@@ -97,7 +97,7 @@ func CreateFromConfig(
 		ca, err := certauthFactory.Create(caConfig.Name, caConfig.Type, caConfig.Options)
 
 		if err != nil {
-			return Server{}, errors.Wrapf(err, "Creating certauth (%s)", caConfig.Name)
+			return Server{}, errors.Wrapf(err, "creating certauth (%s)", caConfig.Name)
 		}
 
 		certauthManager.Add(ca)
@@ -110,12 +110,12 @@ func CreateFromConfig(
 
 		svc, err := serviceFactory.Create(svcConfig.Type, svcConfig.Name, svcConfig.Options)
 		if err != nil {
-			return Server{}, errors.Wrap(err, "Creating service")
+			return Server{}, errors.Wrap(err, "creating service")
 		}
 
 		filteredService, err := filterService(svc, svcConfig, cfg.Auth.Require, filterManager)
 		if err != nil {
-			return Server{}, errors.Wrapf(err, "Applying authorization filters to %s", svc.Name())
+			return Server{}, errors.Wrapf(err, "applying authorization filters to %s", svc.Name())
 		}
 
 		serviceManager.Add(filteredService)
@@ -123,7 +123,7 @@ func CreateFromConfig(
 
 	svc, err := serviceFactory.Create(fmt.Sprintf("%s_authn", cfg.Auth.Type), "auth", cfg.Auth.Options)
 	if err != nil {
-		return Server{}, errors.Wrap(err, "Creating auth service")
+		return Server{}, errors.Wrap(err, "creating auth service")
 	}
 
 	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
@@ -176,7 +176,7 @@ func (s Server) getClientIP(r *http.Request) (net.IP, error) {
 func (s Server) Run() error {
 	authSvc, err := s.services.GetAuth()
 	if err != nil {
-		return errors.Wrap(err, "Loading authentication service")
+		return errors.Wrap(err, "loading authentication service")
 	}
 
 	mux := http.NewServeMux()
@@ -188,7 +188,7 @@ func (s Server) Run() error {
 			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
 			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.getClientIP, s.logger)
 			if err != nil {
-				return errors.Wrapf(err, "Creating handler for %s", apiPath)
+				return errors.Wrapf(err, "creating handler for %s", apiPath)
 			}
 
 			mux.Handle(apiPath, apiHandler)
@@ -234,7 +234,7 @@ func (s Server) Run() error {
 
 	s.logger.WithFields(logrus.Fields{
 		"server.local_addr": s.server.Addr,
-	}).Infof("Server is ready for %s connections", scheme)
+	}).Infof("server is ready for %s connections", scheme)
 
 	// @todo gofunc
 	if scheme == "https" {

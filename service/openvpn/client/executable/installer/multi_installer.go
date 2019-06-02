@@ -38,5 +38,5 @@ func (i *MultiInstaller) Install(logger logrus.FieldLogger) error {
 		return nil
 	}
 
-	return errors.New("Installation failed")
+	return errors.New("installation failed")
 }

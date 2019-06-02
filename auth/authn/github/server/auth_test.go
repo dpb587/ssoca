@@ -97,7 +97,7 @@ var _ = Describe("Auth", func() {
 						})
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Fetching user info"))
+						Expect(err.Error()).To(ContainSubstring("fetching user info"))
 						Expect(err.Error()).To(ContainSubstring("fake-err"))
 					})
 				})
@@ -123,7 +123,7 @@ var _ = Describe("Auth", func() {
 						})
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Failed to request user info"))
+						Expect(err.Error()).To(ContainSubstring("failed to request user info"))
 					})
 				})
 			})

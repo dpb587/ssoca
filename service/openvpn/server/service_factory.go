@@ -35,7 +35,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	return NewService(name, cfg), nil

@@ -29,5 +29,5 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		return &token, nil
 	}
 
-	return nil, errors.New("Invalid authentication")
+	return nil, errors.New("invalid authentication")
 }

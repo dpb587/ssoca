@@ -46,7 +46,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 
 			_, err := subject.CreateTunnelblickProfile(CreateTunnelblickProfileOpts{})
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Getting config manager"))
+			Expect(err.Error()).To(ContainSubstring("getting config manager"))
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
 		})
 	})
@@ -57,7 +57,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 				SsocaExec: "nonexistant12345",
 			})
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Resolving ssoca executable"))
+			Expect(err.Error()).To(ContainSubstring("resolving ssoca executable"))
 		})
 	})
 
@@ -69,7 +69,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 				SsocaExec: "false",
 			})
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Getting base profile"))
+			Expect(err.Error()).To(ContainSubstring("getting base profile"))
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
 		})
 	})

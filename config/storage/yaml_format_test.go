@@ -45,7 +45,7 @@ var _ = Describe("YamlFormat", func() {
 			err := subject.Get(`something: "string"`, &get)
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Unmarshaling"))
+			Expect(err.Error()).To(ContainSubstring("unmarshaling"))
 		})
 	})
 
@@ -71,7 +71,7 @@ var _ = Describe("YamlFormat", func() {
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-error"))
-			Expect(err.Error()).To(ContainSubstring("Marshaling"))
+			Expect(err.Error()).To(ContainSubstring("marshaling"))
 		})
 	})
 })

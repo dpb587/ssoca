@@ -44,7 +44,7 @@ var _ = Describe("Client", func() {
 				_, err := subject.BaseProfile()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting"))
+				Expect(err.Error()).To(ContainSubstring("getting"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})
@@ -77,7 +77,7 @@ line2
 				_, err := subject.SignUserCSR(api.SignUserCSRRequest{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Posting"))
+				Expect(err.Error()).To(ContainSubstring("posting"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})

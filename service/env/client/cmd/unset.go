@@ -16,12 +16,12 @@ var _ flags.Commander = Unset{}
 func (c Unset) Execute(_ []string) error {
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	err = configManager.UnsetEnvironment(c.Runtime.GetEnvironmentName())
 	if err != nil {
-		return errors.Wrap(err, "Unsetting environment")
+		return errors.Wrap(err, "unsetting environment")
 	}
 
 	return nil

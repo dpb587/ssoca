@@ -11,7 +11,7 @@ type BaseProfileOptions struct {
 func (s Service) BaseProfile(opts BaseProfileOptions) (string, error) {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return "", errors.Wrap(err, "Getting client")
+		return "", errors.Wrap(err, "getting client")
 	}
 
 	return client.BaseProfile()

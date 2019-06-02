@@ -16,7 +16,7 @@ func (mav MultiAnyValue) Evaluate(arg0 *http.Request, arg1 *auth.Token) ([]strin
 	for _, value := range mav {
 		res, err := value.Evaluate(arg0, arg1)
 		if err != nil {
-			return nil, errors.Wrap(err, "Evaluating template")
+			return nil, errors.Wrap(err, "evaluating template")
 		}
 
 		values = append(values, res)

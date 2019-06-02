@@ -28,7 +28,7 @@ func (h Initiate) Route() string {
 func (h Initiate) Execute(req req.Request) error {
 	redirect_uri, err := url.Parse(h.Config.RedirectURL)
 	if err != nil {
-		return errors.Wrap(err, "Parsing redirect URL")
+		return errors.Wrap(err, "parsing redirect URL")
 	}
 
 	if req.RawRequest.Host != redirect_uri.Host {

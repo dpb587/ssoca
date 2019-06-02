@@ -36,7 +36,7 @@ var _ = Describe("BaseProfile", func() {
 
 			_, err := subject.BaseProfile(BaseProfileOptions{})
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Getting client"))
+			Expect(err.Error()).To(ContainSubstring("getting client"))
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
 		})
 	})

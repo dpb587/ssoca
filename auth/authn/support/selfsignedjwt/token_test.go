@@ -51,7 +51,7 @@ var _ = Describe("Token", func() {
 				err := subject.Valid()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Missing exp"))
+				Expect(err.Error()).To(ContainSubstring("missing exp"))
 			})
 
 			It("requires nbf", func() {
@@ -60,7 +60,7 @@ var _ = Describe("Token", func() {
 				err := subject.Valid()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Missing nbf"))
+				Expect(err.Error()).To(ContainSubstring("missing nbf"))
 			})
 
 			It("requires matching aud", func() {
@@ -69,7 +69,7 @@ var _ = Describe("Token", func() {
 				err := subject.Valid()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Invalid audience: other"))
+				Expect(err.Error()).To(ContainSubstring("invalid audience: other"))
 			})
 
 			It("requires matching iss", func() {
@@ -78,7 +78,7 @@ var _ = Describe("Token", func() {
 				err := subject.Valid()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Invalid issuer: other"))
+				Expect(err.Error()).To(ContainSubstring("invalid issuer: other"))
 			})
 		})
 	})

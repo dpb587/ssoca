@@ -26,7 +26,7 @@ func (f defaultManager) Add(service Service) {
 func (f defaultManager) Get(name string) (Service, error) {
 	service, ok := f.services[name]
 	if !ok {
-		return nil, fmt.Errorf("Unrecognized service type: %s", name)
+		return nil, fmt.Errorf("unrecognized service type: %s", name)
 	}
 
 	return service, nil
@@ -35,12 +35,12 @@ func (f defaultManager) Get(name string) (Service, error) {
 func (f defaultManager) GetAuth() (AuthService, error) {
 	svc, err := f.Get("auth")
 	if err != nil {
-		return nil, errors.Wrap(err, "Getting auth service")
+		return nil, errors.Wrap(err, "getting auth service")
 	}
 
 	authSvc, ok := svc.(AuthService)
 	if !ok {
-		return nil, errors.New("Invalid authentication service configured under 'auth' service")
+		return nil, errors.New("invalid authentication service configured under 'auth' service")
 	}
 
 	return authSvc, nil

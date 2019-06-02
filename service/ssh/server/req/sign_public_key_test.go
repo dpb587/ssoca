@@ -135,13 +135,13 @@ var _ = Describe("SignPublicKey", func() {
 						err := subject.Execute(req)
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Invalid public key format"))
+						Expect(err.Error()).To(ContainSubstring("invalid public key format"))
 
 						apiError, ok := err.(apierr.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
-						Expect(apiError.PublicError).To(Equal("Failed to read public key"))
+						Expect(apiError.PublicError).To(Equal("failed to read public key"))
 					})
 				})
 
@@ -157,13 +157,13 @@ var _ = Describe("SignPublicKey", func() {
 						err := subject.Execute(req)
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Decoding public key"))
+						Expect(err.Error()).To(ContainSubstring("decoding public key"))
 
 						apiError, ok := err.(apierr.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
-						Expect(apiError.PublicError).To(Equal("Failed to decode public key"))
+						Expect(apiError.PublicError).To(Equal("failed to decode public key"))
 					})
 				})
 
@@ -179,13 +179,13 @@ var _ = Describe("SignPublicKey", func() {
 						err := subject.Execute(req)
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Parsing public key"))
+						Expect(err.Error()).To(ContainSubstring("parsing public key"))
 
 						apiError, ok := err.(apierr.Error)
 						Expect(ok).To(BeTrue())
 
 						Expect(apiError.Status).To(Equal(400))
-						Expect(apiError.PublicError).To(Equal("Failed to parse public key"))
+						Expect(apiError.PublicError).To(Equal("failed to parse public key"))
 					})
 				})
 			})
@@ -205,7 +205,7 @@ var _ = Describe("SignPublicKey", func() {
 
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("fake-err"))
-					Expect(err.Error()).To(ContainSubstring("Signing certificate"))
+					Expect(err.Error()).To(ContainSubstring("signing certificate"))
 				})
 			})
 		})

@@ -27,5 +27,5 @@ func (r Requirement) VerifyAuthorization(req *http.Request, token *auth.Token) e
 		}
 	}
 
-	return authz.NewError(errors.New("No filters authorized access"))
+	return authz.NewError(errors.New("no filters authorized access"))
 }

@@ -41,7 +41,7 @@ func (c client) do(req *http.Request) (*http.Response, error) {
 func (c client) Get(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", c.expandURI(url), nil)
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating request")
+		return nil, errors.Wrap(err, "creating request")
 	}
 
 	res, err := c.do(req)
@@ -55,7 +55,7 @@ func (c client) Get(url string) (*http.Response, error) {
 func (c client) Post(url string, contentType string, body io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest("POST", c.expandURI(url), body)
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating request")
+		return nil, errors.Wrap(err, "creating request")
 	}
 
 	req.Header.Set("Content-Type", contentType)
@@ -71,7 +71,7 @@ func (c client) Post(url string, contentType string, body io.Reader) (*http.Resp
 func (c client) APIGet(url string, out interface{}) error {
 	response, err := c.Get(url)
 	if err != nil {
-		return errors.Wrap(err, "Executing request")
+		return errors.Wrap(err, "executing request")
 	}
 
 	return c.apiReadResponse(response, out)
@@ -80,7 +80,7 @@ func (c client) APIGet(url string, out interface{}) error {
 func (c client) APIPost(url string, out interface{}, in interface{}) error {
 	requestBody, err := json.Marshal(in)
 	if err != nil {
-		return errors.Wrap(err, "Marshaling request body")
+		return errors.Wrap(err, "marshaling request body")
 	}
 
 	response, err := c.Post(
@@ -89,7 +89,7 @@ func (c client) APIPost(url string, out interface{}, in interface{}) error {
 		bytes.NewReader(requestBody),
 	)
 	if err != nil {
-		return errors.Wrap(err, "Executing request")
+		return errors.Wrap(err, "executing request")
 	}
 
 	return c.apiReadResponse(response, out)
@@ -98,7 +98,7 @@ func (c client) APIPost(url string, out interface{}, in interface{}) error {
 func (c client) apiReadResponse(res *http.Response, out interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return errors.Wrap(err, "Reading response body")
+		return errors.Wrap(err, "reading response body")
 	}
 
 	if res.StatusCode >= 400 {
@@ -107,7 +107,7 @@ func (c client) apiReadResponse(res *http.Response, out interface{}) error {
 
 	err = json.Unmarshal(body, &out)
 	if err != nil {
-		return errors.Wrap(err, "Unmarshaling response body")
+		return errors.Wrap(err, "unmarshaling response body")
 	}
 
 	return nil

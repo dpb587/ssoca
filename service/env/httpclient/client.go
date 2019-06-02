@@ -24,7 +24,7 @@ func (c client) GetInfo() (api.InfoResponse, error) {
 
 	err := c.client.APIGet("/env/info", &out)
 	if err != nil {
-		return out, errors.Wrap(err, "Getting /env/info")
+		return out, errors.Wrap(err, "getting /env/info")
 	}
 
 	return out, nil

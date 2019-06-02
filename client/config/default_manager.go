@@ -31,7 +31,7 @@ func (m DefaultManager) GetEnvironments() (EnvironmentsState, error) {
 
 	err := m.storage.Get(m.path, &state)
 	if err != nil {
-		return EnvironmentsState{}, errors.Wrap(err, "Getting environments")
+		return EnvironmentsState{}, errors.Wrap(err, "getting environments")
 	}
 
 	return state.Environments, nil
@@ -40,7 +40,7 @@ func (m DefaultManager) GetEnvironments() (EnvironmentsState, error) {
 func (m DefaultManager) GetEnvironment(name string) (EnvironmentState, error) {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return EnvironmentState{}, errors.Wrap(err, "Getting environment")
+		return EnvironmentState{}, errors.Wrap(err, "getting environment")
 	}
 
 	for _, env := range envs {
@@ -49,13 +49,13 @@ func (m DefaultManager) GetEnvironment(name string) (EnvironmentState, error) {
 		}
 	}
 
-	return EnvironmentState{}, fmt.Errorf("Environment not found: %s", name)
+	return EnvironmentState{}, fmt.Errorf("environment not found: %s", name)
 }
 
 func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return errors.Wrap(err, "Getting environments")
+		return errors.Wrap(err, "getting environments")
 	}
 
 	newState := State{}
@@ -81,7 +81,7 @@ func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 
 	_, err = m.storage.Put(m.path, newState)
 	if err != nil {
-		return errors.Wrap(err, "Putting environment")
+		return errors.Wrap(err, "putting environment")
 	}
 
 	return nil
@@ -90,7 +90,7 @@ func (m DefaultManager) SetEnvironment(env EnvironmentState) error {
 func (m DefaultManager) UnsetEnvironment(name string) error {
 	envs, err := m.GetEnvironments()
 	if err != nil {
-		return errors.Wrap(err, "Getting environment")
+		return errors.Wrap(err, "getting environment")
 	}
 
 	newState := State{}
@@ -105,7 +105,7 @@ func (m DefaultManager) UnsetEnvironment(name string) error {
 
 	_, err = m.storage.Put(m.path, newState)
 	if err != nil {
-		return errors.Wrap(err, "Putting environment")
+		return errors.Wrap(err, "putting environment")
 	}
 
 	return nil

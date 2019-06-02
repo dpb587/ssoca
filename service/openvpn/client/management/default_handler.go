@@ -59,7 +59,7 @@ func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ServerHandlerC
 		// additional time-based checks on it to force shorter use validities.
 		err := ch.profileManager.Renew()
 		if err != nil {
-			return nil, errors.Wrap(err, "Renewing profile")
+			return nil, errors.Wrap(err, "renewing profile")
 		}
 	}
 
@@ -68,7 +68,7 @@ func (ch *DefaultHandler) NeedCertificate(w io.Writer, _ string) (ServerHandlerC
 	if action&needCertificateGetProfileAction > 0 {
 		ovpn, err = ch.profileManager.GetProfile()
 		if err != nil {
-			return nil, errors.Wrap(err, "Retrieving profile")
+			return nil, errors.Wrap(err, "retrieving profile")
 		}
 	}
 
@@ -89,12 +89,12 @@ func (ch *DefaultHandler) SignRSA(w io.Writer, data string) (ServerHandlerCallba
 
 	data64, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return nil, errors.Wrap(err, "Decoding signing token")
+		return nil, errors.Wrap(err, "decoding signing token")
 	}
 
 	signature, err := ch.profileManager.Sign(data64)
 	if err != nil {
-		return nil, errors.Wrap(err, "Signing token")
+		return nil, errors.Wrap(err, "signing token")
 	}
 
 	signature64 := base64.StdEncoding.EncodeToString(signature)

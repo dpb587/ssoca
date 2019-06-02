@@ -43,7 +43,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 
 		test1keyPEM, _ := pem.Decode([]byte(test1keyStr))
 		if test1keyPEM == nil {
-			panic(errors.New("Failed decoding private key PEM"))
+			panic(errors.New("failed decoding private key PEM"))
 		}
 
 		var err error
@@ -63,7 +63,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 
 		rcb, err = cb(nil, "FAILURE: data")
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("Bad management command result"))
+		Expect(err.Error()).To(ContainSubstring("bad management command result"))
 	}
 
 	Describe("NeedCertificate", func() {
@@ -73,7 +73,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 			_, err := subject.NeedCertificate(fakeWriter, "")
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
-			Expect(err.Error()).To(ContainSubstring("Retrieving profile"))
+			Expect(err.Error()).To(ContainSubstring("retrieving profile"))
 		})
 
 		It("responds with certificate", func() {
@@ -124,7 +124,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 				_, err := subject.NeedCertificate(fakeWriter, "")
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("fake-err1"))
-				Expect(err.Error()).To(ContainSubstring("Renewing profile"))
+				Expect(err.Error()).To(ContainSubstring("renewing profile"))
 			})
 
 			It("restarts openvpn after 5 rapid failures", func() {
@@ -168,7 +168,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 			_, err := subject.SignRSA(fakeWriter, "fake$data")
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("illegal base64 data at input byte 4"))
-			Expect(err.Error()).To(ContainSubstring("Decoding signing token"))
+			Expect(err.Error()).To(ContainSubstring("decoding signing token"))
 		})
 
 		It("errors when signing fails", func() {
@@ -178,7 +178,7 @@ ZNYBM+NpfAXTMgHSuWnIkZSoSoV4ZcYTkJ6zslGbkVyH
 			_, err := subject.SignRSA(fakeWriter, "aW1hc3NvY2E=")
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-err1"))
-			Expect(err.Error()).To(ContainSubstring("Signing token"))
+			Expect(err.Error()).To(ContainSubstring("signing token"))
 		})
 
 		It("signs data", func() {

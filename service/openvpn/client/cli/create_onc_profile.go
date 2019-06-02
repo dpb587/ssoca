@@ -29,12 +29,12 @@ func (c CreateONCProfile) Execute(_ []string) error {
 		Name:          c.Name,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Getting profile")
+		return errors.Wrap(err, "getting profile")
 	}
 
 	oncBytes, err := json.MarshalIndent(onc, "", "  ")
 	if err != nil {
-		return errors.Wrap(err, "Encoding ONC")
+		return errors.Wrap(err, "encoding ONC")
 	}
 
 	oncBytes = append(oncBytes, '\n')

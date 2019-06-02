@@ -31,7 +31,7 @@ func (cv *ConfigValue) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	value, err := cv.factory.Create(data)
 	if err != nil {
-		return errors.Wrap(err, "Parsing dynamic value")
+		return errors.Wrap(err, "parsing dynamic value")
 	}
 
 	cv.value = value

@@ -23,13 +23,13 @@ type GetOptions struct {
 func (s Service) Get(opts GetOptions) error {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return errors.Wrap(err, "Getting client")
+		return errors.Wrap(err, "getting client")
 	}
 
 	if strings.Contains(opts.RemoteFile, "*") || strings.Contains(opts.RemoteFile, "?") {
 		listed, err := client.GetList()
 		if err != nil {
-			return errors.Wrap(err, "Listing files")
+			return errors.Wrap(err, "listing files")
 		}
 
 		var matched bool
@@ -38,7 +38,7 @@ func (s Service) Get(opts GetOptions) error {
 			matches, err := filepath.Match(opts.RemoteFile, listedMatch.Name)
 			if matches && err == nil {
 				if matched {
-					return errors.Wrapf(err, "Multiple matches found for: %s", opts.RemoteFile)
+					return errors.Wrapf(err, "multiple matches found for: %s", opts.RemoteFile)
 				}
 
 				matched = true
@@ -58,7 +58,7 @@ func (s Service) Get(opts GetOptions) error {
 	if localFilePath == "-" {
 		fileTemp, err := s.fs.TempFile("ssoca-download-stdout")
 		if err != nil {
-			return errors.Wrap(err, "Creating temp file for stdout")
+			return errors.Wrap(err, "creating temp file for stdout")
 		}
 
 		defer os.RemoveAll(fileTemp.Name())
@@ -67,7 +67,7 @@ func (s Service) Get(opts GetOptions) error {
 	} else {
 		file, err = s.fs.OpenFile(localFilePath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
 		if err != nil {
-			return errors.Wrap(err, "Opening file")
+			return errors.Wrap(err, "opening file")
 		}
 	}
 
@@ -86,12 +86,12 @@ func (s Service) Get(opts GetOptions) error {
 
 	_, err = file.Seek(0, io.SeekStart)
 	if err != nil {
-		return errors.Wrap(err, "Seeking downloaded temp file")
+		return errors.Wrap(err, "seeking downloaded temp file")
 	}
 
 	_, err = io.Copy(s.runtime.GetStdout(), file)
 	if err != nil {
-		return errors.Wrap(err, "Writing download to STDOUT")
+		return errors.Wrap(err, "writing download to STDOUT")
 	}
 
 	return nil

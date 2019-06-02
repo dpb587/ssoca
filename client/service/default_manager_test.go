@@ -33,7 +33,7 @@ var _ = Describe("DefaultManager", func() {
 				_, err := subject.Get("test1")
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Unrecognized type: test1"))
+				Expect(err.Error()).To(ContainSubstring("unrecognized type: test1"))
 			})
 		})
 	})

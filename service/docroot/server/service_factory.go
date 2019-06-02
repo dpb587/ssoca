@@ -31,12 +31,12 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	err = f.validateConfig(&cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Validating config")
+		return nil, errors.Wrap(err, "validating config")
 	}
 
 	return NewService(name, cfg, f.fs), nil
@@ -45,7 +45,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 func (f ServiceFactory) validateConfig(config *svcconfig.Config) error {
 	absPath, err := f.fs.ExpandPath(config.Path)
 	if err != nil {
-		return errors.Wrap(err, "Expanding path")
+		return errors.Wrap(err, "expanding path")
 	}
 
 	config.AbsPath = absPath

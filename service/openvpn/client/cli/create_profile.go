@@ -24,7 +24,7 @@ func (c CreateProfile) Execute(_ []string) error {
 		SkipAuthRetry: c.SkipAuthRetry,
 	})
 	if err != nil {
-		return errors.Wrap(err, "Getting profile")
+		return errors.Wrap(err, "getting profile")
 	}
 
 	c.Runtime.GetUI().PrintBlock([]byte(profile.StaticConfig()))

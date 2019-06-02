@@ -31,7 +31,7 @@ var _ = Describe("WithAuthenticationRequired", func() {
 
 				aerr, ok := err.(authn.Error)
 				Expect(ok).To(BeTrue())
-				Expect(aerr.Error()).To(Equal("Authentication token missing"))
+				Expect(aerr.Error()).To(Equal("authentication token missing"))
 			})
 		})
 	})

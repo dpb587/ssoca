@@ -46,14 +46,14 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	requestUUID, err := uuid.NewV4()
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Generating request ID"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "generating request ID"))
 
 		return
 	}
 
 	clientIP, err := h.clientIPGetter(r)
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Determining Client IP"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "determining Client IP"))
 	}
 
 	request.ID = requestUUID.String()
@@ -82,7 +82,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err != nil {
-			h.sendGenericErrorResponse(request, apierr.WrapError(err, "Parsing authentication token"))
+			h.sendGenericErrorResponse(request, apierr.WrapError(err, "parsing authentication token"))
 
 			return
 		}
@@ -100,7 +100,7 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			statusCode = http.StatusForbidden
 		}
 
-		h.sendGenericErrorResponse(request, apierr.WrapError(apierr.NewError(err, statusCode, ""), "Checking service authorization"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(apierr.NewError(err, statusCode, ""), "checking service authorization"))
 
 		return
 	}
@@ -111,10 +111,10 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err = h.handler.Execute(request)
 	if err != nil {
-		h.sendGenericErrorResponse(request, apierr.WrapError(err, "Executing handler"))
+		h.sendGenericErrorResponse(request, apierr.WrapError(err, "executing handler"))
 	}
 
-	h.getRequestLogger(request).Info("Finished request")
+	h.getRequestLogger(request).Info("finished request")
 }
 
 func (h apiHandler) sendGenericErrorResponse(request req.Request, err error) {

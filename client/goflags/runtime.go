@@ -95,7 +95,7 @@ func (r Runtime) GetVersion() version.Version {
 func (r Runtime) GetEnvironment() (config.EnvironmentState, error) {
 	configManager, err := r.GetConfigManager()
 	if err != nil {
-		return config.EnvironmentState{}, errors.Wrap(err, "Getting config manager")
+		return config.EnvironmentState{}, errors.Wrap(err, "getting config manager")
 	}
 
 	return configManager.GetEnvironment(r.GetEnvironmentName())
@@ -124,7 +124,7 @@ func (r Runtime) GetStderr() io.Writer {
 func (r Runtime) GetClient() (httpclient.Client, error) {
 	env, err := r.GetEnvironment()
 	if err != nil {
-		return nil, errors.Wrap(err, "Getting environment")
+		return nil, errors.Wrap(err, "getting environment")
 	}
 
 	var certPool *x509.CertPool
@@ -134,14 +134,14 @@ func (r Runtime) GetClient() (httpclient.Client, error) {
 
 		cert, err := env.GetCACertificate()
 		if err != nil {
-			return nil, errors.Wrap(err, "Getting CA certificate")
+			return nil, errors.Wrap(err, "getting CA certificate")
 		}
 
 		certPool.AddCert(cert)
 	} else {
 		certPool, err = x509.SystemCertPool()
 		if err != nil {
-			return nil, errors.Wrap(err, "Loading trusted system CA certificates")
+			return nil, errors.Wrap(err, "loading trusted system CA certificates")
 		}
 	}
 

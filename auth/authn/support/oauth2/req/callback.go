@@ -56,30 +56,30 @@ func (h Callback) Route() string {
 func (h Callback) Execute(request req.Request) error {
 	state, err := request.RawRequest.Cookie(config.CookieStateName)
 	if err != nil {
-		return apierr.NewError(apierr.WrapError(err, "Getting state cookie"), http.StatusBadRequest, "State cookie does not exist")
+		return apierr.NewError(apierr.WrapError(err, "getting state cookie"), http.StatusBadRequest, "state cookie does not exist")
 	}
 
 	if request.RawRequest.URL.Query().Get("state") != state.Value {
-		return apierr.NewError(errors.New("State cookie value does not match expected state"), http.StatusBadRequest, "State cookie does not match")
+		return apierr.NewError(errors.New("state cookie value does not match expected state"), http.StatusBadRequest, "state cookie does not match")
 	}
 
 	oauthToken, err := h.Config.Exchange(h.Context, request.RawRequest.URL.Query().Get("code"))
 	if err != nil {
-		return errors.Wrap(err, "Exchanging token")
+		return errors.Wrap(err, "exchanging token")
 	}
 
 	if !oauthToken.Valid() {
-		return errors.New("Invalid token")
+		return errors.New("invalid token")
 	}
 
 	userProfile, err := h.UserProfileLoader(h.Config.Client(h.Context, oauthToken))
 	if err != nil {
-		return errors.Wrap(err, "Loading user profile")
+		return errors.Wrap(err, "loading user profile")
 	}
 
 	tokenUUID, err := uuid.NewV4()
 	if err != nil {
-		return errors.Wrap(err, "Generating local token ID")
+		return errors.Wrap(err, "generating local token ID")
 	}
 
 	token := jwt.NewWithClaims(config.JWTSigningMethod, selfsignedjwt.Token{
@@ -98,7 +98,7 @@ func (h Callback) Execute(request req.Request) error {
 
 	tokenString, err := token.SignedString(&h.JWT.PrivateKey)
 	if err != nil {
-		return errors.Wrap(err, "Signing token")
+		return errors.Wrap(err, "signing token")
 	}
 
 	// remove the cookie

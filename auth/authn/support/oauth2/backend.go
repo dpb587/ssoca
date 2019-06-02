@@ -43,9 +43,9 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 
 	authValuePieces := strings.SplitN(authValue, " ", 2)
 	if len(authValuePieces) != 2 {
-		return nil, apierr.NewError(errors.New("Invalid Authorization format"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.New("invalid Authorization format"), http.StatusForbidden, "")
 	} else if strings.ToLower(authValuePieces[0]) != "bearer" {
-		return nil, apierr.NewError(errors.New("Invalid Authorization method"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.New("invalid Authorization method"), http.StatusForbidden, "")
 	}
 
 	intTok := selfsignedjwt.NewOriginToken(b.urls.Origin)
@@ -55,7 +55,7 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		&intTok,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method != config.JWTSigningMethod {
-				return nil, apierr.NewError(errors.New("Invalid signing method"), http.StatusForbidden, "")
+				return nil, apierr.NewError(errors.New("invalid signing method"), http.StatusForbidden, "")
 			}
 
 			return &b.jwtConfig.PrivateKey.PublicKey, nil
@@ -63,10 +63,10 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	)
 	if err != nil {
 		if _, ok := err.(*jwt.ValidationError); ok {
-			return nil, apierr.NewError(errors.Wrap(err, "Parsing claims (ignorable validation error)"), http.StatusUnauthorized, "")
+			return nil, apierr.NewError(errors.Wrap(err, "parsing claims (ignorable validation error)"), http.StatusUnauthorized, "")
 		}
 
-		return nil, apierr.NewError(errors.Wrap(err, "Parsing claims"), http.StatusForbidden, "")
+		return nil, apierr.NewError(errors.Wrap(err, "parsing claims"), http.StatusForbidden, "")
 	}
 
 	authToken := auth.Token{

@@ -27,7 +27,7 @@ func CreateTemplateValue(value string) (Value, error) {
 		"split": strings.Split,
 	}).Parse(value)
 	if err != nil {
-		return templateValue{}, errors.Wrapf(err, "Parsing template: %s", value)
+		return templateValue{}, errors.Wrapf(err, "parsing template: %s", value)
 	}
 
 	return NewTemplateValue(tpl), nil

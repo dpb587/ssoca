@@ -13,12 +13,12 @@ type ListOptions struct {
 func (s Service) List(opts ListOptions) ([]api.ListFileResponse, error) {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return nil, errors.Wrap(err, "Getting client")
+		return nil, errors.Wrap(err, "getting client")
 	}
 
 	list, err := client.GetList()
 	if err != nil {
-		return nil, errors.Wrap(err, "Getting remote environment info")
+		return nil, errors.Wrap(err, "getting remote environment info")
 	}
 
 	return list.Files, nil

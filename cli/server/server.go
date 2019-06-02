@@ -14,8 +14,8 @@ import (
 	certauth_memory "github.com/dpb587/ssoca/certauth/memory"
 
 	srv_docroot "github.com/dpb587/ssoca/service/docroot/server"
-	srv_file "github.com/dpb587/ssoca/service/file/server"
 	srv_env "github.com/dpb587/ssoca/service/env/server"
+	srv_file "github.com/dpb587/ssoca/service/file/server"
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/server"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/server"
 

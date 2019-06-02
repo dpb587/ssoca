@@ -48,23 +48,23 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	if cfg.Target.PublicKey != "" && strings.Contains(cfg.Target.PublicKey, "-----") {
 		publicKeyPEM, _ := pem.Decode([]byte(cfg.Target.PublicKey))
 		if publicKeyPEM == nil {
-			return nil, errors.New("Failed to parse public key")
+			return nil, errors.New("failed to parse public key")
 		}
 
 		rsa, err := x509.ParsePKIXPublicKey(publicKeyPEM.Bytes)
 		if err != nil {
-			return nil, errors.Wrap(err, "Parsing public key")
+			return nil, errors.Wrap(err, "parsing public key")
 		}
 
 		publicKey, err := ssh.NewPublicKey(rsa)
 		if err != nil {
-			return nil, errors.Wrap(err, "Parsing ssh public key")
+			return nil, errors.Wrap(err, "parsing ssh public key")
 		}
 
 		cfg.Target.PublicKey = string(ssh.MarshalAuthorizedKey(publicKey))

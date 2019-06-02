@@ -51,7 +51,7 @@ var _ = Describe("ServiceFactory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting certificate authority"))
+				Expect(err.Error()).To(ContainSubstring("getting certificate authority"))
 			})
 		})
 
@@ -72,7 +72,7 @@ var _ = Describe("ServiceFactory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Loading config"))
+				Expect(err.Error()).To(ContainSubstring("loading config"))
 			})
 		})
 
@@ -87,7 +87,7 @@ var _ = Describe("ServiceFactory", func() {
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Failed to parse public key"))
+					Expect(err.Error()).To(ContainSubstring("failed to parse public key"))
 				})
 			})
 
@@ -103,7 +103,7 @@ hQIDAQAB
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing public key"))
+					Expect(err.Error()).To(ContainSubstring("parsing public key"))
 				})
 			})
 

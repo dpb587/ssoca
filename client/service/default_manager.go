@@ -22,7 +22,7 @@ func (f defaultManager) Add(service Service) {
 func (f defaultManager) Get(sType string) (Service, error) {
 	service, ok := f.services[sType]
 	if !ok {
-		return nil, fmt.Errorf("Unrecognized type: %s", sType)
+		return nil, fmt.Errorf("unrecognized type: %s", sType)
 	}
 
 	return service, nil

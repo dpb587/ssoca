@@ -30,16 +30,16 @@ func (e EnvironmentState) GetCACertificate() (*x509.Certificate, error) {
 
 	block, _ := pem.Decode([]byte(e.CACertificate))
 	if block == nil {
-		return cert, errors.New("Parsing CA certificate: Missing PEM block")
+		return cert, errors.New("parsing CA certificate: Missing PEM block")
 	}
 
 	if block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
-		return cert, errors.New("Parsing CA certificate: Not a certificate")
+		return cert, errors.New("parsing CA certificate: Not a certificate")
 	}
 
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
-		return cert, errors.Wrap(err, "Parsing CA certificate")
+		return cert, errors.Wrap(err, "parsing CA certificate")
 	}
 
 	return cert, nil
@@ -70,12 +70,12 @@ type EnvironmentAuthState struct {
 func (ea EnvironmentAuthState) UnmarshalOptions(typed interface{}) error {
 	bytes, err := yaml.Marshal(ea.Options)
 	if err != nil {
-		return errors.Wrap(err, "Marshalling")
+		return errors.Wrap(err, "marshalling")
 	}
 
 	err = yaml.Unmarshal(bytes, typed)
 	if err != nil {
-		return errors.Wrap(err, "Unmarshalling to typed options")
+		return errors.Wrap(err, "unmarshalling to typed options")
 	}
 
 	return nil

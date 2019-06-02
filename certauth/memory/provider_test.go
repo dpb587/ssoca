@@ -59,7 +59,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 	pemToCertificate := func(bytes []byte) x509.Certificate {
 		pem, _ := pem.Decode(bytes)
 		if pem == nil {
-			panic("Failed decoding PEM")
+			panic("failed decoding PEM")
 		}
 
 		certificate, err := x509.ParseCertificate(pem.Bytes)
@@ -75,7 +75,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 
 		certificatePEM, _ := pem.Decode([]byte(ca1crtStr))
 		if certificatePEM == nil {
-			panic(errors.New("Failed decoding certificate PEM"))
+			panic(errors.New("failed decoding certificate PEM"))
 		}
 
 		certificate, err := x509.ParseCertificate(certificatePEM.Bytes)
@@ -87,7 +87,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 
 		privateKeyPEM, _ := pem.Decode([]byte(ca1keyStr))
 		if privateKeyPEM == nil {
-			panic(errors.New("Failed decoding private key PEM"))
+			panic(errors.New("failed decoding private key PEM"))
 		}
 
 		privateKey, err := x509.ParsePKCS1PrivateKey(privateKeyPEM.Bytes)

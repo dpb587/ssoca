@@ -35,7 +35,7 @@ func (c client) GetList() (api.ListResponse, error) {
 
 	err := c.client.APIGet(path, &out)
 	if err != nil {
-		return out, errors.Wrapf(err, "Getting %s", path)
+		return out, errors.Wrapf(err, "getting %s", path)
 	}
 
 	return out, nil
@@ -47,7 +47,7 @@ func (c client) GetMetadata() (api.MetadataResponse, error) {
 
 	err := c.client.APIGet(path, &out)
 	if err != nil {
-		return out, errors.Wrapf(err, "Getting %s", path)
+		return out, errors.Wrapf(err, "getting %s", path)
 	}
 
 	return out, nil
@@ -56,7 +56,7 @@ func (c client) GetMetadata() (api.MetadataResponse, error) {
 func (c client) Download(name string, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
 	list, err := c.GetList()
 	if err != nil {
-		return errors.Wrap(err, "Listing artifacts")
+		return errors.Wrap(err, "listing artifacts")
 	}
 
 	for _, file := range list.Files {
@@ -67,7 +67,7 @@ func (c client) Download(name string, target io.ReadWriteSeeker, downloadStatus 
 		return c.download(file, target, downloadStatus)
 	}
 
-	return fmt.Errorf("File is not known: %s", name)
+	return fmt.Errorf("file is not known: %s", name)
 }
 
 func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, downloadStatus *pb.ProgressBar) error {
@@ -75,7 +75,7 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 
 	res, err := c.client.Get(path)
 	if err != nil {
-		return errors.Wrap(err, "Getting file")
+		return errors.Wrap(err, "getting file")
 	}
 
 	downloadStatus.Total = file.Size
@@ -85,7 +85,7 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 
 	_, err = io.Copy(target, downloadStatus.NewProxyReader(res.Body))
 	if err != nil {
-		return errors.Wrap(err, "Streaming to file")
+		return errors.Wrap(err, "streaming to file")
 	}
 
 	var algo boshcrypto.Algorithm
@@ -101,16 +101,16 @@ func (c *client) download(file api.ListFileResponse, target io.ReadWriteSeeker, 
 		algo = boshcrypto.DigestAlgorithmSHA1
 		hash = file.Digest.SHA1
 	} else {
-		return errors.New("No digest available to verify download")
+		return errors.New("no digest available to verify download")
 	}
 
 	digest, err := algo.CreateDigest(target)
 	if err != nil {
-		return errors.Wrap(err, "Creating digest")
+		return errors.Wrap(err, "creating digest")
 	}
 
 	if digest.String() != hash {
-		return fmt.Errorf("Expected digest '%s' but got '%s'", hash, digest.String())
+		return fmt.Errorf("expected digest '%s' but got '%s'", hash, digest.String())
 	}
 
 	return nil

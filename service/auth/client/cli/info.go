@@ -24,12 +24,12 @@ var _ flags.Commander = Info{}
 func (c Info) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
-		return errors.Wrap(err, "Getting client")
+		return errors.Wrap(err, "getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return errors.Wrap(err, "Getting remote authentication info")
+		return errors.Wrap(err, "getting remote authentication info")
 	}
 
 	ui := c.Runtime.GetUI()

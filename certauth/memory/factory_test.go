@@ -68,7 +68,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Loading config"))
+				Expect(err.Error()).To(ContainSubstring("loading config"))
 			})
 		})
 
@@ -79,7 +79,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Configuration missing: certificate"))
+				Expect(err.Error()).To(ContainSubstring("configuration missing: certificate"))
 			})
 
 			It("errors on misconfigured certificate", func() {
@@ -89,7 +89,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing certificate"))
+				Expect(err.Error()).To(ContainSubstring("parsing certificate"))
 			})
 
 			It("errors on invalid certificate", func() {
@@ -99,7 +99,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Failed decoding certificate"))
+				Expect(err.Error()).To(ContainSubstring("failed decoding certificate"))
 			})
 
 			It("errors on missing private key", func() {
@@ -108,7 +108,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Configuration missing: private_key"))
+				Expect(err.Error()).To(ContainSubstring("configuration missing: private_key"))
 			})
 
 			It("errors on misconfigured private key", func() {
@@ -118,7 +118,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing private key"))
+				Expect(err.Error()).To(ContainSubstring("parsing private key"))
 			})
 
 			It("errors on invalid private key", func() {
@@ -128,7 +128,7 @@ z6hlMpOS9rSjABcBdXxXjFXtIEjWUG5Tj8yOYd735zY8Ny8=
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Failed decoding private key"))
+				Expect(err.Error()).To(ContainSubstring("failed decoding private key"))
 			})
 		})
 	})

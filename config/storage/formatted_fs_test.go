@@ -74,7 +74,7 @@ var _ = Describe("FormattedFs", func() {
 				err := subject.Get("/fake/data", &get)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Reading config file '/fake/data'"))
+				Expect(err.Error()).To(ContainSubstring("reading config file '/fake/data'"))
 			})
 		})
 
@@ -85,7 +85,7 @@ var _ = Describe("FormattedFs", func() {
 				err := subject.Get("/fake/data", &get)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Parsing config"))
+				Expect(err.Error()).To(ContainSubstring("parsing config"))
 			})
 		})
 	})
@@ -135,7 +135,7 @@ var _ = Describe("FormattedFs", func() {
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("fake-error"))
-				Expect(err.Error()).To(ContainSubstring("Serializing config"))
+				Expect(err.Error()).To(ContainSubstring("serializing config"))
 			})
 		})
 
@@ -146,7 +146,7 @@ var _ = Describe("FormattedFs", func() {
 				_, err := subject.Put("/fake/data", "test")
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Writing config file '/fake/data'"))
+				Expect(err.Error()).To(ContainSubstring("writing config file '/fake/data'"))
 			})
 		})
 	})

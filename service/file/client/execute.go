@@ -20,19 +20,19 @@ type ExecuteOptions struct {
 func (s Service) Execute(opts ExecuteOptions) error {
 	wd, err := os.Getwd()
 	if err != nil {
-		return errors.Wrap(err, "Getting working directory")
+		return errors.Wrap(err, "getting working directory")
 	}
 
 	tmpfile, err := ioutil.TempFile(wd, ".ssoca-exec-")
 	if err != nil {
-		return errors.Wrap(err, "Creating temp file")
+		return errors.Wrap(err, "creating temp file")
 	}
 
 	defer os.RemoveAll(tmpfile.Name())
 
 	err = tmpfile.Close()
 	if err != nil {
-		return errors.Wrap(err, "Closing tempfile")
+		return errors.Wrap(err, "closing tempfile")
 	}
 
 	err = s.Get(GetOptions{
@@ -42,17 +42,17 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		LocalFile:     tmpfile.Name(),
 	})
 	if err != nil {
-		return errors.Wrap(err, "Getting file")
+		return errors.Wrap(err, "getting file")
 	}
 
 	err = os.Chmod(tmpfile.Name(), 0700)
 	if err != nil {
-		return errors.Wrap(err, "Chmoding tempfile")
+		return errors.Wrap(err, "chmoding tempfile")
 	}
 
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting config manager")
+		return errors.Wrap(err, "getting config manager")
 	}
 
 	cmd := boshsys.Command{
@@ -69,7 +69,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 	_, _, _, err = s.cmdRunner.RunComplexCommand(cmd)
 	if err != nil {
-		return errors.Wrap(err, "Executing")
+		return errors.Wrap(err, "executing")
 	}
 
 	return nil

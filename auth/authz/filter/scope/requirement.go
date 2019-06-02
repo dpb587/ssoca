@@ -15,7 +15,7 @@ type Requirement struct {
 
 func (r Requirement) VerifyAuthorization(_ *http.Request, token *auth.Token) error {
 	if token == nil {
-		return authn.NewError(errors.New("Authentication token missing"))
+		return authn.NewError(errors.New("authentication token missing"))
 	}
 
 	for _, scope := range token.Groups {
@@ -26,5 +26,5 @@ func (r Requirement) VerifyAuthorization(_ *http.Request, token *auth.Token) err
 		return nil
 	}
 
-	return authz.NewError(errors.New("Scope is missing"))
+	return authz.NewError(errors.New("scope is missing"))
 }

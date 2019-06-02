@@ -11,7 +11,7 @@ type DefaultClientFactory struct{}
 func (cm DefaultClientFactory) CreateClient(url string, authClient string, authClientSecret string, caCertificate string) (boshuaa.UAA, error) {
 	config, err := boshuaa.NewConfigFromURL(url)
 	if err != nil {
-		return nil, errors.Wrap(err, "Parsing UAA URL")
+		return nil, errors.Wrap(err, "parsing UAA URL")
 	}
 
 	config.CACert = caCertificate
@@ -21,7 +21,7 @@ func (cm DefaultClientFactory) CreateClient(url string, authClient string, authC
 	factory := boshuaa.NewFactory(boshlog.NewLogger(boshlog.LevelNone))
 	client, err := factory.New(config)
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating UAA client")
+		return nil, errors.Wrap(err, "creating UAA client")
 	}
 
 	return client, nil

@@ -14,7 +14,7 @@ type SignPublicKeyOptions struct {
 func (s Service) SignPublicKey(opts SignPublicKeyOptions) ([]byte, *api.SignPublicKeyTargetResponse, error) {
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Getting client")
+		return nil, nil, errors.Wrap(err, "getting client")
 	}
 
 	requestPayload := api.SignPublicKeyRequest{
@@ -23,7 +23,7 @@ func (s Service) SignPublicKey(opts SignPublicKeyOptions) ([]byte, *api.SignPubl
 
 	response, err := client.PostSignPublicKey(requestPayload)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Requesting signed public keys")
+		return nil, nil, errors.Wrap(err, "requesting signed public keys")
 	}
 
 	return []byte(response.Certificate), response.Target, err

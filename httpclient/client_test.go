@@ -96,7 +96,7 @@ var _ = Describe("Client", func() {
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-err"))
-			Expect(err.Error()).To(ContainSubstring("Executing request"))
+			Expect(err.Error()).To(ContainSubstring("executing request"))
 		})
 
 		It("errors on non-successful responses", func() {
@@ -161,7 +161,7 @@ var _ = Describe("Client", func() {
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-marshal-err"))
-			Expect(err.Error()).To(ContainSubstring("Marshaling request body"))
+			Expect(err.Error()).To(ContainSubstring("marshaling request body"))
 		})
 
 		It("errors on tcp failures", func() {
@@ -182,7 +182,7 @@ var _ = Describe("Client", func() {
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("fake-err"))
-			Expect(err.Error()).To(ContainSubstring("Executing request"))
+			Expect(err.Error()).To(ContainSubstring("executing request"))
 		})
 
 		It("errors on non-successful responses", func() {
@@ -229,7 +229,7 @@ var _ = Describe("Client", func() {
 			err := subject.APIPost("/test1", &jsonResponse{}, struct{}{})
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Unmarshaling response body"))
+			Expect(err.Error()).To(ContainSubstring("unmarshaling response body"))
 		})
 	})
 })

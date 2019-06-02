@@ -26,28 +26,28 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, _ error) {
 	resp, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
-		return token, errors.Wrap(err, "Fetching user info")
+		return token, errors.Wrap(err, "fetching user info")
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return token, errors.New("Failed to request user info")
+		return token, errors.New("failed to request user info")
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return token, errors.Wrap(err, "Reading user info")
+		return token, errors.Wrap(err, "reading user info")
 	}
 
 	userinfo := userinfoPayload{}
 	err = json.Unmarshal(data, &userinfo)
 	if err != nil {
-		return token, errors.Wrap(err, "Unmarshaling user info")
+		return token, errors.Wrap(err, "unmarshaling user info")
 	}
 
 	if !userinfo.EmailVerified {
-		return token, errors.New("Refusing to authenticate account with unverified email")
+		return token, errors.New("refusing to authenticate account with unverified email")
 	}
 
 	token.ID = userinfo.Email
@@ -68,7 +68,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	if s.config.Scopes.CloudProject != nil {
 		err = s.oauthUserProfileCloudProjectLoader(client, &token)
 		if err != nil {
-			return token, errors.Wrap(err, "Loading Cloud project scopes")
+			return token, errors.Wrap(err, "loading Cloud project scopes")
 		}
 	}
 
@@ -78,12 +78,12 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 func (s Service) oauthUserProfileCloudProjectLoader(client *http.Client, token *auth.Token) error {
 	cloudresourcemanagerService, err := cloudresourcemanager.New(client)
 	if err != nil {
-		return errors.Wrap(err, "Creating API client")
+		return errors.Wrap(err, "creating API client")
 	}
 
 	res, err := cloudresourcemanagerService.Projects.List().PageSize(1024).Do()
 	if err != nil {
-		return errors.Wrap(err, "Listing projects")
+		return errors.Wrap(err, "listing projects")
 	}
 
 	allProjects := len(s.config.Scopes.CloudProject.Projects) == 0
@@ -107,7 +107,7 @@ func (s Service) oauthUserProfileCloudProjectLoader(client *http.Client, token *
 
 		projectIam, err := cloudresourcemanagerService.Projects.GetIamPolicy(project.ProjectId, &cloudresourcemanager.GetIamPolicyRequest{}).Do()
 		if err != nil {
-			return errors.Wrap(err, "Getting IAM policy")
+			return errors.Wrap(err, "getting IAM policy")
 		}
 
 		for _, binding := range projectIam.Bindings {

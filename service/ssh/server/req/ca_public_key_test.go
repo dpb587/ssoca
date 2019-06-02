@@ -43,7 +43,7 @@ SMO3sf1847tASv3eUFwEUt9vv39vtey6C6ftiUUImzZYfx6FO/A62uGEg2w3IOJ+
 		pemToCertificate := func(bytes []byte) *x509.Certificate {
 			pem, _ := pem.Decode(bytes)
 			if pem == nil {
-				panic("Failed decoding PEM")
+				panic("failed decoding PEM")
 			}
 
 			certificate, err := x509.ParseCertificate(pem.Bytes)
@@ -83,7 +83,7 @@ SMO3sf1847tASv3eUFwEUt9vv39vtey6C6ftiUUImzZYfx6FO/A62uGEg2w3IOJ+
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
-				Expect(err.Error()).To(ContainSubstring("Loading certificate"))
+				Expect(err.Error()).To(ContainSubstring("loading certificate"))
 			})
 		})
 	})

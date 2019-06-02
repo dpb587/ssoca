@@ -33,7 +33,7 @@ func (eo *StringEnvironmentOption) Key() string {
 func (eo *StringEnvironmentOption) SetValue(value interface{}) error {
 	stringValue, ok := value.(string)
 	if !ok {
-		return fmt.Errorf("Cannot convert option value to string: %#+v", value)
+		return fmt.Errorf("cannot convert option value to string: %#+v", value)
 	}
 
 	eo.value = stringValue
@@ -77,7 +77,7 @@ func (eo *StringSliceEnvironmentOption) SetValue(value interface{}) error {
 
 	sliceValue, ok := value.([]interface{})
 	if !ok {
-		return fmt.Errorf("Cannot convert option value to slice: %#+v", value)
+		return fmt.Errorf("cannot convert option value to slice: %#+v", value)
 	}
 
 	eo.value = []string{}
@@ -85,7 +85,7 @@ func (eo *StringSliceEnvironmentOption) SetValue(value interface{}) error {
 	for _, itemValue := range sliceValue {
 		stringItemValue, ok := itemValue.(string)
 		if !ok {
-			return errors.New("Cannot convert option slice value item to string")
+			return errors.New("cannot convert option slice value item to string")
 		}
 
 		eo.value = append(eo.value, stringItemValue)

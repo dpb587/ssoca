@@ -40,19 +40,19 @@ func (c Agent) Execute(args []string) error {
 	if c.Socket == "" {
 		tmpdir, err := ioutil.TempDir("", "ssoca-ssh-agent")
 		if err != nil {
-			return errors.Wrap(err, "Creating temporary directory")
+			return errors.Wrap(err, "creating temporary directory")
 		}
 
 		err = os.Chmod(tmpdir, 0700)
 		if err != nil {
-			return errors.Wrap(err, "Setting temporary directory permissions")
+			return errors.Wrap(err, "setting temporary directory permissions")
 		}
 
 		c.Socket = fmt.Sprintf("%s/agent.sock", tmpdir)
 	} else {
 		socket, err := c.fs.ExpandPath(c.Socket)
 		if err != nil {
-			return errors.Wrap(err, "Expanding socket path")
+			return errors.Wrap(err, "expanding socket path")
 		}
 
 		c.Socket = socket
@@ -61,12 +61,12 @@ func (c Agent) Execute(args []string) error {
 	if !c.Foreground && len(args) == 0 {
 		configManager, err := c.Runtime.GetConfigManager()
 		if err != nil {
-			return errors.Wrap(err, "Getting config manager")
+			return errors.Wrap(err, "getting config manager")
 		}
 
 		executable, err := os.Executable()
 		if err != nil {
-			return errors.Wrap(err, "Finding executable")
+			return errors.Wrap(err, "finding executable")
 		}
 
 		process, err := os.StartProcess(
@@ -89,14 +89,14 @@ func (c Agent) Execute(args []string) error {
 			},
 		)
 		if err != nil {
-			return errors.Wrap(err, "Starting agent in background")
+			return errors.Wrap(err, "starting agent in background")
 		}
 
 		pid := process.Pid
 
 		err = process.Release()
 		if err != nil {
-			return errors.Wrap(err, "Detaching from agent")
+			return errors.Wrap(err, "detaching from agent")
 		}
 
 		c.printEnv(strconv.Itoa(pid))
@@ -112,7 +112,7 @@ func (c Agent) Execute(args []string) error {
 	} else {
 		socket, err := net.Dial("unix", envAuthSock)
 		if err != nil {
-			return errors.Wrapf(err, "Connecting to current SSH agent (%s)", envAuthSock)
+			return errors.Wrapf(err, "connecting to current SSH agent (%s)", envAuthSock)
 		}
 
 		parentAgent = sshagent.NewClient(socket)
@@ -122,7 +122,7 @@ func (c Agent) Execute(args []string) error {
 
 	socket, err := net.Listen("unix", c.Socket)
 	if err != nil {
-		return errors.Wrap(err, "Opening socket")
+		return errors.Wrap(err, "opening socket")
 	}
 
 	defer socket.Close()
@@ -146,7 +146,7 @@ func (c Agent) Execute(args []string) error {
 		// @todo doesn't seem to get here
 
 		if err != nil && exit == 0 {
-			return errors.Wrap(err, "Executing command")
+			return errors.Wrap(err, "executing command")
 		}
 
 		return clierrors.Exit{Code: exit}

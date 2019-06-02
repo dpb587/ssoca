@@ -34,31 +34,31 @@ var _ flags.Commander = UpdateClient{}
 func (c UpdateClient) Execute(_ []string) error {
 	client, err := c.GetClient()
 	if err != nil {
-		return errors.Wrap(err, "Getting client")
+		return errors.Wrap(err, "getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return errors.Wrap(err, "Getting remote environment info")
+		return errors.Wrap(err, "getting remote environment info")
 	}
 
 	if info.Env.UpdateService == "" {
-		return errors.New("Environment does not provide a client update service")
+		return errors.New("environment does not provide a client update service")
 	}
 
 	downloadClient, err := c.GetDownloadClient(info.Env.UpdateService, c.SkipAuthRetry)
 	if err != nil {
-		return errors.Wrap(err, "Getting download client")
+		return errors.Wrap(err, "getting download client")
 	}
 
 	metadata, err := downloadClient.GetMetadata()
 	if err != nil {
-		return errors.Wrap(err, "Getting download metadata")
+		return errors.Wrap(err, "getting download metadata")
 	}
 
 	version, ok := metadata.Metadata["version"]
 	if !ok {
-		return errors.New("Environment does not advertise the client version")
+		return errors.New("environment does not advertise the client version")
 	}
 
 	if version == c.Runtime.GetVersion().Semver {
@@ -67,7 +67,7 @@ func (c UpdateClient) Execute(_ []string) error {
 
 	files, err := downloadClient.GetList()
 	if err != nil {
-		return errors.Wrap(err, "Listing client files")
+		return errors.Wrap(err, "listing client files")
 	}
 
 	var found string
@@ -78,14 +78,14 @@ func (c UpdateClient) Execute(_ []string) error {
 		} else if !strings.Contains(file.Name, fmt.Sprintf("%s-%s", runtime.GOOS, runtime.GOARCH)) {
 			continue
 		} else if found != "" {
-			return fmt.Errorf("Multiple clients were found: %s, %s", found, file.Name)
+			return fmt.Errorf("multiple clients were found: %s, %s", found, file.Name)
 		}
 
 		found = file.Name
 	}
 
 	if found == "" {
-		return fmt.Errorf("Unable to find client (%s, %s)", runtime.GOOS, runtime.GOARCH)
+		return fmt.Errorf("unable to find client (%s, %s)", runtime.GOOS, runtime.GOARCH)
 	}
 
 	executable := c.SsocaExec
@@ -95,12 +95,12 @@ func (c UpdateClient) Execute(_ []string) error {
 
 	executable, err = exec.LookPath(executable)
 	if err != nil {
-		return errors.Wrap(err, "Expanding path")
+		return errors.Wrap(err, "expanding path")
 	}
 
 	err = c.update(downloadClient, executable, found)
 	if err != nil {
-		return errors.Wrap(err, "Updating binary")
+		return errors.Wrap(err, "updating binary")
 	}
 
 	_, _, exit, err := c.CmdRunner.RunComplexCommand(boshsys.Command{
@@ -110,9 +110,9 @@ func (c UpdateClient) Execute(_ []string) error {
 		Stdout: c.Runtime.GetStdout(),
 	})
 	if err != nil {
-		return errors.Wrap(err, "Verifying updated binary")
+		return errors.Wrap(err, "verifying updated binary")
 	} else if exit != 0 {
-		return fmt.Errorf("Unexpected exit from updated binary: %d", exit)
+		return fmt.Errorf("unexpected exit from updated binary: %d", exit)
 	}
 
 	return nil
@@ -121,7 +121,7 @@ func (c UpdateClient) Execute(_ []string) error {
 func (c UpdateClient) update(downloadClient downloadhttpclient.Client, executable string, fileName string) error {
 	tmpfile, err := c.FS.TempFile("ssoca-update-client-")
 	if err != nil {
-		return errors.Wrap(err, "Creating temporary file for download")
+		return errors.Wrap(err, "creating temporary file for download")
 	}
 
 	defer tmpfile.Close()
@@ -132,17 +132,17 @@ func (c UpdateClient) update(downloadClient downloadhttpclient.Client, executabl
 
 	err = downloadClient.Download(fileName, tmpfile, downloadStatus)
 	if err != nil {
-		return errors.Wrap(err, "Downloading file")
+		return errors.Wrap(err, "downloading file")
 	}
 
 	_, err = tmpfile.Seek(0, 0)
 	if err != nil {
-		return errors.Wrap(err, "Rewinding download")
+		return errors.Wrap(err, "rewinding download")
 	}
 
 	err = update.Apply(tmpfile, update.Options{TargetPath: executable})
 	if err != nil {
-		return errors.Wrap(err, "Updating file")
+		return errors.Wrap(err, "updating file")
 	}
 
 	return nil

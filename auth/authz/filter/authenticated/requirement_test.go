@@ -44,7 +44,7 @@ var _ = Describe("Requirement", func() {
 
 			aerr, ok := err.(authn.Error)
 			Expect(ok).To(BeTrue())
-			Expect(aerr.Error()).To(Equal("Authentication ID missing"))
+			Expect(aerr.Error()).To(Equal("authentication ID missing"))
 		})
 
 		It("does not satisfy without token", func() {
@@ -57,7 +57,7 @@ var _ = Describe("Requirement", func() {
 
 			aerr, ok := err.(authn.Error)
 			Expect(ok).To(BeTrue())
-			Expect(aerr.Error()).To(Equal("Authentication token missing"))
+			Expect(aerr.Error()).To(Equal("authentication token missing"))
 		})
 	})
 })

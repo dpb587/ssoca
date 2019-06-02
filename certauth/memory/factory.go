@@ -28,12 +28,12 @@ func (f Factory) Create(name string, options map[string]interface{}) (certauth.P
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	err = f.validateConfig(&cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Validating config")
+		return nil, errors.Wrap(err, "validating config")
 	}
 
 	provider := NewProvider(
@@ -49,33 +49,33 @@ func (f Factory) Create(name string, options map[string]interface{}) (certauth.P
 
 func (f Factory) validateConfig(config *Config) error {
 	if config.CertificateString == "" {
-		return errors.New("Configuration missing: certificate")
+		return errors.New("configuration missing: certificate")
 	}
 
 	certificatePEM, _ := pem.Decode([]byte(config.CertificateString))
 	if certificatePEM == nil {
-		return errors.New("Failed decoding certificate PEM")
+		return errors.New("failed decoding certificate PEM")
 	}
 
 	certificate, err := x509.ParseCertificate(certificatePEM.Bytes)
 	if err != nil {
-		return errors.Wrap(err, "Parsing certificate")
+		return errors.Wrap(err, "parsing certificate")
 	}
 
 	config.Certificate = *certificate
 
 	if config.PrivateKeyString == "" {
-		return errors.New("Configuration missing: private_key")
+		return errors.New("configuration missing: private_key")
 	}
 
 	privateKeyPEM, _ := pem.Decode([]byte(config.PrivateKeyString))
 	if privateKeyPEM == nil {
-		return errors.New("Failed decoding private key PEM")
+		return errors.New("failed decoding private key PEM")
 	}
 
 	privateKey, e := x509.ParsePKCS1PrivateKey(privateKeyPEM.Bytes)
 	if e != nil {
-		return errors.Wrap(e, "Parsing private key")
+		return errors.Wrap(e, "parsing private key")
 	}
 
 	config.PrivateKey = privateKey

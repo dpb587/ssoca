@@ -41,7 +41,7 @@ var _ = Describe("Client", func() {
 				_, err := subject.GetCAPublicKey()
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Getting"))
+				Expect(err.Error()).To(ContainSubstring("getting"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})
@@ -76,7 +76,7 @@ var _ = Describe("Client", func() {
 				_, err := subject.PostSignPublicKey(api.SignPublicKeyRequest{})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Posting"))
+				Expect(err.Error()).To(ContainSubstring("posting"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})

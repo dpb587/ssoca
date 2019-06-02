@@ -56,7 +56,7 @@ var _ = Describe("Filter", func() {
 						_, err := subject.Create("something")
 
 						Expect(err).To(HaveOccurred())
-						Expect(err.Error()).To(ContainSubstring("Failed to parse 'or' config"))
+						Expect(err.Error()).To(ContainSubstring("failed to parse 'or' config"))
 					})
 				})
 
@@ -95,7 +95,7 @@ var _ = Describe("Filter", func() {
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Loading filter 'invalid'"))
+					Expect(err.Error()).To(ContainSubstring("loading filter 'invalid'"))
 				})
 			})
 
@@ -108,7 +108,7 @@ var _ = Describe("Filter", func() {
 					})
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Creating requirement"))
+					Expect(err.Error()).To(ContainSubstring("creating requirement"))
 				})
 			})
 		})

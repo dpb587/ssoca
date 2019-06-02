@@ -214,7 +214,7 @@ var _ = Describe("Callback", func() {
 				errapi, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
 				Expect(errapi.Status).To(Equal(400))
-				Expect(errapi.PublicError).To(Equal("State cookie does not exist"))
+				Expect(errapi.PublicError).To(Equal("state cookie does not exist"))
 			})
 
 			It("errors when missing", func() {
@@ -232,7 +232,7 @@ var _ = Describe("Callback", func() {
 				errapi, ok := err.(apierr.Error)
 				Expect(ok).To(BeTrue())
 				Expect(errapi.Status).To(Equal(400))
-				Expect(errapi.PublicError).To(Equal("State cookie does not match"))
+				Expect(errapi.PublicError).To(Equal("state cookie does not match"))
 			})
 		})
 
@@ -251,7 +251,7 @@ var _ = Describe("Callback", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Exchanging token"))
+				Expect(err.Error()).To(ContainSubstring("exchanging token"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 
@@ -273,7 +273,7 @@ var _ = Describe("Callback", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Invalid token"))
+				Expect(err.Error()).To(ContainSubstring("invalid token"))
 			})
 		})
 
@@ -302,7 +302,7 @@ var _ = Describe("Callback", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Loading user profile"))
+				Expect(err.Error()).To(ContainSubstring("loading user profile"))
 				Expect(err.Error()).To(ContainSubstring("fake-err"))
 			})
 		})

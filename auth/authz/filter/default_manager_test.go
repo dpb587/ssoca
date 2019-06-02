@@ -30,7 +30,7 @@ var _ = Describe("DefaultManager", func() {
 				f, err := manager.Get("unknown")
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Unrecognized filter"))
+				Expect(err.Error()).To(ContainSubstring("unrecognized filter"))
 				Expect(f).To(BeNil())
 			})
 		})

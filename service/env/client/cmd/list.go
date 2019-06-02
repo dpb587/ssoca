@@ -23,12 +23,12 @@ func (c List) Execute(_ []string) error {
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	envs, err := configManager.GetEnvironments()
 	if err != nil {
-		return errors.Wrap(err, "Getting environments")
+		return errors.Wrap(err, "getting environments")
 	}
 
 	for _, env := range envs {

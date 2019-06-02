@@ -96,7 +96,7 @@ var _ = Describe("Backend", func() {
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Invalid signing method"))
+					Expect(err.Error()).To(ContainSubstring("invalid signing method"))
 
 					errapi, errok := err.(apierr.Error)
 					Expect(errok).To(BeTrue())
@@ -121,7 +121,7 @@ var _ = Describe("Backend", func() {
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing claims (ignorable validation error)"))
+					Expect(err.Error()).To(ContainSubstring("parsing claims (ignorable validation error)"))
 
 					errapi, errok := err.(apierr.Error)
 					Expect(errok).To(BeTrue())

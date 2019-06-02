@@ -27,7 +27,7 @@ func (s Service) requireExecutable(skipInstall bool) (string, error) {
 	executable, guessed, err := s.executableFinder.Find()
 	if err != nil {
 		if skipInstall {
-			return "", errors.Wrap(err, "Finding executable")
+			return "", errors.Wrap(err, "finding executable")
 		}
 	}
 
@@ -43,7 +43,7 @@ func (s Service) requireExecutable(skipInstall bool) (string, error) {
 
 	err = s.executableInstaller.Install(s.logger)
 	if err != nil {
-		return "", errors.Wrap(err, "Installing executable")
+		return "", errors.Wrap(err, "installing executable")
 	}
 
 	return s.requireExecutable(true)
@@ -59,30 +59,30 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 		executable, err = s.requireExecutable(opts.SkipInstall)
 		if err != nil {
-			return errors.Wrap(err, "Requiring executable")
+			return errors.Wrap(err, "requiring executable")
 		}
 	}
 
 	client, err := s.GetClient(opts.SkipAuthRetry)
 	if err != nil {
-		return errors.Wrap(err, "Getting client")
+		return errors.Wrap(err, "getting client")
 	}
 
 	profileManager, err := profile.CreateManagerAndPrivateKey(client, s.name)
 	if err != nil {
-		return errors.Wrap(err, "Getting profile manager")
+		return errors.Wrap(err, "getting profile manager")
 	}
 
 	tmpdir, err := s.fs.TempDir("openvpn")
 	if err != nil {
-		return errors.Wrap(err, "Creating tmpdir")
+		return errors.Wrap(err, "creating tmpdir")
 	}
 
 	defer s.fs.RemoveAll(tmpdir)
 
 	err = s.fs.Chmod(tmpdir, 0700)
 	if err != nil {
-		return errors.Wrap(err, "Chmod'ing tmpdir")
+		return errors.Wrap(err, "chmod'ing tmpdir")
 	}
 
 	configPath := fmt.Sprintf("%s/openvpn.ovpn", tmpdir)
@@ -114,7 +114,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 	profile, err := profileManager.GetProfile()
 	if err != nil {
-		return errors.Wrap(err, "Getting profile")
+		return errors.Wrap(err, "getting profile")
 	}
 
 	if opts.StaticCertificate {
@@ -124,20 +124,20 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 		err = s.fs.WriteFileString(managementPasswordPath, mgmt.ManagementPassword()+"\n")
 		if err != nil {
-			return errors.Wrap(err, "Writing management password file")
+			return errors.Wrap(err, "writing management password file")
 		}
 
 		// the containing directory already has restricted permissions;
 		// this avoids a warning message from openvpn
 		err = s.fs.Chmod(managementPasswordPath, 0700)
 		if err != nil {
-			return errors.Wrap(err, "Chmod'ing management password file")
+			return errors.Wrap(err, "chmod'ing management password file")
 		}
 
 		err = s.fs.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue(), managementPasswordPath))
 	}
 	if err != nil {
-		return errors.Wrap(err, "Writing certificate")
+		return errors.Wrap(err, "writing certificate")
 	}
 
 	_, _, _, err = s.cmdRunner.RunComplexCommand(executeRewriteCommand(boshsys.Command{

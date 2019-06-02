@@ -43,12 +43,12 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "Loading config")
+		return nil, errors.Wrap(err, "loading config")
 	}
 
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(cfg.JWT.PrivateKey))
 	if err != nil {
-		return nil, errors.Wrap(err, "Parsing private key")
+		return nil, errors.Wrap(err, "parsing private key")
 	}
 
 	backend := oauth2support.NewBackend(

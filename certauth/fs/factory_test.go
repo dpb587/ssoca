@@ -41,7 +41,7 @@ var _ = Describe("Factory", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Loading config"))
+				Expect(err.Error()).To(ContainSubstring("loading config"))
 			})
 		})
 	})

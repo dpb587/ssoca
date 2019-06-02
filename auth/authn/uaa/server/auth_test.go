@@ -80,7 +80,7 @@ var _ = Describe("Auth", func() {
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("No signing method used"))
+					Expect(err.Error()).To(ContainSubstring("no signing method used"))
 
 					errapi, errok := err.(apierr.Error)
 					Expect(errok).To(BeTrue())
@@ -105,7 +105,7 @@ var _ = Describe("Auth", func() {
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Parsing claims"))
+					Expect(err.Error()).To(ContainSubstring("parsing claims"))
 
 					errapi, errok := err.(apierr.Error)
 					Expect(errok).To(BeTrue())

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	downloadhttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 	svchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
+	downloadhttpclient "github.com/dpb587/ssoca/service/file/httpclient"
 )
 
 type GetClient func() (svchttpclient.Client, error)

@@ -15,10 +15,10 @@ type Requirement struct {
 
 func (r Requirement) VerifyAuthorization(_ *http.Request, token *auth.Token) error {
 	if token == nil {
-		return authn.NewError(errors.New("Authentication token missing"))
+		return authn.NewError(errors.New("authentication token missing"))
 	} else if token.Username() == r.Is {
 		return nil
 	}
 
-	return authz.NewError(errors.New("Username does not match"))
+	return authz.NewError(errors.New("username does not match"))
 }

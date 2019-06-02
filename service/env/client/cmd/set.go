@@ -37,7 +37,7 @@ func (c Set) Execute(_ []string) error {
 	if !strings.Contains(envURL, "://") {
 		envURL = fmt.Sprintf("https://%s", envURL)
 	} else if !strings.HasPrefix(envURL, "https://") {
-		return fmt.Errorf("Environment URL must use https scheme: %s", envURL)
+		return fmt.Errorf("environment URL must use https scheme: %s", envURL)
 	}
 
 	env := config.EnvironmentState{
@@ -48,12 +48,12 @@ func (c Set) Execute(_ []string) error {
 	if c.CACertificatePath != "" {
 		absPath, err := c.FS.ExpandPath(c.CACertificatePath)
 		if err != nil {
-			return errors.Wrap(err, "Expanding path")
+			return errors.Wrap(err, "expanding path")
 		}
 
 		cacert, err := c.FS.ReadFileString(absPath)
 		if err != nil {
-			return errors.Wrap(err, "Reading file")
+			return errors.Wrap(err, "reading file")
 		}
 
 		env.CACertificate = cacert
@@ -61,12 +61,12 @@ func (c Set) Execute(_ []string) error {
 
 	configManager, err := c.Runtime.GetConfigManager()
 	if err != nil {
-		return errors.Wrap(err, "Getting state manager")
+		return errors.Wrap(err, "getting state manager")
 	}
 
 	err = configManager.SetEnvironment(env)
 	if err != nil {
-		return errors.Wrap(err, "Setting environment")
+		return errors.Wrap(err, "setting environment")
 	}
 
 	if c.SkipVerify {
@@ -75,7 +75,7 @@ func (c Set) Execute(_ []string) error {
 
 	err = c.verify()
 	if err != nil {
-		return errors.Wrap(err, "Verifying environment")
+		return errors.Wrap(err, "verifying environment")
 	}
 
 	return nil
@@ -86,12 +86,12 @@ func (c Set) verify() error {
 
 	client, err := c.GetClient()
 	if err != nil {
-		return errors.Wrap(err, "Getting client")
+		return errors.Wrap(err, "getting client")
 	}
 
 	info, err := client.GetInfo()
 	if err != nil {
-		return errors.Wrap(err, "Getting remote environment info")
+		return errors.Wrap(err, "getting remote environment info")
 	}
 
 	ui.PrintBlock([]byte(fmt.Sprintf("Successfully connected to %s\n", info.Env.Title)))

@@ -26,7 +26,7 @@ func (h BaseProfile) Route() string {
 func (h BaseProfile) Execute(request req.Request) error {
 	caCertificate, err := h.CertAuth.GetCertificatePEM()
 	if err != nil {
-		return errors.Wrap(err, "Loading CA certificate")
+		return errors.Wrap(err, "loading CA certificate")
 	}
 
 	request.RawResponse.Header().Add("Content-Type", "text/plain")
