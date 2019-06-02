@@ -8,8 +8,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-const EnvironmentOptionAuthBind string = "auth.bind"
-const EnvironmentOptionAuthOpenCommand string = "auth.open_command"
+var EnvironmentOptionAuthBind = NewStringEnvironmentOption("auth.bind", "0.0.0.0:0")
+var EnvironmentOptionAuthOpenCommand = NewStringSliceEnvironmentOption("auth.open_command", defaultAuthOpenCommand)
 
 type State struct {
 	Environments EnvironmentsState `yaml:"environments,omitempty"`
@@ -45,10 +45,10 @@ func (e EnvironmentState) GetCACertificate() (*x509.Certificate, error) {
 	return cert, nil
 }
 
-func (e EnvironmentState) GetOption(option EnvironmentOption, def interface{}) error {
+func (e EnvironmentState) GetOption(option EnvironmentOption) error {
 	val, found := e.Options[option.Key()]
 	if !found {
-		val = def
+		val = option.GetDefaultValue()
 	}
 
 	return option.SetValue(val)

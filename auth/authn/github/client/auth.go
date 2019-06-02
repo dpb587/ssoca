@@ -16,14 +16,14 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 		return nil, errors.Wrap(err, "Getting environment")
 	}
 
-	authBind := config.NewStringEnvironmentOption(config.EnvironmentOptionAuthBind)
-	err = env.GetOption(&authBind, "0.0.0.0:0")
+	authBind := config.EnvironmentOptionAuthBind
+	err = env.GetOption(&authBind)
 	if err != nil {
 		return nil, errors.Wrap(err, "Loading bind option")
 	}
 
-	openCommand := config.NewStringSliceEnvironmentOption(config.EnvironmentOptionAuthOpenCommand)
-	err = env.GetOption(&openCommand, []string{"open"})
+	openCommand := config.EnvironmentOptionAuthOpenCommand
+	err = env.GetOption(&openCommand)
 	if err != nil {
 		return nil, errors.Wrap(err, "Loading open option")
 	}

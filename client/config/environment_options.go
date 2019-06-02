@@ -8,17 +8,22 @@ import (
 type EnvironmentOption interface {
 	Key() string
 	SetValue(interface{}) error
+	GetDefaultValue() interface{}
 }
 
 type StringEnvironmentOption struct {
-	key   string
-	value string
+	key          string
+	defaultValue string
+	value        string
 }
 
 var _ EnvironmentOption = &StringEnvironmentOption{}
 
-func NewStringEnvironmentOption(key string) StringEnvironmentOption {
-	return StringEnvironmentOption{key: key}
+func NewStringEnvironmentOption(key string, defaultValue string) StringEnvironmentOption {
+	return StringEnvironmentOption{
+		key:          key,
+		defaultValue: defaultValue,
+	}
 }
 
 func (eo *StringEnvironmentOption) Key() string {
@@ -40,15 +45,23 @@ func (eo *StringEnvironmentOption) GetValue() string {
 	return eo.value
 }
 
+func (eo *StringEnvironmentOption) GetDefaultValue() interface{} {
+	return eo.defaultValue
+}
+
 type StringSliceEnvironmentOption struct {
-	key   string
-	value []string
+	key          string
+	defaultValue []string
+	value        []string
 }
 
 var _ EnvironmentOption = &StringSliceEnvironmentOption{}
 
-func NewStringSliceEnvironmentOption(key string) StringSliceEnvironmentOption {
-	return StringSliceEnvironmentOption{key: key}
+func NewStringSliceEnvironmentOption(key string, defaultValue []string) StringSliceEnvironmentOption {
+	return StringSliceEnvironmentOption{
+		key:          key,
+		defaultValue: defaultValue,
+	}
 }
 
 func (eo *StringSliceEnvironmentOption) Key() string {
@@ -83,4 +96,8 @@ func (eo *StringSliceEnvironmentOption) SetValue(value interface{}) error {
 
 func (eo *StringSliceEnvironmentOption) GetValue() []string {
 	return eo.value
+}
+
+func (eo *StringSliceEnvironmentOption) GetDefaultValue() interface{} {
+	return eo.defaultValue
 }

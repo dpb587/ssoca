@@ -35,7 +35,7 @@ ssoca env set-option auth.bind "localhost:8085"
 
 ### `open_command` (Interactive Login)
 
-If the user needs to visit a URL during authentication, the CLI will attempt to open the URL automatically. By default, the system's `open` command is invoked, but this can be overridden with the `open_command` option if advanced usage is required. The URL will be appended to the command.
+If the user needs to visit a URL during authentication, the CLI will attempt to open the URL automatically. By default, the system's open command is invoked, but this can be overridden with the `open_command` option if advanced usage is required. The URL will be appended to the command.
 
 For example, to open the URL in Google Chrome with a specific profile for the user, you might use...
 
