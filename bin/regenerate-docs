@@ -24,6 +24,11 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
       echo "title: ssoca $cmd $subcmd"
       echo 'aliases:'
       echo "- /service/$cmd/$subcmd-cmd/"
+
+      if [[ "$cmd" == "file" ]] && ( [[ "$subcmd" == "get" ]] || [[ "$subcmd" == "list" ]] ); then
+        echo "- /reference/service/download/$subcmd-cmd/"
+      fi
+      
       echo '---'
       echo
 

@@ -1,15 +1,16 @@
 ---
-title: ssoca download list
+title: ssoca file list
 aliases:
-- /service/download/list-cmd/
+- /service/file/list-cmd/
+- /reference/service/download/list-cmd/
 ---
 
-# `ssoca download list ...`
+# `ssoca file list ...`
 
-List available artifacts
+List available files
 
     Usage:
-      ssoca [OPTIONS] download [download-OPTIONS] list [list-OPTIONS]
+      ssoca [OPTIONS] file [file-OPTIONS] list [list-OPTIONS]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,10 +20,10 @@ List available artifacts
     Help Options:
       -h, --help                 Show this help message
     
-    [download command options]
+    [file command options]
     
-        Download environment artifacts:
-          -s, --service=         Service name (default: download) [$SSOCA_SERVICE]
+        Access files from the environment:
+          -s, --service=         Service name (default: file) [$SSOCA_SERVICE]
     
     [list command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out

@@ -1,15 +1,15 @@
 ---
-title: ssoca download get
+title: ssoca file exec
 aliases:
-- /service/download/get-cmd/
+- /service/file/exec-cmd/
 ---
 
-# `ssoca download get ...`
+# `ssoca file exec ...`
 
-Get an artifact
+Temporarily get and then execute a file
 
     Usage:
-      ssoca [OPTIONS] download [download-OPTIONS] get [get-OPTIONS] [FILE] [TARGET-FILE]
+      ssoca [OPTIONS] file [file-OPTIONS] exec [exec-OPTIONS] [FILE] [EXTRA...]
     
     Application Options:
           --config=              Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -19,15 +19,15 @@ Get an artifact
     Help Options:
       -h, --help                 Show this help message
     
-    [download command options]
+    [file command options]
     
-        Download environment artifacts:
-          -s, --service=         Service name (default: download) [$SSOCA_SERVICE]
+        Access files from the environment:
+          -s, --service=         Service name (default: file) [$SSOCA_SERVICE]
     
-    [get command options]
+    [exec command options]
               --skip-auth-retry  Skip interactive authentication retries when logged out
     
-    [get command arguments]
+    [exec command arguments]
       FILE:                      File name
-      TARGET-FILE:               Target path to write download (use '-' for STDOUT)
+      EXTRA:                     Additional arguments to pass
     

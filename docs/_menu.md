@@ -6,8 +6,8 @@ Services
 
  * [Authentication]({{< relref "reference/service/auth" >}})
  * [Document Root]({{< relref "reference/service/docroot" >}})
- * [Download]({{< relref "reference/service/download" >}})
  * [Environment]({{< relref "reference/service/env" >}})
+ * [File]({{< relref "reference/service/file" >}})
  * [OpenVPN]({{< relref "reference/service/openvpn" >}})
  * [SSH]({{< relref "reference/service/ssh" >}})
 
