@@ -143,7 +143,7 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 	}
 
 	if len(merged) == 0 {
-		return service, nil
+		return nil, errors.New("expected at least one filter, but found 0 filters")
 	}
 
 	and, err := filterManager.Get("and")

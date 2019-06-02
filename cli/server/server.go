@@ -28,6 +28,7 @@ import (
 	filter_and "github.com/dpb587/ssoca/auth/authz/filter/and"
 	filter_authenticated "github.com/dpb587/ssoca/auth/authz/filter/authenticated"
 	filter_or "github.com/dpb587/ssoca/auth/authz/filter/or"
+	filter_public "github.com/dpb587/ssoca/auth/authz/filter/public"
 	filter_remote_ip "github.com/dpb587/ssoca/auth/authz/filter/remote_ip"
 	filter_scope "github.com/dpb587/ssoca/auth/authz/filter/scope"
 	filter_username "github.com/dpb587/ssoca/auth/authz/filter/username"
@@ -74,6 +75,7 @@ func main() {
 	filterManager.Add("and", filter_and.NewFilter(&filterManager))
 	filterManager.Add("authenticated", filter_authenticated.Filter{})
 	filterManager.Add("or", filter_or.NewFilter(&filterManager))
+	filterManager.Add("public", filter_public.Filter{})
 	filterManager.Add("remote_ip", filter_remote_ip.Filter{})
 	filterManager.Add("scope", filter_scope.Filter{})
 	filterManager.Add("username", filter_username.Filter{})

@@ -6,11 +6,7 @@ aliases:
 
 # Authorization
 
-Global (`auth.require`) and service-specific (`services[*].require`) authorization restrictions may be configured. For both settings, the values should be an array of hashes with one of the available filter types.
-
-{{< note type="danger" >}}
-  By default, services are accessible.
-{{< /note >}}
+Global (`auth.require`) and service-specific (`services[*].require`) authorization restrictions may be configured. For both settings, the values should be an array of hashes with one of the available filter types. At least one authorization rule must be effective for a service.
 
 
 ## `and`
@@ -41,6 +37,15 @@ Require at least one of multiple filters to be true. The array values of the nod
 - or:
   - remote_ip: { within: "192.0.2.0/24" }
   - remote_ip: { within: "198.51.100.0/24" }
+```
+
+
+## `public`
+
+Allow all access, authenticated or anonymous.
+
+```yaml
+- public: ~
 ```
 
 
