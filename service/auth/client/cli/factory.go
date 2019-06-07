@@ -7,7 +7,7 @@ import (
 )
 
 type Commands struct {
-	*clientcmd.ServiceCommand `no-flag:"true"`
+	*clientcmd.ServiceCommand
 
 	Info   Info   `command:"info" description:"Show current authentication information"`
 	Login  Login  `command:"login" description:"Authenticate for a new token"`

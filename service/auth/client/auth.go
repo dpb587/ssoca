@@ -7,25 +7,13 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/client/service"
-	env_api "github.com/dpb587/ssoca/service/env/api"
 )
 
 var _ service.AuthService = Service{}
 
-func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error) {
-	authServiceType := info.Type
-
-	svc, err := s.serviceManager.Get(authServiceType)
-	if err != nil {
-		return nil, errors.Wrap(err, "loading auth service")
-	}
-
-	authService, ok := svc.(service.AuthService)
-	if !ok {
-		return nil, fmt.Errorf("cannot authenticate with service: %s", authServiceType)
-	}
-
-	return authService.AuthLogin(info)
+func (s Service) AuthLogin() error {
+	// TODO fetch default service and execute AuthLogin()
+	return errors.New("TODO")
 }
 
 func (s Service) AuthLogout() error {

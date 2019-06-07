@@ -1,11 +1,11 @@
 package googleauth
 
-type Service struct{}
+type ServiceType struct{}
 
-func (Service) Type() string {
+func (ServiceType) Type() string {
 	return "google_authn"
 }
 
-func (Service) Version() string {
+func (ServiceType) Version() string {
 	return "0.1.0"
 }

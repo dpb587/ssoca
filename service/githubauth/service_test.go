@@ -7,11 +7,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Service", func() {
-	var svc Service
+var _ = Describe("ServiceType", func() {
+	var svc ServiceType
 
 	BeforeEach(func() {
-		svc = Service{}
+		svc = ServiceType{}
 	})
 
 	Describe("Type", func() {

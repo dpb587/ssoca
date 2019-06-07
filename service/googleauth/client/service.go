@@ -2,22 +2,27 @@ package client
 
 import (
 	"github.com/dpb587/ssoca/client"
+	"github.com/dpb587/ssoca/client/service"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	oauth "github.com/dpb587/ssoca/auth/authn/support/oauth2/client"
 	svc "github.com/dpb587/ssoca/service/googleauth"
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
+	oauth.Service
 
-	runtime   client.Runtime
-	cmdRunner boshsys.CmdRunner
+	name string
 }
 
-func NewService(runtime client.Runtime, cmdRunner boshsys.CmdRunner) Service {
+var _ service.Service = &Service{}
+var _ service.AuthService = &Service{}
+
+func NewService(name string, runtime client.Runtime, cmdRunner boshsys.CmdRunner) Service {
 	return Service{
-		runtime:   runtime,
-		cmdRunner: cmdRunner,
+		name:    name,
+		Service: oauth.NewService(name, runtime, cmdRunner),
 	}
 }
 

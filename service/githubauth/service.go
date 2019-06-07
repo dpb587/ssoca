@@ -1,11 +1,11 @@
 package githubauth
 
-type Service struct{}
+type ServiceType struct{}
 
-func (Service) Type() string {
+func (ServiceType) Type() string {
 	return "github_authn"
 }
 
-func (Service) Version() string {
+func (ServiceType) Version() string {
 	return "0.1.0"
 }

@@ -17,6 +17,7 @@ import (
 	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
+	srv_authconfig "github.com/dpb587/ssoca/service/auth/server/config"
 )
 
 type Server struct {
@@ -37,10 +38,6 @@ func CreateFromConfig(
 	serviceManager service.Manager,
 	logger logrus.FieldLogger,
 ) (Server, error) {
-	if cfg.Auth.Type == "" {
-		return Server{}, errors.New("configuration missing: auth.type")
-	}
-
 	if cfg.Env.URL == "" {
 		return Server{}, errors.New("configuration missing: env.url")
 	}
@@ -121,17 +118,20 @@ func CreateFromConfig(
 		serviceManager.Add(filteredService)
 	}
 
-	svc, err := serviceFactory.Create(fmt.Sprintf("%s_authn", cfg.Auth.Type), "auth", cfg.Auth.Options)
-	if err != nil {
-		return Server{}, errors.Wrap(err, "creating auth service")
-	}
-
-	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
+	serviceManager.Add(
+		srv_auth.NewService(
+			srv_authconfig.Config{
+				Require:        cfg.Auth.Require,
+				DefaultService: cfg.Auth.DefaultService,
+			},
+			serviceManager,
+		),
+	)
 
 	return NewServer(cfg.Server, serviceManager, logger), nil
 }
 
-func filterService(service service.Service, config config.ServiceConfig, authFilters []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
+func filterService(svc service.Service, config config.ServiceConfig, authFilters []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
 	var merged []filter.RequireConfig
 
 	for _, a := range authFilters {
@@ -143,6 +143,11 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 	}
 
 	if len(merged) == 0 {
+		if _, auth := svc.(service.AuthService); auth {
+			// auth services may be public
+			return svc, nil
+		}
+
 		return nil, errors.New("expected at least one filter, but found 0 filters")
 	}
 
@@ -156,7 +161,7 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 		panic(err)
 	}
 
-	return authorized.NewService(service, requirement), nil
+	return authorized.NewService(svc, requirement), nil
 }
 
 func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.FieldLogger) Server {

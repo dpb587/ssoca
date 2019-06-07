@@ -11,6 +11,7 @@ import (
 	"github.com/dpb587/ssoca/auth/authz/filter"
 	"github.com/dpb587/ssoca/certauth"
 	envconfig "github.com/dpb587/ssoca/service/env/server/config"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -82,14 +83,15 @@ func (v *ServerTrustedProxy) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 type ServerRedirectConfig struct {
 	Root        string `yaml:"root"`
-	AuthSuccess string `yaml:"auth_success"`
-	AuthFailure string `yaml:"auth_failure"`
+	AuthSuccess string `yaml:"auth_success"` // TODO deprecated
+	AuthFailure string `yaml:"auth_failure"` // TODO deprecated
 }
 
 type AuthConfig struct {
-	Type    string                 `yaml:"type"`
-	Options map[string]interface{} `yaml:"options"`
-	Require []filter.RequireConfig `yaml:"require"`
+	Type           string                 `yaml:"type"`    // TODO deprecated
+	Options        map[string]interface{} `yaml:"options"` // TODO deprecated
+	Require        []filter.RequireConfig `yaml:"require"`
+	DefaultService string                 `yaml:"default_auth_service"`
 }
 
 type ServiceConfig struct {
@@ -109,6 +111,51 @@ func (c *Config) ApplyDefaults() {
 	for _, service := range c.Services {
 		service.ApplyDefaults()
 	}
+}
+
+func (c *Config) ApplyMigrations(logger logrus.FieldLogger) error {
+	// introduced v0.17.0; remove v1.0.0
+	if c.Auth.Type != "" {
+		logger.Warn("authentication should now be configured as a service (auth.type, auth.options are deprecated)")
+
+		c.Services = append(
+			c.Services,
+			ServiceConfig{
+				Name:    "auth",
+				Type:    fmt.Sprintf("%s_authn", c.Auth.Type),
+				Options: c.Auth.Options,
+			},
+		)
+
+		c.Auth.Type = ""
+		c.Auth.Options = nil
+	}
+
+	if c.Server.Redirect.AuthFailure != "" {
+		logger.Warn("authentication redirects should now be configured through service options (server.redirect.auth_failure is deprecated)")
+
+		for srvIdx, srv := range c.Services {
+			if srv.Type == "github_authn" || srv.Type == "google_authn" {
+				c.Services[srvIdx].Options["redirect_failure"] = c.Server.Redirect.AuthFailure
+			}
+		}
+
+		c.Server.Redirect.AuthFailure = ""
+	}
+
+	if c.Server.Redirect.AuthSuccess != "" {
+		logger.Warn("authentication redirects should now be configured through service options (server.redirect.auth_failure is deprecated)")
+
+		for srvIdx, srv := range c.Services {
+			if srv.Type == "github_authn" || srv.Type == "google_authn" {
+				c.Services[srvIdx].Options["redirect_success"] = c.Server.Redirect.AuthSuccess
+			}
+		}
+
+		c.Server.Redirect.AuthSuccess = ""
+	}
+
+	return nil
 }
 
 func (c *ServerConfig) ApplyDefaults() {

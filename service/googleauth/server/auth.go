@@ -19,11 +19,7 @@ type userinfoPayload struct {
 	EmailVerified bool   `json:"email_verified"`
 }
 
-func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
-	return s.oauth.ParseRequestAuth(req)
-}
-
-func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, _ error) {
+func (s Service) BuildAuthToken(client *http.Client) (token auth.Token, _ error) {
 	resp, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
 		return token, errors.Wrap(err, "fetching user info")

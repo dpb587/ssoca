@@ -9,10 +9,6 @@ import (
 
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/config"
 	. "github.com/dpb587/ssoca/service/githubauth/server"
-	"golang.org/x/oauth2"
-
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -27,25 +23,20 @@ func (t *mockTransport) RoundTrip(req *http.Request) (resp *http.Response, err e
 }
 
 var _ = Describe("Auth", func() {
-	var subject Service
+	var subject *Service
 
-	Describe("OAuthUserProfileLoader", func() {
+	Describe("BuildAuthToken", func() {
 		Context("simple config", func() {
 			BeforeEach(func() {
 				subject = NewService(
 					"auth",
+					"https://example.com",
 					svcconfig.Config{},
-					oauth2support.NewBackend(
-						oauth2supportconfig.URLs{Origin: "test"},
-						oauth2.Config{},
-						oauth2.NoContext,
-						oauth2supportconfig.JWT{},
-					),
 				)
 			})
 
 			It("works", func() {
-				profile, err := subject.OAuthUserProfileLoader(&http.Client{
+				profile, err := subject.BuildAuthToken(&http.Client{
 					Transport: &mockTransport{
 						rt: func(r *http.Request) (w *http.Response, err error) {
 							switch r.URL.String() {
@@ -88,7 +79,7 @@ var _ = Describe("Auth", func() {
 			Context("bad user info requests", func() {
 				Context("transport errors", func() {
 					It("errors", func() {
-						_, err := subject.OAuthUserProfileLoader(&http.Client{
+						_, err := subject.BuildAuthToken(&http.Client{
 							Transport: &mockTransport{
 								rt: func(r *http.Request) (w *http.Response, err error) {
 									return nil, errors.New("fake-err")
@@ -104,7 +95,7 @@ var _ = Describe("Auth", func() {
 
 				Context("server errors", func() {
 					XIt("errors", func() {
-						_, err := subject.OAuthUserProfileLoader(&http.Client{
+						_, err := subject.BuildAuthToken(&http.Client{
 							Transport: &mockTransport{
 								rt: func(r *http.Request) (w *http.Response, err error) {
 									switch r.URL.String() {

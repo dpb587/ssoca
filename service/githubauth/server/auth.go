@@ -11,11 +11,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 )
 
-func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
-	return s.oauth.ParseRequestAuth(req)
-}
-
-func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, _ error) {
+func (s Service) BuildAuthToken(client *http.Client) (token auth.Token, _ error) {
 	ctx := context.Background()
 
 	ghclient := github.NewClient(client)

@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/dpb587/ssoca/service/githubauth/client"
+	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/client"
 
 	"github.com/dpb587/ssoca/client/clientfakes"
 	"github.com/dpb587/ssoca/client/config"
-	"github.com/dpb587/ssoca/service/env/api"
 
 	uifakes "github.com/cloudfoundry/bosh-cli/ui/fakes"
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
@@ -39,7 +38,7 @@ var _ = Describe("Auth", func() {
 		runtime = clientfakes.FakeRuntime{}
 		runtime.GetUIReturns(&ui)
 
-		subject = NewService(&runtime, &cmdRunner)
+		subject = NewService("auth-service-name", &runtime, &cmdRunner)
 	})
 
 	Describe("AuthLogin", func() {
@@ -51,7 +50,9 @@ var _ = Describe("Auth", func() {
 				Error: nil,
 			})
 
-			token, err := subject.AuthLogin(api.InfoServiceResponse{})
+			err := subject.AuthLogin()
+
+			// TODO verify configManager
 
 			Expect(err).ToNot(HaveOccurred())
 
@@ -60,7 +61,7 @@ var _ = Describe("Auth", func() {
 
 			Expect(authConfig.Token).To(Equal("mytoken"))
 
-			Expect(strings.Join(ui.Said, "")).To(ContainSubstring("https://192.0.2.99/auth/initiate"))
+			Expect(strings.Join(ui.Said, "")).To(ContainSubstring("https://192.0.2.99/auth-service-name/initiate"))
 		})
 
 		XIt("propagates errors on input fail", func() {
@@ -70,7 +71,7 @@ var _ = Describe("Auth", func() {
 				Error: errors.New("ctrl c"),
 			})
 
-			_, err := subject.AuthLogin(api.InfoServiceResponse{})
+			_, err := subject.AuthLogin()
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("ctrl c"))
