@@ -12,7 +12,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	name      string
 	runtime   client.Runtime

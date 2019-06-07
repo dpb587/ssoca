@@ -1,22 +1,22 @@
-package ssh_test
+package env_test
 
 import (
-	. "github.com/dpb587/ssoca/service/ssh"
+	. "github.com/dpb587/ssoca/service/env"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Service", func() {
-	var svc Service
+var _ = Describe("ServiceType", func() {
+	var svc ServiceType
 
 	BeforeEach(func() {
-		svc = Service{}
+		svc = ServiceType{}
 	})
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(svc.Type()).To(Equal("ssh"))
+			Expect(svc.Type()).To(Equal("env"))
 		})
 	})
 

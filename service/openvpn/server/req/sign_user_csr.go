@@ -64,7 +64,7 @@ func (h SignUserCSR) Execute(request req.Request) error {
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
 			Country:      []string{"US"},
-			Organization: []string{fmt.Sprintf("ssoca/%s", svc.Service{}.Version())},
+			Organization: []string{fmt.Sprintf("ssoca/%s", svc.ServiceType{}.Version())},
 			CommonName:   request.AuthToken.ID,
 		},
 		EmailAddresses:        csr.EmailAddresses,

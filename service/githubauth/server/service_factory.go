@@ -17,6 +17,8 @@ import (
 )
 
 type ServiceFactory struct {
+	svc.ServiceType
+
 	endpointURL string
 	failureURL  string
 	successURL  string
@@ -28,10 +30,6 @@ func NewServiceFactory(endpointURL string, failureURL string, successURL string)
 		failureURL:  failureURL,
 		successURL:  successURL,
 	}
-}
-
-func (f ServiceFactory) Type() string {
-	return svc.Service{}.Type()
 }
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {

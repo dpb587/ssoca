@@ -8,6 +8,8 @@ import (
 )
 
 type ServiceFactory struct {
+	svc.ServiceType
+
 	runtime             client.Runtime
 	fs                  boshsys.FileSystem
 	cmdRunner           boshsys.CmdRunner
@@ -30,7 +32,7 @@ func (sf ServiceFactory) New(name string) Service {
 		name,
 		sf.runtime,
 		sf.runtime.GetLogger().WithFields(logrus.Fields{
-			"service.type": svc.Service{}.Type(),
+			"service.type": sf.Type(),
 			"service.name": name,
 		}),
 		sf.fs,

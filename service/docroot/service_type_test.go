@@ -1,22 +1,22 @@
-package googleauth_test
+package docroot_test
 
 import (
-	. "github.com/dpb587/ssoca/service/googleauth"
+	. "github.com/dpb587/ssoca/service/docroot"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Service", func() {
-	var svc Service
+var _ = Describe("ServiceType", func() {
+	var svc ServiceType
 
 	BeforeEach(func() {
-		svc = Service{}
+		svc = ServiceType{}
 	})
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(svc.Type()).To(Equal("google_authn"))
+			Expect(svc.Type()).To(Equal("docroot"))
 		})
 	})
 

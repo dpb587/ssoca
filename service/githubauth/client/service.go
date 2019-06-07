@@ -8,7 +8,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	runtime   client.Runtime
 	cmdRunner boshsys.CmdRunner

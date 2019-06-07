@@ -3,9 +3,12 @@ package client
 import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/dpb587/ssoca/client"
+	svc "github.com/dpb587/ssoca/service/file"
 )
 
 type ServiceFactory struct {
+	svc.ServiceType
+
 	runtime   client.Runtime
 	fs        boshsys.FileSystem
 	cmdRunner boshsys.CmdRunner

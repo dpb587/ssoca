@@ -10,7 +10,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	name   string
 	config svcconfig.Config

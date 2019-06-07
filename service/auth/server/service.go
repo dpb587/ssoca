@@ -12,7 +12,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	auth service.AuthService
 }

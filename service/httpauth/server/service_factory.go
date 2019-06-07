@@ -10,14 +10,12 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 )
 
-type ServiceFactory struct{}
+type ServiceFactory struct {
+	svc.ServiceType
+}
 
 func NewServiceFactory() ServiceFactory {
 	return ServiceFactory{}
-}
-
-func (f ServiceFactory) Type() string {
-	return svc.Service{}.Type()
 }
 
 func (sf ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {
