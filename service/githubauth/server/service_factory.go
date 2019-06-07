@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
@@ -34,10 +33,6 @@ func NewServiceFactory(endpointURL string, failureURL string, successURL string)
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {
 	var cfg svcconfig.Config
-	cfg.JWT.Validity = 24 * time.Hour
-	cfg.JWT.ValidityPast = 2 * time.Second
-	cfg.AuthURL = "https://github.com/login/oauth/authorize"
-	cfg.TokenURL = "https://github.com/login/oauth/access_token"
 
 	err := config.RemarshalYAML(options, &cfg)
 	if err != nil {
@@ -70,8 +65,8 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 		oauth2.NoContext,
 		oauth2supportconfig.JWT{
 			PrivateKey:   *privateKey,
-			Validity:     cfg.JWT.Validity,
-			ValidityPast: cfg.JWT.ValidityPast,
+			Validity:     *cfg.JWT.Validity,
+			ValidityPast: *cfg.JWT.ValidityPast,
 		},
 	)
 

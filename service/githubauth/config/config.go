@@ -13,7 +13,31 @@ type Config struct {
 }
 
 type JWTConfig struct {
-	PrivateKey   string        `yaml:"private_key"`
-	Validity     time.Duration `yaml:"validity"`
-	ValidityPast time.Duration `yaml:"validity_past"`
+	PrivateKey   string         `yaml:"private_key"`
+	Validity     *time.Duration `yaml:"validity"`
+	ValidityPast *time.Duration `yaml:"validity_past"`
+}
+
+func (c *Config) ApplyDefaults() {
+	if c.AuthURL == "" {
+		c.AuthURL = "https://github.com/login/oauth/authorize"
+	}
+
+	if c.TokenURL == "" {
+		c.TokenURL = "https://github.com/login/oauth/access_token"
+	}
+
+	c.JWT.ApplyDefaults()
+}
+
+func (c *JWTConfig) ApplyDefaults() {
+	if c.Validity == nil {
+		v := 24 * time.Hour
+		c.Validity = &v
+	}
+
+	if c.ValidityPast == nil {
+		v := 2 * time.Second
+		c.ValidityPast = &v
+	}
 }
