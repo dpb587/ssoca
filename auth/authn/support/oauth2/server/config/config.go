@@ -1,7 +1,6 @@
 package config
 
 import (
-	"crypto/rsa"
 	"net/http"
 	"time"
 
@@ -18,7 +17,7 @@ const CookieClientVersionName = "ssoca_client_version"
 type UserProfileLoader func(*http.Client) (auth.Token, error)
 
 type JWT struct {
-	PrivateKey   rsa.PrivateKey
+	PrivateKey   *PrivateKey
 	Validity     time.Duration
 	ValidityPast time.Duration
 }

@@ -96,7 +96,7 @@ func (h Callback) Execute(request req.Request) error {
 		},
 	})
 
-	tokenString, err := token.SignedString(&h.JWT.PrivateKey)
+	tokenString, err := token.SignedString(h.JWT.PrivateKey.PrivateKey)
 	if err != nil {
 		return errors.Wrap(err, "signing token")
 	}

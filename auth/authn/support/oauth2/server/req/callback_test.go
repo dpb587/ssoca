@@ -117,7 +117,9 @@ var _ = Describe("Callback", func() {
 					},
 				),
 				JWT: oauth2supportconfig.JWT{
-					PrivateKey: *privateKey,
+					PrivateKey: &oauth2supportconfig.PrivateKey{
+						PrivateKey: privateKey,
+					},
 				},
 			}
 

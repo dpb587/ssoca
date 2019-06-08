@@ -38,7 +38,9 @@ var _ = Describe("Service", func() {
 				oauth2.Config{},
 				oauth2.NoContext,
 				config.JWT{
-					PrivateKey: *privateKey,
+					PrivateKey: &config.PrivateKey{
+						PrivateKey: privateKey,
+					},
 				},
 			)
 		})

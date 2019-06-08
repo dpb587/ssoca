@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
@@ -39,11 +38,6 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 		return nil, errors.Wrap(err, "loading config")
 	}
 
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(cfg.JWT.PrivateKey))
-	if err != nil {
-		return nil, errors.Wrap(err, "parsing private key")
-	}
-
 	scopes := []string{"https://www.googleapis.com/auth/userinfo.email"}
 
 	if cfg.Scopes.CloudProject != nil {
@@ -68,7 +62,7 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 		},
 		oauth2.NoContext,
 		oauth2config.JWT{
-			PrivateKey:   *privateKey,
+			PrivateKey:   cfg.JWT.PrivateKey,
 			Validity:     *cfg.JWT.Validity,
 			ValidityPast: *cfg.JWT.ValidityPast,
 		},
