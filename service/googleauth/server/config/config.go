@@ -32,8 +32,8 @@ type ScopesCloudProjectConfig struct {
 
 type JWTConfig struct {
 	PrivateKey   *oauth2config.PrivateKey `yaml:"private_key"`
-	Validity     *time.Duration           `yaml:"validity"`
-	ValidityPast *time.Duration           `yaml:"validity_past"`
+	Validity     time.Duration            `yaml:"validity"`
+	ValidityPast time.Duration            `yaml:"validity_past"`
 }
 
 func (c *Config) ApplyDefaults() {
@@ -59,13 +59,13 @@ func (c *Config) ApplyRedirectDefaults(success, failure string) {
 }
 
 func (c *JWTConfig) ApplyDefaults() {
-	if c.Validity == nil {
+	if c.Validity == 0 {
 		v := 24 * time.Hour
-		c.Validity = &v
+		c.Validity = v
 	}
 
-	if c.ValidityPast == nil {
+	if c.ValidityPast == 0 {
 		v := 2 * time.Second
-		c.ValidityPast = &v
+		c.ValidityPast = v
 	}
 }

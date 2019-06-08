@@ -1,13 +1,8 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
-	"golang.org/x/oauth2"
 
-	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
-	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	"github.com/dpb587/ssoca/config"
 	serverconfig "github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
@@ -39,35 +34,5 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 
 	cfg.ApplyRedirectDefaults(f.redirects.AuthSuccess, f.redirects.AuthFailure)
 
-	scopes := []string{"https://www.googleapis.com/auth/userinfo.email"}
-
-	if cfg.Scopes.CloudProject != nil {
-		scopes = append(scopes, "https://www.googleapis.com/auth/cloud-platform.read-only")
-	}
-
-	oauthsrv := oauth2server.NewService(
-		oauth2config.URLs{
-			Origin:      fmt.Sprintf("%s/%s", f.endpointURL, name),
-			AuthFailure: cfg.FailureRedirectURL,
-			AuthSuccess: cfg.SuccessRedirectURL,
-		},
-		oauth2.Config{
-			ClientID:     cfg.ClientID,
-			ClientSecret: cfg.ClientSecret,
-			Endpoint: oauth2.Endpoint{
-				AuthURL:  cfg.AuthURL,
-				TokenURL: cfg.TokenURL,
-			},
-			RedirectURL: fmt.Sprintf("%s/%s/callback", f.endpointURL, name),
-			Scopes:      scopes,
-		},
-		oauth2.NoContext,
-		oauth2config.JWT{
-			PrivateKey:   cfg.JWT.PrivateKey,
-			Validity:     *cfg.JWT.Validity,
-			ValidityPast: *cfg.JWT.ValidityPast,
-		},
-	)
-
-	return NewService(name, cfg, oauthsrv), nil
+	return NewService(name, f.endpointURL, cfg), nil
 }

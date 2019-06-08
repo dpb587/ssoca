@@ -9,10 +9,6 @@ import (
 
 	. "github.com/dpb587/ssoca/service/githubauth/server"
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
-	"golang.org/x/oauth2"
-
-	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
-	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -34,13 +30,8 @@ var _ = Describe("Auth", func() {
 			BeforeEach(func() {
 				subject = NewService(
 					"auth",
+					"http://example.com",
 					svcconfig.Config{},
-					oauth2server.NewService(
-						oauth2config.URLs{Origin: "test"},
-						oauth2.Config{},
-						oauth2.NoContext,
-						oauth2config.JWT{},
-					),
 				)
 			})
 

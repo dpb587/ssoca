@@ -3,7 +3,6 @@ package server_test
 import (
 	"net/http"
 
-	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
 	"github.com/dpb587/ssoca/server/service"
 	. "github.com/dpb587/ssoca/service/githubauth/server"
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
@@ -23,7 +22,7 @@ var _ = Describe("Service", func() {
 
 	Context("Basics", func() {
 		BeforeEach(func() {
-			subject = NewService("test1", svcconfig.Config{}, &oauth2server.Service{})
+			subject = NewService("test1", "http://example.com", svcconfig.Config{})
 		})
 
 		Describe("Name", func() {
