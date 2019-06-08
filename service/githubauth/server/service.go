@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
+	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/githubauth"
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
@@ -15,10 +15,10 @@ type Service struct {
 
 	name   string
 	config svcconfig.Config
-	oauth  oauth2support.Backend
+	oauth  *oauth2server.Service
 }
 
-func NewService(name string, config svcconfig.Config, oauth oauth2support.Backend) *Service {
+func NewService(name string, config svcconfig.Config, oauth *oauth2server.Service) *Service {
 	return &Service{
 		name:   name,
 		config: config,

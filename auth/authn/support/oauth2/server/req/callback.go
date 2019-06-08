@@ -12,7 +12,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
-	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
+	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"

@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
+	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
+	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
 	svc "github.com/dpb587/ssoca/service/githubauth"
@@ -44,8 +44,8 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 		return nil, errors.Wrap(err, "parsing private key")
 	}
 
-	backend := oauth2support.NewBackend(
-		oauth2supportconfig.URLs{
+	oauthsrv := oauth2server.NewService(
+		oauth2config.URLs{
 			Origin:      fmt.Sprintf("%s/%s", f.endpointURL, name),
 			AuthFailure: f.failureURL,
 			AuthSuccess: f.successURL,
@@ -63,12 +63,12 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 			},
 		},
 		oauth2.NoContext,
-		oauth2supportconfig.JWT{
+		oauth2config.JWT{
 			PrivateKey:   *privateKey,
 			Validity:     *cfg.JWT.Validity,
 			ValidityPast: *cfg.JWT.ValidityPast,
 		},
 	)
 
-	return NewService(name, cfg, backend), nil
+	return NewService(name, cfg, oauthsrv), nil
 }

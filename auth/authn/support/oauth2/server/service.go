@@ -1,4 +1,4 @@
-package oauth2backend
+package server
 
 import (
 	"context"
@@ -10,14 +10,14 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/dpb587/ssoca/auth"
-	"github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
-	oauth2supportreq "github.com/dpb587/ssoca/auth/authn/support/oauth2/req"
+	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
+	svcreq "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/req"
 	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/service/req"
 )
 
-type Backend struct {
+type Service struct {
 	config       oauth2.Config
 	oauthContext context.Context
 
@@ -25,8 +25,8 @@ type Backend struct {
 	jwtConfig config.JWT
 }
 
-func NewBackend(urls config.URLs, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT) Backend {
-	return Backend{
+func NewService(urls config.URLs, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT) *Service {
+	return &Service{
 		urls:         urls,
 		config:       config,
 		oauthContext: oauthContext,
@@ -35,8 +35,8 @@ func NewBackend(urls config.URLs, config oauth2.Config, oauthContext context.Con
 	}
 }
 
-func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
-	authValue := req.Header.Get("Authorization")
+func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
+	authValue := r.Header.Get("Authorization")
 	if authValue == "" {
 		return nil, nil
 	}
@@ -48,7 +48,7 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 		return nil, apierr.NewError(errors.New("invalid Authorization method"), http.StatusForbidden, "")
 	}
 
-	intTok := selfsignedjwt.NewOriginToken(b.urls.Origin)
+	intTok := selfsignedjwt.NewOriginToken(s.urls.Origin)
 
 	_, err := jwt.ParseWithClaims(
 		authValuePieces[1],
@@ -58,7 +58,7 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 				return nil, apierr.NewError(errors.New("invalid signing method"), http.StatusForbidden, "")
 			}
 
-			return &b.jwtConfig.PrivateKey.PublicKey, nil
+			return &s.jwtConfig.PrivateKey.PublicKey, nil
 		},
 	)
 	if err != nil {
@@ -78,17 +78,17 @@ func (b Backend) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	return &authToken, nil
 }
 
-func (b Backend) GetRoutes(userProfileLoader config.UserProfileLoader) []req.RouteHandler {
+func (s Service) GetRoutes(userProfileLoader config.UserProfileLoader) []req.RouteHandler {
 	return []req.RouteHandler{
-		oauth2supportreq.Initiate{
-			Config: b.config,
+		svcreq.Initiate{
+			Config: s.config,
 		},
-		oauth2supportreq.Callback{
-			URLs:              b.urls,
+		svcreq.Callback{
+			URLs:              s.urls,
 			UserProfileLoader: userProfileLoader,
-			Config:            b.config,
-			Context:           b.oauthContext,
-			JWT:               b.jwtConfig,
+			Config:            s.config,
+			Context:           s.oauthContext,
+			JWT:               s.jwtConfig,
 		},
 	}
 }

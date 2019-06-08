@@ -11,8 +11,8 @@ import (
 	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 	"golang.org/x/oauth2"
 
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
+	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
+	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -35,11 +35,11 @@ var _ = Describe("Auth", func() {
 				subject = NewService(
 					"auth",
 					svcconfig.Config{},
-					oauth2support.NewBackend(
-						oauth2supportconfig.URLs{Origin: "test"},
+					oauth2server.NewService(
+						oauth2config.URLs{Origin: "test"},
 						oauth2.Config{},
 						oauth2.NoContext,
-						oauth2supportconfig.JWT{},
+						oauth2config.JWT{},
 					),
 				)
 			})
@@ -179,11 +179,11 @@ var _ = Describe("Auth", func() {
 							CloudProject: &cloudProjectConfig,
 						},
 					},
-					oauth2support.NewBackend(
-						oauth2supportconfig.URLs{Origin: "test"},
+					oauth2server.NewService(
+						oauth2config.URLs{Origin: "test"},
 						oauth2.Config{},
 						oauth2.NoContext,
-						oauth2supportconfig.JWT{},
+						oauth2config.JWT{},
 					),
 				)
 			})

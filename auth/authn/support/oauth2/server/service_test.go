@@ -1,4 +1,4 @@
-package oauth2backend_test
+package server_test
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth"
-	. "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
 	internaltests "github.com/dpb587/ssoca/auth/authn/support/oauth2/internal/tests"
+	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
+	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 
 	"golang.org/x/oauth2"
@@ -19,8 +19,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Backend", func() {
-	var subject Backend
+var _ = Describe("Service", func() {
+	var subject *Service
 	var privateKey *rsa.PrivateKey
 
 	BeforeEach(func() {
@@ -33,11 +33,11 @@ var _ = Describe("Backend", func() {
 
 	Describe("ParseRequestAuth", func() {
 		BeforeEach(func() {
-			subject = NewBackend(
-				oauth2supportconfig.URLs{Origin: "fake-origin"},
+			subject = NewService(
+				config.URLs{Origin: "fake-origin"},
 				oauth2.Config{},
 				oauth2.NoContext,
-				oauth2supportconfig.JWT{
+				config.JWT{
 					PrivateKey: *privateKey,
 				},
 			)
