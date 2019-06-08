@@ -9,5 +9,5 @@ import (
 
 func TestConfig(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/service/googleauth/config")
+	RunSpecs(t, "github.com/dpb587/ssoca/service/googleauth/server/config")
 }

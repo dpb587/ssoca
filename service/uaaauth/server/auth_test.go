@@ -6,9 +6,9 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
-	svcconfig "github.com/dpb587/ssoca/service/uaaauth/config"
 	internaltests "github.com/dpb587/ssoca/service/uaaauth/internal/tests"
 	. "github.com/dpb587/ssoca/service/uaaauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/uaaauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

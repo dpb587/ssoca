@@ -6,7 +6,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/httpauth"
-	svcconfig "github.com/dpb587/ssoca/service/httpauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/httpauth/server/config"
 )
 
 type Service struct {

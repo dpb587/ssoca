@@ -1,7 +1,7 @@
 package config_test
 
 import (
-	. "github.com/dpb587/ssoca/service/githubauth/config"
+	. "github.com/dpb587/ssoca/service/githubauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

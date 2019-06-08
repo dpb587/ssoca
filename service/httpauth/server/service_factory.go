@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 
 	svc "github.com/dpb587/ssoca/service/httpauth"
-	svcconfig "github.com/dpb587/ssoca/service/httpauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/httpauth/server/config"
 
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"

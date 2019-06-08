@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/auth"
-	svcconfig "github.com/dpb587/ssoca/service/httpauth/config"
 	. "github.com/dpb587/ssoca/service/httpauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/httpauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

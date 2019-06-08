@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	svcconfig "github.com/dpb587/ssoca/service/googleauth/config"
 	. "github.com/dpb587/ssoca/service/googleauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 	"golang.org/x/oauth2"
 
 	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"

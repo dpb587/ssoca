@@ -1,7 +1,7 @@
 package config_test
 
 import (
-	. "github.com/dpb587/ssoca/service/googleauth/config"
+	. "github.com/dpb587/ssoca/service/googleauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

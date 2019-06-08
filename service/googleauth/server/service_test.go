@@ -5,8 +5,8 @@ import (
 
 	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
 	"github.com/dpb587/ssoca/server/service"
-	svcconfig "github.com/dpb587/ssoca/service/googleauth/config"
 	. "github.com/dpb587/ssoca/service/googleauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

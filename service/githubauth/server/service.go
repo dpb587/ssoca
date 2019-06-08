@@ -7,7 +7,7 @@ import (
 	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/githubauth"
-	svcconfig "github.com/dpb587/ssoca/service/githubauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
 )
 
 type Service struct {

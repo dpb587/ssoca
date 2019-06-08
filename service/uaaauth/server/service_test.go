@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	svcapi "github.com/dpb587/ssoca/service/uaaauth/api"
-	svcconfig "github.com/dpb587/ssoca/service/uaaauth/config"
 	. "github.com/dpb587/ssoca/service/uaaauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/uaaauth/server/config"
 
 	"github.com/dpb587/ssoca/server/service"
 

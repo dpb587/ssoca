@@ -12,7 +12,7 @@ import (
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
 	svc "github.com/dpb587/ssoca/service/googleauth"
-	svcconfig "github.com/dpb587/ssoca/service/googleauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 )
 
 type ServiceFactory struct {
