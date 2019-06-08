@@ -17,8 +17,8 @@ type Service struct {
 	config svcconfig.Config
 }
 
-func NewService(name string, config svcconfig.Config) Service {
-	return Service{
+func NewService(name string, config svcconfig.Config) *Service {
+	return &Service{
 		name:   name,
 		config: config,
 	}

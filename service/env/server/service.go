@@ -21,8 +21,8 @@ type Service struct {
 var _ service.Service = Service{}
 
 // @todo config leaking scope
-func NewService(config svcconfig.Config, services service.Manager) Service {
-	return Service{
+func NewService(config svcconfig.Config, services service.Manager) *Service {
+	return &Service{
 		config:   config,
 		services: services,
 	}

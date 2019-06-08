@@ -29,7 +29,7 @@ func (c Login) Execute(_ []string) error {
 		return errors.Wrap(err, "getting env service")
 	}
 
-	envService, ok := rawEnvService.(envclient.Service)
+	envService, ok := rawEnvService.(*envclient.Service)
 	if !ok {
 		return errors.Wrap(err, "expecting env service")
 	}

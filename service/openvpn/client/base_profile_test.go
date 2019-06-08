@@ -17,7 +17,7 @@ import (
 var _ = Describe("BaseProfile", func() {
 	var fakeruntime *clientfakes.FakeRuntime
 	var fakeclient *httpclientfakes.FakeClient
-	var subject Service
+	var subject *Service
 
 	BeforeEach(func() {
 		fakeclient = &httpclientfakes.FakeClient{}

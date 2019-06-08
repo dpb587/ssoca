@@ -14,7 +14,7 @@ type Commands struct {
 	Logout Logout `command:"logout" description:"Revoke an authentication token"`
 }
 
-func CreateCommands(runtime client.Runtime, s svc.Service) *Commands {
+func CreateCommands(runtime client.Runtime, s *svc.Service) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
 		ServiceName: svc.Service{}.Type(),

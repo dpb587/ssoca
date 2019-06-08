@@ -26,8 +26,8 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(name string, runtime client.Runtime, logger logrus.FieldLogger, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder, executableInstaller client.ExecutableInstaller) Service {
-	return Service{
+func NewService(name string, runtime client.Runtime, logger logrus.FieldLogger, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder, executableInstaller client.ExecutableInstaller) *Service {
+	return &Service{
 		name:                name,
 		runtime:             runtime,
 		logger:              logger,

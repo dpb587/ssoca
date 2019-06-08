@@ -17,8 +17,8 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(runtime client.Runtime, serviceManager service.Manager) Service {
-	return Service{
+func NewService(runtime client.Runtime, serviceManager service.Manager) *Service {
+	return &Service{
 		runtime:        runtime,
 		serviceManager: serviceManager,
 	}

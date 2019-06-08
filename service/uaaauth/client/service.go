@@ -14,8 +14,8 @@ type Service struct {
 	uaaClientFactory helper.ClientFactory
 }
 
-func NewService(runtime client.Runtime, uaaClientFactory helper.ClientFactory) Service {
-	return Service{
+func NewService(runtime client.Runtime, uaaClientFactory helper.ClientFactory) *Service {
+	return &Service{
 		runtime:          runtime,
 		uaaClientFactory: uaaClientFactory,
 	}

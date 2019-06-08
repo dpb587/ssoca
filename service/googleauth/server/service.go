@@ -18,8 +18,8 @@ type Service struct {
 	oauth  oauth2support.Backend
 }
 
-func NewService(name string, config svcconfig.Config, oauth oauth2support.Backend) Service {
-	return Service{
+func NewService(name string, config svcconfig.Config, oauth oauth2support.Backend) *Service {
+	return &Service{
 		name:   name,
 		config: config,
 		oauth:  oauth,

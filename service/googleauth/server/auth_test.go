@@ -27,7 +27,7 @@ func (t *mockTransport) RoundTrip(req *http.Request) (resp *http.Response, err e
 }
 
 var _ = Describe("Auth", func() {
-	var subject Service
+	var subject *Service
 
 	Describe("OAuthUserProfileLoader", func() {
 		Context("simple config", func() {

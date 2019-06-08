@@ -13,7 +13,7 @@ import (
 )
 
 var _ = Describe("Service", func() {
-	var subject Service
+	var subject *Service
 
 	Describe("interface", func() {
 		It("github.com/dpb587/ssoca/server/service.Service", func() {

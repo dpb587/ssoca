@@ -15,8 +15,8 @@ type Service struct {
 	fs      boshsys.FileSystem
 }
 
-func NewService(runtime client.Runtime) Service {
-	return Service{
+func NewService(runtime client.Runtime) *Service {
+	return &Service{
 		runtime: runtime,
 	}
 }

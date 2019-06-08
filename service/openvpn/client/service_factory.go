@@ -27,7 +27,7 @@ func NewServiceFactory(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner 
 	}
 }
 
-func (sf ServiceFactory) New(name string) Service {
+func (sf ServiceFactory) New(name string) *Service {
 	return NewService(
 		name,
 		sf.runtime,

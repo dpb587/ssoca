@@ -15,7 +15,7 @@ import (
 )
 
 var _ = Describe("Auth", func() {
-	var subject Service
+	var subject *Service
 
 	BeforeEach(func() {
 		subject = NewService(

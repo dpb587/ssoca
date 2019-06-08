@@ -22,7 +22,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 	var fakefs *fakes.FakeFileSystem
 	var fakeclient *httpclientfakes.FakeClient
 	var fakeconfigmanager *configfakes.FakeManager
-	var subject Service
+	var subject *Service
 
 	BeforeEach(func() {
 		fakefs = fakes.NewFakeFileSystem()

@@ -20,8 +20,8 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(name string, config svcconfig.Config) Service {
-	return Service{
+func NewService(name string, config svcconfig.Config) *Service {
+	return &Service{
 		name:   name,
 		config: config,
 	}

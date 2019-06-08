@@ -44,7 +44,7 @@ var _ = Describe("Factory", func() {
 			Expect(err).To(BeNil())
 			Expect(svc).ToNot(BeNil())
 
-			downloadSvc, ok := svc.(Service)
+			downloadSvc, ok := svc.(*Service)
 			Expect(ok).To(BeTrue())
 
 			paths := downloadSvc.GetDownloadPaths()

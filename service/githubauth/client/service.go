@@ -14,8 +14,8 @@ type Service struct {
 	cmdRunner boshsys.CmdRunner
 }
 
-func NewService(runtime client.Runtime, cmdRunner boshsys.CmdRunner) Service {
-	return Service{
+func NewService(runtime client.Runtime, cmdRunner boshsys.CmdRunner) *Service {
+	return &Service{
 		runtime:   runtime,
 		cmdRunner: cmdRunner,
 	}

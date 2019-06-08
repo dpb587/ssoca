@@ -12,7 +12,7 @@ import (
 )
 
 var _ = Describe("Auth", func() {
-	var service Service
+	var service *Service
 	var request http.Request
 
 	BeforeEach(func() {
