@@ -22,6 +22,8 @@ Google authenticates users through their Google accounts. Users are redirected t
     * `cloud_project` -- request information from Google Cloud (requires the [Google Cloud Resource Manager API](https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview) to be enabled)
        * `projects` -- a list of project identifiers to check for membership; if left empty, all projects will be checked
        * `roles` -- a list of roles (e.g. `roles/owner`) to check for access; if left empty, all roles will be included
+ * `failure_redirect_url` -- redirect URL upon authentication failure (default `server.redirects.auth_failure`)
+ * `success_redirect_url` -- redirect URL upon authentication success (default `server.redirects.auth_success`)
 
 
 ## Authentication Scopes

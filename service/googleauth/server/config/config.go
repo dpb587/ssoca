@@ -13,6 +13,9 @@ type Config struct {
 	AuthURL  string `yaml:"auth_url"`
 	TokenURL string `yaml:"token_url"`
 
+	SuccessRedirectURL string `yaml:"success_redirect_url"`
+	FailureRedirectURL string `yaml:"failure_redirect_url"`
+
 	Scopes ScopesConfig `yaml:"scopes"`
 
 	JWT JWTConfig `yaml:"jwt"`
@@ -43,6 +46,16 @@ func (c *Config) ApplyDefaults() {
 	}
 
 	c.JWT.ApplyDefaults()
+}
+
+func (c *Config) ApplyRedirectDefaults(success, failure string) {
+	if c.SuccessRedirectURL == "" {
+		c.SuccessRedirectURL = success
+	}
+
+	if c.FailureRedirectURL == "" {
+		c.FailureRedirectURL = failure
+	}
 }
 
 func (c *JWTConfig) ApplyDefaults() {

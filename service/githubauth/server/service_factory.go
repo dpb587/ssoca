@@ -9,6 +9,7 @@ import (
 	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
 	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	"github.com/dpb587/ssoca/config"
+	serverconfig "github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
 	svc "github.com/dpb587/ssoca/service/githubauth"
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
@@ -18,15 +19,13 @@ type ServiceFactory struct {
 	svc.ServiceType
 
 	endpointURL string
-	failureURL  string
-	successURL  string
+	redirects   serverconfig.ServerRedirectConfig
 }
 
-func NewServiceFactory(endpointURL string, failureURL string, successURL string) ServiceFactory {
+func NewServiceFactory(endpointURL string, redirects serverconfig.ServerRedirectConfig) ServiceFactory {
 	return ServiceFactory{
 		endpointURL: endpointURL,
-		failureURL:  failureURL,
-		successURL:  successURL,
+		redirects:   redirects,
 	}
 }
 
@@ -38,11 +37,13 @@ func (f ServiceFactory) Create(name string, options map[string]interface{}) (ser
 		return nil, errors.Wrap(err, "loading config")
 	}
 
+	cfg.ApplyRedirectDefaults(f.redirects.AuthSuccess, f.redirects.AuthFailure)
+
 	oauthsrv := oauth2server.NewService(
 		oauth2config.URLs{
 			Origin:      fmt.Sprintf("%s/%s", f.endpointURL, name),
-			AuthFailure: f.failureURL,
-			AuthSuccess: f.successURL,
+			AuthFailure: cfg.FailureRedirectURL,
+			AuthSuccess: cfg.SuccessRedirectURL,
 		},
 		oauth2.Config{
 			ClientID:     cfg.ClientID,

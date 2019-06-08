@@ -18,6 +18,8 @@ GitHub authenticates users through their GitHub accounts. Users are redirected t
     * `validity` -- a [duration](https://golang.org/pkg/time/#ParseDuration) for how long authentication tokens will be remembered (default `24h`)
  * `auth_url` -- authentication URL (default `https://github.com/login/oauth/authorize`)
  * `token_url` -- token URL (default `https://github.com/login/oauth/access_token`)
+ * `failure_redirect_url` -- redirect URL upon authentication failure (default `server.redirects.auth_failure`)
+ * `success_redirect_url` -- redirect URL upon authentication success (default `server.redirects.auth_success`)
 
 
 ## Authentication Scopes
