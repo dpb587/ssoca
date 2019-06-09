@@ -42,6 +42,7 @@ var _ = Describe("Service", func() {
 						PrivateKey: privateKey,
 					},
 				},
+				nil,
 			)
 		})
 

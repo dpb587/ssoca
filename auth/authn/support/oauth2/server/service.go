@@ -18,21 +18,26 @@ import (
 )
 
 type Service struct {
-	config       oauth2.Config
-	oauthContext context.Context
+	config            oauth2.Config
+	oauthContext      context.Context
+	userProfileLoader config.UserProfileLoader
 
 	urls      config.URLs
 	jwtConfig config.JWT
 }
 
-func NewService(urls config.URLs, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT) *Service {
+func NewService(urls config.URLs, config oauth2.Config, oauthContext context.Context, jwtConfig config.JWT, userProfileLoader config.UserProfileLoader) *Service {
 	return &Service{
-		urls:         urls,
-		config:       config,
-		oauthContext: oauthContext,
-
-		jwtConfig: jwtConfig,
+		urls:              urls,
+		config:            config,
+		oauthContext:      oauthContext,
+		jwtConfig:         jwtConfig,
+		userProfileLoader: userProfileLoader,
 	}
+}
+
+func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
+	return nil
 }
 
 func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
@@ -78,14 +83,14 @@ func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
 	return &authToken, nil
 }
 
-func (s Service) GetRoutes(userProfileLoader config.UserProfileLoader) []req.RouteHandler {
+func (s Service) GetRoutes() []req.RouteHandler {
 	return []req.RouteHandler{
 		svcreq.Initiate{
 			Config: s.config,
 		},
 		svcreq.Callback{
 			URLs:              s.urls,
-			UserProfileLoader: userProfileLoader,
+			UserProfileLoader: s.userProfileLoader,
 			Config:            s.config,
 			Context:           s.oauthContext,
 			JWT:               s.jwtConfig,

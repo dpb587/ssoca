@@ -2,12 +2,9 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/dpb587/ssoca/auth"
 	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
 	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
-	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/githubauth"
 	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
 	"golang.org/x/oauth2"
@@ -15,14 +12,19 @@ import (
 
 type Service struct {
 	svc.ServiceType
+	*oauth2server.Service
 
 	name   string
 	config svcconfig.Config
-	oauth  *oauth2server.Service
 }
 
 func NewService(name string, rootURL string, config svcconfig.Config) *Service {
-	oauthsrv := oauth2server.NewService(
+	svc := &Service{
+		name:   name,
+		config: config,
+	}
+
+	svc.Service = oauth2server.NewService(
 		oauth2config.URLs{
 			Origin:      fmt.Sprintf("%s/%s", rootURL, name),
 			AuthFailure: config.FailureRedirectURL,
@@ -46,13 +48,10 @@ func NewService(name string, rootURL string, config svcconfig.Config) *Service {
 			Validity:     config.JWT.Validity,
 			ValidityPast: config.JWT.ValidityPast,
 		},
+		svc.OAuthUserProfileLoader,
 	)
 
-	return &Service{
-		name:   name,
-		config: config,
-		oauth:  oauthsrv,
-	}
+	return svc
 }
 
 func (s Service) Name() string {
@@ -60,13 +59,5 @@ func (s Service) Name() string {
 }
 
 func (s Service) Metadata() interface{} {
-	return nil
-}
-
-func (s Service) GetRoutes() []req.RouteHandler {
-	return s.oauth.GetRoutes(s.OAuthUserProfileLoader)
-}
-
-func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
 	return nil
 }
