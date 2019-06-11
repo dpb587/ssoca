@@ -30,9 +30,5 @@ var _ = Describe("Service", func() {
 		It("Version", func() {
 			Expect(subject.Version()).ToNot(Equal(""))
 		})
-
-		It("Description", func() {
-			Expect(subject.Description()).ToNot(Equal(""))
-		})
 	})
 })

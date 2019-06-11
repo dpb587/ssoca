@@ -35,10 +35,6 @@ func (s Service) Name() string {
 	return s.name
 }
 
-func (s Service) Description() string {
-	return "Download environment artifacts"
-}
-
 func (s Service) GetClient(skipAuthRetry bool) (svchttpclient.Client, error) {
 	var client httpclient.Client
 	var err error

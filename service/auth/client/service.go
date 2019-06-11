@@ -28,10 +28,6 @@ func (s Service) Name() string {
 	return "auth"
 }
 
-func (s Service) Description() string {
-	return "Manage authentication"
-}
-
 func (s Service) GetServiceManager() service.Manager {
 	return s.serviceManager
 }

@@ -20,11 +20,6 @@ type Service interface {
 	Version() string
 }
 
-type CommandService interface {
-	GetCommand() interface{}
-	Description() string
-}
-
 //go:generate counterfeiter . AuthService
 type AuthService interface {
 	Service

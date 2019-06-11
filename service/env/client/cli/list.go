@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	boshtbl "github.com/cloudfoundry/bosh-cli/ui/table"

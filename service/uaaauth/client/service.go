@@ -29,11 +29,3 @@ func NewService(name string, runtime client.Runtime, uaaClientFactory helper.Cli
 func (s Service) Name() string {
 	return s.name
 }
-
-func (s Service) Description() string {
-	return "Authenticate with a Cloud Foundry UAA server"
-}
-
-func (s Service) GetCommand() interface{} {
-	return nil
-}

@@ -29,11 +29,3 @@ func NewService(name string, runtime client.Runtime, cmdRunner boshsys.CmdRunner
 func (s Service) Name() string {
 	return s.name
 }
-
-func (s Service) Description() string {
-	return "Authenticate with a Google account"
-}
-
-func (s Service) GetCommand() interface{} {
-	return nil
-}

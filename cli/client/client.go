@@ -18,6 +18,7 @@ import (
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
+	srv_env_cli "github.com/dpb587/ssoca/service/env/client/cli"
 	srv_file "github.com/dpb587/ssoca/service/file/client"
 	srv_file_cli "github.com/dpb587/ssoca/service/file/client/cli"
 	srv_githubauth "github.com/dpb587/ssoca/service/githubauth/client"
@@ -47,32 +48,23 @@ func main() {
 	var parser = flags.NewParser(runtime, flags.Default)
 
 	authService := srv_auth.NewService(runtime, serviceManager)
+	envService := srv_env.NewService(runtime, fs, cmdRunner)
 
 	serviceManager.Add(authService)
-	serviceManager.Add(srv_env.NewService(runtime, fs, cmdRunner))
+	serviceManager.Add(envService)
 	serviceManager.Add(srv_githubauth.NewService("auth", runtime, cmdRunner))
 	serviceManager.Add(srv_googleauth.NewService("auth", runtime, cmdRunner))
 	serviceManager.Add(srv_httpauth.NewService("auth", runtime))
 	serviceManager.Add(srv_uaaauth.NewService("auth", runtime, srv_uaaauth_helper.DefaultClientFactory{}))
 
-	for _, name := range serviceManager.Services() {
-		svc, err := serviceManager.Get(name)
-		if err != nil {
-			panic(err)
-		}
+	// commands
 
-		svccmd, ok := svc.(service.CommandService)
-		if !ok {
-			continue
-		}
-
-		command := svccmd.GetCommand()
-		if command != nil {
-			parser.AddCommand(name, svccmd.Description(), svccmd.Description(), command)
-		}
-	}
-
-	// new style
+	parser.AddCommand(
+		"env",
+		"Manage environment references",
+		"Manage environment references",
+		srv_env_cli.CreateCommands(runtime, cmdRunner, fs, envService),
+	)
 
 	parser.AddCommand(
 		"auth",

@@ -27,11 +27,3 @@ func NewService(name string, runtime client.Runtime) *Service {
 func (s Service) Name() string {
 	return s.name
 }
-
-func (s Service) Description() string {
-	return "Authenticate with HTTP username/password"
-}
-
-func (s Service) GetCommand() interface{} {
-	return nil
-}

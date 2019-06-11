@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	svchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
