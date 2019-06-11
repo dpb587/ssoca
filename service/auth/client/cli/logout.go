@@ -30,7 +30,7 @@ func (c Logout) Execute(_ []string) error {
 
 	authServiceType := env.Auth.Type
 
-	svc, err := c.ServiceManager.Get(authServiceType)
+	svc, err := c.ServiceManager.Get(authServiceType, "auth")
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}

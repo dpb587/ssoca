@@ -9,13 +9,19 @@ import (
 //go:generate counterfeiter . Manager
 type Manager interface {
 	Add(Service)
-	Get(string) (Service, error)
-	Services() []string
+	AddFactory(ServiceFactory)
+	Get(string, string) (Service, error)
 }
 
 //go:generate counterfeiter . Service
 type Service interface {
 	Name() string
+	Type() string
+	Version() string
+}
+
+type ServiceFactory interface {
+	New(string) Service
 	Type() string
 	Version() string
 }

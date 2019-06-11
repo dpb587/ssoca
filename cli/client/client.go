@@ -47,17 +47,15 @@ func main() {
 	runtime := goflags.NewRuntime(os.Args[0], version.MustVersion(appName, appSemver, appCommit, appBuilt), serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs)
 	var parser = flags.NewParser(runtime, flags.Default)
 
-	authService := srv_auth.NewService(runtime, serviceManager)
 	envService := srv_env.NewService(runtime, fs, cmdRunner)
 
-	serviceManager.Add(authService)
 	serviceManager.Add(envService)
-	serviceManager.Add(srv_githubauth.NewService("auth", runtime, cmdRunner))
-	serviceManager.Add(srv_googleauth.NewService("auth", runtime, cmdRunner))
-	serviceManager.Add(srv_httpauth.NewService("auth", runtime))
-	serviceManager.Add(srv_uaaauth.NewService("auth", runtime, srv_uaaauth_helper.DefaultClientFactory{}))
 
-	// commands
+	serviceManager.AddFactory(srv_file.NewServiceFactory(runtime, fs, cmdRunner))
+	serviceManager.AddFactory(srv_githubauth.NewServiceFactory(runtime, cmdRunner))
+	serviceManager.AddFactory(srv_googleauth.NewServiceFactory(runtime, cmdRunner))
+	serviceManager.AddFactory(srv_httpauth.NewServiceFactory(runtime))
+	serviceManager.AddFactory(srv_uaaauth.NewServiceFactory(runtime, srv_uaaauth_helper.DefaultClientFactory{}))
 
 	parser.AddCommand(
 		"env",
@@ -70,14 +68,14 @@ func main() {
 		"auth",
 		"Manage authentication",
 		"Manage authentication",
-		srv_auth_cli.CreateCommands(runtime, authService),
+		srv_auth_cli.CreateCommands(runtime, srv_auth.NewService(runtime, serviceManager)),
 	)
 
 	parser.AddCommand(
 		"file",
 		"Access files from the environment",
 		"Access files from the environment",
-		srv_file_cli.CreateCommands(runtime, srv_file.NewServiceFactory(runtime, fs, cmdRunner)),
+		srv_file_cli.CreateCommands(runtime, serviceManager),
 	)
 
 	parser.Find("file").Aliases = []string{"download"}

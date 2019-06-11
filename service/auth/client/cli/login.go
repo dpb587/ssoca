@@ -25,7 +25,7 @@ type Login struct {
 var _ flags.Commander = Login{}
 
 func (c Login) Execute(_ []string) error {
-	rawEnvService, err := c.ServiceManager.Get("env")
+	rawEnvService, err := c.ServiceManager.Get("env", "env")
 	if err != nil {
 		return errors.Wrap(err, "getting env service")
 	}
@@ -67,7 +67,7 @@ func (c Login) Execute(_ []string) error {
 
 	authServiceType := authServiceListing.Type
 
-	svc, err := c.ServiceManager.Get(authServiceType)
+	svc, err := c.ServiceManager.Get(authServiceType, "auth")
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}

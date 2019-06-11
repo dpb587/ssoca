@@ -19,10 +19,11 @@ var _ = Describe("DefaultManager", func() {
 		It("retrieves services", func() {
 			service := &servicefakes.FakeService{}
 			service.TypeReturns("test1")
+			service.NameReturns("fake-name")
 
 			subject.Add(service)
 
-			get, err := subject.Get("test1")
+			get, err := subject.Get("test1", "fake-name")
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(get).To(Equal(service))
@@ -30,28 +31,11 @@ var _ = Describe("DefaultManager", func() {
 
 		Context("non-existant service", func() {
 			It("errors", func() {
-				_, err := subject.Get("test1")
+				_, err := subject.Get("test1", "nop")
 
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("unrecognized type: test1"))
 			})
-		})
-	})
-
-	Describe("Services", func() {
-		It("works", func() {
-			service1 := &servicefakes.FakeService{}
-			service1.TypeReturns("test1")
-
-			service2 := &servicefakes.FakeService{}
-			service2.TypeReturns("test2")
-
-			subject.Add(service1)
-			subject.Add(service2)
-
-			services := subject.Services()
-			Expect(services).To(ContainElement("test1"))
-			Expect(services).To(ContainElement("test2"))
 		})
 	})
 })

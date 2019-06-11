@@ -15,7 +15,7 @@ var _ service.AuthService = Service{}
 func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error) {
 	authServiceType := info.Type
 
-	svc, err := s.serviceManager.Get(authServiceType)
+	svc, err := s.serviceManager.Get(authServiceType, "auth")
 	if err != nil {
 		return nil, errors.Wrap(err, "loading auth service")
 	}
@@ -41,7 +41,7 @@ func (s Service) AuthRequest(req *http.Request) error {
 
 	authServiceType := env.Auth.Type
 
-	svc, err := s.serviceManager.Get(authServiceType)
+	svc, err := s.serviceManager.Get(authServiceType, "auth")
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}

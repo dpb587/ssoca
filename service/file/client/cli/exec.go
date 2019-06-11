@@ -9,7 +9,7 @@ import (
 )
 
 type Exec struct {
-	*clientcmd.ServiceCommand `no-flag:"true"`
+	*ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	serviceFactory svc.ServiceFactory
@@ -25,9 +25,12 @@ type ExecArgs struct {
 }
 
 func (c Exec) Execute(_ []string) error {
-	service := c.serviceFactory.New(c.ServiceName)
+	service, err := c.GetService()
+	if err != nil {
+		return errors.Wrap(err, "getting service")
+	}
 
-	err := service.Execute(svc.ExecuteOptions{
+	err = service.Execute(svc.ExecuteOptions{
 		SkipAuthRetry: c.SkipAuthRetry,
 		RemoteFile:    c.Args.File,
 		ExtraArgs:     c.Args.Extra,
