@@ -30,7 +30,7 @@ func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
 
 	str := auth.NewServerTokenRetrieval(env.URL, s.runtime.GetVersion(), s.cmdRunner, authBind.GetValue(), openCommand.GetValue(), s.runtime.GetStderr(), s.runtime.GetStdin())
 
-	token, err := str.Retrieve("/auth/initiate")
+	token, err := str.Retrieve(fmt.Sprintf("/%s/initiate", s.name))
 	if err != nil {
 		return nil, errors.Wrap(err, "waiting for user token")
 	}

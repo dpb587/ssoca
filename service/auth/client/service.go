@@ -24,6 +24,10 @@ func NewService(runtime client.Runtime, serviceManager service.Manager) *Service
 	}
 }
 
+func (s Service) Name() string {
+	return "auth"
+}
+
 func (s Service) Description() string {
 	return "Manage authentication"
 }

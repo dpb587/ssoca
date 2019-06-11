@@ -31,6 +31,10 @@ func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdR
 	}
 }
 
+func (s Service) Name() string {
+	return s.name
+}
+
 func (s Service) Description() string {
 	return "Download environment artifacts"
 }

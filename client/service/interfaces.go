@@ -15,6 +15,7 @@ type Manager interface {
 
 //go:generate counterfeiter . Service
 type Service interface {
+	Name() string
 	Type() string
 	Version() string
 }

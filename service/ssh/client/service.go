@@ -31,6 +31,10 @@ func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdR
 	}
 }
 
+func (s Service) Name() string {
+	return s.name
+}
+
 func (s Service) GetClient(skipAuthRetry bool) (svchttpclient.Client, error) {
 	var client httpclient.Client
 	var err error

@@ -50,10 +50,10 @@ func main() {
 
 	serviceManager.Add(authService)
 	serviceManager.Add(srv_env.NewService(runtime, fs, cmdRunner))
-	serviceManager.Add(srv_githubauth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_googleauth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_httpauth.NewService(runtime))
-	serviceManager.Add(srv_uaaauth.NewService(runtime, srv_uaaauth_helper.DefaultClientFactory{}))
+	serviceManager.Add(srv_githubauth.NewService("auth", runtime, cmdRunner))
+	serviceManager.Add(srv_googleauth.NewService("auth", runtime, cmdRunner))
+	serviceManager.Add(srv_httpauth.NewService("auth", runtime))
+	serviceManager.Add(srv_uaaauth.NewService("auth", runtime, srv_uaaauth_helper.DefaultClientFactory{}))
 
 	for _, name := range serviceManager.Services() {
 		svc, err := serviceManager.Get(name)

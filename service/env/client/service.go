@@ -34,6 +34,10 @@ func NewService(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys
 	}
 }
 
+func (s Service) Name() string {
+	return "env"
+}
+
 func (s Service) Description() string {
 	return "Manage environment references"
 }

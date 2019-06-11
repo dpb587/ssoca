@@ -39,7 +39,7 @@ var _ = Describe("Auth", func() {
 		runtime = clientfakes.FakeRuntime{}
 		runtime.GetUIReturns(&ui)
 
-		subject = NewService(&runtime, &cmdRunner)
+		subject = NewService("fake-name", &runtime, &cmdRunner)
 	})
 
 	Describe("AuthLogin", func() {
