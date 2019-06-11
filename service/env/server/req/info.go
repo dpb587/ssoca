@@ -46,11 +46,14 @@ func (h Info) Execute(request req.Request) error {
 			Metadata: svc.Metadata(),
 		}
 
-		if svc.Name() == "auth" {
-			response.Auth = svcInfo
-		} else if svc.Name() == "env" {
+		if svc.Name() == "env" {
 			response.Version = svc.Version()
 		} else {
+			if svc.Name() == "auth" {
+				// deprecated; continue including for older clients
+				response.Auth = &svcInfo
+			}
+
 			svcInfo.Name = svc.Name()
 			response.Services = append(response.Services, svcInfo)
 		}

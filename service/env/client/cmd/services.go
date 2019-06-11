@@ -37,11 +37,20 @@ func (c Services) Execute(_ []string) error {
 		Rows: [][]boshtbl.Value{},
 	}
 
-	info.Auth.Name = "auth"
-	c.appendServiceRow(&table, info.Auth)
+	// for old server + new client, avoid showing duplicate auth services
+	deprecatedShowAuth := true
 
 	for _, service := range info.Services {
+		if service.Name == "auth" {
+			deprecatedShowAuth = false
+		}
+
 		c.appendServiceRow(&table, service)
+	}
+
+	if deprecatedShowAuth && info.Auth != nil {
+		info.Auth.Name = "auth"
+		c.appendServiceRow(&table, *info.Auth)
 	}
 
 	c.Runtime.GetUI().PrintTable(table)

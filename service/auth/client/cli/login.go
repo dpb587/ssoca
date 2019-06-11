@@ -9,6 +9,7 @@ import (
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/service"
+	envapi "github.com/dpb587/ssoca/service/env/api"
 	envclient "github.com/dpb587/ssoca/service/env/client"
 )
 
@@ -44,7 +45,27 @@ func (c Login) Execute(_ []string) error {
 		return errors.Wrap(err, "getting environment info")
 	}
 
-	authServiceType := envInfo.Auth.Type
+	var authServiceListing envapi.InfoServiceResponse
+
+	for _, serviceListing := range envInfo.Services {
+		if serviceListing.Name != "auth" {
+			continue
+		}
+
+		authServiceListing = serviceListing
+
+		break
+	}
+
+	if authServiceListing.Name == "" && envInfo.Auth != nil {
+		authServiceListing = *envInfo.Auth
+	}
+
+	if authServiceListing.Name == "" {
+		return errors.New("failed to find auth service")
+	}
+
+	authServiceType := authServiceListing.Type
 
 	svc, err := c.ServiceManager.Get(authServiceType)
 	if err != nil {
@@ -56,7 +77,7 @@ func (c Login) Execute(_ []string) error {
 		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
-	auth, err := authService.AuthLogin(envInfo.Auth)
+	auth, err := authService.AuthLogin(authServiceListing)
 	if err != nil {
 		return errors.Wrap(err, "authenticating")
 	}

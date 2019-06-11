@@ -1,7 +1,7 @@
 package api
 
 type InfoResponse struct {
-	Auth     InfoServiceResponse   `json:"auth"`
+	Auth     *InfoServiceResponse  `json:"auth,omitempty"` // deprecated; now listed in services
 	Env      InfoEnvResponse       `json:"env"`
 	Services []InfoServiceResponse `json:"services"`
 	Version  string                `json:"version"`
