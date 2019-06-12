@@ -7,7 +7,6 @@ import (
 
 	"github.com/dpb587/ssoca/client/service"
 	servicessoca "github.com/dpb587/ssoca/service"
-	"github.com/dpb587/ssoca/service/env/api"
 )
 
 type FakeAuthService struct {
@@ -49,18 +48,14 @@ type FakeAuthService struct {
 	authRequestReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AuthLoginStub        func(api.InfoServiceResponse) (interface{}, error)
+	AuthLoginStub        func() error
 	authLoginMutex       sync.RWMutex
-	authLoginArgsForCall []struct {
-		arg1 api.InfoServiceResponse
-	}
-	authLoginReturns struct {
-		result1 interface{}
-		result2 error
+	authLoginArgsForCall []struct{}
+	authLoginReturns     struct {
+		result1 error
 	}
 	authLoginReturnsOnCall map[int]struct {
-		result1 interface{}
-		result2 error
+		result1 error
 	}
 	AuthLogoutStub        func() error
 	authLogoutMutex       sync.RWMutex
@@ -243,21 +238,19 @@ func (fake *FakeAuthService) AuthRequestReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLogin(arg1 api.InfoServiceResponse) (interface{}, error) {
+func (fake *FakeAuthService) AuthLogin() error {
 	fake.authLoginMutex.Lock()
 	ret, specificReturn := fake.authLoginReturnsOnCall[len(fake.authLoginArgsForCall)]
-	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct {
-		arg1 api.InfoServiceResponse
-	}{arg1})
-	fake.recordInvocation("AuthLogin", []interface{}{arg1})
+	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct{}{})
+	fake.recordInvocation("AuthLogin", []interface{}{})
 	fake.authLoginMutex.Unlock()
 	if fake.AuthLoginStub != nil {
-		return fake.AuthLoginStub(arg1)
+		return fake.AuthLoginStub()
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.authLoginReturns.result1, fake.authLoginReturns.result2
+	return fake.authLoginReturns.result1
 }
 
 func (fake *FakeAuthService) AuthLoginCallCount() int {
@@ -266,32 +259,23 @@ func (fake *FakeAuthService) AuthLoginCallCount() int {
 	return len(fake.authLoginArgsForCall)
 }
 
-func (fake *FakeAuthService) AuthLoginArgsForCall(i int) api.InfoServiceResponse {
-	fake.authLoginMutex.RLock()
-	defer fake.authLoginMutex.RUnlock()
-	return fake.authLoginArgsForCall[i].arg1
-}
-
-func (fake *FakeAuthService) AuthLoginReturns(result1 interface{}, result2 error) {
+func (fake *FakeAuthService) AuthLoginReturns(result1 error) {
 	fake.AuthLoginStub = nil
 	fake.authLoginReturns = struct {
-		result1 interface{}
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLoginReturnsOnCall(i int, result1 interface{}, result2 error) {
+func (fake *FakeAuthService) AuthLoginReturnsOnCall(i int, result1 error) {
 	fake.AuthLoginStub = nil
 	if fake.authLoginReturnsOnCall == nil {
 		fake.authLoginReturnsOnCall = make(map[int]struct {
-			result1 interface{}
-			result2 error
+			result1 error
 		})
 	}
 	fake.authLoginReturnsOnCall[i] = struct {
-		result1 interface{}
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeAuthService) AuthLogout() error {

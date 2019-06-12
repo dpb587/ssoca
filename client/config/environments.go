@@ -63,8 +63,9 @@ func (e *EnvironmentState) SetOption(key string, val interface{}) {
 }
 
 type EnvironmentAuthState struct {
+	Name    string      `yaml:"name,omitempty"`
 	Type    string      `yaml:"type"`
-	Options interface{} `yaml:"options"`
+	Options interface{} `yaml:"options,omitempty"`
 }
 
 func (ea EnvironmentAuthState) UnmarshalOptions(typed interface{}) error {

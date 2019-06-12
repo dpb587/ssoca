@@ -12,16 +12,18 @@ type Service struct {
 
 	name             string
 	runtime          client.Runtime
+	serviceManager   service.Manager
 	uaaClientFactory helper.ClientFactory
 }
 
 var _ service.Service = &Service{}
 var _ service.AuthService = &Service{}
 
-func NewService(name string, runtime client.Runtime, uaaClientFactory helper.ClientFactory) *Service {
+func NewService(name string, runtime client.Runtime, serviceManager service.Manager, uaaClientFactory helper.ClientFactory) *Service {
 	return &Service{
 		name:             name,
 		runtime:          runtime,
+		serviceManager:   serviceManager,
 		uaaClientFactory: uaaClientFactory,
 	}
 }

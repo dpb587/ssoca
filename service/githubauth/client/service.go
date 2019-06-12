@@ -2,6 +2,7 @@ package client
 
 import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	oauthsvc "github.com/dpb587/ssoca/auth/authn/support/oauth2/client"
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/service"
 	svc "github.com/dpb587/ssoca/service/githubauth"
@@ -9,6 +10,7 @@ import (
 
 type Service struct {
 	svc.ServiceType
+	*oauthsvc.AuthService
 
 	name      string
 	runtime   client.Runtime
@@ -19,11 +21,15 @@ var _ service.Service = &Service{}
 var _ service.AuthService = &Service{}
 
 func NewService(name string, runtime client.Runtime, cmdRunner boshsys.CmdRunner) *Service {
-	return &Service{
+	srv := &Service{
 		name:      name,
 		runtime:   runtime,
 		cmdRunner: cmdRunner,
 	}
+
+	srv.AuthService = oauthsvc.NewAuthService(name, srv.Type(), runtime, cmdRunner)
+
+	return srv
 }
 
 func (s Service) Name() string {

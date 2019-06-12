@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/dpb587/ssoca/service"
-	"github.com/dpb587/ssoca/service/env/api"
 )
 
 //go:generate counterfeiter . Manager
@@ -32,6 +31,6 @@ type AuthService interface {
 	Service
 
 	AuthRequest(*http.Request) error
-	AuthLogin(api.InfoServiceResponse) (interface{}, error)
+	AuthLogin() error
 	AuthLogout() error
 }

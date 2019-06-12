@@ -55,7 +55,7 @@ func main() {
 	serviceManager.AddFactory(srv_githubauth.NewServiceFactory(runtime, cmdRunner))
 	serviceManager.AddFactory(srv_googleauth.NewServiceFactory(runtime, cmdRunner))
 	serviceManager.AddFactory(srv_httpauth.NewServiceFactory(runtime))
-	serviceManager.AddFactory(srv_uaaauth.NewServiceFactory(runtime, srv_uaaauth_helper.DefaultClientFactory{}))
+	serviceManager.AddFactory(srv_uaaauth.NewServiceFactory(runtime, serviceManager, srv_uaaauth_helper.DefaultClientFactory{}))
 
 	parser.AddCommand(
 		"env",

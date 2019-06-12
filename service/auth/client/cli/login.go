@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/service"
 	globalservice "github.com/dpb587/ssoca/service"
 	envapi "github.com/dpb587/ssoca/service/env/api"
@@ -46,6 +45,7 @@ func (c Login) Execute(_ []string) error {
 		return errors.Wrap(err, "getting environment info")
 	}
 
+	// find service named auth
 	var authServiceListing envapi.InfoServiceResponse
 
 	for _, serviceListing := range envInfo.Services {
@@ -58,8 +58,10 @@ func (c Login) Execute(_ []string) error {
 		break
 	}
 
+	// deprecated; fallback to older style of reporting
 	if authServiceListing.Name == "" && envInfo.Auth != nil {
 		authServiceListing = *envInfo.Auth
+		authServiceListing.Name = "auth"
 	}
 
 	if authServiceListing.Name == "" {
@@ -78,29 +80,9 @@ func (c Login) Execute(_ []string) error {
 		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
-	auth, err := authService.AuthLogin(authServiceListing)
+	err = authService.AuthLogin()
 	if err != nil {
-		return errors.Wrap(err, "authenticating")
-	}
-
-	env, err := c.Runtime.GetEnvironment()
-	if err != nil {
-		return errors.Wrap(err, "getting environment state")
-	}
-
-	env.Auth = &config.EnvironmentAuthState{
-		Type:    string(authServiceType),
-		Options: auth,
-	}
-
-	configManager, err := c.Runtime.GetConfigManager()
-	if err != nil {
-		return errors.Wrap(err, "getting config manager")
-	}
-
-	err = configManager.SetEnvironment(env)
-	if err != nil {
-		return errors.Wrap(err, "updating environment")
+		return errors.Wrapf(err, "executing login with %s", authService.Type())
 	}
 
 	if c.SkipVerify {

@@ -11,16 +11,18 @@ type ServiceFactory struct {
 	svc.ServiceType
 
 	runtime          client.Runtime
+	serviceManager   service.Manager
 	uaaClientFactory helper.ClientFactory
 }
 
-func NewServiceFactory(runtime client.Runtime, uaaClientFactory helper.ClientFactory) ServiceFactory {
+func NewServiceFactory(runtime client.Runtime, serviceManager service.Manager, uaaClientFactory helper.ClientFactory) ServiceFactory {
 	return ServiceFactory{
 		runtime:          runtime,
+		serviceManager:   serviceManager,
 		uaaClientFactory: uaaClientFactory,
 	}
 }
 
 func (sf ServiceFactory) New(name string) service.Service {
-	return NewService(name, sf.runtime, sf.uaaClientFactory)
+	return NewService(name, sf.runtime, sf.serviceManager, sf.uaaClientFactory)
 }
