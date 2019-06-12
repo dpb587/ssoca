@@ -5,23 +5,24 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/auth/authz/filter"
-	"github.com/dpb587/ssoca/server/service"
+	serverservice "github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
+	"github.com/dpb587/ssoca/service"
 )
 
 type Service struct {
-	service     service.Service
+	service     serverservice.Service
 	requirement filter.Requirement
 }
 
-func NewService(service service.Service, requirement filter.Requirement) Service {
+func NewService(service serverservice.Service, requirement filter.Requirement) Service {
 	return Service{
 		service:     service,
 		requirement: requirement,
 	}
 }
 
-func (s Service) Type() string {
+func (s Service) Type() service.Type {
 	return s.service.Type()
 }
 

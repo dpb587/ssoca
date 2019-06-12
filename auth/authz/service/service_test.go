@@ -10,6 +10,7 @@ import (
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/server/service/req/reqfakes"
 	"github.com/dpb587/ssoca/server/service/servicefakes"
+	globalservice "github.com/dpb587/ssoca/service"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -30,8 +31,8 @@ var _ = Describe("Service", func() {
 
 	Describe("Type", func() {
 		It("delegates to service", func() {
-			service.TypeReturns("fake-type")
-			Expect(subject.Type()).To(Equal("fake-type"))
+			service.TypeReturns(globalservice.Type("fake-type"))
+			Expect(subject.Type()).To(Equal(globalservice.Type("fake-type")))
 		})
 	})
 

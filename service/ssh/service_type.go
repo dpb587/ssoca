@@ -1,10 +1,13 @@
-// Provide signing services for SSH servers trusting a specific CA.
 package ssh
+
+import "github.com/dpb587/ssoca/service"
+
+const Type service.Type = "ssh"
 
 type ServiceType struct{}
 
-func (ServiceType) Type() string {
-	return "ssh"
+func (ServiceType) Type() service.Type {
+	return Type
 }
 
 func (ServiceType) Version() string {

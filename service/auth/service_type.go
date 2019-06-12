@@ -1,9 +1,13 @@
 package auth
 
+import "github.com/dpb587/ssoca/service"
+
+const Type service.Type = "auth"
+
 type ServiceType struct{}
 
-func (ServiceType) Type() string {
-	return "auth"
+func (ServiceType) Type() service.Type {
+	return Type
 }
 
 func (ServiceType) Version() string {

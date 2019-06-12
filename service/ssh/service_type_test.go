@@ -16,7 +16,7 @@ var _ = Describe("ServiceType", func() {
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(svc.Type()).To(Equal("ssh"))
+			Expect(svc.Type()).To(Equal(Type))
 		})
 	})
 

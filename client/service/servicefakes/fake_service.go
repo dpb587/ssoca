@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/client/service"
+	servicessoca "github.com/dpb587/ssoca/service"
 )
 
 type FakeService struct {
@@ -17,14 +18,14 @@ type FakeService struct {
 	nameReturnsOnCall map[int]struct {
 		result1 string
 	}
-	TypeStub        func() string
+	TypeStub        func() servicessoca.Type
 	typeMutex       sync.RWMutex
 	typeArgsForCall []struct{}
 	typeReturns     struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	typeReturnsOnCall map[int]struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	VersionStub        func() string
 	versionMutex       sync.RWMutex
@@ -79,7 +80,7 @@ func (fake *FakeService) NameReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeService) Type() string {
+func (fake *FakeService) Type() servicessoca.Type {
 	fake.typeMutex.Lock()
 	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
 	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
@@ -100,22 +101,22 @@ func (fake *FakeService) TypeCallCount() int {
 	return len(fake.typeArgsForCall)
 }
 
-func (fake *FakeService) TypeReturns(result1 string) {
+func (fake *FakeService) TypeReturns(result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	fake.typeReturns = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 
-func (fake *FakeService) TypeReturnsOnCall(i int, result1 string) {
+func (fake *FakeService) TypeReturnsOnCall(i int, result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	if fake.typeReturnsOnCall == nil {
 		fake.typeReturnsOnCall = make(map[int]struct {
-			result1 string
+			result1 servicessoca.Type
 		})
 	}
 	fake.typeReturnsOnCall[i] = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 

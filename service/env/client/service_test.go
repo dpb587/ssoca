@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"github.com/dpb587/ssoca/service/env"
 	. "github.com/dpb587/ssoca/service/env/client"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +17,7 @@ var _ = Describe("Service", func() {
 		})
 
 		It("Type", func() {
-			Expect(subject.Type()).To(Equal("env"))
+			Expect(subject.Type()).To(Equal(env.Type))
 		})
 
 		It("Version", func() {

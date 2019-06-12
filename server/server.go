@@ -16,6 +16,7 @@ import (
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
+	globalservice "github.com/dpb587/ssoca/service"
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
 )
 
@@ -108,7 +109,7 @@ func CreateFromConfig(
 			svcConfig.Type = "file"
 		}
 
-		svc, err := serviceFactory.Create(svcConfig.Type, svcConfig.Name, svcConfig.Options)
+		svc, err := serviceFactory.Create(globalservice.Type(svcConfig.Type), svcConfig.Name, svcConfig.Options)
 		if err != nil {
 			return Server{}, errors.Wrap(err, "creating service")
 		}
@@ -121,7 +122,7 @@ func CreateFromConfig(
 		serviceManager.Add(filteredService)
 	}
 
-	svc, err := serviceFactory.Create(fmt.Sprintf("%s_authn", cfg.Auth.Type), "auth", cfg.Auth.Options)
+	svc, err := serviceFactory.Create(globalservice.Type(fmt.Sprintf("%s_authn", cfg.Auth.Type)), "auth", cfg.Auth.Options)
 	if err != nil {
 		return Server{}, errors.Wrap(err, "creating auth service")
 	}

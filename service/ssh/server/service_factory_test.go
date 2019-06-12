@@ -4,6 +4,7 @@ import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue/dynamicvaluefakes"
+	"github.com/dpb587/ssoca/service/ssh"
 	. "github.com/dpb587/ssoca/service/ssh/server"
 
 	. "github.com/onsi/ginkgo"
@@ -15,7 +16,7 @@ var _ = Describe("ServiceFactory", func() {
 
 	Describe("Type", func() {
 		It("returns", func() {
-			Expect(subject.Type()).To(Equal("ssh"))
+			Expect(subject.Type()).To(Equal(ssh.Type))
 		})
 	})
 

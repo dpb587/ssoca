@@ -7,13 +7,14 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
 	env_api "github.com/dpb587/ssoca/service/env/api"
 )
 
 var _ service.AuthService = Service{}
 
 func (s Service) AuthLogin(info env_api.InfoServiceResponse) (interface{}, error) {
-	authServiceType := info.Type
+	authServiceType := globalservice.Type(info.Type)
 
 	svc, err := s.serviceManager.Get(authServiceType, "auth")
 	if err != nil {
@@ -39,7 +40,7 @@ func (s Service) AuthRequest(req *http.Request) error {
 		return errors.Wrap(err, "getting environment")
 	}
 
-	authServiceType := env.Auth.Type
+	authServiceType := globalservice.Type(env.Auth.Type)
 
 	svc, err := s.serviceManager.Get(authServiceType, "auth")
 	if err != nil {

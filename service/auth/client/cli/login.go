@@ -9,6 +9,7 @@ import (
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
 	envapi "github.com/dpb587/ssoca/service/env/api"
 	envclient "github.com/dpb587/ssoca/service/env/client"
 )
@@ -65,7 +66,7 @@ func (c Login) Execute(_ []string) error {
 		return errors.New("failed to find auth service")
 	}
 
-	authServiceType := authServiceListing.Type
+	authServiceType := globalservice.Type(authServiceListing.Type)
 
 	svc, err := c.ServiceManager.Get(authServiceType, "auth")
 	if err != nil {
@@ -88,7 +89,7 @@ func (c Login) Execute(_ []string) error {
 	}
 
 	env.Auth = &config.EnvironmentAuthState{
-		Type:    authServiceType,
+		Type:    string(authServiceType),
 		Options: auth,
 	}
 

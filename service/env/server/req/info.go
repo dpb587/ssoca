@@ -41,7 +41,7 @@ func (h Info) Execute(request req.Request) error {
 		}
 
 		svcInfo := api.InfoServiceResponse{
-			Type:     svc.Type(),
+			Type:     string(svc.Type()),
 			Version:  svc.Version(),
 			Metadata: svc.Metadata(),
 		}

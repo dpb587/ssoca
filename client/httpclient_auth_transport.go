@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
 )
 
 const AuthorizationNone = "none"
@@ -37,7 +38,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 
 		if env.Auth != nil {
-			authServiceType := env.Auth.Type
+			authServiceType := globalservice.Type(env.Auth.Type)
 
 			svc, err := t.serviceManager.Get(authServiceType, "auth")
 			if err != nil {

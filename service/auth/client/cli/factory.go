@@ -3,6 +3,7 @@ package cli
 import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/service/auth"
 	svc "github.com/dpb587/ssoca/service/auth/client"
 )
 
@@ -17,7 +18,7 @@ type Commands struct {
 func CreateCommands(runtime client.Runtime, s *svc.Service) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: svc.Service{}.Type(),
+		ServiceName: string(auth.Type),
 	}
 
 	return &Commands{

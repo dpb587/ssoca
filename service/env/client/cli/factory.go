@@ -26,7 +26,7 @@ type Commands struct {
 func CreateCommands(runtime client.Runtime, cmdRunner boshsys.CmdRunner, fs boshsys.FileSystem, s *svc.Service) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: s.Type(),
+		ServiceName: string(s.Type()),
 	}
 
 	return &Commands{

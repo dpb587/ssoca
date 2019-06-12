@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"github.com/dpb587/ssoca/service/githubauth"
 	. "github.com/dpb587/ssoca/service/githubauth/client"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +17,7 @@ var _ = Describe("Service", func() {
 		})
 
 		It("Type", func() {
-			Expect(subject.Type()).To(Equal("github_authn"))
+			Expect(subject.Type()).To(Equal(githubauth.Type))
 		})
 
 		It("Version", func() {

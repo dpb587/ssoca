@@ -5,17 +5,18 @@ import (
 
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service/req"
+	"github.com/dpb587/ssoca/service"
 )
 
 //go:generate counterfeiter . Factory
 type Factory interface {
-	Create(string, string, map[string]interface{}) (Service, error)
+	Create(service.Type, string, map[string]interface{}) (Service, error)
 }
 
 //go:generate counterfeiter . ServiceFactory
 type ServiceFactory interface {
 	Create(string, map[string]interface{}) (Service, error)
-	Type() string
+	Type() service.Type
 }
 
 //go:generate counterfeiter . Manager
@@ -29,7 +30,7 @@ type Manager interface {
 //go:generate counterfeiter . Service
 type Service interface {
 	Name() string
-	Type() string
+	Type() service.Type
 	Version() string
 	Metadata() interface{}
 	GetRoutes() []req.RouteHandler

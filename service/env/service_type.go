@@ -1,9 +1,13 @@
 package env
 
+import "github.com/dpb587/ssoca/service"
+
+const Type service.Type = "env"
+
 type ServiceType struct{}
 
-func (ServiceType) Type() string {
-	return "env"
+func (ServiceType) Type() service.Type {
+	return Type
 }
 
 func (ServiceType) Version() string {

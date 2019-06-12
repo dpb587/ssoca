@@ -4,7 +4,7 @@ import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
-	svc "github.com/dpb587/ssoca/service/file/client"
+	"github.com/dpb587/ssoca/service/file"
 )
 
 type Commands struct {
@@ -20,8 +20,8 @@ func CreateCommands(runtime client.Runtime, manager service.Manager) *Commands {
 		clientcmd.ServiceCommand{
 			Runtime:        runtime,
 			ServiceManager: manager,
-			ServiceType:    svc.Service{}.Type(),
-			ServiceName:    svc.Service{}.Type(),
+			ServiceType:    file.Type,
+			ServiceName:    string(file.Type),
 		},
 	}
 

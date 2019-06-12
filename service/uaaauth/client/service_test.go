@@ -1,9 +1,9 @@
 package client_test
 
 import (
-	. "github.com/dpb587/ssoca/service/uaaauth/client"
-
 	"github.com/dpb587/ssoca/client/service"
+	"github.com/dpb587/ssoca/service/uaaauth"
+	. "github.com/dpb587/ssoca/service/uaaauth/client"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -24,7 +24,7 @@ var _ = Describe("Service", func() {
 		})
 
 		It("Type", func() {
-			Expect(subject.Type()).To(Equal("uaa_authn"))
+			Expect(subject.Type()).To(Equal(uaaauth.Type))
 		})
 
 		It("Version", func() {

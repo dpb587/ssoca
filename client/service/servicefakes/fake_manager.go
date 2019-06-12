@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/client/service"
+	servicessoca "github.com/dpb587/ssoca/service"
 )
 
 type FakeManager struct {
@@ -18,10 +19,10 @@ type FakeManager struct {
 	addFactoryArgsForCall []struct {
 		arg1 service.ServiceFactory
 	}
-	GetStub        func(string, string) (service.Service, error)
+	GetStub        func(servicessoca.Type, string) (service.Service, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
-		arg1 string
+		arg1 servicessoca.Type
 		arg2 string
 	}
 	getReturns struct {
@@ -84,11 +85,11 @@ func (fake *FakeManager) AddFactoryArgsForCall(i int) service.ServiceFactory {
 	return fake.addFactoryArgsForCall[i].arg1
 }
 
-func (fake *FakeManager) Get(arg1 string, arg2 string) (service.Service, error) {
+func (fake *FakeManager) Get(arg1 servicessoca.Type, arg2 string) (service.Service, error) {
 	fake.getMutex.Lock()
 	ret, specificReturn := fake.getReturnsOnCall[len(fake.getArgsForCall)]
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
-		arg1 string
+		arg1 servicessoca.Type
 		arg2 string
 	}{arg1, arg2})
 	fake.recordInvocation("Get", []interface{}{arg1, arg2})
@@ -108,7 +109,7 @@ func (fake *FakeManager) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
-func (fake *FakeManager) GetArgsForCall(i int) (string, string) {
+func (fake *FakeManager) GetArgsForCall(i int) (servicessoca.Type, string) {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
 	return fake.getArgsForCall[i].arg1, fake.getArgsForCall[i].arg2

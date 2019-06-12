@@ -9,6 +9,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
+	globalservice "github.com/dpb587/ssoca/service"
 )
 
 type Service struct {
@@ -29,7 +30,7 @@ func (s Service) Name() string {
 	return "auth"
 }
 
-func (s Service) Type() string {
+func (s Service) Type() globalservice.Type {
 	return s.auth.Type()
 }
 
