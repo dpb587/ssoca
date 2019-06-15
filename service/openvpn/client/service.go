@@ -15,26 +15,24 @@ import (
 type Service struct {
 	svc.ServiceType
 
-	name                string
-	runtime             client.Runtime
-	logger              logrus.FieldLogger
-	fs                  boshsys.FileSystem
-	cmdRunner           boshsys.CmdRunner
-	executableFinder    client.ExecutableFinder
-	executableInstaller client.ExecutableInstaller
+	name             string
+	runtime          client.Runtime
+	logger           logrus.FieldLogger
+	fs               boshsys.FileSystem
+	cmdRunner        boshsys.CmdRunner
+	executableFinder client.ExecutableFinder
 }
 
 var _ service.Service = Service{}
 
-func NewService(name string, runtime client.Runtime, logger logrus.FieldLogger, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder, executableInstaller client.ExecutableInstaller) *Service {
+func NewService(name string, runtime client.Runtime, logger logrus.FieldLogger, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder) *Service {
 	return &Service{
-		name:                name,
-		runtime:             runtime,
-		logger:              logger,
-		fs:                  fs,
-		cmdRunner:           cmdRunner,
-		executableFinder:    executableFinder,
-		executableInstaller: executableInstaller,
+		name:             name,
+		runtime:          runtime,
+		logger:           logger,
+		fs:               fs,
+		cmdRunner:        cmdRunner,
+		executableFinder: executableFinder,
 	}
 }
 

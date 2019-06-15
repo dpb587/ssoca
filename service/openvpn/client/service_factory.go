@@ -10,20 +10,18 @@ import (
 type ServiceFactory struct {
 	svc.ServiceType
 
-	runtime             client.Runtime
-	fs                  boshsys.FileSystem
-	cmdRunner           boshsys.CmdRunner
-	executableFinder    client.ExecutableFinder
-	executableInstaller client.ExecutableInstaller
+	runtime          client.Runtime
+	fs               boshsys.FileSystem
+	cmdRunner        boshsys.CmdRunner
+	executableFinder client.ExecutableFinder
 }
 
-func NewServiceFactory(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder, executableInstaller client.ExecutableInstaller) ServiceFactory {
+func NewServiceFactory(runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner, executableFinder client.ExecutableFinder) ServiceFactory {
 	return ServiceFactory{
-		runtime:             runtime,
-		fs:                  fs,
-		cmdRunner:           cmdRunner,
-		executableFinder:    executableFinder,
-		executableInstaller: executableInstaller,
+		runtime:          runtime,
+		fs:               fs,
+		cmdRunner:        cmdRunner,
+		executableFinder: executableFinder,
 	}
 }
 
@@ -38,6 +36,5 @@ func (sf ServiceFactory) New(name string) *Service {
 		sf.fs,
 		sf.cmdRunner,
 		sf.executableFinder,
-		sf.executableInstaller,
 	)
 }

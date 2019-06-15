@@ -37,7 +37,7 @@ var _ = Describe("CreateTunnelblickProfile", func() {
 		fakeruntime.GetEnvironmentNameReturns("fake-env")
 		fakeruntime.GetConfigManagerReturns(fakeconfigmanager, nil)
 
-		subject = NewService("fake-name", fakeruntime, nil, fakefs, nil, nil, nil)
+		subject = NewService("fake-name", fakeruntime, nil, fakefs, nil, nil)
 	})
 
 	Context("failing config manager", func() {

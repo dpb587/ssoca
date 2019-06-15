@@ -27,7 +27,6 @@ import (
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
 	srv_openvpn_executable_finder "github.com/dpb587/ssoca/service/openvpn/client/executable/finder"
-	srv_openvpn_executable_installer "github.com/dpb587/ssoca/service/openvpn/client/executable/installer"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
 	srv_ssh_cli "github.com/dpb587/ssoca/service/ssh/client/cli"
 	srv_uaaauth "github.com/dpb587/ssoca/service/uaaauth/client"
@@ -85,7 +84,7 @@ func main() {
 		"openvpn",
 		"Establish OpenVPN connections to remote servers",
 		"Establish OpenVPN connections to remote servers",
-		srv_openvpn_cli.CreateCommands(runtime, srv_openvpn.NewServiceFactory(runtime, fs, cmdRunner, openvpnFinder, srv_openvpn_executable_installer.New(runtime, cmdRunner, openvpnFinder)), fs, cmdRunner),
+		srv_openvpn_cli.CreateCommands(runtime, srv_openvpn.NewServiceFactory(runtime, fs, cmdRunner, openvpnFinder), fs, cmdRunner),
 	)
 
 	parser.AddCommand(

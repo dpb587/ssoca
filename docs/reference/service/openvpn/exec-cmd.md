@@ -28,7 +28,6 @@ Execute openvpn to connect to the remote server (aliases: connect)
               --skip-auth-retry     Skip interactive authentication retries when logged out
               --exec=               Path to the openvpn binary
               --reconnect           Reconnect on connection disconnects
-              --skip-install        Skip automatic installation attempts if openvpn is missing
               --static-certificate  Write a static certificate in the configuration instead of dynamic renewals
               --sudo                Execute openvpn with sudo
     

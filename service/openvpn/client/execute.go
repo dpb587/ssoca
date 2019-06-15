@@ -18,35 +18,8 @@ type ExecuteOptions struct {
 	ExtraArgs []string
 
 	SkipAuthRetry     bool
-	SkipInstall       bool
 	StaticCertificate bool
 	Sudo              bool
-}
-
-func (s Service) requireExecutable(skipInstall bool) (string, error) {
-	executable, guessed, err := s.executableFinder.Find()
-	if err != nil {
-		if skipInstall {
-			return "", errors.Wrap(err, "finding executable")
-		}
-	}
-
-	if guessed {
-		s.logger.Warnf("openvpn executable found outside of $PATH (using %s)", executable)
-	}
-
-	if executable != "" {
-		return executable, nil
-	}
-
-	s.logger.Warnf("openvpn executable not found (attempting automatic installation)")
-
-	err = s.executableInstaller.Install(s.logger)
-	if err != nil {
-		return "", errors.Wrap(err, "installing executable")
-	}
-
-	return s.requireExecutable(true)
 }
 
 func (s Service) Execute(opts ExecuteOptions) error {
@@ -56,10 +29,13 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		executable = opts.Exec
 	} else {
 		var err error
+		var guessed bool
 
-		executable, err = s.requireExecutable(opts.SkipInstall)
+		executable, guessed, err = s.executableFinder.Find()
 		if err != nil {
-			return errors.Wrap(err, "requiring executable")
+			return errors.Wrap(err, "finding executable")
+		} else if guessed {
+			s.logger.Warnf("openvpn executable found outside of $PATH (using %s)", executable)
 		}
 	}
 
