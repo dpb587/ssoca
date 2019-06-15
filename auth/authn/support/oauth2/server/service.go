@@ -3,13 +3,13 @@ package server
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	svcreq "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/req"
 	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
@@ -40,23 +40,41 @@ func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
 	return nil
 }
 
-func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
-	authValue := r.Header.Get("Authorization")
-	if authValue == "" {
-		return nil, nil
+func (s Service) SupportsRequestAuth(r http.Request) (bool, error) {
+	tokenValue, err := authn.ExtractBearerTokenValue(r)
+	if err != nil {
+		return false, nil
+	} else if tokenValue == "" {
+		return false, nil
 	}
 
-	authValuePieces := strings.SplitN(authValue, " ", 2)
-	if len(authValuePieces) != 2 {
-		return nil, apierr.NewError(errors.New("invalid Authorization format"), http.StatusForbidden, "")
-	} else if strings.ToLower(authValuePieces[0]) != "bearer" {
-		return nil, apierr.NewError(errors.New("invalid Authorization method"), http.StatusForbidden, "")
+	claims := selfsignedjwt.NewOriginToken(s.urls.Origin)
+
+	p := &jwt.Parser{}
+	_, _, err = p.ParseUnverified(tokenValue, &claims)
+	if err != nil {
+		return false, nil
+	}
+
+	if claims.VerifyOrigin() != nil {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
+	tokenValue, err := authn.ExtractBearerTokenValue(r)
+	if err != nil {
+		return nil, err
+	} else if tokenValue == "" {
+		return nil, nil
 	}
 
 	intTok := selfsignedjwt.NewOriginToken(s.urls.Origin)
 
-	_, err := jwt.ParseWithClaims(
-		authValuePieces[1],
+	_, err = jwt.ParseWithClaims(
+		tokenValue,
 		&intTok,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method != config.JWTSigningMethod {

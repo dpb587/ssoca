@@ -41,5 +41,6 @@ type Service interface {
 type AuthService interface {
 	Service
 
+	SupportsRequestAuth(http.Request) (bool, error)
 	ParseRequestAuth(http.Request) (*auth.Token, error)
 }

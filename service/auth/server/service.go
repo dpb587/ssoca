@@ -18,7 +18,8 @@ type Service struct {
 	auth service.AuthService
 }
 
-var _ service.Service = Service{}
+var _ service.Service = &Service{}
+var _ service.AuthService = &Service{}
 
 func NewService(authService service.AuthService) *Service {
 	return &Service{
@@ -26,26 +27,30 @@ func NewService(authService service.AuthService) *Service {
 	}
 }
 
-func (s Service) Name() string {
+func (s *Service) Name() string {
 	return "auth"
 }
 
-func (s Service) Type() globalservice.Type {
+func (s *Service) Type() globalservice.Type {
 	return s.auth.Type()
 }
 
-func (s Service) Metadata() interface{} {
+func (s *Service) Metadata() interface{} {
 	return s.auth.Metadata()
 }
 
-func (s Service) GetRoutes() []req.RouteHandler {
+func (s *Service) GetRoutes() []req.RouteHandler {
 	return append(s.auth.GetRoutes(), svcreq.Info{})
 }
 
-func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
+func (s *Service) SupportsRequestAuth(r http.Request) (bool, error) {
+	return s.auth.SupportsRequestAuth(r)
+}
+
+func (s *Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
 	return s.auth.ParseRequestAuth(r)
 }
 
-func (s Service) VerifyAuthorization(req http.Request, token *auth.Token) error {
+func (s *Service) VerifyAuthorization(req http.Request, token *auth.Token) error {
 	return s.auth.VerifyAuthorization(req, token)
 }

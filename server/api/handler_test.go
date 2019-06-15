@@ -41,6 +41,7 @@ var _ = Describe("Handler", func() {
 	Describe("ServeHTTP", func() {
 		Context("when auth service fails", func() {
 			It("fails the request", func() {
+				authService.SupportsRequestAuthReturns(true, nil)
 				authService.ParseRequestAuthReturns(nil, errors.New("fake-err"))
 
 				handler := &reqfakes.FakeRouteHandler{}
