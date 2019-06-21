@@ -9,7 +9,7 @@ aliases:
 Authenticate for a new token
 
     Usage:
-      ssoca [OPTIONS] auth login [login-OPTIONS]
+      ssoca [OPTIONS] auth [auth-OPTIONS] login [login-OPTIONS]
     
     Application Options:
           --config=          Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,6 +18,11 @@ Authenticate for a new token
     
     Help Options:
       -h, --help             Show this help message
+    
+    [auth command options]
+    
+        Manage authentication:
+          -s, --service=     Service name [$SSOCA_SERVICE]
     
     [login command options]
               --skip-verify  Skip verification of authentication, once complete

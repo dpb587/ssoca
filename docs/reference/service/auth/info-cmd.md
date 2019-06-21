@@ -9,7 +9,7 @@ aliases:
 Show current authentication information
 
     Usage:
-      ssoca [OPTIONS] auth info [info-OPTIONS]
+      ssoca [OPTIONS] auth [auth-OPTIONS] info [info-OPTIONS]
     
     Application Options:
           --config=            Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,6 +18,11 @@ Show current authentication information
     
     Help Options:
       -h, --help               Show this help message
+    
+    [auth command options]
+    
+        Manage authentication:
+          -s, --service=       Service name [$SSOCA_SERVICE]
     
     [info command options]
               --authenticated  Show only whether the user is authenticated

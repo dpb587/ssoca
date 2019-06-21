@@ -3,12 +3,11 @@ package cli
 import (
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/dpb587/ssoca/service/auth"
 	svc "github.com/dpb587/ssoca/service/auth/client"
 )
 
 type Commands struct {
-	*clientcmd.ServiceCommand `no-flag:"true"`
+	*clientcmd.ServiceCommand
 
 	Info   Info   `command:"info" description:"Show current authentication information"`
 	Login  Login  `command:"login" description:"Authenticate for a new token"`
@@ -18,7 +17,7 @@ type Commands struct {
 func CreateCommands(runtime client.Runtime, s *svc.Service) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: string(auth.Type),
+		ServiceName: "",
 	}
 
 	return &Commands{

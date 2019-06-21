@@ -40,7 +40,7 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		if env.Auth != nil {
 			authServiceType := globalservice.Type(env.Auth.Type)
 
-			svc, err := t.serviceManager.Get(authServiceType, "auth")
+			svc, err := t.serviceManager.Get(authServiceType, env.Auth.Name)
 			if err != nil {
 				return nil, errors.Wrap(err, "getting authentication service")
 			}

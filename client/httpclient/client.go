@@ -72,12 +72,25 @@ func (c client) attemptReauthenticate(err error) error {
 		return err
 	}
 
+	env, err := c.runtime.GetEnvironment()
+	if err != nil {
+		return err
+	}
+
+	var authServiceName string
+
+	if env.Auth != nil {
+		// prefer to reauthenticate with the existing auth service, if present
+		authServiceName = env.Auth.Name
+	}
+
 	// this assumes runtime has a specific CLI; probably not optimal
 	cmd := exec.Command(
 		c.runtime.GetExec(),
 		"--config", configManager.GetSource(),
 		"--environment", c.runtime.GetEnvironmentName(),
 		"auth",
+		"--service", authServiceName,
 		"login",
 	)
 

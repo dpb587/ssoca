@@ -45,11 +45,26 @@ func (c Login) Execute(_ []string) error {
 		return errors.Wrap(err, "getting environment info")
 	}
 
+	// intentionally not defaulting to any existing auth token's service to force
+	// explicit invocations when users run the `login` command; the exception
+	// being when internal reauthentication attempts occur and it automatically
+	// passes whatever service the previous token was using.
+	authServiceName := c.ServiceCommand.ServiceName
+
+	if authServiceName == "" {
+		authServiceName = envInfo.Env.DefaultAuthService
+
+		if authServiceName == "" {
+			// deprecated; fallback to older style of reporting
+			authServiceName = "auth"
+		}
+	}
+
 	// find service named auth
 	var authServiceListing envapi.InfoServiceResponse
 
 	for _, serviceListing := range envInfo.Services {
-		if serviceListing.Name != "auth" {
+		if serviceListing.Name != authServiceName {
 			continue
 		}
 
@@ -70,7 +85,7 @@ func (c Login) Execute(_ []string) error {
 
 	authServiceType := globalservice.Type(authServiceListing.Type)
 
-	svc, err := c.ServiceManager.Get(authServiceType, "auth")
+	svc, err := c.ServiceManager.Get(authServiceType, authServiceListing.Name)
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}
