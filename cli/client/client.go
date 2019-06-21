@@ -18,6 +18,7 @@ import (
 	srv_auth "github.com/dpb587/ssoca/service/auth/client"
 	srv_auth_cli "github.com/dpb587/ssoca/service/auth/client/cli"
 	srv_env "github.com/dpb587/ssoca/service/env/client"
+	srv_env_cli "github.com/dpb587/ssoca/service/env/client/cli"
 	srv_file "github.com/dpb587/ssoca/service/file/client"
 	srv_file_cli "github.com/dpb587/ssoca/service/file/client/cli"
 	srv_githubauth "github.com/dpb587/ssoca/service/githubauth/client"
@@ -26,7 +27,6 @@ import (
 	srv_openvpn "github.com/dpb587/ssoca/service/openvpn/client"
 	srv_openvpn_cli "github.com/dpb587/ssoca/service/openvpn/client/cli"
 	srv_openvpn_executable_finder "github.com/dpb587/ssoca/service/openvpn/client/executable/finder"
-	srv_openvpn_executable_installer "github.com/dpb587/ssoca/service/openvpn/client/executable/installer"
 	srv_ssh "github.com/dpb587/ssoca/service/ssh/client"
 	srv_ssh_cli "github.com/dpb587/ssoca/service/ssh/client/cli"
 	srv_uaaauth "github.com/dpb587/ssoca/service/uaaauth/client"
@@ -46,46 +46,35 @@ func main() {
 	runtime := goflags.NewRuntime(os.Args[0], version.MustVersion(appName, appSemver, appCommit, appBuilt), serviceManager, ui, os.Stdin, os.Stdout, os.Stderr, fs)
 	var parser = flags.NewParser(runtime, flags.Default)
 
-	authService := srv_auth.NewService(runtime, serviceManager)
+	envService := srv_env.NewService(runtime, fs, cmdRunner)
 
-	serviceManager.Add(authService)
-	serviceManager.Add(srv_env.NewService(runtime, fs, cmdRunner))
-	serviceManager.Add(srv_githubauth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_googleauth.NewService(runtime, cmdRunner))
-	serviceManager.Add(srv_httpauth.NewService(runtime))
-	serviceManager.Add(srv_uaaauth.NewService(runtime, srv_uaaauth_helper.DefaultClientFactory{}))
+	serviceManager.Add(envService)
 
-	for _, name := range serviceManager.Services() {
-		svc, err := serviceManager.Get(name)
-		if err != nil {
-			panic(err)
-		}
+	serviceManager.AddFactory(srv_file.NewServiceFactory(runtime, fs, cmdRunner))
+	serviceManager.AddFactory(srv_githubauth.NewServiceFactory(runtime, cmdRunner))
+	serviceManager.AddFactory(srv_googleauth.NewServiceFactory(runtime, cmdRunner))
+	serviceManager.AddFactory(srv_httpauth.NewServiceFactory(runtime))
+	serviceManager.AddFactory(srv_uaaauth.NewServiceFactory(runtime, serviceManager, srv_uaaauth_helper.DefaultClientFactory{}))
 
-		svccmd, ok := svc.(service.CommandService)
-		if !ok {
-			continue
-		}
-
-		command := svccmd.GetCommand()
-		if command != nil {
-			parser.AddCommand(name, svccmd.Description(), svccmd.Description(), command)
-		}
-	}
-
-	// new style
+	parser.AddCommand(
+		"env",
+		"Manage environment references",
+		"Manage environment references",
+		srv_env_cli.CreateCommands(runtime, cmdRunner, fs, envService),
+	)
 
 	parser.AddCommand(
 		"auth",
 		"Manage authentication",
 		"Manage authentication",
-		srv_auth_cli.CreateCommands(runtime, authService),
+		srv_auth_cli.CreateCommands(runtime, srv_auth.NewService(runtime, serviceManager)),
 	)
 
 	parser.AddCommand(
 		"file",
 		"Access files from the environment",
 		"Access files from the environment",
-		srv_file_cli.CreateCommands(runtime, srv_file.NewServiceFactory(runtime, fs, cmdRunner)),
+		srv_file_cli.CreateCommands(runtime, serviceManager),
 	)
 
 	parser.Find("file").Aliases = []string{"download"}
@@ -95,7 +84,7 @@ func main() {
 		"openvpn",
 		"Establish OpenVPN connections to remote servers",
 		"Establish OpenVPN connections to remote servers",
-		srv_openvpn_cli.CreateCommands(runtime, srv_openvpn.NewServiceFactory(runtime, fs, cmdRunner, openvpnFinder, srv_openvpn_executable_installer.New(runtime, cmdRunner, openvpnFinder)), fs, cmdRunner),
+		srv_openvpn_cli.CreateCommands(runtime, srv_openvpn.NewServiceFactory(runtime, fs, cmdRunner, openvpnFinder), fs, cmdRunner),
 	)
 
 	parser.AddCommand(

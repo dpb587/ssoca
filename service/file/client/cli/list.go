@@ -10,7 +10,7 @@ import (
 )
 
 type List struct {
-	*clientcmd.ServiceCommand `no-flag:"true"`
+	*ServiceCommand `no-flag:"true"`
 	clientcmd.InteractiveAuthCommand
 
 	serviceFactory svc.ServiceFactory
@@ -19,7 +19,10 @@ type List struct {
 var _ flags.Commander = List{}
 
 func (c List) Execute(_ []string) error {
-	service := c.serviceFactory.New(c.ServiceName)
+	service, err := c.GetService()
+	if err != nil {
+		return errors.Wrap(err, "getting service")
+	}
 
 	files, err := service.List(svc.ListOptions{
 		SkipAuthRetry: c.SkipAuthRetry,

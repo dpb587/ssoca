@@ -6,5 +6,6 @@ import (
 
 //go:generate counterfeiter . Client
 type Client interface {
+	GetAuth() (api.AuthResponse, error)
 	GetInfo() (api.InfoResponse, error)
 }

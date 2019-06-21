@@ -3,6 +3,7 @@ package server_test
 import (
 	"github.com/dpb587/ssoca/certauth"
 	"github.com/dpb587/ssoca/certauth/certauthfakes"
+	"github.com/dpb587/ssoca/service/openvpn"
 	. "github.com/dpb587/ssoca/service/openvpn/server"
 
 	. "github.com/onsi/ginkgo"
@@ -14,7 +15,7 @@ var _ = Describe("ServiceFactory", func() {
 
 	Describe("Type", func() {
 		It("returns", func() {
-			Expect(subject.Type()).To(Equal("openvpn"))
+			Expect(subject.Type()).To(Equal(openvpn.Type))
 		})
 	})
 

@@ -12,7 +12,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	config   svcconfig.Config
 	services service.Manager
@@ -21,8 +21,8 @@ type Service struct {
 var _ service.Service = Service{}
 
 // @todo config leaking scope
-func NewService(config svcconfig.Config, services service.Manager) Service {
-	return Service{
+func NewService(config svcconfig.Config, services service.Manager) *Service {
+	return &Service{
 		config:   config,
 		services: services,
 	}
@@ -38,6 +38,7 @@ func (s Service) Metadata() interface{} {
 
 func (s Service) GetRoutes() []req.RouteHandler {
 	return []req.RouteHandler{
+		svcreq.Auth{},
 		svcreq.Info{
 			Config:   s.config,
 			Services: s.services,

@@ -5,6 +5,7 @@ import (
 
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/service/openvpn"
 	svc "github.com/dpb587/ssoca/service/openvpn/client"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -26,7 +27,7 @@ type Commands struct {
 func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: svc.Service{}.Type(),
+		ServiceName: string(openvpn.Type),
 	}
 
 	return &Commands{

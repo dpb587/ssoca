@@ -1,29 +1,57 @@
 package server
 
 import (
-	"net/http"
+	"fmt"
 
-	"github.com/dpb587/ssoca/auth"
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	"github.com/dpb587/ssoca/server/service/req"
+	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
+	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
 	svc "github.com/dpb587/ssoca/service/githubauth"
-	svcconfig "github.com/dpb587/ssoca/service/githubauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/githubauth/server/config"
+	"golang.org/x/oauth2"
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
+	*oauth2server.Service
 
 	name   string
 	config svcconfig.Config
-	oauth  oauth2support.Backend
 }
 
-func NewService(name string, config svcconfig.Config, oauth oauth2support.Backend) Service {
-	return Service{
+func NewService(name string, rootURL string, config svcconfig.Config) *Service {
+	svc := &Service{
 		name:   name,
 		config: config,
-		oauth:  oauth,
 	}
+
+	svc.Service = oauth2server.NewService(
+		oauth2config.URLs{
+			Origin:      fmt.Sprintf("%s/%s", rootURL, name),
+			AuthFailure: config.FailureRedirectURL,
+			AuthSuccess: config.SuccessRedirectURL,
+		},
+		oauth2.Config{
+			ClientID:     config.ClientID,
+			ClientSecret: config.ClientSecret,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  config.AuthURL,
+				TokenURL: config.TokenURL,
+			},
+			RedirectURL: fmt.Sprintf("%s/%s/callback", rootURL, name),
+			Scopes: []string{
+				"read:org",
+			},
+		},
+		oauth2.NoContext,
+		oauth2config.JWT{
+			PrivateKey:   config.JWT.PrivateKey,
+			Validity:     config.JWT.Validity,
+			ValidityPast: config.JWT.ValidityPast,
+		},
+		svc.OAuthUserProfileLoader,
+	)
+
+	return svc
 }
 
 func (s Service) Name() string {
@@ -31,13 +59,5 @@ func (s Service) Name() string {
 }
 
 func (s Service) Metadata() interface{} {
-	return nil
-}
-
-func (s Service) GetRoutes() []req.RouteHandler {
-	return s.oauth.GetRoutes(s.OAuthUserProfileLoader)
-}
-
-func (s Service) VerifyAuthorization(_ http.Request, _ *auth.Token) error {
 	return nil
 }

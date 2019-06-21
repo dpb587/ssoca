@@ -15,7 +15,7 @@ import (
 
 type Config struct {
 	CertAuths []CertAuthConfig `yaml:"certauths,omitempty"`
-	Auth      AuthConfig       `yaml:"auth"`
+	Auth      AuthConfig       `yaml:"auth"` // deprecated in favor of env.auth_service, server.require
 	Env       envconfig.Config `yaml:"env"`
 	Server    ServerConfig     `yaml:"server"`
 	Services  []ServiceConfig  `yaml:"services"`
@@ -28,13 +28,14 @@ type CertAuthConfig struct {
 }
 
 type ServerConfig struct {
-	CertificatePath string               `yaml:"certificate_path"`
-	Host            string               `yaml:"host"`
-	Port            int                  `yaml:"port"`
-	PrivateKeyPath  string               `yaml:"private_key_path"`
-	Redirect        ServerRedirectConfig `yaml:"redirect"`
-	TrustedProxies  ServerTrustedProxies `yaml:"trusted_proxies"`
-	RobotsTXT       string               `yaml:"robotstxt"`
+	CertificatePath string                 `yaml:"certificate_path"`
+	Host            string                 `yaml:"host"`
+	Port            int                    `yaml:"port"`
+	PrivateKeyPath  string                 `yaml:"private_key_path"`
+	Redirect        ServerRedirectConfig   `yaml:"redirect"`
+	Require         []filter.RequireConfig `yaml:"require"`
+	RobotsTXT       string                 `yaml:"robotstxt"`
+	TrustedProxies  ServerTrustedProxies   `yaml:"trusted_proxies"`
 }
 
 type ServerTrustedProxies []ServerTrustedProxy
@@ -87,9 +88,9 @@ type ServerRedirectConfig struct {
 }
 
 type AuthConfig struct {
-	Type    string                 `yaml:"type"`
-	Options map[string]interface{} `yaml:"options"`
-	Require []filter.RequireConfig `yaml:"require"`
+	Type    string                 `yaml:"type"`    // deprecated
+	Options map[string]interface{} `yaml:"options"` // deprecated
+	Require []filter.RequireConfig `yaml:"require"` // deprecated
 }
 
 type ServiceConfig struct {
@@ -108,6 +109,53 @@ func (c *Config) ApplyDefaults() {
 
 	for _, service := range c.Services {
 		service.ApplyDefaults()
+	}
+
+	if c.Env.DefaultAuthService == "" {
+		var authServices []string
+
+		for _, service := range c.Services {
+			if service.Type != "google_authn" && service.Type != "github_authn" && service.Type != "http_authn" && service.Type != "uaa_authn" {
+				continue
+			}
+
+			authServices = append(authServices, service.Name)
+		}
+
+		if len(authServices) == 1 {
+			c.Env.DefaultAuthService = authServices[0]
+		}
+	}
+}
+
+func (c *Config) ApplyMigrations() {
+	if c.Auth.Require != nil {
+		if c.Server.Require != nil {
+			panic("config migration failure: only one may be configured: auth.require, server.require")
+		}
+
+		c.Server.Require = c.Auth.Require
+		c.Auth.Require = nil
+	}
+
+	if c.Auth.Type != "" {
+		if c.Env.DefaultAuthService != "" {
+			panic("config migration failure: only one may be configured: auth.type, env.default_auth_service")
+		}
+
+		c.Env.DefaultAuthService = "auth"
+
+		c.Services = append(
+			c.Services,
+			ServiceConfig{
+				Name:    "auth",
+				Type:    fmt.Sprintf("%s_authn", c.Auth.Type),
+				Options: c.Auth.Options,
+			},
+		)
+
+		c.Auth.Type = ""
+		c.Auth.Options = nil
 	}
 }
 

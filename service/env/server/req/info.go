@@ -23,12 +23,13 @@ func (h Info) Route() string {
 func (h Info) Execute(request req.Request) error {
 	response := api.InfoResponse{
 		Env: api.InfoEnvResponse{
-			Banner:        h.Config.Banner,
-			Metadata:      h.Config.Metadata,
-			Name:          h.Config.Name,
-			Title:         h.Config.Title,
-			UpdateService: h.Config.UpdateService,
-			URL:           h.Config.URL,
+			Banner:             h.Config.Banner,
+			DefaultAuthService: h.Config.DefaultAuthService,
+			Metadata:           h.Config.Metadata,
+			Name:               h.Config.Name,
+			Title:              h.Config.Title,
+			UpdateService:      h.Config.UpdateService,
+			URL:                h.Config.URL,
 		},
 	}
 
@@ -41,16 +42,19 @@ func (h Info) Execute(request req.Request) error {
 		}
 
 		svcInfo := api.InfoServiceResponse{
-			Type:     svc.Type(),
+			Type:     string(svc.Type()),
 			Version:  svc.Version(),
 			Metadata: svc.Metadata(),
 		}
 
-		if svc.Name() == "auth" {
-			response.Auth = svcInfo
-		} else if svc.Name() == "env" {
+		if svc.Name() == "env" {
 			response.Version = svc.Version()
 		} else {
+			if h.Config.SupportOlderClients && svc.Name() == h.Config.DefaultAuthService {
+				// deprecated; continue including for older clients
+				response.Auth = &svcInfo
+			}
+
 			svcInfo.Name = svc.Name()
 			response.Services = append(response.Services, svcInfo)
 		}

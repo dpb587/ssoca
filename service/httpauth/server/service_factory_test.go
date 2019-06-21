@@ -1,6 +1,7 @@
 package server_test
 
 import (
+	"github.com/dpb587/ssoca/service/httpauth"
 	. "github.com/dpb587/ssoca/service/httpauth/server"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +17,7 @@ var _ = Describe("Service", func() {
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(subject.Type()).To(Equal("http_authn"))
+			Expect(subject.Type()).To(Equal(httpauth.Type))
 		})
 	})
 

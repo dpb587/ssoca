@@ -3,25 +3,27 @@ package service
 import (
 	"net/http"
 
-	"github.com/dpb587/ssoca/service/env/api"
+	"github.com/dpb587/ssoca/service"
 )
 
 //go:generate counterfeiter . Manager
 type Manager interface {
 	Add(Service)
-	Get(string) (Service, error)
-	Services() []string
+	AddFactory(ServiceFactory)
+	Get(service.Type, string) (Service, error)
 }
 
 //go:generate counterfeiter . Service
 type Service interface {
-	Type() string
+	Name() string
+	Type() service.Type
 	Version() string
 }
 
-type CommandService interface {
-	GetCommand() interface{}
-	Description() string
+type ServiceFactory interface {
+	New(string) Service
+	Type() service.Type
+	Version() string
 }
 
 //go:generate counterfeiter . AuthService
@@ -29,6 +31,6 @@ type AuthService interface {
 	Service
 
 	AuthRequest(*http.Request) error
-	AuthLogin(api.InfoServiceResponse) (interface{}, error)
+	AuthLogin() error
 	AuthLogout() error
 }

@@ -3,11 +3,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jessevdk/go-flags"
-	"github.com/pkg/errors"
-
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
 	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
+	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 )
 
 type Logout struct {
@@ -28,9 +28,9 @@ func (c Logout) Execute(_ []string) error {
 		return nil
 	}
 
-	authServiceType := env.Auth.Type
+	authServiceType := globalservice.Type(env.Auth.Type)
 
-	svc, err := c.ServiceManager.Get(authServiceType)
+	svc, err := c.ServiceManager.Get(authServiceType, env.Auth.Name)
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}

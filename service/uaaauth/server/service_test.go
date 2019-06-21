@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	svcapi "github.com/dpb587/ssoca/service/uaaauth/api"
-	svcconfig "github.com/dpb587/ssoca/service/uaaauth/config"
 	. "github.com/dpb587/ssoca/service/uaaauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/uaaauth/server/config"
 
 	"github.com/dpb587/ssoca/server/service"
 
@@ -14,7 +14,7 @@ import (
 )
 
 var _ = Describe("Service", func() {
-	var subject Service
+	var subject *Service
 
 	Describe("interface", func() {
 		It("github.com/dpb587/ssoca/server/service.AuthService", func() {

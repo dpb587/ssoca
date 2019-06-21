@@ -7,8 +7,9 @@ import (
 	"github.com/pkg/errors"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
-	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
+	envapi "github.com/dpb587/ssoca/service/env/api"
 	envclient "github.com/dpb587/ssoca/service/env/client"
 )
 
@@ -24,12 +25,12 @@ type Login struct {
 var _ flags.Commander = Login{}
 
 func (c Login) Execute(_ []string) error {
-	rawEnvService, err := c.ServiceManager.Get("env")
+	rawEnvService, err := c.ServiceManager.Get("env", "env")
 	if err != nil {
 		return errors.Wrap(err, "getting env service")
 	}
 
-	envService, ok := rawEnvService.(envclient.Service)
+	envService, ok := rawEnvService.(*envclient.Service)
 	if !ok {
 		return errors.Wrap(err, "expecting env service")
 	}
@@ -44,9 +45,47 @@ func (c Login) Execute(_ []string) error {
 		return errors.Wrap(err, "getting environment info")
 	}
 
-	authServiceType := envInfo.Auth.Type
+	// intentionally not defaulting to any existing auth token's service to force
+	// explicit invocations when users run the `login` command; the exception
+	// being when internal reauthentication attempts occur and it automatically
+	// passes whatever service the previous token was using.
+	authServiceName := c.ServiceCommand.ServiceName
 
-	svc, err := c.ServiceManager.Get(authServiceType)
+	if authServiceName == "" {
+		authServiceName = envInfo.Env.DefaultAuthService
+
+		if authServiceName == "" {
+			// deprecated; fallback to older style of reporting
+			authServiceName = "auth"
+		}
+	}
+
+	// find service named auth
+	var authServiceListing envapi.InfoServiceResponse
+
+	for _, serviceListing := range envInfo.Services {
+		if serviceListing.Name != authServiceName {
+			continue
+		}
+
+		authServiceListing = serviceListing
+
+		break
+	}
+
+	// deprecated; fallback to older style of reporting
+	if authServiceListing.Name == "" && envInfo.Auth != nil {
+		authServiceListing = *envInfo.Auth
+		authServiceListing.Name = "auth"
+	}
+
+	if authServiceListing.Name == "" {
+		return errors.New("failed to find auth service")
+	}
+
+	authServiceType := globalservice.Type(authServiceListing.Type)
+
+	svc, err := c.ServiceManager.Get(authServiceType, authServiceListing.Name)
 	if err != nil {
 		return errors.Wrap(err, "loading auth service")
 	}
@@ -56,29 +95,9 @@ func (c Login) Execute(_ []string) error {
 		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
-	auth, err := authService.AuthLogin(envInfo.Auth)
+	err = authService.AuthLogin()
 	if err != nil {
-		return errors.Wrap(err, "authenticating")
-	}
-
-	env, err := c.Runtime.GetEnvironment()
-	if err != nil {
-		return errors.Wrap(err, "getting environment state")
-	}
-
-	env.Auth = &config.EnvironmentAuthState{
-		Type:    authServiceType,
-		Options: auth,
-	}
-
-	configManager, err := c.Runtime.GetConfigManager()
-	if err != nil {
-		return errors.Wrap(err, "getting config manager")
-	}
-
-	err = configManager.SetEnvironment(env)
-	if err != nil {
-		return errors.Wrap(err, "updating environment")
+		return errors.Wrapf(err, "executing login with %s", authService.Type())
 	}
 
 	if c.SkipVerify {
@@ -101,7 +120,7 @@ func (c Login) verify() error {
 		return errors.Wrap(err, "getting client")
 	}
 
-	authInfo, err := client.GetInfo()
+	authInfo, err := client.GetAuth()
 	if err != nil {
 		return errors.Wrap(err, "getting remote authentication info")
 	}

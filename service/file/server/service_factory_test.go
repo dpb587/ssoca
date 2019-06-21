@@ -3,9 +3,9 @@ package server_test
 import (
 	"errors"
 
-	. "github.com/dpb587/ssoca/service/file/server"
-
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
+	"github.com/dpb587/ssoca/service/file"
+	. "github.com/dpb587/ssoca/service/file/server"
 	svcconfig "github.com/dpb587/ssoca/service/file/server/config"
 
 	. "github.com/onsi/ginkgo"
@@ -23,7 +23,7 @@ var _ = Describe("Factory", func() {
 
 	Describe("Type", func() {
 		It("works", func() {
-			Expect(subject.Type()).To(Equal("file"))
+			Expect(subject.Type()).To(Equal(file.Type))
 		})
 	})
 
@@ -44,7 +44,7 @@ var _ = Describe("Factory", func() {
 			Expect(err).To(BeNil())
 			Expect(svc).ToNot(BeNil())
 
-			downloadSvc, ok := svc.(Service)
+			downloadSvc, ok := svc.(*Service)
 			Expect(ok).To(BeTrue())
 
 			paths := downloadSvc.GetDownloadPaths()

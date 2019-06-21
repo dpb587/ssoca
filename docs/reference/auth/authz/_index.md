@@ -6,7 +6,7 @@ aliases:
 
 # Authorization
 
-Global (`auth.require`) and service-specific (`services[*].require`) authorization restrictions may be configured. For both settings, the values should be an array of hashes with one of the available filter types. At least one authorization rule must be effective for a service.
+Global (`server.require`) and service-specific (`services[*].require`) authorization restrictions may be configured. For both settings, the values should be an array of hashes with one of the available filter types. At least one authorization rule must be effective for a service.
 
 
 ## `and`
@@ -66,6 +66,15 @@ Require the current authenticated user to have a specific scope (implies `authen
 
 ```yaml
 - scope: { present: acme/prod-team }
+```
+
+
+## `service`
+
+Require the current authenticated user to have authenticated with a specific service name (implies `authenticated`).
+
+```yaml
+- service: { is: google-cloud }
 ```
 
 

@@ -7,27 +7,72 @@ import (
 	boshuaa "github.com/cloudfoundry/bosh-cli/uaa"
 	"github.com/pkg/errors"
 
+	clientconfig "github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/config"
+	"github.com/dpb587/ssoca/service"
+	"github.com/dpb587/ssoca/service/env"
 	env_api "github.com/dpb587/ssoca/service/env/api"
+	envclient "github.com/dpb587/ssoca/service/env/client"
 	"github.com/dpb587/ssoca/service/uaaauth/api"
 )
 
-func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface{}, error) {
+func (s Service) AuthLogin() error {
+	configManager, err := s.runtime.GetConfigManager()
+	if err != nil {
+		return errors.Wrap(err, "getting config manager")
+	}
+
+	rawEnvService, err := s.serviceManager.Get(env.Type, "env")
+	if err != nil {
+		return errors.Wrap(err, "getting env service")
+	}
+
+	envService, ok := rawEnvService.(*envclient.Service)
+	if !ok {
+		return errors.Wrap(err, "expecting env service")
+	}
+
+	envClient, err := envService.GetClient()
+	if err != nil {
+		return errors.Wrap(err, "getting env HTTP client")
+	}
+
+	envInfo, err := envClient.GetInfo()
+	if err != nil {
+		return errors.Wrap(err, "getting environment info")
+	}
+
+	var authServiceListing env_api.InfoServiceResponse
+
+	for _, serviceListing := range envInfo.Services {
+		if serviceListing.Name != s.name || service.Type(serviceListing.Type) != s.Type() {
+			continue
+		}
+
+		authServiceListing = serviceListing
+
+		break
+	}
+
+	if authServiceListing.Type == "" {
+		return fmt.Errorf("expected to find remote service: type=%s, name=%s", s.Type(), s.name)
+	}
+
 	metadata := api.Metadata{}
 
-	err := config.RemarshalJSON(remoteService.Metadata, &metadata)
+	err = config.RemarshalJSON(authServiceListing.Metadata, &metadata)
 	if err != nil {
-		return nil, errors.Wrap(err, "parsing metadata")
+		return errors.Wrap(err, "parsing metadata")
 	}
 
 	client, err := s.uaaClientFactory.CreateClient(metadata.URL, metadata.ClientID, metadata.ClientSecret, metadata.CACertificate)
 	if err != nil {
-		return nil, errors.Wrap(err, "creating UAA client")
+		return errors.Wrap(err, "creating UAA client")
 	}
 
 	prompts, err := client.Prompts()
 	if err != nil {
-		return nil, errors.Wrap(err, "discovering UAA prompts")
+		return errors.Wrap(err, "discovering UAA prompts")
 	}
 
 	ui := s.runtime.GetUI()
@@ -60,7 +105,7 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 
 		value, err1 := askFunc(prompt.Label)
 		if err1 != nil {
-			return nil, err1
+			return err1
 		}
 
 		if value != "" {
@@ -71,18 +116,33 @@ func (s Service) AuthLogin(remoteService env_api.InfoServiceResponse) (interface
 
 	accessToken, err := client.OwnerPasswordCredentialsGrant(answers)
 	if err != nil {
-		return nil, errors.Wrap(err, "fetching credentials grant")
+		return errors.Wrap(err, "fetching credentials grant")
 	}
 
-	auth := AuthConfig{
-		URL:           metadata.URL,
-		CACertificate: metadata.CACertificate,
-		ClientID:      metadata.ClientID,
-		ClientSecret:  metadata.ClientSecret,
-		RefreshToken:  accessToken.RefreshToken().Value(),
+	// get the very latest version
+	env, err := s.runtime.GetEnvironment()
+	if err != nil {
+		return errors.Wrap(err, "getting environment")
 	}
 
-	return auth, nil
+	env.Auth = &clientconfig.EnvironmentAuthState{
+		Name: s.name,
+		Type: string(s.Type()),
+		Options: AuthConfig{
+			URL:           metadata.URL,
+			CACertificate: metadata.CACertificate,
+			ClientID:      metadata.ClientID,
+			ClientSecret:  metadata.ClientSecret,
+			RefreshToken:  accessToken.RefreshToken().Value(),
+		},
+	}
+
+	err = configManager.SetEnvironment(env)
+	if err != nil {
+		return errors.Wrap(err, "updating environment")
+	}
+
+	return nil
 }
 
 func (s Service) AuthLogout() error {

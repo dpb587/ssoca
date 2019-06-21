@@ -9,6 +9,17 @@ import (
 )
 
 type FakeClient struct {
+	GetAuthStub        func() (api.AuthResponse, error)
+	getAuthMutex       sync.RWMutex
+	getAuthArgsForCall []struct{}
+	getAuthReturns     struct {
+		result1 api.AuthResponse
+		result2 error
+	}
+	getAuthReturnsOnCall map[int]struct {
+		result1 api.AuthResponse
+		result2 error
+	}
 	GetInfoStub        func() (api.InfoResponse, error)
 	getInfoMutex       sync.RWMutex
 	getInfoArgsForCall []struct{}
@@ -22,6 +33,49 @@ type FakeClient struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeClient) GetAuth() (api.AuthResponse, error) {
+	fake.getAuthMutex.Lock()
+	ret, specificReturn := fake.getAuthReturnsOnCall[len(fake.getAuthArgsForCall)]
+	fake.getAuthArgsForCall = append(fake.getAuthArgsForCall, struct{}{})
+	fake.recordInvocation("GetAuth", []interface{}{})
+	fake.getAuthMutex.Unlock()
+	if fake.GetAuthStub != nil {
+		return fake.GetAuthStub()
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.getAuthReturns.result1, fake.getAuthReturns.result2
+}
+
+func (fake *FakeClient) GetAuthCallCount() int {
+	fake.getAuthMutex.RLock()
+	defer fake.getAuthMutex.RUnlock()
+	return len(fake.getAuthArgsForCall)
+}
+
+func (fake *FakeClient) GetAuthReturns(result1 api.AuthResponse, result2 error) {
+	fake.GetAuthStub = nil
+	fake.getAuthReturns = struct {
+		result1 api.AuthResponse
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClient) GetAuthReturnsOnCall(i int, result1 api.AuthResponse, result2 error) {
+	fake.GetAuthStub = nil
+	if fake.getAuthReturnsOnCall == nil {
+		fake.getAuthReturnsOnCall = make(map[int]struct {
+			result1 api.AuthResponse
+			result2 error
+		})
+	}
+	fake.getAuthReturnsOnCall[i] = struct {
+		result1 api.AuthResponse
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeClient) GetInfo() (api.InfoResponse, error) {
@@ -70,6 +124,8 @@ func (fake *FakeClient) GetInfoReturnsOnCall(i int, result1 api.InfoResponse, re
 func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getAuthMutex.RLock()
+	defer fake.getAuthMutex.RUnlock()
 	fake.getInfoMutex.RLock()
 	defer fake.getInfoMutex.RUnlock()
 	return fake.invocations

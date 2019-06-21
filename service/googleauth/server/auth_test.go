@@ -7,12 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	svcconfig "github.com/dpb587/ssoca/service/googleauth/config"
 	. "github.com/dpb587/ssoca/service/googleauth/server"
-	"golang.org/x/oauth2"
-
-	oauth2support "github.com/dpb587/ssoca/auth/authn/support/oauth2"
-	oauth2supportconfig "github.com/dpb587/ssoca/auth/authn/support/oauth2/config"
+	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -27,20 +23,15 @@ func (t *mockTransport) RoundTrip(req *http.Request) (resp *http.Response, err e
 }
 
 var _ = Describe("Auth", func() {
-	var subject Service
+	var subject *Service
 
 	Describe("OAuthUserProfileLoader", func() {
 		Context("simple config", func() {
 			BeforeEach(func() {
 				subject = NewService(
 					"auth",
+					"http://example.com",
 					svcconfig.Config{},
-					oauth2support.NewBackend(
-						oauth2supportconfig.URLs{Origin: "test"},
-						oauth2.Config{},
-						oauth2.NoContext,
-						oauth2supportconfig.JWT{},
-					),
 				)
 			})
 
@@ -174,17 +165,12 @@ var _ = Describe("Auth", func() {
 
 				subject = NewService(
 					"auth",
+					"http://example.com",
 					svcconfig.Config{
 						Scopes: svcconfig.ScopesConfig{
 							CloudProject: &cloudProjectConfig,
 						},
 					},
-					oauth2support.NewBackend(
-						oauth2supportconfig.URLs{Origin: "test"},
-						oauth2.Config{},
-						oauth2.NoContext,
-						oauth2supportconfig.JWT{},
-					),
 				)
 			})
 

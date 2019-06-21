@@ -11,6 +11,8 @@ import (
 )
 
 type ServiceFactory struct {
+	svc.ServiceType
+
 	fs boshsys.FileSystem
 }
 
@@ -20,10 +22,6 @@ func NewServiceFactory(fs boshsys.FileSystem) ServiceFactory {
 	return ServiceFactory{
 		fs: fs,
 	}
-}
-
-func (f ServiceFactory) Type() string {
-	return svc.Service{}.Type()
 }
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {

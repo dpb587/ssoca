@@ -1,19 +1,20 @@
 package api
 
 type InfoResponse struct {
-	Auth     InfoServiceResponse   `json:"auth"`
+	Auth     *InfoServiceResponse  `json:"auth,omitempty"` // deprecated; now listed in services
 	Env      InfoEnvResponse       `json:"env"`
 	Services []InfoServiceResponse `json:"services"`
 	Version  string                `json:"version"`
 }
 
 type InfoEnvResponse struct {
-	Banner        string            `json:"banner,omitempty"`
-	Metadata      map[string]string `json:"metadata,omitempty"`
-	Name          string            `json:"name,omitempty"`
-	Title         string            `json:"title,omitempty"`
-	UpdateService string            `json:"update_service,omitempty"`
-	URL           string            `json:"url"`
+	Banner             string            `json:"banner,omitempty"`
+	DefaultAuthService string            `json:"default_auth_service,omitempty"`
+	Metadata           map[string]string `json:"metadata,omitempty"`
+	Name               string            `json:"name,omitempty"`
+	Title              string            `json:"title,omitempty"`
+	UpdateService      string            `json:"update_service,omitempty"`
+	URL                string            `json:"url"`
 }
 
 type InfoEnvLinkResponse struct {

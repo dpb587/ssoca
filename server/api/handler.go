@@ -3,19 +3,21 @@ package api
 import (
 	"net/http"
 
+	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/auth/authn"
 	"github.com/dpb587/ssoca/auth/authz"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	uuid "github.com/nu7hatch/gouuid"
 )
 
 type apiHandler struct {
-	authService    service.AuthService
+	authServices   service.AuthServices
 	apiService     service.Service
 	handler        req.RouteHandler
 	clientIPGetter requtil.ClientIPGetter
@@ -23,14 +25,14 @@ type apiHandler struct {
 }
 
 func CreateHandler(
-	authService service.AuthService,
+	authServices service.AuthServices,
 	apiService service.Service,
 	handler req.RouteHandler,
 	clientIPGetter requtil.ClientIPGetter,
 	logger logrus.FieldLogger,
 ) (http.Handler, error) {
 	return apiHandler{
-		authService:    authService,
+		authServices:   authServices,
 		apiService:     apiService,
 		handler:        handler,
 		clientIPGetter: clientIPGetter,
@@ -67,24 +69,39 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"service.type":                   h.apiService.Type(),
 	}
 
-	token, err := h.authService.ParseRequestAuth(*r)
-	if err != nil {
-		// never allow a token if there was an error
-		token = nil
+	var token *auth.Token
 
-		// differentiate unauthorized (essentially unauthorized, aka expired) vs forbidden (apparent auth, but invalid)
-		if matchederr, matched := err.(apierr.Error); matched {
-			if matchederr.Status == http.StatusUnauthorized {
-				h.getRequestLogger(request).Debug(err)
-
-				err = nil
-			}
-		}
-
+	for _, authService := range h.authServices {
+		tryAuth, err := authService.SupportsRequestAuth(*r)
 		if err != nil {
-			h.sendGenericErrorResponse(request, apierr.WrapError(err, "parsing authentication token"))
+			h.getRequestLogger(request).Warn(errors.Wrap(err, "failed to check request auth"))
+		} else if tryAuth {
+			var err error
 
-			return
+			request.LoggerContext["auth.service"] = authService.Name()
+
+			token, err = authService.ParseRequestAuth(*r)
+			if err != nil {
+				// never allow a token if there was an error
+				token = nil
+
+				// differentiate unauthorized (essentially unauthorized, aka expired) vs forbidden (apparent auth, but invalid)
+				if matchederr, matched := err.(apierr.Error); matched {
+					if matchederr.Status == http.StatusUnauthorized {
+						h.getRequestLogger(request).Debug(err)
+
+						err = nil
+					}
+				}
+
+				if err != nil {
+					h.sendGenericErrorResponse(request, apierr.WrapError(err, "parsing authentication"))
+
+					return
+				}
+			}
+
+			break
 		}
 	}
 

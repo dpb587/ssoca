@@ -1,11 +1,11 @@
 package cli
 
 import (
+	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/dpb587/ssoca/client"
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
+	"github.com/dpb587/ssoca/service/ssh"
 	svc "github.com/dpb587/ssoca/service/ssh/client"
-
-	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
 
 type Commands struct {
@@ -21,7 +21,7 @@ type Commands struct {
 func CreateCommands(runtime client.Runtime, sf svc.ServiceFactory, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) *Commands {
 	cmd := &clientcmd.ServiceCommand{
 		Runtime:     runtime,
-		ServiceName: svc.Service{}.Type(),
+		ServiceName: string(ssh.Type),
 	}
 
 	return &Commands{

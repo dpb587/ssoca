@@ -2,34 +2,52 @@ package server
 
 import (
 	"net/http"
-	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
 
 	"github.com/dpb587/ssoca/auth"
+	"github.com/dpb587/ssoca/auth/authn"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 	uaainternal "github.com/dpb587/ssoca/service/uaaauth/internal"
 )
 
-func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
-	authHeader := req.Header.Get("Authorization")
-	if authHeader == "" {
+func (s Service) SupportsRequestAuth(r http.Request) (bool, error) {
+	tokenValue, err := authn.ExtractBearerTokenValue(r)
+	if err != nil {
+		return false, nil
+	} else if tokenValue == "" {
+		return false, nil
+	}
+
+	claims := uaainternal.Token{}
+
+	p := &jwt.Parser{}
+	_, _, err = p.ParseUnverified(tokenValue, &claims)
+	if err != nil {
+		return false, nil
+	}
+
+	if claims.Issuer != s.config.URL {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
+	tokenValue, err := authn.ExtractBearerTokenValue(r)
+	if err != nil {
+		return nil, err
+	} else if tokenValue == "" {
 		return nil, nil
 	}
 
-	authHeaderPieces := strings.SplitN(authHeader, " ", 2)
-	if len(authHeaderPieces) != 2 {
-		return nil, apierr.NewError(errors.New("invalid Authorization format"), http.StatusForbidden, "")
-	} else if strings.ToLower(authHeaderPieces[0]) != "bearer" {
-		return nil, apierr.NewError(errors.New("invalid Authorization method"), http.StatusForbidden, "")
-	}
+	claims := uaainternal.Token{}
 
-	intTok := uaainternal.Token{}
-
-	_, err := jwt.ParseWithClaims(
-		authHeaderPieces[1],
-		&intTok,
+	_, err = jwt.ParseWithClaims(
+		tokenValue,
+		&claims,
 		func(token *jwt.Token) (interface{}, error) {
 			if token.Method == jwt.SigningMethodNone {
 				return nil, apierr.NewError(errors.New("no signing method used"), http.StatusForbidden, "")
@@ -43,11 +61,11 @@ func (s Service) ParseRequestAuth(req http.Request) (*auth.Token, error) {
 	}
 
 	token := auth.Token{}
-	token.ID = intTok.Username
+	token.ID = claims.Username
 	token.Attributes = map[auth.TokenAttribute]*string{}
-	token.Attributes[auth.TokenUsernameAttribute] = &intTok.Username
+	token.Attributes[auth.TokenUsernameAttribute] = &claims.Username
 
-	for _, scope := range intTok.Scopes {
+	for _, scope := range claims.Scopes {
 		token.Groups = append(token.Groups, scope)
 	}
 

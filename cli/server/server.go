@@ -61,6 +61,7 @@ func main() {
 		panic(err)
 	}
 
+	cfg.ApplyMigrations()
 	cfg.ApplyDefaults()
 
 	cfgval := dynamicvalue.DefaultFactory{}
@@ -84,8 +85,8 @@ func main() {
 	serviceManager.Add(srv_env.NewService(cfg.Env, &serviceManager))
 
 	serviceFactory := service.NewDefaultFactory()
-	serviceFactory.Register(srv_githubauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
-	serviceFactory.Register(srv_googleauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect.AuthFailure, cfg.Server.Redirect.AuthSuccess))
+	serviceFactory.Register(srv_githubauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect))
+	serviceFactory.Register(srv_googleauth.NewServiceFactory(cfg.Env.URL, cfg.Server.Redirect))
 	serviceFactory.Register(srv_httpauth.NewServiceFactory())
 	serviceFactory.Register(srv_uaaauth.NewServiceFactory())
 

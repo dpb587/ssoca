@@ -9,7 +9,7 @@ aliases:
 Revoke an authentication token
 
     Usage:
-      ssoca [OPTIONS] auth logout
+      ssoca [OPTIONS] auth [auth-OPTIONS] logout
     
     Application Options:
           --config=      Configuration file path (default: ~/.config/ssoca/config) [$SSOCA_CONFIG]
@@ -18,4 +18,9 @@ Revoke an authentication token
     
     Help Options:
       -h, --help         Show this help message
+    
+    [auth command options]
+    
+        Manage authentication:
+          -s, --service= Service name [$SSOCA_SERVICE]
     

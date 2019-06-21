@@ -2,8 +2,6 @@ package service
 
 import (
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 type defaultManager struct {
@@ -30,20 +28,6 @@ func (f defaultManager) Get(name string) (Service, error) {
 	}
 
 	return service, nil
-}
-
-func (f defaultManager) GetAuth() (AuthService, error) {
-	svc, err := f.Get("auth")
-	if err != nil {
-		return nil, errors.Wrap(err, "getting auth service")
-	}
-
-	authSvc, ok := svc.(AuthService)
-	if !ok {
-		return nil, errors.New("invalid authentication service configured under 'auth' service")
-	}
-
-	return authSvc, nil
 }
 
 func (f defaultManager) Services() []string {

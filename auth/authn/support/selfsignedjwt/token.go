@@ -38,10 +38,14 @@ func (t Token) Valid() error {
 		return err
 	}
 
+	return t.VerifyOrigin()
+}
+
+func (t Token) VerifyOrigin() error {
 	// must be self-signed by/for us
-	if t.Audience != t.origin {
+	if !t.VerifyAudience(t.origin, true) {
 		return fmt.Errorf("invalid audience: %s", t.Audience)
-	} else if t.Issuer != t.origin {
+	} else if !t.VerifyIssuer(t.origin, true) {
 		return fmt.Errorf("invalid issuer: %s", t.Issuer)
 	}
 

@@ -7,18 +7,18 @@ import (
 	"github.com/dpb587/ssoca/server/service/req"
 	svc "github.com/dpb587/ssoca/service/uaaauth"
 	svcapi "github.com/dpb587/ssoca/service/uaaauth/api"
-	svcconfig "github.com/dpb587/ssoca/service/uaaauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/uaaauth/server/config"
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	name   string
 	config svcconfig.Config
 }
 
-func NewService(name string, config svcconfig.Config) Service {
-	return Service{
+func NewService(name string, config svcconfig.Config) *Service {
+	return &Service{
 		name:   name,
 		config: config,
 	}

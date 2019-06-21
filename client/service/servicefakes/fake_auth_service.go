@@ -6,18 +6,27 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/client/service"
-	"github.com/dpb587/ssoca/service/env/api"
+	servicessoca "github.com/dpb587/ssoca/service"
 )
 
 type FakeAuthService struct {
-	TypeStub        func() string
+	NameStub        func() string
+	nameMutex       sync.RWMutex
+	nameArgsForCall []struct{}
+	nameReturns     struct {
+		result1 string
+	}
+	nameReturnsOnCall map[int]struct {
+		result1 string
+	}
+	TypeStub        func() servicessoca.Type
 	typeMutex       sync.RWMutex
 	typeArgsForCall []struct{}
 	typeReturns     struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	typeReturnsOnCall map[int]struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	VersionStub        func() string
 	versionMutex       sync.RWMutex
@@ -39,18 +48,14 @@ type FakeAuthService struct {
 	authRequestReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AuthLoginStub        func(api.InfoServiceResponse) (interface{}, error)
+	AuthLoginStub        func() error
 	authLoginMutex       sync.RWMutex
-	authLoginArgsForCall []struct {
-		arg1 api.InfoServiceResponse
-	}
-	authLoginReturns struct {
-		result1 interface{}
-		result2 error
+	authLoginArgsForCall []struct{}
+	authLoginReturns     struct {
+		result1 error
 	}
 	authLoginReturnsOnCall map[int]struct {
-		result1 interface{}
-		result2 error
+		result1 error
 	}
 	AuthLogoutStub        func() error
 	authLogoutMutex       sync.RWMutex
@@ -65,7 +70,47 @@ type FakeAuthService struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAuthService) Type() string {
+func (fake *FakeAuthService) Name() string {
+	fake.nameMutex.Lock()
+	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
+	fake.nameArgsForCall = append(fake.nameArgsForCall, struct{}{})
+	fake.recordInvocation("Name", []interface{}{})
+	fake.nameMutex.Unlock()
+	if fake.NameStub != nil {
+		return fake.NameStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.nameReturns.result1
+}
+
+func (fake *FakeAuthService) NameCallCount() int {
+	fake.nameMutex.RLock()
+	defer fake.nameMutex.RUnlock()
+	return len(fake.nameArgsForCall)
+}
+
+func (fake *FakeAuthService) NameReturns(result1 string) {
+	fake.NameStub = nil
+	fake.nameReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeAuthService) NameReturnsOnCall(i int, result1 string) {
+	fake.NameStub = nil
+	if fake.nameReturnsOnCall == nil {
+		fake.nameReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.nameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeAuthService) Type() servicessoca.Type {
 	fake.typeMutex.Lock()
 	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
 	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
@@ -86,22 +131,22 @@ func (fake *FakeAuthService) TypeCallCount() int {
 	return len(fake.typeArgsForCall)
 }
 
-func (fake *FakeAuthService) TypeReturns(result1 string) {
+func (fake *FakeAuthService) TypeReturns(result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	fake.typeReturns = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 
-func (fake *FakeAuthService) TypeReturnsOnCall(i int, result1 string) {
+func (fake *FakeAuthService) TypeReturnsOnCall(i int, result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	if fake.typeReturnsOnCall == nil {
 		fake.typeReturnsOnCall = make(map[int]struct {
-			result1 string
+			result1 servicessoca.Type
 		})
 	}
 	fake.typeReturnsOnCall[i] = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 
@@ -193,21 +238,19 @@ func (fake *FakeAuthService) AuthRequestReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLogin(arg1 api.InfoServiceResponse) (interface{}, error) {
+func (fake *FakeAuthService) AuthLogin() error {
 	fake.authLoginMutex.Lock()
 	ret, specificReturn := fake.authLoginReturnsOnCall[len(fake.authLoginArgsForCall)]
-	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct {
-		arg1 api.InfoServiceResponse
-	}{arg1})
-	fake.recordInvocation("AuthLogin", []interface{}{arg1})
+	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct{}{})
+	fake.recordInvocation("AuthLogin", []interface{}{})
 	fake.authLoginMutex.Unlock()
 	if fake.AuthLoginStub != nil {
-		return fake.AuthLoginStub(arg1)
+		return fake.AuthLoginStub()
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.authLoginReturns.result1, fake.authLoginReturns.result2
+	return fake.authLoginReturns.result1
 }
 
 func (fake *FakeAuthService) AuthLoginCallCount() int {
@@ -216,32 +259,23 @@ func (fake *FakeAuthService) AuthLoginCallCount() int {
 	return len(fake.authLoginArgsForCall)
 }
 
-func (fake *FakeAuthService) AuthLoginArgsForCall(i int) api.InfoServiceResponse {
-	fake.authLoginMutex.RLock()
-	defer fake.authLoginMutex.RUnlock()
-	return fake.authLoginArgsForCall[i].arg1
-}
-
-func (fake *FakeAuthService) AuthLoginReturns(result1 interface{}, result2 error) {
+func (fake *FakeAuthService) AuthLoginReturns(result1 error) {
 	fake.AuthLoginStub = nil
 	fake.authLoginReturns = struct {
-		result1 interface{}
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLoginReturnsOnCall(i int, result1 interface{}, result2 error) {
+func (fake *FakeAuthService) AuthLoginReturnsOnCall(i int, result1 error) {
 	fake.AuthLoginStub = nil
 	if fake.authLoginReturnsOnCall == nil {
 		fake.authLoginReturnsOnCall = make(map[int]struct {
-			result1 interface{}
-			result2 error
+			result1 error
 		})
 	}
 	fake.authLoginReturnsOnCall[i] = struct {
-		result1 interface{}
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeAuthService) AuthLogout() error {
@@ -287,6 +321,8 @@ func (fake *FakeAuthService) AuthLogoutReturnsOnCall(i int, result1 error) {
 func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.nameMutex.RLock()
+	defer fake.nameMutex.RUnlock()
 	fake.typeMutex.RLock()
 	defer fake.typeMutex.RUnlock()
 	fake.versionMutex.RLock()

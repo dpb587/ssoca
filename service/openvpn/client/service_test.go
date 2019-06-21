@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"github.com/dpb587/ssoca/service/openvpn"
 	. "github.com/dpb587/ssoca/service/openvpn/client"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +17,7 @@ var _ = Describe("Service", func() {
 		})
 
 		It("Type", func() {
-			Expect(subject.Type()).To(Equal("openvpn"))
+			Expect(subject.Type()).To(Equal(openvpn.Type))
 		})
 
 		It("Version", func() {

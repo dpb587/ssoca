@@ -3,8 +3,8 @@ package server_test
 import (
 	"net/http"
 
-	svcconfig "github.com/dpb587/ssoca/service/httpauth/config"
 	. "github.com/dpb587/ssoca/service/httpauth/server"
+	svcconfig "github.com/dpb587/ssoca/service/httpauth/server/config"
 
 	"github.com/dpb587/ssoca/server/service"
 
@@ -13,7 +13,7 @@ import (
 )
 
 var _ = Describe("Service", func() {
-	var subject Service
+	var subject *Service
 
 	Describe("interface", func() {
 		It("github.com/dpb587/ssoca/server/service.AuthService", func() {

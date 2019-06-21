@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"github.com/dpb587/ssoca/service/ssh"
 	. "github.com/dpb587/ssoca/service/ssh/client"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +17,7 @@ var _ = Describe("Service", func() {
 		})
 
 		It("Type", func() {
-			Expect(subject.Type()).To(Equal("ssh"))
+			Expect(subject.Type()).To(Equal(ssh.Type))
 		})
 
 		It("Version", func() {

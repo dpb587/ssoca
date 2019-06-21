@@ -5,13 +5,14 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/server/service"
+	servicessoca "github.com/dpb587/ssoca/service"
 )
 
 type FakeFactory struct {
-	CreateStub        func(string, string, map[string]interface{}) (service.Service, error)
+	CreateStub        func(servicessoca.Type, string, map[string]interface{}) (service.Service, error)
 	createMutex       sync.RWMutex
 	createArgsForCall []struct {
-		arg1 string
+		arg1 servicessoca.Type
 		arg2 string
 		arg3 map[string]interface{}
 	}
@@ -27,11 +28,11 @@ type FakeFactory struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeFactory) Create(arg1 string, arg2 string, arg3 map[string]interface{}) (service.Service, error) {
+func (fake *FakeFactory) Create(arg1 servicessoca.Type, arg2 string, arg3 map[string]interface{}) (service.Service, error) {
 	fake.createMutex.Lock()
 	ret, specificReturn := fake.createReturnsOnCall[len(fake.createArgsForCall)]
 	fake.createArgsForCall = append(fake.createArgsForCall, struct {
-		arg1 string
+		arg1 servicessoca.Type
 		arg2 string
 		arg3 map[string]interface{}
 	}{arg1, arg2, arg3})
@@ -52,7 +53,7 @@ func (fake *FakeFactory) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
-func (fake *FakeFactory) CreateArgsForCall(i int) (string, string, map[string]interface{}) {
+func (fake *FakeFactory) CreateArgsForCall(i int) (servicessoca.Type, string, map[string]interface{}) {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
 	return fake.createArgsForCall[i].arg1, fake.createArgsForCall[i].arg2, fake.createArgsForCall[i].arg3

@@ -8,6 +8,7 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
+	servicessoca "github.com/dpb587/ssoca/service"
 )
 
 type FakeAuthService struct {
@@ -20,14 +21,14 @@ type FakeAuthService struct {
 	nameReturnsOnCall map[int]struct {
 		result1 string
 	}
-	TypeStub        func() string
+	TypeStub        func() servicessoca.Type
 	typeMutex       sync.RWMutex
 	typeArgsForCall []struct{}
 	typeReturns     struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	typeReturnsOnCall map[int]struct {
-		result1 string
+		result1 servicessoca.Type
 	}
 	VersionStub        func() string
 	versionMutex       sync.RWMutex
@@ -67,6 +68,19 @@ type FakeAuthService struct {
 	}
 	verifyAuthorizationReturnsOnCall map[int]struct {
 		result1 error
+	}
+	SupportsRequestAuthStub        func(http.Request) (bool, error)
+	supportsRequestAuthMutex       sync.RWMutex
+	supportsRequestAuthArgsForCall []struct {
+		arg1 http.Request
+	}
+	supportsRequestAuthReturns struct {
+		result1 bool
+		result2 error
+	}
+	supportsRequestAuthReturnsOnCall map[int]struct {
+		result1 bool
+		result2 error
 	}
 	ParseRequestAuthStub        func(http.Request) (*auth.Token, error)
 	parseRequestAuthMutex       sync.RWMutex
@@ -125,7 +139,7 @@ func (fake *FakeAuthService) NameReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) Type() string {
+func (fake *FakeAuthService) Type() servicessoca.Type {
 	fake.typeMutex.Lock()
 	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
 	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
@@ -146,22 +160,22 @@ func (fake *FakeAuthService) TypeCallCount() int {
 	return len(fake.typeArgsForCall)
 }
 
-func (fake *FakeAuthService) TypeReturns(result1 string) {
+func (fake *FakeAuthService) TypeReturns(result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	fake.typeReturns = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 
-func (fake *FakeAuthService) TypeReturnsOnCall(i int, result1 string) {
+func (fake *FakeAuthService) TypeReturnsOnCall(i int, result1 servicessoca.Type) {
 	fake.TypeStub = nil
 	if fake.typeReturnsOnCall == nil {
 		fake.typeReturnsOnCall = make(map[int]struct {
-			result1 string
+			result1 servicessoca.Type
 		})
 	}
 	fake.typeReturnsOnCall[i] = struct {
-		result1 string
+		result1 servicessoca.Type
 	}{result1}
 }
 
@@ -334,6 +348,57 @@ func (fake *FakeAuthService) VerifyAuthorizationReturnsOnCall(i int, result1 err
 	}{result1}
 }
 
+func (fake *FakeAuthService) SupportsRequestAuth(arg1 http.Request) (bool, error) {
+	fake.supportsRequestAuthMutex.Lock()
+	ret, specificReturn := fake.supportsRequestAuthReturnsOnCall[len(fake.supportsRequestAuthArgsForCall)]
+	fake.supportsRequestAuthArgsForCall = append(fake.supportsRequestAuthArgsForCall, struct {
+		arg1 http.Request
+	}{arg1})
+	fake.recordInvocation("SupportsRequestAuth", []interface{}{arg1})
+	fake.supportsRequestAuthMutex.Unlock()
+	if fake.SupportsRequestAuthStub != nil {
+		return fake.SupportsRequestAuthStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.supportsRequestAuthReturns.result1, fake.supportsRequestAuthReturns.result2
+}
+
+func (fake *FakeAuthService) SupportsRequestAuthCallCount() int {
+	fake.supportsRequestAuthMutex.RLock()
+	defer fake.supportsRequestAuthMutex.RUnlock()
+	return len(fake.supportsRequestAuthArgsForCall)
+}
+
+func (fake *FakeAuthService) SupportsRequestAuthArgsForCall(i int) http.Request {
+	fake.supportsRequestAuthMutex.RLock()
+	defer fake.supportsRequestAuthMutex.RUnlock()
+	return fake.supportsRequestAuthArgsForCall[i].arg1
+}
+
+func (fake *FakeAuthService) SupportsRequestAuthReturns(result1 bool, result2 error) {
+	fake.SupportsRequestAuthStub = nil
+	fake.supportsRequestAuthReturns = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthService) SupportsRequestAuthReturnsOnCall(i int, result1 bool, result2 error) {
+	fake.SupportsRequestAuthStub = nil
+	if fake.supportsRequestAuthReturnsOnCall == nil {
+		fake.supportsRequestAuthReturnsOnCall = make(map[int]struct {
+			result1 bool
+			result2 error
+		})
+	}
+	fake.supportsRequestAuthReturnsOnCall[i] = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAuthService) ParseRequestAuth(arg1 http.Request) (*auth.Token, error) {
 	fake.parseRequestAuthMutex.Lock()
 	ret, specificReturn := fake.parseRequestAuthReturnsOnCall[len(fake.parseRequestAuthArgsForCall)]
@@ -400,6 +465,8 @@ func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	defer fake.getRoutesMutex.RUnlock()
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
+	fake.supportsRequestAuthMutex.RLock()
+	defer fake.supportsRequestAuthMutex.RUnlock()
 	fake.parseRequestAuthMutex.RLock()
 	defer fake.parseRequestAuthMutex.RUnlock()
 	return fake.invocations

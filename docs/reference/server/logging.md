@@ -43,6 +43,7 @@ The following fields will be present on messages related to a specific service.
 
 The following fields will be present on messages which were being performed by an authenticated user.
 
+ * `auth.service` -- the authentication service name (e.g. `auth`)
  * `auth.user_id` -- the authenticated user (e.g. `somebody@example.com`)
 
 

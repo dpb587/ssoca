@@ -6,17 +6,15 @@ import (
 	"github.com/dpb587/ssoca/config"
 	"github.com/dpb587/ssoca/server/service"
 	svc "github.com/dpb587/ssoca/service/uaaauth"
-	svcconfig "github.com/dpb587/ssoca/service/uaaauth/config"
+	svcconfig "github.com/dpb587/ssoca/service/uaaauth/server/config"
 )
 
-type ServiceFactory struct{}
+type ServiceFactory struct {
+	svc.ServiceType
+}
 
 func NewServiceFactory() ServiceFactory {
 	return ServiceFactory{}
-}
-
-func (f ServiceFactory) Type() string {
-	return svc.Service{}.Type()
 }
 
 func (sf ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {

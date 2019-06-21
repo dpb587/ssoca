@@ -3,30 +3,50 @@ package client
 import (
 	"net/http"
 
+	"github.com/dpb587/ssoca/client/config"
 	"github.com/pkg/errors"
-
-	env_api "github.com/dpb587/ssoca/service/env/api"
 )
 
-func (s Service) AuthLogin(_ env_api.InfoServiceResponse) (interface{}, error) {
+func (s Service) AuthLogin() error {
+	configManager, err := s.runtime.GetConfigManager()
+	if err != nil {
+		return errors.Wrap(err, "getting config manager")
+	}
+
 	ui := s.runtime.GetUI()
 	auth := AuthConfig{}
 
 	username, err := ui.AskForText("username")
 	if err != nil {
-		return auth, errors.Wrap(err, "requesting username")
+		return errors.Wrap(err, "requesting username")
 	}
 
 	auth.Username = username
 
 	password, err := ui.AskForPassword("password")
 	if err != nil {
-		return auth, errors.Wrap(err, "requesting password")
+		return errors.Wrap(err, "requesting password")
 	}
 
 	auth.Password = password
 
-	return auth, nil
+	env, err := s.runtime.GetEnvironment()
+	if err != nil {
+		return errors.Wrap(err, "getting environment")
+	}
+
+	env.Auth = &config.EnvironmentAuthState{
+		Name:    s.name,
+		Type:    string(s.Type()),
+		Options: auth,
+	}
+
+	err = configManager.SetEnvironment(env)
+	if err != nil {
+		return errors.Wrap(err, "updating environment")
+	}
+
+	return nil
 }
 
 func (s Service) AuthLogout() error {

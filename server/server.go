@@ -16,6 +16,7 @@ import (
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/requtil"
 	"github.com/dpb587/ssoca/server/service"
+	globalservice "github.com/dpb587/ssoca/service"
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
 )
 
@@ -37,10 +38,6 @@ func CreateFromConfig(
 	serviceManager service.Manager,
 	logger logrus.FieldLogger,
 ) (Server, error) {
-	if cfg.Auth.Type == "" {
-		return Server{}, errors.New("configuration missing: auth.type")
-	}
-
 	if cfg.Env.URL == "" {
 		return Server{}, errors.New("configuration missing: env.url")
 	}
@@ -108,12 +105,16 @@ func CreateFromConfig(
 			svcConfig.Type = "file"
 		}
 
-		svc, err := serviceFactory.Create(svcConfig.Type, svcConfig.Name, svcConfig.Options)
+		svc, err := serviceFactory.Create(globalservice.Type(svcConfig.Type), svcConfig.Name, svcConfig.Options)
 		if err != nil {
 			return Server{}, errors.Wrap(err, "creating service")
 		}
 
-		filteredService, err := filterService(svc, svcConfig, cfg.Auth.Require, filterManager)
+		if cfg.Env.SupportOlderClients && svcConfig.Name == "auth" {
+			svc = srv_auth.NewService(svc.(service.AuthService))
+		}
+
+		filteredService, err := filterService(svc, svcConfig, cfg.Server.Require, filterManager)
 		if err != nil {
 			return Server{}, errors.Wrapf(err, "applying authorization filters to %s", svc.Name())
 		}
@@ -121,20 +122,13 @@ func CreateFromConfig(
 		serviceManager.Add(filteredService)
 	}
 
-	svc, err := serviceFactory.Create(fmt.Sprintf("%s_authn", cfg.Auth.Type), "auth", cfg.Auth.Options)
-	if err != nil {
-		return Server{}, errors.Wrap(err, "creating auth service")
-	}
-
-	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
-
 	return NewServer(cfg.Server, serviceManager, logger), nil
 }
 
-func filterService(service service.Service, config config.ServiceConfig, authFilters []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
+func filterService(svc service.Service, config config.ServiceConfig, serverRequires []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
 	var merged []filter.RequireConfig
 
-	for _, a := range authFilters {
+	for _, a := range serverRequires {
 		merged = append(merged, a)
 	}
 
@@ -143,6 +137,11 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 	}
 
 	if len(merged) == 0 {
+		if _, ok := svc.(service.AuthService); ok {
+			// auth services are likely to intentionally be public
+			return svc, nil
+		}
+
 		return nil, errors.New("expected at least one filter, but found 0 filters")
 	}
 
@@ -156,7 +155,7 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 		panic(err)
 	}
 
-	return authorized.NewService(service, requirement), nil
+	return authorized.NewService(svc, requirement), nil
 }
 
 func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.FieldLogger) Server {
@@ -174,10 +173,7 @@ func (s Server) getClientIP(r *http.Request) (net.IP, error) {
 }
 
 func (s Server) Run() error {
-	authSvc, err := s.services.GetAuth()
-	if err != nil {
-		return errors.Wrap(err, "loading authentication service")
-	}
+	authSvcs := service.GetAuthServices(s.services)
 
 	mux := http.NewServeMux()
 
@@ -186,7 +182,7 @@ func (s Server) Run() error {
 
 		for _, handler := range svc.GetRoutes() {
 			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
-			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.getClientIP, s.logger)
+			apiHandler, err := api.CreateHandler(authSvcs, svc, handler, s.getClientIP, s.logger)
 			if err != nil {
 				return errors.Wrapf(err, "creating handler for %s", apiPath)
 			}

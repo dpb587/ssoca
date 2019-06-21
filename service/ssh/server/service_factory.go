@@ -18,6 +18,8 @@ import (
 )
 
 type ServiceFactory struct {
+	svc.ServiceType
+
 	caManager           certauth.Manager
 	dynamicvalueFactory dynamicvalue.Factory
 }
@@ -29,10 +31,6 @@ func NewServiceFactory(dynamicvalueFactory dynamicvalue.Factory, caManager certa
 		caManager:           caManager,
 		dynamicvalueFactory: dynamicvalueFactory,
 	}
-}
-
-func (f ServiceFactory) Type() string {
-	return svc.Service{}.Type()
 }
 
 func (f ServiceFactory) Create(name string, options map[string]interface{}) (service.Service, error) {

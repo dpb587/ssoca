@@ -2,19 +2,28 @@ package cmd
 
 import (
 	"github.com/dpb587/ssoca/client"
+	"github.com/dpb587/ssoca/client/service"
+	globalservice "github.com/dpb587/ssoca/service"
 	"github.com/sirupsen/logrus"
 )
 
 type ServiceCommand struct {
-	Runtime client.Runtime
+	Runtime        client.Runtime
+	ServiceManager service.Manager `no-flag:"true"`
 
-	ServiceName string `long:"service" short:"s" description:"Service name" env:"SSOCA_SERVICE"`
+	ServiceType globalservice.Type `no-flag:"true"`
+	ServiceName string             `long:"service" short:"s" description:"Service name" env:"SSOCA_SERVICE"`
 }
 
 func (sc ServiceCommand) GetLogger() logrus.FieldLogger {
 	return sc.Runtime.GetLogger().WithFields(logrus.Fields{
+		"service.type": sc.ServiceType,
 		"service.name": sc.ServiceName,
 	})
+}
+
+func (sc ServiceCommand) GetService() (service.Service, error) {
+	return sc.ServiceManager.Get(sc.ServiceType, sc.ServiceName)
 }
 
 type InteractiveAuthCommand struct {

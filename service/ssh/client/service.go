@@ -12,7 +12,7 @@ import (
 )
 
 type Service struct {
-	svc.Service
+	svc.ServiceType
 
 	name      string
 	runtime   client.Runtime
@@ -22,13 +22,17 @@ type Service struct {
 
 var _ service.Service = Service{}
 
-func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) Service {
-	return Service{
+func NewService(name string, runtime client.Runtime, fs boshsys.FileSystem, cmdRunner boshsys.CmdRunner) *Service {
+	return &Service{
 		name:      name,
 		runtime:   runtime,
 		fs:        fs,
 		cmdRunner: cmdRunner,
 	}
+}
+
+func (s Service) Name() string {
+	return s.name
 }
 
 func (s Service) GetClient(skipAuthRetry bool) (svchttpclient.Client, error) {

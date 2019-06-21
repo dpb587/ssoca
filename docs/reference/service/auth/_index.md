@@ -8,6 +8,9 @@ aliases:
 
 Several different types of authentication are supported and the server will configure whichever is appropriate for the environment.
 
+ * [Cloud Foundry UAA]({{< relref "../uaa-auth" >}})
+ * [GitHub]({{< relref "../github-auth" >}})
+ * [Google]({{< relref "../google-auth" >}})
 
 ## Client Commands
 
@@ -46,8 +49,3 @@ ssoca env set-option auth.open_command "[ sudo, -u, $USER, /Applications/Google 
 {{< note type="info" >}}
   Shell environment variables are not interpolated by the client at runtime (i.e. `$USER` is parsed by shell here). The `sudo` usage allows the process to interact with the user's console UI if the command is run as `root`. The `--disable-gpu` suppresses a seemingly innocuous warning message.
 {{< /note >}}
-
-
-## Server Configuration
-
-For more details configuring the underlying authentication provider, see the server-side [Authentication docs]({{< relref "../../auth/authn" >}}).
