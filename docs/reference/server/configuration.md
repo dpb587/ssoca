@@ -31,7 +31,7 @@ server:
     auth_failure: ~ # optional
     auth_success: ~ # optional
 
-  # optionally configure proxies you expect to receive traffic from
+  # optionally configure upstream proxies (used for remote IP reporting)
   trusted_proxies:
   - "127.0.0.1/8"
   - "::1"
@@ -43,18 +43,6 @@ server:
 ```
 
 
-## `auth`
-
-The YAML configuration must also include an `auth` section referencing an [authentication service type]({{< relref "../auth/authn" >}}) and the service's options...
-
-```yaml
-auth:
-  type: "uaa"
-  options:
-    public_key: "...snip..."
-```
-
-
 ## `certauths`
 
 Certificate authorities can be defined in the `certauths` field which is an array of CA providers referencing a [CA type]({{< relref "../certauth" >}}) and the CA options. Services may later reference CAs by their name...
@@ -62,23 +50,26 @@ Certificate authorities can be defined in the `certauths` field which is an arra
 ```yaml
 certauths:
   - type: "fs" # one of the available CA types
-    name: ~  # defaults to `default`
-    options: # CA-specific options
+    name: ~    # defaults to `default`
+    options:   # CA-specific options
       private_key_path: "/some/path.crt"
 ```
 
 
 ## `services`
 
-The last required section is `services` which is an array of service configurations referencing a service type and the service options...
+The last section is `services` which is an array of service configurations referencing a service type and the service options. You will typically configure at least one authentication server and one user service...
 
 ```yaml
 services:
   - type: "ssh" # one of the available service types
-    name: ~   # defaults to the value of `type`
-    options:  # service-specific options
+    name: ~     # defaults to the value of `type`
+    options:    # service-specific options
       host: "192.0.2.1"
       user: "vcap"
+  - type: "github-auth"
+    name: "auth"
+    options: # ...
 ```
 
 

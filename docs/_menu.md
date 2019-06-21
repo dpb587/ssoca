@@ -4,20 +4,19 @@
 
 Services
 
- * [Authentication]({{< relref "reference/service/auth" >}})
  * [Document Root]({{< relref "reference/service/docroot" >}})
  * [Environment]({{< relref "reference/service/env" >}})
  * [File]({{< relref "reference/service/file" >}})
  * [OpenVPN]({{< relref "reference/service/openvpn" >}})
  * [SSH]({{< relref "reference/service/ssh" >}})
+ * [Authentication]({{< relref "reference/service/auth" >}})
+    * [Cloud Foundry UAA]({{< relref "reference/service/uaa-auth" >}})
+    * [GitHub]({{< relref "reference/service/github-auth" >}})
+    * [Google]({{< relref "reference/service/google-auth" >}})
 
 Server Usage
 
  * [Configuration]({{< relref "reference/server/configuration.md" >}})
- * [Authentication]({{< relref "reference/auth/authn" >}})
-    * [Cloud Foundry UAA]({{< relref "reference/auth/authn/uaa" >}})
-    * [GitHub]({{< relref "reference/auth/authn/github" >}})
-    * [Google]({{< relref "reference/auth/authn/google" >}})
  * [Authorization]({{< relref "reference/auth/authz" >}})
  * [Certificate Authorities]({{< relref "reference/certauth" >}})
     * [In-Memory]({{< relref "reference/certauth/memory" >}})

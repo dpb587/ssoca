@@ -1,12 +1,13 @@
 ---
-title: Google (google) Authentication
+title: Google Authentication (google-auth)
 aliases:
 - /auth/authn/google/
+- /reference/auth/authn/google/
 ---
 
-# Google Authentication (`google`)
+# Google Authentication (`google-auth`)
 
-Google authenticates users through their Google accounts. Users are redirected through Google's website and given a token for their CLI usage. Once authenticated, short-lived [JSON Web Tokens]({{< relref "../jwt.md" >}}) are used to persist and validate authentication state.
+Google authenticates users through their Google accounts. Users are redirected through Google's website and given a token for their CLI usage. Once authenticated, short-lived [JSON Web Tokens]({{< relref "../../auth/authn/jwt.md" >}}) are used to persist and validate authentication state.
 
 
 ## Server Configuration Options

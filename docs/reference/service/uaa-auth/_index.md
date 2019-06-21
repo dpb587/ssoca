@@ -1,10 +1,11 @@
 ---
-title: Cloud Foundry UAA (uaa) authentication
+title: Cloud Foundry UAA Authentication (uaa-auth)
 aliases:
 - /auth/authn/uaa/
+- /reference/auth/authn/uaa/
 ---
 
-# Cloud Foundry UAA (`uaa`)
+# Cloud Foundry UAA Authentication (`uaa-auth`)
 
 Cloud Foundry UAA authenticates users from an external UAA server. Users authenticate via CLI prompts or are redirected to UAA and given a token for their CLI usage.
 
