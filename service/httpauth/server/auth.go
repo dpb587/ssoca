@@ -29,7 +29,12 @@ func (s Service) ParseRequestAuth(r http.Request) (*auth.Token, error) {
 		token := auth.Token{}
 		token.ID = username
 		token.Groups = user.Groups
+
 		token.Attributes = user.Attributes
+		if token.Attributes == nil {
+			token.Attributes = map[auth.TokenAttribute]*string{}
+		}
+
 		token.Attributes[auth.TokenUsernameAttribute] = &username
 
 		return &token, nil
