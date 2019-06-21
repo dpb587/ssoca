@@ -23,7 +23,6 @@ type ServiceFactory interface {
 type Manager interface {
 	Add(Service)
 	Get(string) (Service, error)
-	GetAuth() (AuthService, error)
 	Services() []string
 }
 
@@ -44,3 +43,5 @@ type AuthService interface {
 	SupportsRequestAuth(http.Request) (bool, error)
 	ParseRequestAuth(http.Request) (*auth.Token, error)
 }
+
+type AuthServices []AuthService

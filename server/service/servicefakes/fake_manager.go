@@ -26,17 +26,6 @@ type FakeManager struct {
 		result1 service.Service
 		result2 error
 	}
-	GetAuthStub        func() (service.AuthService, error)
-	getAuthMutex       sync.RWMutex
-	getAuthArgsForCall []struct{}
-	getAuthReturns     struct {
-		result1 service.AuthService
-		result2 error
-	}
-	getAuthReturnsOnCall map[int]struct {
-		result1 service.AuthService
-		result2 error
-	}
 	ServicesStub        func() []string
 	servicesMutex       sync.RWMutex
 	servicesArgsForCall []struct{}
@@ -125,49 +114,6 @@ func (fake *FakeManager) GetReturnsOnCall(i int, result1 service.Service, result
 	}{result1, result2}
 }
 
-func (fake *FakeManager) GetAuth() (service.AuthService, error) {
-	fake.getAuthMutex.Lock()
-	ret, specificReturn := fake.getAuthReturnsOnCall[len(fake.getAuthArgsForCall)]
-	fake.getAuthArgsForCall = append(fake.getAuthArgsForCall, struct{}{})
-	fake.recordInvocation("GetAuth", []interface{}{})
-	fake.getAuthMutex.Unlock()
-	if fake.GetAuthStub != nil {
-		return fake.GetAuthStub()
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.getAuthReturns.result1, fake.getAuthReturns.result2
-}
-
-func (fake *FakeManager) GetAuthCallCount() int {
-	fake.getAuthMutex.RLock()
-	defer fake.getAuthMutex.RUnlock()
-	return len(fake.getAuthArgsForCall)
-}
-
-func (fake *FakeManager) GetAuthReturns(result1 service.AuthService, result2 error) {
-	fake.GetAuthStub = nil
-	fake.getAuthReturns = struct {
-		result1 service.AuthService
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeManager) GetAuthReturnsOnCall(i int, result1 service.AuthService, result2 error) {
-	fake.GetAuthStub = nil
-	if fake.getAuthReturnsOnCall == nil {
-		fake.getAuthReturnsOnCall = make(map[int]struct {
-			result1 service.AuthService
-			result2 error
-		})
-	}
-	fake.getAuthReturnsOnCall[i] = struct {
-		result1 service.AuthService
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeManager) Services() []string {
 	fake.servicesMutex.Lock()
 	ret, specificReturn := fake.servicesReturnsOnCall[len(fake.servicesArgsForCall)]
@@ -215,8 +161,6 @@ func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	defer fake.addMutex.RUnlock()
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	fake.getAuthMutex.RLock()
-	defer fake.getAuthMutex.RUnlock()
 	fake.servicesMutex.RLock()
 	defer fake.servicesMutex.RUnlock()
 	return fake.invocations

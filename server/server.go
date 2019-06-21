@@ -173,10 +173,7 @@ func (s Server) getClientIP(r *http.Request) (net.IP, error) {
 }
 
 func (s Server) Run() error {
-	authSvc, err := s.services.GetAuth()
-	if err != nil {
-		return errors.Wrap(err, "loading authentication service")
-	}
+	authSvcs := service.GetAuthServices(s.services)
 
 	mux := http.NewServeMux()
 
@@ -185,7 +182,7 @@ func (s Server) Run() error {
 
 		for _, handler := range svc.GetRoutes() {
 			apiPath := fmt.Sprintf("/%s/%s", svc.Name(), handler.Route())
-			apiHandler, err := api.CreateHandler(authSvc, svc, handler, s.getClientIP, s.logger)
+			apiHandler, err := api.CreateHandler(authSvcs, svc, handler, s.getClientIP, s.logger)
 			if err != nil {
 				return errors.Wrapf(err, "creating handler for %s", apiPath)
 			}
