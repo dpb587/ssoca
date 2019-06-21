@@ -9,5 +9,5 @@ import (
 
 func TestReq(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/req")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/oauth2/server/req")
 }

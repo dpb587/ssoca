@@ -9,5 +9,5 @@ import (
 
 func TestSelfsignedjwt(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt")
+	RunSpecs(t, "github.com/dpb587/ssoca/auth/authn/selfsignedjwt")
 }

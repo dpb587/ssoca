@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/dpb587/ssoca/auth/authn"
-	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/client"
+	. "github.com/dpb587/ssoca/auth/authn/oauth2/client"
 
 	"github.com/dpb587/ssoca/client/clientfakes"
 	"github.com/dpb587/ssoca/client/config"

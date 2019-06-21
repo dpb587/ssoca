@@ -5,7 +5,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 
-	. "github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
+	. "github.com/dpb587/ssoca/auth/authn/selfsignedjwt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

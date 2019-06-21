@@ -3,8 +3,8 @@ package server
 import (
 	"fmt"
 
-	oauth2server "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
-	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
+	oauth2server "github.com/dpb587/ssoca/auth/authn/oauth2/server"
+	oauth2config "github.com/dpb587/ssoca/auth/authn/oauth2/server/config"
 	svc "github.com/dpb587/ssoca/service/googleauth"
 	svcconfig "github.com/dpb587/ssoca/service/googleauth/server/config"
 	"golang.org/x/oauth2"

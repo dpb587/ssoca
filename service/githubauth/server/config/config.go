@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	oauth2config "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
+	oauth2config "github.com/dpb587/ssoca/auth/authn/oauth2/server/config"
 )
 
 type Config struct {

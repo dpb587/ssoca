@@ -8,9 +8,9 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth"
-	internaltests "github.com/dpb587/ssoca/auth/authn/support/oauth2/internal/tests"
-	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/server"
-	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
+	internaltests "github.com/dpb587/ssoca/auth/authn/oauth2/internal/tests"
+	. "github.com/dpb587/ssoca/auth/authn/oauth2/server"
+	"github.com/dpb587/ssoca/auth/authn/oauth2/server/config"
 	apierr "github.com/dpb587/ssoca/server/api/errors"
 
 	"golang.org/x/oauth2"

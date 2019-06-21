@@ -2,7 +2,7 @@ package client
 
 import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
-	oauthsvc "github.com/dpb587/ssoca/auth/authn/support/oauth2/client"
+	oauthsvc "github.com/dpb587/ssoca/auth/authn/oauth2/client"
 	"github.com/dpb587/ssoca/client"
 	"github.com/dpb587/ssoca/client/service"
 	svc "github.com/dpb587/ssoca/service/googleauth"

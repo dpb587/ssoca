@@ -7,9 +7,9 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dpb587/ssoca/auth"
-	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/internal/tests"
-	"github.com/dpb587/ssoca/auth/authn/support/oauth2/server/config"
-	"github.com/dpb587/ssoca/auth/authn/support/selfsignedjwt"
+	. "github.com/dpb587/ssoca/auth/authn/oauth2/internal/tests"
+	"github.com/dpb587/ssoca/auth/authn/oauth2/server/config"
+	"github.com/dpb587/ssoca/auth/authn/selfsignedjwt"
 
 	. "github.com/onsi/ginkgo"
 )

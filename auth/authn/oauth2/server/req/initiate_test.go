@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	. "github.com/dpb587/ssoca/auth/authn/support/oauth2/server/req"
+	. "github.com/dpb587/ssoca/auth/authn/oauth2/server/req"
 	"github.com/dpb587/ssoca/server/service/req"
 	"golang.org/x/oauth2"
 
