@@ -33,6 +33,69 @@ var _ = Describe("Client", func() {
 		Expect(err).ToNot(HaveOccurred())
 	})
 
+	Describe("GetAuth", func() {
+		Context("request fails", func() {
+			It("errors", func() {
+				fakeapiclient.APIGetReturns(errors.New("fake-err"))
+
+				_, err := subject.GetAuth()
+
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("getting"))
+				Expect(err.Error()).To(ContainSubstring("fake-err"))
+			})
+		})
+
+		It("works", func() {
+			fakeapiclient.APIGetStub = func(_ string, out interface{}) error {
+				assertout, ok := out.(*api.AuthResponse)
+				Expect(ok).To(BeTrue())
+
+				assertout.ID = "fake-id-data"
+
+				return nil
+			}
+
+			result, err := subject.GetAuth()
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(result.ID).To(Equal("fake-id-data"))
+
+			Expect(fakeapiclient.APIGetCallCount()).To(Equal(1))
+
+			path0, _ := fakeapiclient.APIGetArgsForCall(0)
+			Expect(path0).To(Equal("/env/auth"))
+		})
+
+		It("falls back to old endpoints", func() {
+			fakeapiclient.APIGetStub = func(path string, out interface{}) error {
+				if path == "/auth/info" {
+					assertout, ok := out.(*api.AuthResponse)
+					Expect(ok).To(BeTrue())
+
+					assertout.ID = "fake-id-data"
+
+					return nil
+				}
+
+				return errors.New("http404")
+			}
+
+			result, err := subject.GetAuth()
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(result.ID).To(Equal("fake-id-data"))
+
+			Expect(fakeapiclient.APIGetCallCount()).To(Equal(2))
+
+			path0, _ := fakeapiclient.APIGetArgsForCall(0)
+			Expect(path0).To(Equal("/env/auth"))
+
+			path1, _ := fakeapiclient.APIGetArgsForCall(1)
+			Expect(path1).To(Equal("/auth/info"))
+		})
+	})
+
 	Describe("GetInfo", func() {
 		Context("request fails", func() {
 			It("errors", func() {

@@ -1,7 +1,7 @@
 package cli
 
 import (
-	svchttpclient "github.com/dpb587/ssoca/service/auth/httpclient"
+	envsvchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
 )
 
-type GetClient func() (svchttpclient.Client, error)
+type GetClient func() (envsvchttpclient.Client, error)

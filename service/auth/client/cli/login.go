@@ -105,7 +105,7 @@ func (c Login) verify() error {
 		return errors.Wrap(err, "getting client")
 	}
 
-	authInfo, err := client.GetInfo()
+	authInfo, err := client.GetAuth()
 	if err != nil {
 		return errors.Wrap(err, "getting remote authentication info")
 	}

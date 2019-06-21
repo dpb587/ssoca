@@ -1,6 +1,6 @@
 package api
 
-type InfoResponse struct {
+type AuthResponse struct {
 	ID         string            `json:"id"`
 	Groups     []string          `json:"groups"`
 	Attributes map[string]string `json:"attributes,omitempty"`

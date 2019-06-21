@@ -61,6 +61,7 @@ func main() {
 		panic(err)
 	}
 
+	cfg.ApplyMigrations()
 	cfg.ApplyDefaults()
 
 	cfgval := dynamicvalue.DefaultFactory{}

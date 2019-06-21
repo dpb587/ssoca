@@ -38,6 +38,7 @@ func (s Service) Metadata() interface{} {
 
 func (s Service) GetRoutes() []req.RouteHandler {
 	return []req.RouteHandler{
+		svcreq.Auth{},
 		svcreq.Info{
 			Config:   s.config,
 			Services: s.services,

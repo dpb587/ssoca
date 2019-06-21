@@ -2,21 +2,28 @@ package req
 
 import (
 	"github.com/dpb587/ssoca/server/service/req"
-	"github.com/dpb587/ssoca/service/auth/api"
+	"github.com/dpb587/ssoca/service/env/api"
 )
 
-type Info struct {
+type Auth struct {
 	req.WithoutAdditionalAuthorization
+
+	RouteName string
 }
 
-var _ req.RouteHandler = Info{}
+var _ req.RouteHandler = Auth{}
 
-func (h Info) Route() string {
-	return "info"
+func (h Auth) Route() string {
+	if h.RouteName != "" {
+		// TODO deprecate after legacy auth service no longer uses this
+		return h.RouteName
+	}
+
+	return "auth"
 }
 
-func (h Info) Execute(request req.Request) error {
-	response := api.InfoResponse{}
+func (h Auth) Execute(request req.Request) error {
+	response := api.AuthResponse{}
 
 	token := request.AuthToken
 

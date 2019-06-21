@@ -27,7 +27,7 @@ func (c Info) Execute(_ []string) error {
 		return errors.Wrap(err, "getting client")
 	}
 
-	info, err := client.GetInfo()
+	info, err := client.GetAuth()
 	if err != nil {
 		return errors.Wrap(err, "getting remote authentication info")
 	}

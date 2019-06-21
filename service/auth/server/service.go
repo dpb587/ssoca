@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	svc "github.com/dpb587/ssoca/service/auth"
-	svcreq "github.com/dpb587/ssoca/service/auth/server/req"
+	envsvcreq "github.com/dpb587/ssoca/service/env/server/req"
 
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
@@ -40,7 +40,7 @@ func (s *Service) Metadata() interface{} {
 }
 
 func (s *Service) GetRoutes() []req.RouteHandler {
-	return append(s.auth.GetRoutes(), svcreq.Info{})
+	return append(s.auth.GetRoutes(), envsvcreq.Auth{RouteName: "info"})
 }
 
 func (s *Service) SupportsRequestAuth(r http.Request) (bool, error) {

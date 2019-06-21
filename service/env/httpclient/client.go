@@ -19,6 +19,20 @@ type client struct {
 	client httpclient.Client
 }
 
+func (c client) GetAuth() (api.AuthResponse, error) {
+	out := api.AuthResponse{}
+
+	err := c.client.APIGet("/env/auth", &out)
+	if err != nil {
+		// naive fallback to older server endpoints
+		if c.client.APIGet("/auth/info", &out) != nil {
+			return out, errors.Wrap(err, "getting /env/auth")
+		}
+	}
+
+	return out, nil
+}
+
 func (c client) GetInfo() (api.InfoResponse, error) {
 	out := api.InfoResponse{}
 

@@ -5,7 +5,7 @@ import (
 	"github.com/dpb587/ssoca/client/service"
 
 	svc "github.com/dpb587/ssoca/service/auth"
-	svchttpclient "github.com/dpb587/ssoca/service/auth/httpclient"
+	envsvchttpclient "github.com/dpb587/ssoca/service/env/httpclient"
 )
 
 type Service struct {
@@ -32,11 +32,11 @@ func (s Service) GetServiceManager() service.Manager {
 	return s.serviceManager
 }
 
-func (s Service) GetClient() (svchttpclient.Client, error) {
+func (s Service) GetClient() (envsvchttpclient.Client, error) {
 	client, err := s.runtime.GetClient()
 	if err != nil {
 		return nil, err
 	}
 
-	return svchttpclient.New(client)
+	return envsvchttpclient.New(client)
 }

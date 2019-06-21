@@ -38,10 +38,6 @@ func CreateFromConfig(
 	serviceManager service.Manager,
 	logger logrus.FieldLogger,
 ) (Server, error) {
-	if cfg.Auth.Type == "" {
-		return Server{}, errors.New("configuration missing: auth.type")
-	}
-
 	if cfg.Env.URL == "" {
 		return Server{}, errors.New("configuration missing: env.url")
 	}
@@ -114,7 +110,11 @@ func CreateFromConfig(
 			return Server{}, errors.Wrap(err, "creating service")
 		}
 
-		filteredService, err := filterService(svc, svcConfig, cfg.Auth.Require, filterManager)
+		if cfg.Env.SupportOlderClients && svcConfig.Name == "auth" {
+			svc = srv_auth.NewService(svc.(service.AuthService))
+		}
+
+		filteredService, err := filterService(svc, svcConfig, cfg.Server.Require, filterManager)
 		if err != nil {
 			return Server{}, errors.Wrapf(err, "applying authorization filters to %s", svc.Name())
 		}
@@ -122,20 +122,13 @@ func CreateFromConfig(
 		serviceManager.Add(filteredService)
 	}
 
-	svc, err := serviceFactory.Create(globalservice.Type(fmt.Sprintf("%s_authn", cfg.Auth.Type)), "auth", cfg.Auth.Options)
-	if err != nil {
-		return Server{}, errors.Wrap(err, "creating auth service")
-	}
-
-	serviceManager.Add(srv_auth.NewService(svc.(service.AuthService)))
-
 	return NewServer(cfg.Server, serviceManager, logger), nil
 }
 
-func filterService(service service.Service, config config.ServiceConfig, authFilters []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
+func filterService(svc service.Service, config config.ServiceConfig, serverRequires []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
 	var merged []filter.RequireConfig
 
-	for _, a := range authFilters {
+	for _, a := range serverRequires {
 		merged = append(merged, a)
 	}
 
@@ -144,6 +137,11 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 	}
 
 	if len(merged) == 0 {
+		if _, ok := svc.(service.AuthService); ok {
+			// auth services are likely to intentionally be public
+			return svc, nil
+		}
+
 		return nil, errors.New("expected at least one filter, but found 0 filters")
 	}
 
@@ -157,7 +155,7 @@ func filterService(service service.Service, config config.ServiceConfig, authFil
 		panic(err)
 	}
 
-	return authorized.NewService(service, requirement), nil
+	return authorized.NewService(svc, requirement), nil
 }
 
 func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.FieldLogger) Server {
