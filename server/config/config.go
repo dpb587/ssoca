@@ -110,6 +110,22 @@ func (c *Config) ApplyDefaults() {
 	for _, service := range c.Services {
 		service.ApplyDefaults()
 	}
+
+	if c.Env.DefaultAuthService == "" {
+		var authServices []string
+
+		for _, service := range c.Services {
+			if service.Type != "google_authn" && service.Type != "github_authn" && service.Type != "http_authn" && service.Type != "uaa_authn" {
+				continue
+			}
+
+			authServices = append(authServices, service.Name)
+		}
+
+		if len(authServices) == 1 {
+			c.Env.DefaultAuthService = authServices[0]
+		}
+	}
 }
 
 func (c *Config) ApplyMigrations() {
