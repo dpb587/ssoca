@@ -9,8 +9,8 @@ go build -o tmp/docs-bin/ssoca cli/client/client.go
 export PATH="$PWD/tmp/docs-bin:$PATH"
 
 for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
-  mkdir -p docs/service/$cmd
-  rm -fr docs/service/$cmd/*-cmd.md
+  mkdir -p docs/reference/service/$cmd
+  rm -fr docs/reference/service/$cmd/*-cmd.md
 
   for subcmd in $( GO_FLAGS_COMPLETION=1 ssoca $cmd '' ); do
     target=docs/reference/service/$cmd/$subcmd-cmd.md
@@ -28,7 +28,7 @@ for cmd in $( GO_FLAGS_COMPLETION=1 ssoca '' ); do
       if [[ "$cmd" == "file" ]] && ( [[ "$subcmd" == "get" ]] || [[ "$subcmd" == "list" ]] ); then
         echo "- /reference/service/download/$subcmd-cmd/"
       fi
-      
+
       echo '---'
       echo
 
