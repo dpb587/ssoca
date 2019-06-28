@@ -40,6 +40,22 @@ var _ = Describe("Auth", func() {
 		)
 	})
 
+	Describe("SupportsRequestAuth", func() {
+		It("ignores by default", func() {
+			supports, err := service.SupportsRequestAuth(request)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(supports).To(BeFalse())
+		})
+
+		It("recognizes tokens", func() {
+			request.SetBasicAuth("user1", "pass1")
+
+			supports, err := service.SupportsRequestAuth(request)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(supports).To(BeTrue())
+		})
+	})
+
 	Describe("ParseRequestAuth", func() {
 		It("creates tokens", func() {
 			request.SetBasicAuth("user1", "pass1")

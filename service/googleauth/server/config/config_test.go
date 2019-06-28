@@ -24,4 +24,25 @@ var _ = Describe("Config", func() {
 			Expect(subject.TokenURL).To(Equal("https://www.googleapis.com/oauth2/v4/token"))
 		})
 	})
+
+	Describe("ApplyRedirectDefaults", func() {
+		BeforeEach(func() {
+			subject.ApplyDefaults()
+		})
+
+		It("active", func() {
+			subject.ApplyRedirectDefaults("http://success", "http://failure")
+			Expect(subject.FailureRedirectURL).To(Equal("http://failure"))
+			Expect(subject.SuccessRedirectURL).To(Equal("http://success"))
+		})
+
+		It("inactive", func() {
+			subject.FailureRedirectURL = "http://existing-failure"
+			subject.SuccessRedirectURL = "http://existing-success"
+
+			subject.ApplyRedirectDefaults("http://success", "http://failure")
+			Expect(subject.FailureRedirectURL).To(Equal("http://existing-failure"))
+			Expect(subject.SuccessRedirectURL).To(Equal("http://existing-success"))
+		})
+	})
 })

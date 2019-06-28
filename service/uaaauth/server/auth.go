@@ -28,10 +28,6 @@ func (s Service) SupportsRequestAuth(r http.Request) (bool, error) {
 		return false, nil
 	}
 
-	if claims.Issuer != s.config.URL {
-		return false, nil
-	}
-
 	return true, nil
 }
 

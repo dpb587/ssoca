@@ -31,7 +31,7 @@ var _ = Describe("Service", func() {
 		}
 	})
 
-	Describe("ParseRequestAuth", func() {
+	Describe("ParseRequestAuth + SupportsRequestAuth", func() {
 		BeforeEach(func() {
 			subject = NewService(
 				config.URLs{Origin: "fake-origin"},
@@ -61,6 +61,11 @@ var _ = Describe("Service", func() {
 			})
 
 			It("works", func() {
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeTrue())
+
 				token, err := subject.ParseRequestAuth(req)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -96,6 +101,11 @@ var _ = Describe("Service", func() {
 						},
 					}
 
+					supports, err := subject.SupportsRequestAuth(req)
+
+					Expect(err).ToNot(HaveOccurred())
+					Expect(supports).To(BeTrue())
+
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
@@ -121,6 +131,11 @@ var _ = Describe("Service", func() {
 						},
 					}
 
+					supports, err := subject.SupportsRequestAuth(req)
+
+					Expect(err).ToNot(HaveOccurred())
+					Expect(supports).To(BeTrue())
+
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
@@ -133,11 +148,52 @@ var _ = Describe("Service", func() {
 					Expect(token).To(BeNil())
 				})
 			})
+
+			Context("with mismatching issuer", func() {
+				BeforeEach(func() {
+					subject = NewService(
+						config.URLs{Origin: "fake-fake-origin"},
+						oauth2.Config{},
+						oauth2.NoContext,
+						config.JWT{
+							PrivateKey: &config.PrivateKey{
+								PrivateKey: privateKey,
+							},
+						},
+						nil,
+					)
+				})
+
+				It("errors", func() {
+					req := http.Request{
+						Header: http.Header{
+							"Authorization": []string{
+								fmt.Sprintf("bearer %s", internaltests.SharedToken),
+							},
+						},
+					}
+
+					supports, err := subject.SupportsRequestAuth(req)
+
+					Expect(err).ToNot(HaveOccurred())
+					Expect(supports).To(BeFalse())
+
+					_, err = subject.ParseRequestAuth(req)
+
+					Expect(err).To(HaveOccurred())
+					Expect(err.Error()).To(ContainSubstring("parsing claims (ignorable validation error)"))
+				})
+			})
 		})
 
 		Context("missing Authorization header", func() {
 			It("bypasses", func() {
 				req := http.Request{}
+
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
 
 				token, err := subject.ParseRequestAuth(req)
 
@@ -156,6 +212,11 @@ var _ = Describe("Service", func() {
 					},
 				}
 
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
+
 				token, err := subject.ParseRequestAuth(req)
 
 				Expect(err).To(HaveOccurred())
@@ -170,6 +231,11 @@ var _ = Describe("Service", func() {
 						},
 					},
 				}
+
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
 
 				token, err := subject.ParseRequestAuth(req)
 

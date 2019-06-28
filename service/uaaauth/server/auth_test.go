@@ -26,7 +26,7 @@ var _ = Describe("Auth", func() {
 		)
 	})
 
-	Describe("ParseRequestAuth", func() {
+	Describe("ParseRequestAuth, SupportsRequestAuth", func() {
 		Context("when valid token is used", func() {
 			var tokenString = internaltests.SharedToken
 			var req http.Request
@@ -42,6 +42,11 @@ var _ = Describe("Auth", func() {
 			})
 
 			It("works", func() {
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeTrue())
+
 				token, err := subject.ParseRequestAuth(req)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -77,6 +82,11 @@ var _ = Describe("Auth", func() {
 						},
 					}
 
+					supports, err := subject.SupportsRequestAuth(req)
+
+					Expect(err).ToNot(HaveOccurred())
+					Expect(supports).To(BeTrue())
+
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
@@ -102,6 +112,11 @@ var _ = Describe("Auth", func() {
 						},
 					}
 
+					supports, err := subject.SupportsRequestAuth(req)
+
+					Expect(err).ToNot(HaveOccurred())
+					Expect(supports).To(BeTrue())
+
 					token, err := subject.ParseRequestAuth(req)
 
 					Expect(err).To(HaveOccurred())
@@ -120,6 +135,11 @@ var _ = Describe("Auth", func() {
 			It("bypasses", func() {
 				req := http.Request{}
 
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
+
 				token, err := subject.ParseRequestAuth(req)
 
 				Expect(err).ToNot(HaveOccurred())
@@ -137,6 +157,11 @@ var _ = Describe("Auth", func() {
 					},
 				}
 
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
+
 				token, err := subject.ParseRequestAuth(req)
 
 				Expect(err).To(HaveOccurred())
@@ -151,6 +176,11 @@ var _ = Describe("Auth", func() {
 						},
 					},
 				}
+
+				supports, err := subject.SupportsRequestAuth(req)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(supports).To(BeFalse())
 
 				token, err := subject.ParseRequestAuth(req)
 
