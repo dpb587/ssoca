@@ -92,6 +92,7 @@ func (c client) attemptReauthenticate(err error) error {
 		"auth",
 		"--service", authServiceName,
 		"login",
+		"--skip-verify", // we'll be verifying in our next request
 	)
 
 	// It is weird for us to be shelling out instead of handling auth in process.
@@ -101,6 +102,11 @@ func (c client) attemptReauthenticate(err error) error {
 	// post-auth commands. Separate process indirectly fixes it by returning
 	// ownership of stdin when its done. https://github.com/dpb587/ssoca/issues/8
 	cmd.Stdin = c.runtime.GetStdin()
+	// Warning: STDOUT emitted by the authentication process could corrupt the
+	// output of the original command (e.g. if it's being used to generate a
+	// configuration file). At the moment, the only STDOUT comes from verifying
+	// the token after authenticating, so --skip-verify is avoiding the issue. It
+	// might be better to redirect to STDERR, but that seems a little weird.
 	cmd.Stdout = c.runtime.GetStdout()
 	cmd.Stderr = c.runtime.GetStderr()
 
