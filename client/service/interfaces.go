@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/dpb587/ssoca/service"
@@ -31,6 +32,6 @@ type AuthService interface {
 	Service
 
 	AuthRequest(*http.Request) error
-	AuthLogin() error
-	AuthLogout() error
+	AuthLogin(context.Context) error
+	AuthLogout(context.Context) error
 }

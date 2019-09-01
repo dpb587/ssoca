@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
@@ -16,7 +18,8 @@ import (
 type Login struct {
 	*clientcmd.ServiceCommand `no-flag:"true"`
 
-	SkipVerify bool `long:"skip-verify" description:"Skip verification of authentication, once complete"`
+	SkipVerify  bool          `long:"skip-verify" description:"Skip verification of authentication, once complete"`
+	WaitTimeout time.Duration `long:"wait-timeout" description:"Timeout to wait for authentication before erroring" default:"15m"`
 
 	ServiceManager service.Manager
 	GetClient      GetClient
@@ -95,7 +98,16 @@ func (c Login) Execute(_ []string) error {
 		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
-	err = authService.AuthLogin()
+	ctx := context.Background()
+
+	if c.WaitTimeout > 0 {
+		var ctxCancel context.CancelFunc
+
+		ctx, ctxCancel = context.WithTimeout(ctx, c.WaitTimeout)
+		defer ctxCancel()
+	}
+
+	err = authService.AuthLogin(ctx)
 	if err != nil {
 		return errors.Wrapf(err, "executing login with %s", authService.Type())
 	}

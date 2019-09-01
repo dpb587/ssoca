@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 
 	clientcmd "github.com/dpb587/ssoca/client/cmd"
@@ -40,7 +41,7 @@ func (c Logout) Execute(_ []string) error {
 		return fmt.Errorf("cannot authenticate with service: %s", authServiceType)
 	}
 
-	err = authService.AuthLogout()
+	err = authService.AuthLogout(context.Background())
 	if err != nil {
 		return errors.Wrap(err, "unauthenticating")
 	}

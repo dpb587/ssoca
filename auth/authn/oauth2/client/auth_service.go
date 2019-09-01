@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -29,7 +30,7 @@ func NewAuthService(serviceName string, serviceType service.Type, runtime client
 	}
 }
 
-func (as AuthService) AuthLogin() error {
+func (as AuthService) AuthLogin(ctx context.Context) error {
 	configManager, err := as.runtime.GetConfigManager()
 	if err != nil {
 		return errors.Wrap(err, "getting config manager")
@@ -62,7 +63,7 @@ func (as AuthService) AuthLogin() error {
 		as.runtime.GetStdin(),
 	)
 
-	token, err := str.Retrieve(fmt.Sprintf("/%s/initiate", as.serviceName))
+	token, err := str.Retrieve(ctx, fmt.Sprintf("/%s/initiate", as.serviceName))
 	if err != nil {
 		return errors.Wrap(err, "waiting for user token")
 	}
@@ -90,7 +91,7 @@ func (as AuthService) AuthLogin() error {
 	return nil
 }
 
-func (as AuthService) AuthLogout() error {
+func (as AuthService) AuthLogout(_ context.Context) error {
 	configManager, err := as.runtime.GetConfigManager()
 	if err != nil {
 		return errors.Wrap(err, "getting config manager")

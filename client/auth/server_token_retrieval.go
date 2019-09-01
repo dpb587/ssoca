@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -97,7 +98,7 @@ func (str *ServerTokenRetrieval) waitForTokenInput(tokenChannel chan string, err
 	}
 }
 
-func (str *ServerTokenRetrieval) Retrieve(baseurl string) (string, error) {
+func (str *ServerTokenRetrieval) Retrieve(ctx context.Context, baseurl string) (string, error) {
 	stdinChannel := make(chan string)
 	tokenChannel := make(chan string)
 	errorChannel := make(chan error)
@@ -152,6 +153,8 @@ func (str *ServerTokenRetrieval) Retrieve(baseurl string) (string, error) {
 		fmt.Fprintln(str.stdout, "")
 
 		return token, nil
+	case <-ctx.Done():
+		return "", ctx.Err()
 	case err := <-errorChannel:
 		return "", err
 	}

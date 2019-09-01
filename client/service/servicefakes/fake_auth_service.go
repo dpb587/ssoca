@@ -2,6 +2,7 @@
 package servicefakes
 
 import (
+	"context"
 	"net/http"
 	"sync"
 
@@ -48,19 +49,23 @@ type FakeAuthService struct {
 	authRequestReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AuthLoginStub        func() error
+	AuthLoginStub        func(context.Context) error
 	authLoginMutex       sync.RWMutex
-	authLoginArgsForCall []struct{}
-	authLoginReturns     struct {
+	authLoginArgsForCall []struct {
+		arg1 context.Context
+	}
+	authLoginReturns struct {
 		result1 error
 	}
 	authLoginReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AuthLogoutStub        func() error
+	AuthLogoutStub        func(context.Context) error
 	authLogoutMutex       sync.RWMutex
-	authLogoutArgsForCall []struct{}
-	authLogoutReturns     struct {
+	authLogoutArgsForCall []struct {
+		arg1 context.Context
+	}
+	authLogoutReturns struct {
 		result1 error
 	}
 	authLogoutReturnsOnCall map[int]struct {
@@ -238,14 +243,16 @@ func (fake *FakeAuthService) AuthRequestReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLogin() error {
+func (fake *FakeAuthService) AuthLogin(arg1 context.Context) error {
 	fake.authLoginMutex.Lock()
 	ret, specificReturn := fake.authLoginReturnsOnCall[len(fake.authLoginArgsForCall)]
-	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct{}{})
-	fake.recordInvocation("AuthLogin", []interface{}{})
+	fake.authLoginArgsForCall = append(fake.authLoginArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	fake.recordInvocation("AuthLogin", []interface{}{arg1})
 	fake.authLoginMutex.Unlock()
 	if fake.AuthLoginStub != nil {
-		return fake.AuthLoginStub()
+		return fake.AuthLoginStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
@@ -257,6 +264,12 @@ func (fake *FakeAuthService) AuthLoginCallCount() int {
 	fake.authLoginMutex.RLock()
 	defer fake.authLoginMutex.RUnlock()
 	return len(fake.authLoginArgsForCall)
+}
+
+func (fake *FakeAuthService) AuthLoginArgsForCall(i int) context.Context {
+	fake.authLoginMutex.RLock()
+	defer fake.authLoginMutex.RUnlock()
+	return fake.authLoginArgsForCall[i].arg1
 }
 
 func (fake *FakeAuthService) AuthLoginReturns(result1 error) {
@@ -278,14 +291,16 @@ func (fake *FakeAuthService) AuthLoginReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeAuthService) AuthLogout() error {
+func (fake *FakeAuthService) AuthLogout(arg1 context.Context) error {
 	fake.authLogoutMutex.Lock()
 	ret, specificReturn := fake.authLogoutReturnsOnCall[len(fake.authLogoutArgsForCall)]
-	fake.authLogoutArgsForCall = append(fake.authLogoutArgsForCall, struct{}{})
-	fake.recordInvocation("AuthLogout", []interface{}{})
+	fake.authLogoutArgsForCall = append(fake.authLogoutArgsForCall, struct {
+		arg1 context.Context
+	}{arg1})
+	fake.recordInvocation("AuthLogout", []interface{}{arg1})
 	fake.authLogoutMutex.Unlock()
 	if fake.AuthLogoutStub != nil {
-		return fake.AuthLogoutStub()
+		return fake.AuthLogoutStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
@@ -297,6 +312,12 @@ func (fake *FakeAuthService) AuthLogoutCallCount() int {
 	fake.authLogoutMutex.RLock()
 	defer fake.authLogoutMutex.RUnlock()
 	return len(fake.authLogoutArgsForCall)
+}
+
+func (fake *FakeAuthService) AuthLogoutArgsForCall(i int) context.Context {
+	fake.authLogoutMutex.RLock()
+	defer fake.authLogoutMutex.RUnlock()
+	return fake.authLogoutArgsForCall[i].arg1
 }
 
 func (fake *FakeAuthService) AuthLogoutReturns(result1 error) {

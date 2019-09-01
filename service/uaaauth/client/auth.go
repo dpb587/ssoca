@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -16,7 +17,7 @@ import (
 	"github.com/dpb587/ssoca/service/uaaauth/api"
 )
 
-func (s Service) AuthLogin() error {
+func (s Service) AuthLogin(_ context.Context) error {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
 		return errors.Wrap(err, "getting config manager")
@@ -145,7 +146,7 @@ func (s Service) AuthLogin() error {
 	return nil
 }
 
-func (s Service) AuthLogout() error {
+func (s Service) AuthLogout(_ context.Context) error {
 	return nil
 }
 

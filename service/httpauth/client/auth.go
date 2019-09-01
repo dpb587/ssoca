@@ -1,13 +1,14 @@
 package client
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/pkg/errors"
 )
 
-func (s Service) AuthLogin() error {
+func (s Service) AuthLogin(_ context.Context) error {
 	configManager, err := s.runtime.GetConfigManager()
 	if err != nil {
 		return errors.Wrap(err, "getting config manager")
@@ -49,7 +50,7 @@ func (s Service) AuthLogin() error {
 	return nil
 }
 
-func (s Service) AuthLogout() error {
+func (s Service) AuthLogout(context.Context) error {
 	return nil
 }
 

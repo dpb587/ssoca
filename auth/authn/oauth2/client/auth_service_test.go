@@ -2,9 +2,9 @@ package client_test
 
 import (
 	"bytes"
-	"errors"
+	"context"
 	"net/http"
-	"strings"
+	"time"
 
 	"github.com/dpb587/ssoca/auth/authn"
 	. "github.com/dpb587/ssoca/auth/authn/oauth2/client"
@@ -12,6 +12,7 @@ import (
 	"github.com/dpb587/ssoca/client/clientfakes"
 	"github.com/dpb587/ssoca/client/config"
 	"github.com/dpb587/ssoca/client/config/configfakes"
+	"github.com/pkg/errors"
 
 	uifakes "github.com/cloudfoundry/bosh-cli/ui/fakes"
 	boshsysfakes "github.com/cloudfoundry/bosh-utils/system/fakes"
@@ -26,6 +27,7 @@ var _ = Describe("AuthService", func() {
 	var env config.EnvironmentState
 	var ui *uifakes.FakeUI
 	var cmdRunner *boshsysfakes.FakeCmdRunner
+	var stdout, stderr *bytes.Buffer
 
 	var runtime *clientfakes.FakeRuntime
 	var configManager *configfakes.FakeManager
@@ -36,6 +38,9 @@ var _ = Describe("AuthService", func() {
 			URL:  "https://192.0.2.99",
 		}
 
+		stderr = bytes.NewBuffer(nil)
+		stdout = bytes.NewBuffer(nil)
+
 		ui = &uifakes.FakeUI{}
 		cmdRunner = &boshsysfakes.FakeCmdRunner{}
 
@@ -43,53 +48,53 @@ var _ = Describe("AuthService", func() {
 
 		runtime = &clientfakes.FakeRuntime{}
 		runtime.GetUIReturns(ui)
-		runtime.GetStderrReturns(&bytes.Buffer{})
-		runtime.GetStdoutReturns(&bytes.Buffer{})
-		// runtime.GetStdinReturns(bytes.NewBufferString(""))
+		runtime.GetStdinReturns(bytes.NewBuffer(nil))
+		runtime.GetStderrReturns(stderr)
+		runtime.GetStdoutReturns(stdout)
 		runtime.GetConfigManagerReturns(configManager, nil)
 
 		subject = NewAuthService("fake-name", "fake-type", runtime, cmdRunner)
 	})
 
 	Describe("AuthLogin", func() {
-		// TODO enable tests; some complications around fake stdin/ui.AskedText
-		XIt("shows login url and retrieves token from user", func() {
+		It("shows login url and retrieves token from user", func() {
 			runtime.GetEnvironmentReturns(env, nil)
+			runtime.GetStdinReturns(bytes.NewBufferString("mytoken\r\n"))
 
-			ui.AskedText = append(ui.AskedText, uifakes.Answer{
-				Text:  "mytoken",
-				Error: nil,
-			})
-
-			err := subject.AuthLogin()
+			err := subject.AuthLogin(context.Background())
 
 			Expect(err).ToNot(HaveOccurred())
-			//
-			// authConfig, ok := token.(authn.AuthorizationToken)
-			// Expect(ok).To(BeTrue())
-			//
-			// Expect(authConfig.Token).To(Equal("mytoken"))
 
-			Expect(strings.Join(ui.Said, "")).To(ContainSubstring("https://192.0.2.99/auth/initiate"))
+			Expect(configManager.SetEnvironmentCallCount()).To(Equal(1))
+
+			envState := configManager.SetEnvironmentArgsForCall(0)
+			token := envState.Auth.Options
+
+			authConfig, ok := token.(authn.AuthorizationToken)
+			Expect(ok).To(BeTrue())
+
+			Expect(authConfig.Type).To(Equal("Bearer"))
+			Expect(authConfig.Value).To(Equal("mytoken"))
+
+			Expect(stderr.String()).To(ContainSubstring("https://192.0.2.99/fake-name/initiate"))
 		})
 
-		XIt("propagates errors on input fail", func() {
+		It("respects timeouts", func() {
 			runtime.GetEnvironmentReturns(env, nil)
 
-			ui.AskedText = append(ui.AskedText, uifakes.Answer{
-				Error: errors.New("ctrl c"),
-			})
+			ctx, ctxCancel := context.WithTimeout(context.Background(), time.Second)
+			defer ctxCancel()
 
-			err := subject.AuthLogin()
+			err := subject.AuthLogin(ctx)
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("ctrl c"))
+			Expect(errors.Cause(err)).To(Equal(context.DeadlineExceeded))
 		})
 	})
 
 	Describe("AuthLogout", func() {
 		It("does not error", func() {
-			err := subject.AuthLogout()
+			err := subject.AuthLogout(context.Background())
 
 			Expect(err).ToNot(HaveOccurred())
 		})
