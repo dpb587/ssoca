@@ -155,6 +155,7 @@ func (r Runtime) GetClient() (httpclient.Client, error) {
 	}
 
 	goclient := &http.Client{
+		Timeout:   60 * time.Second,
 		Transport: client.NewAuthTransport(r, r.serviceManager, baseTransport),
 	}
 
