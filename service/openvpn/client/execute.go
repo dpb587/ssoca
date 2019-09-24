@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	"github.com/pkg/errors"
@@ -17,9 +18,28 @@ type ExecuteOptions struct {
 	Exec      string
 	ExtraArgs []string
 
-	SkipAuthRetry     bool
-	StaticCertificate bool
-	Sudo              bool
+	ManagementMode executeManagementMode
+	SkipAuthRetry  bool
+	Sudo           bool
+}
+
+type executeManagementMode string
+
+const ExecuteManagementModeAuto executeManagementMode = "auto"
+const ExecuteManagementModeDisabled executeManagementMode = "disabled"
+const ExecuteManagementModeEnabled executeManagementMode = "enabled"
+
+func ExecuteManagementModeFromString(in string) (executeManagementMode, error) {
+	switch executeManagementMode(in) {
+	case ExecuteManagementModeAuto:
+		return ExecuteManagementModeAuto, nil
+	case ExecuteManagementModeDisabled:
+		return ExecuteManagementModeDisabled, nil
+	case ExecuteManagementModeEnabled:
+		return ExecuteManagementModeEnabled, nil
+	}
+
+	return "", fmt.Errorf("invalid value: %v", in)
 }
 
 func (s Service) Execute(opts ExecuteOptions) error {
@@ -36,6 +56,20 @@ func (s Service) Execute(opts ExecuteOptions) error {
 			return errors.Wrap(err, "finding executable")
 		} else if guessed {
 			s.logger.Warnf("openvpn executable found outside of $PATH (using %s)", executable)
+		}
+	}
+
+	if opts.ManagementMode == "" {
+		opts.ManagementMode = ExecuteManagementModeAuto
+	}
+
+	if opts.ManagementMode == ExecuteManagementModeAuto {
+		// this is best effort; ignore errors in favor of surfacing them in non-magic paths
+		stdout, _, _, _ := s.cmdRunner.RunCommand(executable, "--version")
+		if strings.Contains(stdout, "library versions: OpenSSL 1.1.1") {
+			s.logger.Warnf("disabling management interface (https://github.com/dpb587/ssoca/issues/13): detected openssl 1.1.1")
+
+			opts.ManagementMode = ExecuteManagementModeDisabled
 		}
 	}
 
@@ -75,7 +109,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 
 	var mgmt management.Server
 
-	if !opts.StaticCertificate {
+	if opts.ManagementMode == ExecuteManagementModeEnabled {
 		mgmt = management.NewServer(
 			management.NewDefaultHandler(&profileManager),
 			"tcp",
@@ -93,9 +127,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		return errors.Wrap(err, "getting profile")
 	}
 
-	if opts.StaticCertificate {
-		err = s.fs.WriteFileString(configPath, profile.StaticConfig())
-	} else {
+	if opts.ManagementMode == ExecuteManagementModeEnabled {
 		managementPasswordPath := path.Join(tmpdir, "management.pw")
 
 		err = s.fs.WriteFileString(managementPasswordPath, mgmt.ManagementPassword()+"\n")
@@ -111,9 +143,11 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		}
 
 		err = s.fs.WriteFileString(configPath, profile.ManagementConfig(mgmt.ManagementConfigValue(), managementPasswordPath))
+	} else {
+		err = s.fs.WriteFileString(configPath, profile.StaticConfig())
 	}
 	if err != nil {
-		return errors.Wrap(err, "writing certificate")
+		return errors.Wrap(err, "writing profile")
 	}
 
 	_, _, _, err = s.cmdRunner.RunComplexCommand(executeRewriteCommand(boshsys.Command{
