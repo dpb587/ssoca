@@ -19,7 +19,7 @@ if [ -e "$task_dir/repo/docs/releases/v${version}.md" ]; then
 fi
 
 (
-  echo "Artifacts"
+  echo "**Artifacts**"
   echo ""
   echo "                                                              sha256  file"
 ) >> $release_dir/notes.md
