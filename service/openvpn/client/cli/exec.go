@@ -15,7 +15,7 @@ type Exec struct {
 
 	Exec           string      `long:"exec" description:"Path to the openvpn binary"`
 	Reconnect      bool        `long:"reconnect" description:"Reconnect on connection disconnects"`
-	ManagementMode string      `long:"management-mode" description:"Configure use of management interface (one of: auto; enabled; disabled)" default:"auto"`
+	ManagementMode string      `long:"management-mode" description:"Configure use of management interface (one of: auto, enabled, disabled; default: auto)"`
 	Sudo           bool        `long:"sudo" description:"Execute openvpn with sudo"`
 	Args           connectArgs `positional-args:"true"`
 
@@ -40,6 +40,8 @@ func (c Exec) Execute(_ []string) error {
 		}
 
 		c.ManagementMode = string(svc.ExecuteManagementModeDisabled)
+
+		c.GetLogger().Warnf("cli: --static-certificate option is deprecated (remove the flag or learn more about the use of --management-mode)")
 	} else if c.ManagementMode == "" {
 		c.ManagementMode = string(svc.ExecuteManagementModeAuto)
 	}
