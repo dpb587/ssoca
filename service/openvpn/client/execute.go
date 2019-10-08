@@ -67,7 +67,7 @@ func (s Service) Execute(opts ExecuteOptions) error {
 		// this is best effort; ignore errors in favor of surfacing them in non-magic paths
 		stdout, _, _, _ := s.cmdRunner.RunCommand(executable, "--version")
 		if strings.Contains(stdout, "library versions: OpenSSL 1.1.1") {
-			s.logger.Warnf("disabling management interface (https://github.com/dpb587/ssoca/issues/13): detected openssl 1.1.1")
+			s.logger.Info("disabling management interface (https://github.com/dpb587/ssoca/issues/13): detected openssl 1.1.1")
 
 			opts.ManagementMode = ExecuteManagementModeDisabled
 		}
