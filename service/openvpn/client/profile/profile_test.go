@@ -61,6 +61,8 @@ fake-base-profile-line2`))
 		It("includes base config, private key, and certificate", func() {
 			Expect(subject.StaticConfig()).To(Equal(`fake-base-profile-line1
 fake-base-profile-line2
+remap-usr1 SIGTERM
+
 <key>
 -----BEGIN RSA PRIVATE KEY-----
 MIICXQIBAAKBgQCqAzEMN8rybTZMLfUjnrcXCPTAY7uYQHA1qRAcO02jJjr0NuxY

@@ -30,7 +30,12 @@ func (p Profile) BaseConfig() string {
 }
 
 func (p Profile) StaticConfig() string {
-	config := p.baseConfig
+	config := p.BaseConfig()
+
+	// with static configs, short-lived certificates may expire or be rejected and
+	// openvpn may continue retrying; on the assumption that the process manager
+	// will restart and ssoca will generate a new, valid certificate, simply exit.
+	config = fmt.Sprintf("%s\nremap-usr1 SIGTERM\n", config)
 
 	// inline key-pair
 	config = fmt.Sprintf("%s\n<key>\n%s\n</key>\n", config, p.privateKeyPEM())
@@ -40,7 +45,7 @@ func (p Profile) StaticConfig() string {
 }
 
 func (p Profile) ManagementConfig(managementAddress, managementPasswordFile string) string {
-	config := p.baseConfig
+	config := p.BaseConfig()
 
 	config = config + "\n"
 	config = fmt.Sprintf("%smanagement %s %s\n", config, managementAddress, managementPasswordFile)
@@ -48,7 +53,9 @@ func (p Profile) ManagementConfig(managementAddress, managementPasswordFile stri
 	config = fmt.Sprintf("%smanagement-external-cert ssoca\n", config)
 	config = fmt.Sprintf("%smanagement-external-key\n", config)
 
-	// force connection resets to flush credentials
+	// since openvpn does not know how to receive certificate updates, when USR1
+	// connection-reset is encountered, have it reload the configuration and
+	// management connection to receive newer certificates.
 	config = fmt.Sprintf("%s\nremap-usr1 SIGHUP\n", config)
 
 	return config
