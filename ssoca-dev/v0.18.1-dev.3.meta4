@@ -1,0 +1,58 @@
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="ssoca-client-0.18.1-dev.3-darwin-amd64">
+    <hash type="sha-512">e11828f24b15238af083577f3ca4ff57d93eb6746d93dabc09a450467ad8ceaa01be022852b4beceaafb51683a3a33b22e2195e52cf24d7475aa62b33c3b680a</hash>
+    <hash type="sha-256">bf70260c8044179f2fc8206dd63b381da3b57d225177330f0f55dfb35bbb45b1</hash>
+    <hash type="sha-1">54a737c7f0f750e1af53f1a4fda41aa4ee2f716a</hash>
+    <hash type="md5">a87ab5d0d7b2976a959fe68bde25b7c5</hash>
+    <size>13796400</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-client-0.18.1-dev.3-darwin-amd64</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <file name="ssoca-client-0.18.1-dev.3-linux-amd64">
+    <hash type="sha-512">33d2713701c49e285d645cec7f33a5f12d347710e36f8fb665531cb6a8bacb3657fc1b27cf2b5dd3f074179169caaa854d892697a584d74d30ce24ad4f549e92</hash>
+    <hash type="sha-256">71e1691725018c8617f6935fc598b46d103ed0f5894af53a554c34c71193b459</hash>
+    <hash type="sha-1">74cf1cf443ca295d2b827f2b8db9550d389a0413</hash>
+    <hash type="md5">7d9fbe2d577e75dfef21580232a3b724</hash>
+    <size>13960276</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-client-0.18.1-dev.3-linux-amd64</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <file name="ssoca-client-0.18.1-dev.3-windows-amd64.exe">
+    <hash type="sha-512">cf78fb3453e9f585cb974e37298cf3c2ac2c22376b996803db6460257714a01200aa98428720730dfed1609bce63a74eee7e9f78a679bd3de81ff87590e0a62c</hash>
+    <hash type="sha-256">50e3d702bf90a05b4ec0014197d8ef11742fad4ff7e4a6f419b344024ca3db4b</hash>
+    <hash type="sha-1">35d952ab595f274bcdbc8d475379bc16412b1fc6</hash>
+    <hash type="md5">cccb22f92fab58db36dd5542a0e7b7dc</hash>
+    <size>13782016</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-client-0.18.1-dev.3-windows-amd64.exe</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <file name="ssoca-server-0.18.1-dev.3-darwin-amd64">
+    <hash type="sha-512">774a99dd66dad9a031d1f05e632aef98b414f107f8ec97f7f586828b8db71cd4ff1295a51a91f7c4e1e966d8e5dff74ac3049aa680b2c50c9a509e9ade845180</hash>
+    <hash type="sha-256">73cb4e55701899c3777c484406516392a922d97b78ed44b7c402c15f1da6d2e2</hash>
+    <hash type="sha-1">108f084388f95449b47566e29e0b564ca26d9b02</hash>
+    <hash type="md5">0bf744be664505475a44a7ef2c6c67ab</hash>
+    <size>14860472</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-server-0.18.1-dev.3-darwin-amd64</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <file name="ssoca-server-0.18.1-dev.3-linux-amd64">
+    <hash type="sha-512">58a77d65f2beb8867073a6bca4247cca37b2101c653598e01f85c921c240b5b19f616826f7ab8d1eec6567a09bebc2945faea2ba57ed47f541b27364b1f8b9b3</hash>
+    <hash type="sha-256">437de9612d9697c67abe0dc0519b4802e3fa21b0e69c3ecf0366db8ec98745b9</hash>
+    <hash type="sha-1">52ac19dfd559176c6bff5c481c623d3cc80e0a0d</hash>
+    <hash type="md5">27f162122bbc826454de024e497f6529</hash>
+    <size>15011298</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-server-0.18.1-dev.3-linux-amd64</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <file name="ssoca-server-0.18.1-dev.3-windows-amd64.exe">
+    <hash type="sha-512">2cf8456d01690ef719a100f07afdc49e2ce2379f324edc6e773212ab123d87fea3ac9df3999b0133885a63e74d1e9033a83c4427cfab8939ca2aae7c680d5c1a</hash>
+    <hash type="sha-256">0623149b9b15b8c6521bcdfcfead5ac994185ab78a03eb769884b1e97d921f3e</hash>
+    <hash type="sha-1">ae1b4a9913be9fed6682fb4d1ffb072976d2cfc2</hash>
+    <hash type="md5">c3bd30726f3e5c412003b876164014ae</hash>
+    <size>14746624</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1-dev.3/ssoca-server-0.18.1-dev.3-windows-amd64.exe</url>
+    <version>0.18.1-dev.3</version>
+  </file>
+  <generator>metalink-repository-resource/0.0.0</generator>
+  <published>2019-10-17T18:54:04.359861057Z</published>
+</metalink>
