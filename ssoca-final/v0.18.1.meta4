@@ -1,0 +1,58 @@
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="ssoca-client-0.18.1-darwin-amd64">
+    <hash type="sha-512">7a3922537c99c7ae04affa829b77417fe54c133f0fcb9c57b440fd9e0c4da7fef9f074e335cc666d33b14d70dbccdc662f0f56988e46568c1add589cc1129a47</hash>
+    <hash type="sha-256">4ec0432ca5acf60334ad62a752c2a23de5d6e110fdcb324d5f8de7156b2316a0</hash>
+    <hash type="sha-1">a7cfa808cf260c632cce83fc9aeabbe6b338170f</hash>
+    <hash type="md5">6d7a732ccd7a8bc89d4aec67613c508d</hash>
+    <size>13796448</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-darwin-amd64</url>
+    <version>0.18.1</version>
+  </file>
+  <file name="ssoca-client-0.18.1-linux-amd64">
+    <hash type="sha-512">63946dfd99f59ce40be163298e7fc44aa847265ed8995d03a4b0aabb4936c58eed9bd9e897bd97023f6f5e4ce9d277c829ebaeaf88a869d8223c0deed2578905</hash>
+    <hash type="sha-256">379b1adcade7124cdbefa8d0e26337f33a3ec1e8e35ffb194a5c2ab3d94b5f3b</hash>
+    <hash type="sha-1">35a0777288b4a1193766ffea4499795edb0f8ccb</hash>
+    <hash type="md5">ad0482e6c7222040ea2dd08216378ee5</hash>
+    <size>13952129</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-linux-amd64</url>
+    <version>0.18.1</version>
+  </file>
+  <file name="ssoca-client-0.18.1-windows-amd64.exe">
+    <hash type="sha-512">a93fb42abf777ebfd84f7db7e2778ada4362ceefe36d1d488f64be63a0f6b795dfbab126c991e04ea6e98614bf29b082bb66dbaed6218113460b8c53c7ebf3ff</hash>
+    <hash type="sha-256">55f249022148b543a3698e8aee4ea591653a31c65e277c8ba81710c241ae33ee</hash>
+    <hash type="sha-1">e23a70f7165c20a7b6cf754a8620e2a48e1715da</hash>
+    <hash type="md5">fb00269cce1ee001fb859680e163bd56</hash>
+    <size>13809152</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-client-0.18.1-windows-amd64.exe</url>
+    <version>0.18.1</version>
+  </file>
+  <file name="ssoca-server-0.18.1-darwin-amd64">
+    <hash type="sha-512">fee8929c924759ffd10c5fa4632e3c2890d859d600c71cb23bdfd2008d452bb3e0313a3cb450e3f7ff75a704926f3246e90adae02731b77cf35eec673bea80b4</hash>
+    <hash type="sha-256">bd17a7ca1d5ceaffe9947d54b0c2c983c14d766a3c49812b5fa13d237853395f</hash>
+    <hash type="sha-1">f01d56d074e4b3f9ee0425dbb06e310b42be225f</hash>
+    <hash type="md5">77aa39d8411c53a5eee06edd806c91b7</hash>
+    <size>14864616</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-darwin-amd64</url>
+    <version>0.18.1</version>
+  </file>
+  <file name="ssoca-server-0.18.1-linux-amd64">
+    <hash type="sha-512">2cfd5a69e2de1e45267617972d33abb0db4a44e5b58bf381bb3db313dcbe737947c9cef4c5cddeb72a8cc6c38cc23db712560d36a39b437294e5c6cd1640e1f0</hash>
+    <hash type="sha-256">a6e9fc9f60a3b20775ca5e49496ccf19580211238f9e323774c340b45a621b42</hash>
+    <hash type="sha-1">5b308a81a269953e8392ef2b71ddd427b435b49e</hash>
+    <hash type="md5">4dd1c871538a25525baac50d746346af</hash>
+    <size>15015439</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-linux-amd64</url>
+    <version>0.18.1</version>
+  </file>
+  <file name="ssoca-server-0.18.1-windows-amd64.exe">
+    <hash type="sha-512">e7c9999ff831f81a4e813f63a28daaadfa5a9a429a7c1220f44b926dc949910eff53cecf56d3787dedd9f8657dc15067b7441fd9697cbc0646719d6914a165cc</hash>
+    <hash type="sha-256">791ec0c47cba4b1ee0f5bc35fd7e1ea592243aa375c5368cc21971f834ef2dd2</hash>
+    <hash type="sha-1">0722de23aab53be418fd75f0e4328e0d21b8d739</hash>
+    <hash type="md5">aea037f6528d86a2934254921eee67db</hash>
+    <size>14777856</size>
+    <url>https://s3-external-1.amazonaws.com/dpb587-ssoca-us-east-1/artifacts/v0.18.1/ssoca-server-0.18.1-windows-amd64.exe</url>
+    <version>0.18.1</version>
+  </file>
+  <generator>metalink-repository-resource/0.0.0</generator>
+  <published>2019-10-21T15:09:40.79025268Z</published>
+</metalink>
