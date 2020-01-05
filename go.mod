@@ -4,71 +4,48 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.50.0 // indirect
-	code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c
+	code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c // indirect
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200103214402-4ae6f49cdca0 // indirect
-	code.cloudfoundry.org/workpool v0.0.0-20170718174546-99757edba735 // indirect
-	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
-	github.com/aws/aws-sdk-go v1.27.0 // indirect
-	github.com/bmatcuk/doublestar v1.2.2
-	github.com/charlievieth/fs v0.0.0-20170613215519-7dc373669fa1
+	github.com/bmatcuk/doublestar v1.2.2 // indirect
+	github.com/charlievieth/fs v0.0.0-20170613215519-7dc373669fa1 // indirect
 	github.com/cheggaaa/pb v1.0.18
-	github.com/cloudfoundry/bosh-agent v2.290.0+incompatible // indirect
 	github.com/cloudfoundry/bosh-cli v6.1.1+incompatible
-	github.com/cloudfoundry/bosh-davcli v0.0.44 // indirect
-	github.com/cloudfoundry/bosh-gcscli v0.0.16 // indirect
-	github.com/cloudfoundry/bosh-s3cli v0.0.94 // indirect
 	github.com/cloudfoundry/bosh-utils v0.0.0-20200104100158-8c5bf9093331
-	github.com/cloudfoundry/config-server v0.1.20 // indirect
 	github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e // indirect
-	github.com/cloudfoundry/socks5-proxy v0.2.0
-	github.com/cppforlife/go-patch v0.2.0 // indirect
-	github.com/cppforlife/go-semi-semantic v0.0.0-20160921010311-576b6af77ae4
+	github.com/cloudfoundry/socks5-proxy v0.2.0 // indirect
+	github.com/cppforlife/go-semi-semantic v0.0.0-20160921010311-576b6af77ae4 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dpb587/go-onc v0.0.0-20180915024426-863d310b28e3
 	github.com/dpb587/go-openvpn v0.0.0-20181011063906-1167a52705a8
-	github.com/dustin/go-humanize v1.0.0
-	github.com/fatih/color v1.8.0
+	github.com/dustin/go-humanize v1.0.0 // indirect
+	github.com/fatih/color v1.8.0 // indirect
 	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
-	github.com/golang/protobuf v1.3.2
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/google/go-querystring v1.0.0
-	github.com/hashicorp/go-multierror v1.0.0 // indirect
-	github.com/hashicorp/golang-lru v0.5.3 // indirect
+	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/mattn/go-colorable v0.1.4
-	github.com/mattn/go-isatty v0.0.11
-	github.com/mattn/go-runewidth v0.0.7
-	github.com/mattn/goveralls v0.0.2
-	github.com/maxbrunsfeld/counterfeiter v0.0.0-20170504120819-c1f2005ff133
-	github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5
+	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/mattn/go-runewidth v0.0.7 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1
-	github.com/pivotal-cf/paraphernalia v0.0.0-20180203224945-a64ae2051c20
+	github.com/pivotal-cf/paraphernalia v0.0.0-20180203224945-a64ae2051c20 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2
-	github.com/vito/go-interact v1.0.0
+	github.com/tedsuo/ifrit v0.0.0-20191009134036-9a97d0632f00 // indirect
+	github.com/vito/go-interact v1.0.0 // indirect
 	go.opencensus.io v0.22.2 // indirect
 	golang.org/x/crypto v0.0.0-20191227163750-53104e6ec876
-	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
+	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
-	golang.org/x/sys v0.0.0-20200103143344-a1369afcdac7
-	golang.org/x/text v0.3.2
-	golang.org/x/tools v0.0.0-20191216173652-a0e659d51361
+	golang.org/x/sys v0.0.0-20200103143344-a1369afcdac7 // indirect
 	google.golang.org/api v0.15.0
-	google.golang.org/appengine v1.6.5
+	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191230161307-f3c370f40bfb // indirect
 	google.golang.org/grpc v1.26.0 // indirect
-	gopkg.in/VividCortex/ewma.v1 v1.1.1 // indirect
-	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
-	gopkg.in/cheggaaa/pb.v2 v2.0.7 // indirect
-	gopkg.in/fatih/color.v1 v1.7.0 // indirect
-	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
-	gopkg.in/mattn/go-colorable.v0 v0.1.0 // indirect
-	gopkg.in/mattn/go-isatty.v0 v0.0.4 // indirect
-	gopkg.in/mattn/go-runewidth.v0 v0.0.4 // indirect
+	gopkg.in/cheggaaa/pb.v1 v1.0.28 // indirect
 	gopkg.in/yaml.v2 v2.2.7
 )
