@@ -32,7 +32,7 @@ func (s Service) OAuthUserProfileLoader(client *http.Client) (token auth.Token, 
 	token.Groups = []string{}
 
 	for nextPage := 1; nextPage != 0; {
-		teams, resp, err := ghclient.Organizations.ListUserTeams(ctx, &github.ListOptions{Page: nextPage})
+		teams, resp, err := ghclient.Teams.ListUserTeams(ctx, &github.ListOptions{Page: nextPage})
 		if err != nil {
 			return token, errors.Wrap(err, "listing user teams")
 		}
