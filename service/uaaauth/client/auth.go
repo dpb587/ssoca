@@ -126,6 +126,11 @@ func (s Service) AuthLogin(_ context.Context) error {
 		return errors.Wrap(err, "getting environment")
 	}
 
+	refreshToken, refreshable := accessToken.(boshuaa.RefreshableAccessToken)
+	if !refreshable {
+		return errors.New("server did not provide a refreshable token")
+	}
+
 	env.Auth = &clientconfig.EnvironmentAuthState{
 		Name: s.name,
 		Type: string(s.Type()),
@@ -134,7 +139,7 @@ func (s Service) AuthLogin(_ context.Context) error {
 			CACertificate: metadata.CACertificate,
 			ClientID:      metadata.ClientID,
 			ClientSecret:  metadata.ClientSecret,
-			RefreshToken:  accessToken.RefreshToken().Value(),
+			RefreshToken:  refreshToken.Value(),
 		},
 	}
 
@@ -167,11 +172,7 @@ func (s Service) AuthRequest(req *http.Request) error {
 		return errors.Wrap(err, "creating UAA client")
 	}
 
-	staleToken := client.NewStaleAccessToken(authConfig.RefreshToken)
-	accessToken, err := staleToken.Refresh()
-	if err != nil {
-		return errors.Wrap(err, "refreshing token")
-	}
+	accessToken, err := client.RefreshTokenGrant(authConfig.RefreshToken)
 
 	req.Header.Add("Authorization", fmt.Sprintf("%s %s", accessToken.Type(), accessToken.Value()))
 

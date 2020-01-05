@@ -184,17 +184,17 @@ var _ = Describe("Auth", func() {
 									StatusCode: 200,
 									Body:       ioutil.NopCloser(strings.NewReader(`{"name":"test user","email":"somebody@example.com","email_verified":true}`)),
 								}, nil
-							case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024":
+							case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024&prettyPrint=false":
 								return &http.Response{
 									StatusCode: 200,
 									Body:       ioutil.NopCloser(strings.NewReader(`{"projects":[{"projectId":"test-1234","projectNumber":"12345678","name":"Test 1234"},{"projectId":"test-2345","projectNumber":"23456789","name":"Test 2345"}]}`)),
 								}, nil
-							case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json":
+							case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json&prettyPrint=false":
 								return &http.Response{
 									StatusCode: 200,
 									Body:       ioutil.NopCloser(strings.NewReader(`{"bindings":[{"role":"roles/owner","members":["user:somebody@example.com"]}]}`)),
 								}, nil
-							case "https://cloudresourcemanager.googleapis.com/v1/projects/test-2345:getIamPolicy?alt=json":
+							case "https://cloudresourcemanager.googleapis.com/v1/projects/test-2345:getIamPolicy?alt=json&prettyPrint=false":
 								return &http.Response{
 									StatusCode: 200,
 									Body:       ioutil.NopCloser(strings.NewReader(`{"bindings":[{"role":"roles/editor","members":["user:somebody@example.com"]}]}`)),
@@ -232,17 +232,17 @@ var _ = Describe("Auth", func() {
 										StatusCode: 200,
 										Body:       ioutil.NopCloser(strings.NewReader(`{"name":"test user","email":"somebody@example.com","email_verified":true}`)),
 									}, nil
-								case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024":
+								case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024&prettyPrint=false":
 									return &http.Response{
 										StatusCode: 200,
 										Body:       ioutil.NopCloser(strings.NewReader(`{"projects":[{"projectId":"test-1234","projectNumber":"12345678","name":"Test 1234"},{"projectId":"test-2345","projectNumber":"23456789","name":"Test 2345"}]}`)),
 									}, nil
-								case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json":
+								case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json&prettyPrint=false":
 									return &http.Response{
 										StatusCode: 200,
 										Body:       ioutil.NopCloser(strings.NewReader(`{"bindings":[{"role":"roles/owner","members":["user:somebody@example.com"]}]}`)),
 									}, nil
-								case "https://cloudresourcemanager.googleapis.com/v1/projects/test-2345:getIamPolicy?alt=json":
+								case "https://cloudresourcemanager.googleapis.com/v1/projects/test-2345:getIamPolicy?alt=json&prettyPrint=false":
 									return &http.Response{
 										StatusCode: 200,
 										Body:       ioutil.NopCloser(strings.NewReader(`{"bindings":[{"role":"roles/editor","members":["user:somebody@example.com"]}]}`)),
@@ -308,7 +308,7 @@ var _ = Describe("Auth", func() {
 											StatusCode: 200,
 											Body:       ioutil.NopCloser(strings.NewReader(`{"name":"test user","email":"somebody@example.com","email_verified":true}`)),
 										}, nil
-									case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024":
+									case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024&prettyPrint=false":
 										return &http.Response{
 											StatusCode: 500,
 											Body:       ioutil.NopCloser(strings.NewReader("error")),
@@ -338,12 +338,12 @@ var _ = Describe("Auth", func() {
 											StatusCode: 200,
 											Body:       ioutil.NopCloser(strings.NewReader(`{"name":"test user","email":"somebody@example.com","email_verified":true}`)),
 										}, nil
-									case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024":
+									case "https://cloudresourcemanager.googleapis.com/v1/projects?alt=json&pageSize=1024&prettyPrint=false":
 										return &http.Response{
 											StatusCode: 200,
 											Body:       ioutil.NopCloser(strings.NewReader(`{"projects":[{"projectId":"test-1234","projectNumber":"12345678","name":"Test 1234"},{"projectId":"test-2345","projectNumber":"23456789","name":"Test 2345"}]}`)),
 										}, nil
-									case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json":
+									case "https://cloudresourcemanager.googleapis.com/v1/projects/test-1234:getIamPolicy?alt=json&prettyPrint=false":
 										return &http.Response{
 											StatusCode: 500,
 											Body:       ioutil.NopCloser(strings.NewReader("error")),

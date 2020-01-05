@@ -275,7 +275,7 @@ var _ = Describe("Callback", func() {
 				})
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("invalid token"))
+				Expect(err.Error()).To(ContainSubstring("exchanging token"))
 			})
 		})
 
