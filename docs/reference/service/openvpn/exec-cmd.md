@@ -28,7 +28,7 @@ Execute openvpn to connect to the remote server (aliases: connect)
               --skip-auth-retry     Skip interactive authentication retries when logged out
               --exec=               Path to the openvpn binary
               --reconnect           Reconnect on connection disconnects
-              --management-mode=    Configure use of management interface (one of: auto; enabled; disabled) (default: auto)
+              --management-mode=    Configure use of management interface (one of: auto, enabled, disabled; default: auto)
               --sudo                Execute openvpn with sudo
               --static-certificate  Write a static certificate in the configuration instead of dynamic renewals (deprecated: use --management-mode=disabled)
     
