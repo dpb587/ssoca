@@ -9,3 +9,5 @@ inputs:
   path: src/github.com/dpb587/ssoca
 run:
   path: src/github.com/dpb587/ssoca/ci/tasks/unit-tests/execute.sh
+params:
+  GOFLAGS: -mod=vendor

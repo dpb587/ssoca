@@ -11,3 +11,4 @@ run:
   path: src/github.com/dpb587/ssoca/ci/tasks/unit-coverage/execute.sh
 params:
   COVERALLS_TOKEN: ~
+  GOFLAGS: -mod=vendor

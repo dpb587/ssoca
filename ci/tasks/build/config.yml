@@ -12,3 +12,5 @@ outputs:
 - name: build
 run:
   path: src/github.com/dpb587/ssoca/ci/tasks/build/execute.sh
+params:
+  GOFLAGS: -mod=vendor
