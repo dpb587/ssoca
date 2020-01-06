@@ -11,8 +11,9 @@ import (
 type FakeClient struct {
 	BaseProfileStub        func() (string, error)
 	baseProfileMutex       sync.RWMutex
-	baseProfileArgsForCall []struct{}
-	baseProfileReturns     struct {
+	baseProfileArgsForCall []struct {
+	}
+	baseProfileReturns struct {
 		result1 string
 		result2 error
 	}
@@ -40,7 +41,8 @@ type FakeClient struct {
 func (fake *FakeClient) BaseProfile() (string, error) {
 	fake.baseProfileMutex.Lock()
 	ret, specificReturn := fake.baseProfileReturnsOnCall[len(fake.baseProfileArgsForCall)]
-	fake.baseProfileArgsForCall = append(fake.baseProfileArgsForCall, struct{}{})
+	fake.baseProfileArgsForCall = append(fake.baseProfileArgsForCall, struct {
+	}{})
 	fake.recordInvocation("BaseProfile", []interface{}{})
 	fake.baseProfileMutex.Unlock()
 	if fake.BaseProfileStub != nil {
@@ -49,7 +51,8 @@ func (fake *FakeClient) BaseProfile() (string, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.baseProfileReturns.result1, fake.baseProfileReturns.result2
+	fakeReturns := fake.baseProfileReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) BaseProfileCallCount() int {
@@ -58,7 +61,15 @@ func (fake *FakeClient) BaseProfileCallCount() int {
 	return len(fake.baseProfileArgsForCall)
 }
 
+func (fake *FakeClient) BaseProfileCalls(stub func() (string, error)) {
+	fake.baseProfileMutex.Lock()
+	defer fake.baseProfileMutex.Unlock()
+	fake.BaseProfileStub = stub
+}
+
 func (fake *FakeClient) BaseProfileReturns(result1 string, result2 error) {
+	fake.baseProfileMutex.Lock()
+	defer fake.baseProfileMutex.Unlock()
 	fake.BaseProfileStub = nil
 	fake.baseProfileReturns = struct {
 		result1 string
@@ -67,6 +78,8 @@ func (fake *FakeClient) BaseProfileReturns(result1 string, result2 error) {
 }
 
 func (fake *FakeClient) BaseProfileReturnsOnCall(i int, result1 string, result2 error) {
+	fake.baseProfileMutex.Lock()
+	defer fake.baseProfileMutex.Unlock()
 	fake.BaseProfileStub = nil
 	if fake.baseProfileReturnsOnCall == nil {
 		fake.baseProfileReturnsOnCall = make(map[int]struct {
@@ -94,7 +107,8 @@ func (fake *FakeClient) SignUserCSR(arg1 api.SignUserCSRRequest) (api.SignUserCS
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.signUserCSRReturns.result1, fake.signUserCSRReturns.result2
+	fakeReturns := fake.signUserCSRReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) SignUserCSRCallCount() int {
@@ -103,13 +117,22 @@ func (fake *FakeClient) SignUserCSRCallCount() int {
 	return len(fake.signUserCSRArgsForCall)
 }
 
+func (fake *FakeClient) SignUserCSRCalls(stub func(api.SignUserCSRRequest) (api.SignUserCSRResponse, error)) {
+	fake.signUserCSRMutex.Lock()
+	defer fake.signUserCSRMutex.Unlock()
+	fake.SignUserCSRStub = stub
+}
+
 func (fake *FakeClient) SignUserCSRArgsForCall(i int) api.SignUserCSRRequest {
 	fake.signUserCSRMutex.RLock()
 	defer fake.signUserCSRMutex.RUnlock()
-	return fake.signUserCSRArgsForCall[i].arg1
+	argsForCall := fake.signUserCSRArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeClient) SignUserCSRReturns(result1 api.SignUserCSRResponse, result2 error) {
+	fake.signUserCSRMutex.Lock()
+	defer fake.signUserCSRMutex.Unlock()
 	fake.SignUserCSRStub = nil
 	fake.signUserCSRReturns = struct {
 		result1 api.SignUserCSRResponse
@@ -118,6 +141,8 @@ func (fake *FakeClient) SignUserCSRReturns(result1 api.SignUserCSRResponse, resu
 }
 
 func (fake *FakeClient) SignUserCSRReturnsOnCall(i int, result1 api.SignUserCSRResponse, result2 error) {
+	fake.signUserCSRMutex.Lock()
+	defer fake.signUserCSRMutex.Unlock()
 	fake.SignUserCSRStub = nil
 	if fake.signUserCSRReturnsOnCall == nil {
 		fake.signUserCSRReturnsOnCall = make(map[int]struct {
@@ -138,7 +163,11 @@ func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	defer fake.baseProfileMutex.RUnlock()
 	fake.signUserCSRMutex.RLock()
 	defer fake.signUserCSRMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeClient) recordInvocation(key string, args []interface{}) {

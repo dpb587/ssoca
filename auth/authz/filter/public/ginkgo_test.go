@@ -1,10 +1,10 @@
 package public_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestPublic(t *testing.T) {

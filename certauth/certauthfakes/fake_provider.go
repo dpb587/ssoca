@@ -11,19 +11,11 @@ import (
 )
 
 type FakeProvider struct {
-	NameStub        func() string
-	nameMutex       sync.RWMutex
-	nameArgsForCall []struct{}
-	nameReturns     struct {
-		result1 string
-	}
-	nameReturnsOnCall map[int]struct {
-		result1 string
-	}
 	GetCertificateStub        func() (*x509.Certificate, error)
 	getCertificateMutex       sync.RWMutex
-	getCertificateArgsForCall []struct{}
-	getCertificateReturns     struct {
+	getCertificateArgsForCall []struct {
+	}
+	getCertificateReturns struct {
 		result1 *x509.Certificate
 		result2 error
 	}
@@ -33,14 +25,25 @@ type FakeProvider struct {
 	}
 	GetCertificatePEMStub        func() (string, error)
 	getCertificatePEMMutex       sync.RWMutex
-	getCertificatePEMArgsForCall []struct{}
-	getCertificatePEMReturns     struct {
+	getCertificatePEMArgsForCall []struct {
+	}
+	getCertificatePEMReturns struct {
 		result1 string
 		result2 error
 	}
 	getCertificatePEMReturnsOnCall map[int]struct {
 		result1 string
 		result2 error
+	}
+	NameStub        func() string
+	nameMutex       sync.RWMutex
+	nameArgsForCall []struct {
+	}
+	nameReturns struct {
+		result1 string
+	}
+	nameReturnsOnCall map[int]struct {
+		result1 string
 	}
 	SignCertificateStub        func(*x509.Certificate, interface{}, logrus.Fields) ([]byte, error)
 	signCertificateMutex       sync.RWMutex
@@ -73,50 +76,11 @@ type FakeProvider struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeProvider) Name() string {
-	fake.nameMutex.Lock()
-	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
-	fake.nameArgsForCall = append(fake.nameArgsForCall, struct{}{})
-	fake.recordInvocation("Name", []interface{}{})
-	fake.nameMutex.Unlock()
-	if fake.NameStub != nil {
-		return fake.NameStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.nameReturns.result1
-}
-
-func (fake *FakeProvider) NameCallCount() int {
-	fake.nameMutex.RLock()
-	defer fake.nameMutex.RUnlock()
-	return len(fake.nameArgsForCall)
-}
-
-func (fake *FakeProvider) NameReturns(result1 string) {
-	fake.NameStub = nil
-	fake.nameReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeProvider) NameReturnsOnCall(i int, result1 string) {
-	fake.NameStub = nil
-	if fake.nameReturnsOnCall == nil {
-		fake.nameReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.nameReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakeProvider) GetCertificate() (*x509.Certificate, error) {
 	fake.getCertificateMutex.Lock()
 	ret, specificReturn := fake.getCertificateReturnsOnCall[len(fake.getCertificateArgsForCall)]
-	fake.getCertificateArgsForCall = append(fake.getCertificateArgsForCall, struct{}{})
+	fake.getCertificateArgsForCall = append(fake.getCertificateArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetCertificate", []interface{}{})
 	fake.getCertificateMutex.Unlock()
 	if fake.GetCertificateStub != nil {
@@ -125,7 +89,8 @@ func (fake *FakeProvider) GetCertificate() (*x509.Certificate, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getCertificateReturns.result1, fake.getCertificateReturns.result2
+	fakeReturns := fake.getCertificateReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeProvider) GetCertificateCallCount() int {
@@ -134,7 +99,15 @@ func (fake *FakeProvider) GetCertificateCallCount() int {
 	return len(fake.getCertificateArgsForCall)
 }
 
+func (fake *FakeProvider) GetCertificateCalls(stub func() (*x509.Certificate, error)) {
+	fake.getCertificateMutex.Lock()
+	defer fake.getCertificateMutex.Unlock()
+	fake.GetCertificateStub = stub
+}
+
 func (fake *FakeProvider) GetCertificateReturns(result1 *x509.Certificate, result2 error) {
+	fake.getCertificateMutex.Lock()
+	defer fake.getCertificateMutex.Unlock()
 	fake.GetCertificateStub = nil
 	fake.getCertificateReturns = struct {
 		result1 *x509.Certificate
@@ -143,6 +116,8 @@ func (fake *FakeProvider) GetCertificateReturns(result1 *x509.Certificate, resul
 }
 
 func (fake *FakeProvider) GetCertificateReturnsOnCall(i int, result1 *x509.Certificate, result2 error) {
+	fake.getCertificateMutex.Lock()
+	defer fake.getCertificateMutex.Unlock()
 	fake.GetCertificateStub = nil
 	if fake.getCertificateReturnsOnCall == nil {
 		fake.getCertificateReturnsOnCall = make(map[int]struct {
@@ -159,7 +134,8 @@ func (fake *FakeProvider) GetCertificateReturnsOnCall(i int, result1 *x509.Certi
 func (fake *FakeProvider) GetCertificatePEM() (string, error) {
 	fake.getCertificatePEMMutex.Lock()
 	ret, specificReturn := fake.getCertificatePEMReturnsOnCall[len(fake.getCertificatePEMArgsForCall)]
-	fake.getCertificatePEMArgsForCall = append(fake.getCertificatePEMArgsForCall, struct{}{})
+	fake.getCertificatePEMArgsForCall = append(fake.getCertificatePEMArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetCertificatePEM", []interface{}{})
 	fake.getCertificatePEMMutex.Unlock()
 	if fake.GetCertificatePEMStub != nil {
@@ -168,7 +144,8 @@ func (fake *FakeProvider) GetCertificatePEM() (string, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getCertificatePEMReturns.result1, fake.getCertificatePEMReturns.result2
+	fakeReturns := fake.getCertificatePEMReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeProvider) GetCertificatePEMCallCount() int {
@@ -177,7 +154,15 @@ func (fake *FakeProvider) GetCertificatePEMCallCount() int {
 	return len(fake.getCertificatePEMArgsForCall)
 }
 
+func (fake *FakeProvider) GetCertificatePEMCalls(stub func() (string, error)) {
+	fake.getCertificatePEMMutex.Lock()
+	defer fake.getCertificatePEMMutex.Unlock()
+	fake.GetCertificatePEMStub = stub
+}
+
 func (fake *FakeProvider) GetCertificatePEMReturns(result1 string, result2 error) {
+	fake.getCertificatePEMMutex.Lock()
+	defer fake.getCertificatePEMMutex.Unlock()
 	fake.GetCertificatePEMStub = nil
 	fake.getCertificatePEMReturns = struct {
 		result1 string
@@ -186,6 +171,8 @@ func (fake *FakeProvider) GetCertificatePEMReturns(result1 string, result2 error
 }
 
 func (fake *FakeProvider) GetCertificatePEMReturnsOnCall(i int, result1 string, result2 error) {
+	fake.getCertificatePEMMutex.Lock()
+	defer fake.getCertificatePEMMutex.Unlock()
 	fake.GetCertificatePEMStub = nil
 	if fake.getCertificatePEMReturnsOnCall == nil {
 		fake.getCertificatePEMReturnsOnCall = make(map[int]struct {
@@ -197,6 +184,58 @@ func (fake *FakeProvider) GetCertificatePEMReturnsOnCall(i int, result1 string, 
 		result1 string
 		result2 error
 	}{result1, result2}
+}
+
+func (fake *FakeProvider) Name() string {
+	fake.nameMutex.Lock()
+	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
+	fake.nameArgsForCall = append(fake.nameArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Name", []interface{}{})
+	fake.nameMutex.Unlock()
+	if fake.NameStub != nil {
+		return fake.NameStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.nameReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeProvider) NameCallCount() int {
+	fake.nameMutex.RLock()
+	defer fake.nameMutex.RUnlock()
+	return len(fake.nameArgsForCall)
+}
+
+func (fake *FakeProvider) NameCalls(stub func() string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = stub
+}
+
+func (fake *FakeProvider) NameReturns(result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = nil
+	fake.nameReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeProvider) NameReturnsOnCall(i int, result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = nil
+	if fake.nameReturnsOnCall == nil {
+		fake.nameReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.nameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
 }
 
 func (fake *FakeProvider) SignCertificate(arg1 *x509.Certificate, arg2 interface{}, arg3 logrus.Fields) ([]byte, error) {
@@ -215,7 +254,8 @@ func (fake *FakeProvider) SignCertificate(arg1 *x509.Certificate, arg2 interface
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.signCertificateReturns.result1, fake.signCertificateReturns.result2
+	fakeReturns := fake.signCertificateReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeProvider) SignCertificateCallCount() int {
@@ -224,13 +264,22 @@ func (fake *FakeProvider) SignCertificateCallCount() int {
 	return len(fake.signCertificateArgsForCall)
 }
 
+func (fake *FakeProvider) SignCertificateCalls(stub func(*x509.Certificate, interface{}, logrus.Fields) ([]byte, error)) {
+	fake.signCertificateMutex.Lock()
+	defer fake.signCertificateMutex.Unlock()
+	fake.SignCertificateStub = stub
+}
+
 func (fake *FakeProvider) SignCertificateArgsForCall(i int) (*x509.Certificate, interface{}, logrus.Fields) {
 	fake.signCertificateMutex.RLock()
 	defer fake.signCertificateMutex.RUnlock()
-	return fake.signCertificateArgsForCall[i].arg1, fake.signCertificateArgsForCall[i].arg2, fake.signCertificateArgsForCall[i].arg3
+	argsForCall := fake.signCertificateArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeProvider) SignCertificateReturns(result1 []byte, result2 error) {
+	fake.signCertificateMutex.Lock()
+	defer fake.signCertificateMutex.Unlock()
 	fake.SignCertificateStub = nil
 	fake.signCertificateReturns = struct {
 		result1 []byte
@@ -239,6 +288,8 @@ func (fake *FakeProvider) SignCertificateReturns(result1 []byte, result2 error) 
 }
 
 func (fake *FakeProvider) SignCertificateReturnsOnCall(i int, result1 []byte, result2 error) {
+	fake.signCertificateMutex.Lock()
+	defer fake.signCertificateMutex.Unlock()
 	fake.SignCertificateStub = nil
 	if fake.signCertificateReturnsOnCall == nil {
 		fake.signCertificateReturnsOnCall = make(map[int]struct {
@@ -267,7 +318,8 @@ func (fake *FakeProvider) SignSSHCertificate(arg1 *ssh.Certificate, arg2 logrus.
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.signSSHCertificateReturns.result1
+	fakeReturns := fake.signSSHCertificateReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeProvider) SignSSHCertificateCallCount() int {
@@ -276,13 +328,22 @@ func (fake *FakeProvider) SignSSHCertificateCallCount() int {
 	return len(fake.signSSHCertificateArgsForCall)
 }
 
+func (fake *FakeProvider) SignSSHCertificateCalls(stub func(*ssh.Certificate, logrus.Fields) error) {
+	fake.signSSHCertificateMutex.Lock()
+	defer fake.signSSHCertificateMutex.Unlock()
+	fake.SignSSHCertificateStub = stub
+}
+
 func (fake *FakeProvider) SignSSHCertificateArgsForCall(i int) (*ssh.Certificate, logrus.Fields) {
 	fake.signSSHCertificateMutex.RLock()
 	defer fake.signSSHCertificateMutex.RUnlock()
-	return fake.signSSHCertificateArgsForCall[i].arg1, fake.signSSHCertificateArgsForCall[i].arg2
+	argsForCall := fake.signSSHCertificateArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeProvider) SignSSHCertificateReturns(result1 error) {
+	fake.signSSHCertificateMutex.Lock()
+	defer fake.signSSHCertificateMutex.Unlock()
 	fake.SignSSHCertificateStub = nil
 	fake.signSSHCertificateReturns = struct {
 		result1 error
@@ -290,6 +351,8 @@ func (fake *FakeProvider) SignSSHCertificateReturns(result1 error) {
 }
 
 func (fake *FakeProvider) SignSSHCertificateReturnsOnCall(i int, result1 error) {
+	fake.signSSHCertificateMutex.Lock()
+	defer fake.signSSHCertificateMutex.Unlock()
 	fake.SignSSHCertificateStub = nil
 	if fake.signSSHCertificateReturnsOnCall == nil {
 		fake.signSSHCertificateReturnsOnCall = make(map[int]struct {
@@ -304,17 +367,21 @@ func (fake *FakeProvider) SignSSHCertificateReturnsOnCall(i int, result1 error) 
 func (fake *FakeProvider) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.nameMutex.RLock()
-	defer fake.nameMutex.RUnlock()
 	fake.getCertificateMutex.RLock()
 	defer fake.getCertificateMutex.RUnlock()
 	fake.getCertificatePEMMutex.RLock()
 	defer fake.getCertificatePEMMutex.RUnlock()
+	fake.nameMutex.RLock()
+	defer fake.nameMutex.RUnlock()
 	fake.signCertificateMutex.RLock()
 	defer fake.signCertificateMutex.RUnlock()
 	fake.signSSHCertificateMutex.RLock()
 	defer fake.signSSHCertificateMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeProvider) recordInvocation(key string, args []interface{}) {

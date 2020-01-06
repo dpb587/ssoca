@@ -1,10 +1,10 @@
 package server_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestServer(t *testing.T) {

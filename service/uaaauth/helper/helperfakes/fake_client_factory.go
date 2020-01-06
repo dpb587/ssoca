@@ -4,12 +4,12 @@ package helperfakes
 import (
 	"sync"
 
-	boshuaa "github.com/cloudfoundry/bosh-cli/uaa"
+	"github.com/cloudfoundry/bosh-cli/uaa"
 	"github.com/dpb587/ssoca/service/uaaauth/helper"
 )
 
 type FakeClientFactory struct {
-	CreateClientStub        func(string, string, string, string) (boshuaa.UAA, error)
+	CreateClientStub        func(string, string, string, string) (uaa.UAA, error)
 	createClientMutex       sync.RWMutex
 	createClientArgsForCall []struct {
 		arg1 string
@@ -18,18 +18,18 @@ type FakeClientFactory struct {
 		arg4 string
 	}
 	createClientReturns struct {
-		result1 boshuaa.UAA
+		result1 uaa.UAA
 		result2 error
 	}
 	createClientReturnsOnCall map[int]struct {
-		result1 boshuaa.UAA
+		result1 uaa.UAA
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeClientFactory) CreateClient(arg1 string, arg2 string, arg3 string, arg4 string) (boshuaa.UAA, error) {
+func (fake *FakeClientFactory) CreateClient(arg1 string, arg2 string, arg3 string, arg4 string) (uaa.UAA, error) {
 	fake.createClientMutex.Lock()
 	ret, specificReturn := fake.createClientReturnsOnCall[len(fake.createClientArgsForCall)]
 	fake.createClientArgsForCall = append(fake.createClientArgsForCall, struct {
@@ -46,7 +46,8 @@ func (fake *FakeClientFactory) CreateClient(arg1 string, arg2 string, arg3 strin
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.createClientReturns.result1, fake.createClientReturns.result2
+	fakeReturns := fake.createClientReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClientFactory) CreateClientCallCount() int {
@@ -55,30 +56,41 @@ func (fake *FakeClientFactory) CreateClientCallCount() int {
 	return len(fake.createClientArgsForCall)
 }
 
+func (fake *FakeClientFactory) CreateClientCalls(stub func(string, string, string, string) (uaa.UAA, error)) {
+	fake.createClientMutex.Lock()
+	defer fake.createClientMutex.Unlock()
+	fake.CreateClientStub = stub
+}
+
 func (fake *FakeClientFactory) CreateClientArgsForCall(i int) (string, string, string, string) {
 	fake.createClientMutex.RLock()
 	defer fake.createClientMutex.RUnlock()
-	return fake.createClientArgsForCall[i].arg1, fake.createClientArgsForCall[i].arg2, fake.createClientArgsForCall[i].arg3, fake.createClientArgsForCall[i].arg4
+	argsForCall := fake.createClientArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
 }
 
-func (fake *FakeClientFactory) CreateClientReturns(result1 boshuaa.UAA, result2 error) {
+func (fake *FakeClientFactory) CreateClientReturns(result1 uaa.UAA, result2 error) {
+	fake.createClientMutex.Lock()
+	defer fake.createClientMutex.Unlock()
 	fake.CreateClientStub = nil
 	fake.createClientReturns = struct {
-		result1 boshuaa.UAA
+		result1 uaa.UAA
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeClientFactory) CreateClientReturnsOnCall(i int, result1 boshuaa.UAA, result2 error) {
+func (fake *FakeClientFactory) CreateClientReturnsOnCall(i int, result1 uaa.UAA, result2 error) {
+	fake.createClientMutex.Lock()
+	defer fake.createClientMutex.Unlock()
 	fake.CreateClientStub = nil
 	if fake.createClientReturnsOnCall == nil {
 		fake.createClientReturnsOnCall = make(map[int]struct {
-			result1 boshuaa.UAA
+			result1 uaa.UAA
 			result2 error
 		})
 	}
 	fake.createClientReturnsOnCall[i] = struct {
-		result1 boshuaa.UAA
+		result1 uaa.UAA
 		result2 error
 	}{result1, result2}
 }
@@ -88,7 +100,11 @@ func (fake *FakeClientFactory) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createClientMutex.RLock()
 	defer fake.createClientMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeClientFactory) recordInvocation(key string, args []interface{}) {

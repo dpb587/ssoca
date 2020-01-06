@@ -48,10 +48,17 @@ func (fake *FakeManager) AddCallCount() int {
 	return len(fake.addArgsForCall)
 }
 
+func (fake *FakeManager) AddCalls(stub func(certauth.Provider)) {
+	fake.addMutex.Lock()
+	defer fake.addMutex.Unlock()
+	fake.AddStub = stub
+}
+
 func (fake *FakeManager) AddArgsForCall(i int) certauth.Provider {
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	return fake.addArgsForCall[i].arg1
+	argsForCall := fake.addArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) Get(arg1 string) (certauth.Provider, error) {
@@ -68,7 +75,8 @@ func (fake *FakeManager) Get(arg1 string) (certauth.Provider, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getReturns.result1, fake.getReturns.result2
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeManager) GetCallCount() int {
@@ -77,13 +85,22 @@ func (fake *FakeManager) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
+func (fake *FakeManager) GetCalls(stub func(string) (certauth.Provider, error)) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
 func (fake *FakeManager) GetArgsForCall(i int) string {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) GetReturns(result1 certauth.Provider, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 certauth.Provider
@@ -92,6 +109,8 @@ func (fake *FakeManager) GetReturns(result1 certauth.Provider, result2 error) {
 }
 
 func (fake *FakeManager) GetReturnsOnCall(i int, result1 certauth.Provider, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -112,7 +131,11 @@ func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	defer fake.addMutex.RUnlock()
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeManager) recordInvocation(key string, args []interface{}) {

@@ -1,10 +1,10 @@
 package file_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestFile(t *testing.T) {

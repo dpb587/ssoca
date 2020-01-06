@@ -1,10 +1,10 @@
 package googleauth_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestGoogleauth(t *testing.T) {

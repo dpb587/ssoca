@@ -43,7 +43,8 @@ func (fake *FakeFactory) Create(arg1 string, arg2 string, arg3 map[string]interf
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.createReturns.result1, fake.createReturns.result2
+	fakeReturns := fake.createReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeFactory) CreateCallCount() int {
@@ -52,13 +53,22 @@ func (fake *FakeFactory) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
+func (fake *FakeFactory) CreateCalls(stub func(string, string, map[string]interface{}) (certauth.Provider, error)) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
+	fake.CreateStub = stub
+}
+
 func (fake *FakeFactory) CreateArgsForCall(i int) (string, string, map[string]interface{}) {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.createArgsForCall[i].arg1, fake.createArgsForCall[i].arg2, fake.createArgsForCall[i].arg3
+	argsForCall := fake.createArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeFactory) CreateReturns(result1 certauth.Provider, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	fake.createReturns = struct {
 		result1 certauth.Provider
@@ -67,6 +77,8 @@ func (fake *FakeFactory) CreateReturns(result1 certauth.Provider, result2 error)
 }
 
 func (fake *FakeFactory) CreateReturnsOnCall(i int, result1 certauth.Provider, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
@@ -85,7 +97,11 @@ func (fake *FakeFactory) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeFactory) recordInvocation(key string, args []interface{}) {

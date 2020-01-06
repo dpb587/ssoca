@@ -5,32 +5,35 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/client/service"
-	servicessoca "github.com/dpb587/ssoca/service"
+	servicea "github.com/dpb587/ssoca/service"
 )
 
 type FakeService struct {
 	NameStub        func() string
 	nameMutex       sync.RWMutex
-	nameArgsForCall []struct{}
-	nameReturns     struct {
+	nameArgsForCall []struct {
+	}
+	nameReturns struct {
 		result1 string
 	}
 	nameReturnsOnCall map[int]struct {
 		result1 string
 	}
-	TypeStub        func() servicessoca.Type
+	TypeStub        func() servicea.Type
 	typeMutex       sync.RWMutex
-	typeArgsForCall []struct{}
-	typeReturns     struct {
-		result1 servicessoca.Type
+	typeArgsForCall []struct {
+	}
+	typeReturns struct {
+		result1 servicea.Type
 	}
 	typeReturnsOnCall map[int]struct {
-		result1 servicessoca.Type
+		result1 servicea.Type
 	}
 	VersionStub        func() string
 	versionMutex       sync.RWMutex
-	versionArgsForCall []struct{}
-	versionReturns     struct {
+	versionArgsForCall []struct {
+	}
+	versionReturns struct {
 		result1 string
 	}
 	versionReturnsOnCall map[int]struct {
@@ -43,7 +46,8 @@ type FakeService struct {
 func (fake *FakeService) Name() string {
 	fake.nameMutex.Lock()
 	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
-	fake.nameArgsForCall = append(fake.nameArgsForCall, struct{}{})
+	fake.nameArgsForCall = append(fake.nameArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Name", []interface{}{})
 	fake.nameMutex.Unlock()
 	if fake.NameStub != nil {
@@ -52,7 +56,8 @@ func (fake *FakeService) Name() string {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.nameReturns.result1
+	fakeReturns := fake.nameReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeService) NameCallCount() int {
@@ -61,7 +66,15 @@ func (fake *FakeService) NameCallCount() int {
 	return len(fake.nameArgsForCall)
 }
 
+func (fake *FakeService) NameCalls(stub func() string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = stub
+}
+
 func (fake *FakeService) NameReturns(result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
 	fake.NameStub = nil
 	fake.nameReturns = struct {
 		result1 string
@@ -69,6 +82,8 @@ func (fake *FakeService) NameReturns(result1 string) {
 }
 
 func (fake *FakeService) NameReturnsOnCall(i int, result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
 	fake.NameStub = nil
 	if fake.nameReturnsOnCall == nil {
 		fake.nameReturnsOnCall = make(map[int]struct {
@@ -80,10 +95,11 @@ func (fake *FakeService) NameReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeService) Type() servicessoca.Type {
+func (fake *FakeService) Type() servicea.Type {
 	fake.typeMutex.Lock()
 	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
-	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
+	fake.typeArgsForCall = append(fake.typeArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Type", []interface{}{})
 	fake.typeMutex.Unlock()
 	if fake.TypeStub != nil {
@@ -92,7 +108,8 @@ func (fake *FakeService) Type() servicessoca.Type {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.typeReturns.result1
+	fakeReturns := fake.typeReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeService) TypeCallCount() int {
@@ -101,29 +118,40 @@ func (fake *FakeService) TypeCallCount() int {
 	return len(fake.typeArgsForCall)
 }
 
-func (fake *FakeService) TypeReturns(result1 servicessoca.Type) {
+func (fake *FakeService) TypeCalls(stub func() servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
+	fake.TypeStub = stub
+}
+
+func (fake *FakeService) TypeReturns(result1 servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
 	fake.TypeStub = nil
 	fake.typeReturns = struct {
-		result1 servicessoca.Type
+		result1 servicea.Type
 	}{result1}
 }
 
-func (fake *FakeService) TypeReturnsOnCall(i int, result1 servicessoca.Type) {
+func (fake *FakeService) TypeReturnsOnCall(i int, result1 servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
 	fake.TypeStub = nil
 	if fake.typeReturnsOnCall == nil {
 		fake.typeReturnsOnCall = make(map[int]struct {
-			result1 servicessoca.Type
+			result1 servicea.Type
 		})
 	}
 	fake.typeReturnsOnCall[i] = struct {
-		result1 servicessoca.Type
+		result1 servicea.Type
 	}{result1}
 }
 
 func (fake *FakeService) Version() string {
 	fake.versionMutex.Lock()
 	ret, specificReturn := fake.versionReturnsOnCall[len(fake.versionArgsForCall)]
-	fake.versionArgsForCall = append(fake.versionArgsForCall, struct{}{})
+	fake.versionArgsForCall = append(fake.versionArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Version", []interface{}{})
 	fake.versionMutex.Unlock()
 	if fake.VersionStub != nil {
@@ -132,7 +160,8 @@ func (fake *FakeService) Version() string {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.versionReturns.result1
+	fakeReturns := fake.versionReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeService) VersionCallCount() int {
@@ -141,7 +170,15 @@ func (fake *FakeService) VersionCallCount() int {
 	return len(fake.versionArgsForCall)
 }
 
+func (fake *FakeService) VersionCalls(stub func() string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
+	fake.VersionStub = stub
+}
+
 func (fake *FakeService) VersionReturns(result1 string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
 	fake.VersionStub = nil
 	fake.versionReturns = struct {
 		result1 string
@@ -149,6 +186,8 @@ func (fake *FakeService) VersionReturns(result1 string) {
 }
 
 func (fake *FakeService) VersionReturnsOnCall(i int, result1 string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
 	fake.VersionStub = nil
 	if fake.versionReturnsOnCall == nil {
 		fake.versionReturnsOnCall = make(map[int]struct {
@@ -169,7 +208,11 @@ func (fake *FakeService) Invocations() map[string][][]interface{} {
 	defer fake.typeMutex.RUnlock()
 	fake.versionMutex.RLock()
 	defer fake.versionMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeService) recordInvocation(key string, args []interface{}) {

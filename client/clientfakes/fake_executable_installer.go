@@ -38,7 +38,8 @@ func (fake *FakeExecutableInstaller) Install(arg1 logrus.FieldLogger) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.installReturns.result1
+	fakeReturns := fake.installReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeExecutableInstaller) InstallCallCount() int {
@@ -47,13 +48,22 @@ func (fake *FakeExecutableInstaller) InstallCallCount() int {
 	return len(fake.installArgsForCall)
 }
 
+func (fake *FakeExecutableInstaller) InstallCalls(stub func(logrus.FieldLogger) error) {
+	fake.installMutex.Lock()
+	defer fake.installMutex.Unlock()
+	fake.InstallStub = stub
+}
+
 func (fake *FakeExecutableInstaller) InstallArgsForCall(i int) logrus.FieldLogger {
 	fake.installMutex.RLock()
 	defer fake.installMutex.RUnlock()
-	return fake.installArgsForCall[i].arg1
+	argsForCall := fake.installArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeExecutableInstaller) InstallReturns(result1 error) {
+	fake.installMutex.Lock()
+	defer fake.installMutex.Unlock()
 	fake.InstallStub = nil
 	fake.installReturns = struct {
 		result1 error
@@ -61,6 +71,8 @@ func (fake *FakeExecutableInstaller) InstallReturns(result1 error) {
 }
 
 func (fake *FakeExecutableInstaller) InstallReturnsOnCall(i int, result1 error) {
+	fake.installMutex.Lock()
+	defer fake.installMutex.Unlock()
 	fake.InstallStub = nil
 	if fake.installReturnsOnCall == nil {
 		fake.installReturnsOnCall = make(map[int]struct {
@@ -77,7 +89,11 @@ func (fake *FakeExecutableInstaller) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.installMutex.RLock()
 	defer fake.installMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeExecutableInstaller) recordInvocation(key string, args []interface{}) {

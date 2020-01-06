@@ -8,54 +8,49 @@ import (
 	"github.com/dpb587/ssoca/auth"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
-	servicessoca "github.com/dpb587/ssoca/service"
+	servicea "github.com/dpb587/ssoca/service"
 )
 
 type FakeService struct {
-	NameStub        func() string
-	nameMutex       sync.RWMutex
-	nameArgsForCall []struct{}
-	nameReturns     struct {
-		result1 string
+	GetRoutesStub        func() []req.RouteHandler
+	getRoutesMutex       sync.RWMutex
+	getRoutesArgsForCall []struct {
 	}
-	nameReturnsOnCall map[int]struct {
-		result1 string
+	getRoutesReturns struct {
+		result1 []req.RouteHandler
 	}
-	TypeStub        func() servicessoca.Type
-	typeMutex       sync.RWMutex
-	typeArgsForCall []struct{}
-	typeReturns     struct {
-		result1 servicessoca.Type
-	}
-	typeReturnsOnCall map[int]struct {
-		result1 servicessoca.Type
-	}
-	VersionStub        func() string
-	versionMutex       sync.RWMutex
-	versionArgsForCall []struct{}
-	versionReturns     struct {
-		result1 string
-	}
-	versionReturnsOnCall map[int]struct {
-		result1 string
+	getRoutesReturnsOnCall map[int]struct {
+		result1 []req.RouteHandler
 	}
 	MetadataStub        func() interface{}
 	metadataMutex       sync.RWMutex
-	metadataArgsForCall []struct{}
-	metadataReturns     struct {
+	metadataArgsForCall []struct {
+	}
+	metadataReturns struct {
 		result1 interface{}
 	}
 	metadataReturnsOnCall map[int]struct {
 		result1 interface{}
 	}
-	GetRoutesStub        func() []req.RouteHandler
-	getRoutesMutex       sync.RWMutex
-	getRoutesArgsForCall []struct{}
-	getRoutesReturns     struct {
-		result1 []req.RouteHandler
+	NameStub        func() string
+	nameMutex       sync.RWMutex
+	nameArgsForCall []struct {
 	}
-	getRoutesReturnsOnCall map[int]struct {
-		result1 []req.RouteHandler
+	nameReturns struct {
+		result1 string
+	}
+	nameReturnsOnCall map[int]struct {
+		result1 string
+	}
+	TypeStub        func() servicea.Type
+	typeMutex       sync.RWMutex
+	typeArgsForCall []struct {
+	}
+	typeReturns struct {
+		result1 servicea.Type
+	}
+	typeReturnsOnCall map[int]struct {
+		result1 servicea.Type
 	}
 	VerifyAuthorizationStub        func(http.Request, *auth.Token) error
 	verifyAuthorizationMutex       sync.RWMutex
@@ -69,134 +64,77 @@ type FakeService struct {
 	verifyAuthorizationReturnsOnCall map[int]struct {
 		result1 error
 	}
+	VersionStub        func() string
+	versionMutex       sync.RWMutex
+	versionArgsForCall []struct {
+	}
+	versionReturns struct {
+		result1 string
+	}
+	versionReturnsOnCall map[int]struct {
+		result1 string
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeService) Name() string {
-	fake.nameMutex.Lock()
-	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
-	fake.nameArgsForCall = append(fake.nameArgsForCall, struct{}{})
-	fake.recordInvocation("Name", []interface{}{})
-	fake.nameMutex.Unlock()
-	if fake.NameStub != nil {
-		return fake.NameStub()
+func (fake *FakeService) GetRoutes() []req.RouteHandler {
+	fake.getRoutesMutex.Lock()
+	ret, specificReturn := fake.getRoutesReturnsOnCall[len(fake.getRoutesArgsForCall)]
+	fake.getRoutesArgsForCall = append(fake.getRoutesArgsForCall, struct {
+	}{})
+	fake.recordInvocation("GetRoutes", []interface{}{})
+	fake.getRoutesMutex.Unlock()
+	if fake.GetRoutesStub != nil {
+		return fake.GetRoutesStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.nameReturns.result1
+	fakeReturns := fake.getRoutesReturns
+	return fakeReturns.result1
 }
 
-func (fake *FakeService) NameCallCount() int {
-	fake.nameMutex.RLock()
-	defer fake.nameMutex.RUnlock()
-	return len(fake.nameArgsForCall)
+func (fake *FakeService) GetRoutesCallCount() int {
+	fake.getRoutesMutex.RLock()
+	defer fake.getRoutesMutex.RUnlock()
+	return len(fake.getRoutesArgsForCall)
 }
 
-func (fake *FakeService) NameReturns(result1 string) {
-	fake.NameStub = nil
-	fake.nameReturns = struct {
-		result1 string
+func (fake *FakeService) GetRoutesCalls(stub func() []req.RouteHandler) {
+	fake.getRoutesMutex.Lock()
+	defer fake.getRoutesMutex.Unlock()
+	fake.GetRoutesStub = stub
+}
+
+func (fake *FakeService) GetRoutesReturns(result1 []req.RouteHandler) {
+	fake.getRoutesMutex.Lock()
+	defer fake.getRoutesMutex.Unlock()
+	fake.GetRoutesStub = nil
+	fake.getRoutesReturns = struct {
+		result1 []req.RouteHandler
 	}{result1}
 }
 
-func (fake *FakeService) NameReturnsOnCall(i int, result1 string) {
-	fake.NameStub = nil
-	if fake.nameReturnsOnCall == nil {
-		fake.nameReturnsOnCall = make(map[int]struct {
-			result1 string
+func (fake *FakeService) GetRoutesReturnsOnCall(i int, result1 []req.RouteHandler) {
+	fake.getRoutesMutex.Lock()
+	defer fake.getRoutesMutex.Unlock()
+	fake.GetRoutesStub = nil
+	if fake.getRoutesReturnsOnCall == nil {
+		fake.getRoutesReturnsOnCall = make(map[int]struct {
+			result1 []req.RouteHandler
 		})
 	}
-	fake.nameReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeService) Type() servicessoca.Type {
-	fake.typeMutex.Lock()
-	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
-	fake.typeArgsForCall = append(fake.typeArgsForCall, struct{}{})
-	fake.recordInvocation("Type", []interface{}{})
-	fake.typeMutex.Unlock()
-	if fake.TypeStub != nil {
-		return fake.TypeStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.typeReturns.result1
-}
-
-func (fake *FakeService) TypeCallCount() int {
-	fake.typeMutex.RLock()
-	defer fake.typeMutex.RUnlock()
-	return len(fake.typeArgsForCall)
-}
-
-func (fake *FakeService) TypeReturns(result1 servicessoca.Type) {
-	fake.TypeStub = nil
-	fake.typeReturns = struct {
-		result1 servicessoca.Type
-	}{result1}
-}
-
-func (fake *FakeService) TypeReturnsOnCall(i int, result1 servicessoca.Type) {
-	fake.TypeStub = nil
-	if fake.typeReturnsOnCall == nil {
-		fake.typeReturnsOnCall = make(map[int]struct {
-			result1 servicessoca.Type
-		})
-	}
-	fake.typeReturnsOnCall[i] = struct {
-		result1 servicessoca.Type
-	}{result1}
-}
-
-func (fake *FakeService) Version() string {
-	fake.versionMutex.Lock()
-	ret, specificReturn := fake.versionReturnsOnCall[len(fake.versionArgsForCall)]
-	fake.versionArgsForCall = append(fake.versionArgsForCall, struct{}{})
-	fake.recordInvocation("Version", []interface{}{})
-	fake.versionMutex.Unlock()
-	if fake.VersionStub != nil {
-		return fake.VersionStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.versionReturns.result1
-}
-
-func (fake *FakeService) VersionCallCount() int {
-	fake.versionMutex.RLock()
-	defer fake.versionMutex.RUnlock()
-	return len(fake.versionArgsForCall)
-}
-
-func (fake *FakeService) VersionReturns(result1 string) {
-	fake.VersionStub = nil
-	fake.versionReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeService) VersionReturnsOnCall(i int, result1 string) {
-	fake.VersionStub = nil
-	if fake.versionReturnsOnCall == nil {
-		fake.versionReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.versionReturnsOnCall[i] = struct {
-		result1 string
+	fake.getRoutesReturnsOnCall[i] = struct {
+		result1 []req.RouteHandler
 	}{result1}
 }
 
 func (fake *FakeService) Metadata() interface{} {
 	fake.metadataMutex.Lock()
 	ret, specificReturn := fake.metadataReturnsOnCall[len(fake.metadataArgsForCall)]
-	fake.metadataArgsForCall = append(fake.metadataArgsForCall, struct{}{})
+	fake.metadataArgsForCall = append(fake.metadataArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Metadata", []interface{}{})
 	fake.metadataMutex.Unlock()
 	if fake.MetadataStub != nil {
@@ -205,7 +143,8 @@ func (fake *FakeService) Metadata() interface{} {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.metadataReturns.result1
+	fakeReturns := fake.metadataReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeService) MetadataCallCount() int {
@@ -214,7 +153,15 @@ func (fake *FakeService) MetadataCallCount() int {
 	return len(fake.metadataArgsForCall)
 }
 
+func (fake *FakeService) MetadataCalls(stub func() interface{}) {
+	fake.metadataMutex.Lock()
+	defer fake.metadataMutex.Unlock()
+	fake.MetadataStub = stub
+}
+
 func (fake *FakeService) MetadataReturns(result1 interface{}) {
+	fake.metadataMutex.Lock()
+	defer fake.metadataMutex.Unlock()
 	fake.MetadataStub = nil
 	fake.metadataReturns = struct {
 		result1 interface{}
@@ -222,6 +169,8 @@ func (fake *FakeService) MetadataReturns(result1 interface{}) {
 }
 
 func (fake *FakeService) MetadataReturnsOnCall(i int, result1 interface{}) {
+	fake.metadataMutex.Lock()
+	defer fake.metadataMutex.Unlock()
 	fake.MetadataStub = nil
 	if fake.metadataReturnsOnCall == nil {
 		fake.metadataReturnsOnCall = make(map[int]struct {
@@ -233,43 +182,107 @@ func (fake *FakeService) MetadataReturnsOnCall(i int, result1 interface{}) {
 	}{result1}
 }
 
-func (fake *FakeService) GetRoutes() []req.RouteHandler {
-	fake.getRoutesMutex.Lock()
-	ret, specificReturn := fake.getRoutesReturnsOnCall[len(fake.getRoutesArgsForCall)]
-	fake.getRoutesArgsForCall = append(fake.getRoutesArgsForCall, struct{}{})
-	fake.recordInvocation("GetRoutes", []interface{}{})
-	fake.getRoutesMutex.Unlock()
-	if fake.GetRoutesStub != nil {
-		return fake.GetRoutesStub()
+func (fake *FakeService) Name() string {
+	fake.nameMutex.Lock()
+	ret, specificReturn := fake.nameReturnsOnCall[len(fake.nameArgsForCall)]
+	fake.nameArgsForCall = append(fake.nameArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Name", []interface{}{})
+	fake.nameMutex.Unlock()
+	if fake.NameStub != nil {
+		return fake.NameStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.getRoutesReturns.result1
+	fakeReturns := fake.nameReturns
+	return fakeReturns.result1
 }
 
-func (fake *FakeService) GetRoutesCallCount() int {
-	fake.getRoutesMutex.RLock()
-	defer fake.getRoutesMutex.RUnlock()
-	return len(fake.getRoutesArgsForCall)
+func (fake *FakeService) NameCallCount() int {
+	fake.nameMutex.RLock()
+	defer fake.nameMutex.RUnlock()
+	return len(fake.nameArgsForCall)
 }
 
-func (fake *FakeService) GetRoutesReturns(result1 []req.RouteHandler) {
-	fake.GetRoutesStub = nil
-	fake.getRoutesReturns = struct {
-		result1 []req.RouteHandler
+func (fake *FakeService) NameCalls(stub func() string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = stub
+}
+
+func (fake *FakeService) NameReturns(result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = nil
+	fake.nameReturns = struct {
+		result1 string
 	}{result1}
 }
 
-func (fake *FakeService) GetRoutesReturnsOnCall(i int, result1 []req.RouteHandler) {
-	fake.GetRoutesStub = nil
-	if fake.getRoutesReturnsOnCall == nil {
-		fake.getRoutesReturnsOnCall = make(map[int]struct {
-			result1 []req.RouteHandler
+func (fake *FakeService) NameReturnsOnCall(i int, result1 string) {
+	fake.nameMutex.Lock()
+	defer fake.nameMutex.Unlock()
+	fake.NameStub = nil
+	if fake.nameReturnsOnCall == nil {
+		fake.nameReturnsOnCall = make(map[int]struct {
+			result1 string
 		})
 	}
-	fake.getRoutesReturnsOnCall[i] = struct {
-		result1 []req.RouteHandler
+	fake.nameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeService) Type() servicea.Type {
+	fake.typeMutex.Lock()
+	ret, specificReturn := fake.typeReturnsOnCall[len(fake.typeArgsForCall)]
+	fake.typeArgsForCall = append(fake.typeArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Type", []interface{}{})
+	fake.typeMutex.Unlock()
+	if fake.TypeStub != nil {
+		return fake.TypeStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.typeReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeService) TypeCallCount() int {
+	fake.typeMutex.RLock()
+	defer fake.typeMutex.RUnlock()
+	return len(fake.typeArgsForCall)
+}
+
+func (fake *FakeService) TypeCalls(stub func() servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
+	fake.TypeStub = stub
+}
+
+func (fake *FakeService) TypeReturns(result1 servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
+	fake.TypeStub = nil
+	fake.typeReturns = struct {
+		result1 servicea.Type
+	}{result1}
+}
+
+func (fake *FakeService) TypeReturnsOnCall(i int, result1 servicea.Type) {
+	fake.typeMutex.Lock()
+	defer fake.typeMutex.Unlock()
+	fake.TypeStub = nil
+	if fake.typeReturnsOnCall == nil {
+		fake.typeReturnsOnCall = make(map[int]struct {
+			result1 servicea.Type
+		})
+	}
+	fake.typeReturnsOnCall[i] = struct {
+		result1 servicea.Type
 	}{result1}
 }
 
@@ -288,7 +301,8 @@ func (fake *FakeService) VerifyAuthorization(arg1 http.Request, arg2 *auth.Token
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.verifyAuthorizationReturns.result1
+	fakeReturns := fake.verifyAuthorizationReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeService) VerifyAuthorizationCallCount() int {
@@ -297,13 +311,22 @@ func (fake *FakeService) VerifyAuthorizationCallCount() int {
 	return len(fake.verifyAuthorizationArgsForCall)
 }
 
+func (fake *FakeService) VerifyAuthorizationCalls(stub func(http.Request, *auth.Token) error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
+	fake.VerifyAuthorizationStub = stub
+}
+
 func (fake *FakeService) VerifyAuthorizationArgsForCall(i int) (http.Request, *auth.Token) {
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.verifyAuthorizationArgsForCall[i].arg1, fake.verifyAuthorizationArgsForCall[i].arg2
+	argsForCall := fake.verifyAuthorizationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeService) VerifyAuthorizationReturns(result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	fake.verifyAuthorizationReturns = struct {
 		result1 error
@@ -311,6 +334,8 @@ func (fake *FakeService) VerifyAuthorizationReturns(result1 error) {
 }
 
 func (fake *FakeService) VerifyAuthorizationReturnsOnCall(i int, result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	if fake.verifyAuthorizationReturnsOnCall == nil {
 		fake.verifyAuthorizationReturnsOnCall = make(map[int]struct {
@@ -322,22 +347,78 @@ func (fake *FakeService) VerifyAuthorizationReturnsOnCall(i int, result1 error) 
 	}{result1}
 }
 
+func (fake *FakeService) Version() string {
+	fake.versionMutex.Lock()
+	ret, specificReturn := fake.versionReturnsOnCall[len(fake.versionArgsForCall)]
+	fake.versionArgsForCall = append(fake.versionArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Version", []interface{}{})
+	fake.versionMutex.Unlock()
+	if fake.VersionStub != nil {
+		return fake.VersionStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.versionReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeService) VersionCallCount() int {
+	fake.versionMutex.RLock()
+	defer fake.versionMutex.RUnlock()
+	return len(fake.versionArgsForCall)
+}
+
+func (fake *FakeService) VersionCalls(stub func() string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
+	fake.VersionStub = stub
+}
+
+func (fake *FakeService) VersionReturns(result1 string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
+	fake.VersionStub = nil
+	fake.versionReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeService) VersionReturnsOnCall(i int, result1 string) {
+	fake.versionMutex.Lock()
+	defer fake.versionMutex.Unlock()
+	fake.VersionStub = nil
+	if fake.versionReturnsOnCall == nil {
+		fake.versionReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.versionReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakeService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getRoutesMutex.RLock()
+	defer fake.getRoutesMutex.RUnlock()
+	fake.metadataMutex.RLock()
+	defer fake.metadataMutex.RUnlock()
 	fake.nameMutex.RLock()
 	defer fake.nameMutex.RUnlock()
 	fake.typeMutex.RLock()
 	defer fake.typeMutex.RUnlock()
-	fake.versionMutex.RLock()
-	defer fake.versionMutex.RUnlock()
-	fake.metadataMutex.RLock()
-	defer fake.metadataMutex.RUnlock()
-	fake.getRoutesMutex.RLock()
-	defer fake.getRoutesMutex.RUnlock()
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.invocations
+	fake.versionMutex.RLock()
+	defer fake.versionMutex.RUnlock()
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeService) recordInvocation(key string, args []interface{}) {

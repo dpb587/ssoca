@@ -1,10 +1,10 @@
 package uaaauth_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestUaaauth(t *testing.T) {

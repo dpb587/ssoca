@@ -28,8 +28,9 @@ type FakeManager struct {
 	}
 	ServicesStub        func() []string
 	servicesMutex       sync.RWMutex
-	servicesArgsForCall []struct{}
-	servicesReturns     struct {
+	servicesArgsForCall []struct {
+	}
+	servicesReturns struct {
 		result1 []string
 	}
 	servicesReturnsOnCall map[int]struct {
@@ -57,10 +58,17 @@ func (fake *FakeManager) AddCallCount() int {
 	return len(fake.addArgsForCall)
 }
 
+func (fake *FakeManager) AddCalls(stub func(service.Service)) {
+	fake.addMutex.Lock()
+	defer fake.addMutex.Unlock()
+	fake.AddStub = stub
+}
+
 func (fake *FakeManager) AddArgsForCall(i int) service.Service {
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	return fake.addArgsForCall[i].arg1
+	argsForCall := fake.addArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) Get(arg1 string) (service.Service, error) {
@@ -77,7 +85,8 @@ func (fake *FakeManager) Get(arg1 string) (service.Service, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getReturns.result1, fake.getReturns.result2
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeManager) GetCallCount() int {
@@ -86,13 +95,22 @@ func (fake *FakeManager) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
+func (fake *FakeManager) GetCalls(stub func(string) (service.Service, error)) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
 func (fake *FakeManager) GetArgsForCall(i int) string {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) GetReturns(result1 service.Service, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 service.Service
@@ -101,6 +119,8 @@ func (fake *FakeManager) GetReturns(result1 service.Service, result2 error) {
 }
 
 func (fake *FakeManager) GetReturnsOnCall(i int, result1 service.Service, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -117,7 +137,8 @@ func (fake *FakeManager) GetReturnsOnCall(i int, result1 service.Service, result
 func (fake *FakeManager) Services() []string {
 	fake.servicesMutex.Lock()
 	ret, specificReturn := fake.servicesReturnsOnCall[len(fake.servicesArgsForCall)]
-	fake.servicesArgsForCall = append(fake.servicesArgsForCall, struct{}{})
+	fake.servicesArgsForCall = append(fake.servicesArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Services", []interface{}{})
 	fake.servicesMutex.Unlock()
 	if fake.ServicesStub != nil {
@@ -126,7 +147,8 @@ func (fake *FakeManager) Services() []string {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.servicesReturns.result1
+	fakeReturns := fake.servicesReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeManager) ServicesCallCount() int {
@@ -135,7 +157,15 @@ func (fake *FakeManager) ServicesCallCount() int {
 	return len(fake.servicesArgsForCall)
 }
 
+func (fake *FakeManager) ServicesCalls(stub func() []string) {
+	fake.servicesMutex.Lock()
+	defer fake.servicesMutex.Unlock()
+	fake.ServicesStub = stub
+}
+
 func (fake *FakeManager) ServicesReturns(result1 []string) {
+	fake.servicesMutex.Lock()
+	defer fake.servicesMutex.Unlock()
 	fake.ServicesStub = nil
 	fake.servicesReturns = struct {
 		result1 []string
@@ -143,6 +173,8 @@ func (fake *FakeManager) ServicesReturns(result1 []string) {
 }
 
 func (fake *FakeManager) ServicesReturnsOnCall(i int, result1 []string) {
+	fake.servicesMutex.Lock()
+	defer fake.servicesMutex.Unlock()
 	fake.ServicesStub = nil
 	if fake.servicesReturnsOnCall == nil {
 		fake.servicesReturnsOnCall = make(map[int]struct {
@@ -163,7 +195,11 @@ func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	defer fake.getMutex.RUnlock()
 	fake.servicesMutex.RLock()
 	defer fake.servicesMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeManager) recordInvocation(key string, args []interface{}) {

@@ -41,7 +41,8 @@ func (fake *FakeProviderFactory) Create(arg1 string, arg2 map[string]interface{}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.createReturns.result1, fake.createReturns.result2
+	fakeReturns := fake.createReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeProviderFactory) CreateCallCount() int {
@@ -50,13 +51,22 @@ func (fake *FakeProviderFactory) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
+func (fake *FakeProviderFactory) CreateCalls(stub func(string, map[string]interface{}) (certauth.Provider, error)) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
+	fake.CreateStub = stub
+}
+
 func (fake *FakeProviderFactory) CreateArgsForCall(i int) (string, map[string]interface{}) {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.createArgsForCall[i].arg1, fake.createArgsForCall[i].arg2
+	argsForCall := fake.createArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeProviderFactory) CreateReturns(result1 certauth.Provider, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	fake.createReturns = struct {
 		result1 certauth.Provider
@@ -65,6 +75,8 @@ func (fake *FakeProviderFactory) CreateReturns(result1 certauth.Provider, result
 }
 
 func (fake *FakeProviderFactory) CreateReturnsOnCall(i int, result1 certauth.Provider, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
@@ -83,7 +95,11 @@ func (fake *FakeProviderFactory) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeProviderFactory) recordInvocation(key string, args []interface{}) {

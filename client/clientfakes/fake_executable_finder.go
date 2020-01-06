@@ -10,8 +10,9 @@ import (
 type FakeExecutableFinder struct {
 	FindStub        func() (string, bool, error)
 	findMutex       sync.RWMutex
-	findArgsForCall []struct{}
-	findReturns     struct {
+	findArgsForCall []struct {
+	}
+	findReturns struct {
 		result1 string
 		result2 bool
 		result3 error
@@ -28,7 +29,8 @@ type FakeExecutableFinder struct {
 func (fake *FakeExecutableFinder) Find() (string, bool, error) {
 	fake.findMutex.Lock()
 	ret, specificReturn := fake.findReturnsOnCall[len(fake.findArgsForCall)]
-	fake.findArgsForCall = append(fake.findArgsForCall, struct{}{})
+	fake.findArgsForCall = append(fake.findArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Find", []interface{}{})
 	fake.findMutex.Unlock()
 	if fake.FindStub != nil {
@@ -37,7 +39,8 @@ func (fake *FakeExecutableFinder) Find() (string, bool, error) {
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
 	}
-	return fake.findReturns.result1, fake.findReturns.result2, fake.findReturns.result3
+	fakeReturns := fake.findReturns
+	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
 func (fake *FakeExecutableFinder) FindCallCount() int {
@@ -46,7 +49,15 @@ func (fake *FakeExecutableFinder) FindCallCount() int {
 	return len(fake.findArgsForCall)
 }
 
+func (fake *FakeExecutableFinder) FindCalls(stub func() (string, bool, error)) {
+	fake.findMutex.Lock()
+	defer fake.findMutex.Unlock()
+	fake.FindStub = stub
+}
+
 func (fake *FakeExecutableFinder) FindReturns(result1 string, result2 bool, result3 error) {
+	fake.findMutex.Lock()
+	defer fake.findMutex.Unlock()
 	fake.FindStub = nil
 	fake.findReturns = struct {
 		result1 string
@@ -56,6 +67,8 @@ func (fake *FakeExecutableFinder) FindReturns(result1 string, result2 bool, resu
 }
 
 func (fake *FakeExecutableFinder) FindReturnsOnCall(i int, result1 string, result2 bool, result3 error) {
+	fake.findMutex.Lock()
+	defer fake.findMutex.Unlock()
 	fake.FindStub = nil
 	if fake.findReturnsOnCall == nil {
 		fake.findReturnsOnCall = make(map[int]struct {
@@ -76,7 +89,11 @@ func (fake *FakeExecutableFinder) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.findMutex.RLock()
 	defer fake.findMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeExecutableFinder) recordInvocation(key string, args []interface{}) {

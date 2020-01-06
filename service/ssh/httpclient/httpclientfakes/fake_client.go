@@ -11,8 +11,9 @@ import (
 type FakeClient struct {
 	GetCAPublicKeyStub        func() (api.CAPublicKeyResponse, error)
 	getCAPublicKeyMutex       sync.RWMutex
-	getCAPublicKeyArgsForCall []struct{}
-	getCAPublicKeyReturns     struct {
+	getCAPublicKeyArgsForCall []struct {
+	}
+	getCAPublicKeyReturns struct {
 		result1 api.CAPublicKeyResponse
 		result2 error
 	}
@@ -40,7 +41,8 @@ type FakeClient struct {
 func (fake *FakeClient) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
 	fake.getCAPublicKeyMutex.Lock()
 	ret, specificReturn := fake.getCAPublicKeyReturnsOnCall[len(fake.getCAPublicKeyArgsForCall)]
-	fake.getCAPublicKeyArgsForCall = append(fake.getCAPublicKeyArgsForCall, struct{}{})
+	fake.getCAPublicKeyArgsForCall = append(fake.getCAPublicKeyArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetCAPublicKey", []interface{}{})
 	fake.getCAPublicKeyMutex.Unlock()
 	if fake.GetCAPublicKeyStub != nil {
@@ -49,7 +51,8 @@ func (fake *FakeClient) GetCAPublicKey() (api.CAPublicKeyResponse, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getCAPublicKeyReturns.result1, fake.getCAPublicKeyReturns.result2
+	fakeReturns := fake.getCAPublicKeyReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) GetCAPublicKeyCallCount() int {
@@ -58,7 +61,15 @@ func (fake *FakeClient) GetCAPublicKeyCallCount() int {
 	return len(fake.getCAPublicKeyArgsForCall)
 }
 
+func (fake *FakeClient) GetCAPublicKeyCalls(stub func() (api.CAPublicKeyResponse, error)) {
+	fake.getCAPublicKeyMutex.Lock()
+	defer fake.getCAPublicKeyMutex.Unlock()
+	fake.GetCAPublicKeyStub = stub
+}
+
 func (fake *FakeClient) GetCAPublicKeyReturns(result1 api.CAPublicKeyResponse, result2 error) {
+	fake.getCAPublicKeyMutex.Lock()
+	defer fake.getCAPublicKeyMutex.Unlock()
 	fake.GetCAPublicKeyStub = nil
 	fake.getCAPublicKeyReturns = struct {
 		result1 api.CAPublicKeyResponse
@@ -67,6 +78,8 @@ func (fake *FakeClient) GetCAPublicKeyReturns(result1 api.CAPublicKeyResponse, r
 }
 
 func (fake *FakeClient) GetCAPublicKeyReturnsOnCall(i int, result1 api.CAPublicKeyResponse, result2 error) {
+	fake.getCAPublicKeyMutex.Lock()
+	defer fake.getCAPublicKeyMutex.Unlock()
 	fake.GetCAPublicKeyStub = nil
 	if fake.getCAPublicKeyReturnsOnCall == nil {
 		fake.getCAPublicKeyReturnsOnCall = make(map[int]struct {
@@ -94,7 +107,8 @@ func (fake *FakeClient) PostSignPublicKey(arg1 api.SignPublicKeyRequest) (api.Si
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.postSignPublicKeyReturns.result1, fake.postSignPublicKeyReturns.result2
+	fakeReturns := fake.postSignPublicKeyReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) PostSignPublicKeyCallCount() int {
@@ -103,13 +117,22 @@ func (fake *FakeClient) PostSignPublicKeyCallCount() int {
 	return len(fake.postSignPublicKeyArgsForCall)
 }
 
+func (fake *FakeClient) PostSignPublicKeyCalls(stub func(api.SignPublicKeyRequest) (api.SignPublicKeyResponse, error)) {
+	fake.postSignPublicKeyMutex.Lock()
+	defer fake.postSignPublicKeyMutex.Unlock()
+	fake.PostSignPublicKeyStub = stub
+}
+
 func (fake *FakeClient) PostSignPublicKeyArgsForCall(i int) api.SignPublicKeyRequest {
 	fake.postSignPublicKeyMutex.RLock()
 	defer fake.postSignPublicKeyMutex.RUnlock()
-	return fake.postSignPublicKeyArgsForCall[i].arg1
+	argsForCall := fake.postSignPublicKeyArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeClient) PostSignPublicKeyReturns(result1 api.SignPublicKeyResponse, result2 error) {
+	fake.postSignPublicKeyMutex.Lock()
+	defer fake.postSignPublicKeyMutex.Unlock()
 	fake.PostSignPublicKeyStub = nil
 	fake.postSignPublicKeyReturns = struct {
 		result1 api.SignPublicKeyResponse
@@ -118,6 +141,8 @@ func (fake *FakeClient) PostSignPublicKeyReturns(result1 api.SignPublicKeyRespon
 }
 
 func (fake *FakeClient) PostSignPublicKeyReturnsOnCall(i int, result1 api.SignPublicKeyResponse, result2 error) {
+	fake.postSignPublicKeyMutex.Lock()
+	defer fake.postSignPublicKeyMutex.Unlock()
 	fake.PostSignPublicKeyStub = nil
 	if fake.postSignPublicKeyReturnsOnCall == nil {
 		fake.postSignPublicKeyReturnsOnCall = make(map[int]struct {
@@ -138,7 +163,11 @@ func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	defer fake.getCAPublicKeyMutex.RUnlock()
 	fake.postSignPublicKeyMutex.RLock()
 	defer fake.postSignPublicKeyMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeClient) recordInvocation(key string, args []interface{}) {

@@ -39,7 +39,8 @@ func (fake *FakeFactory) Create(arg1 string) (dynamicvalue.Value, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.createReturns.result1, fake.createReturns.result2
+	fakeReturns := fake.createReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeFactory) CreateCallCount() int {
@@ -48,13 +49,22 @@ func (fake *FakeFactory) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
+func (fake *FakeFactory) CreateCalls(stub func(string) (dynamicvalue.Value, error)) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
+	fake.CreateStub = stub
+}
+
 func (fake *FakeFactory) CreateArgsForCall(i int) string {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.createArgsForCall[i].arg1
+	argsForCall := fake.createArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeFactory) CreateReturns(result1 dynamicvalue.Value, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	fake.createReturns = struct {
 		result1 dynamicvalue.Value
@@ -63,6 +73,8 @@ func (fake *FakeFactory) CreateReturns(result1 dynamicvalue.Value, result2 error
 }
 
 func (fake *FakeFactory) CreateReturnsOnCall(i int, result1 dynamicvalue.Value, result2 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
@@ -81,7 +93,11 @@ func (fake *FakeFactory) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeFactory) recordInvocation(key string, args []interface{}) {

@@ -82,7 +82,8 @@ func (fake *FakeClient) APIGet(arg1 string, arg2 interface{}) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.aPIGetReturns.result1
+	fakeReturns := fake.aPIGetReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeClient) APIGetCallCount() int {
@@ -91,13 +92,22 @@ func (fake *FakeClient) APIGetCallCount() int {
 	return len(fake.aPIGetArgsForCall)
 }
 
+func (fake *FakeClient) APIGetCalls(stub func(string, interface{}) error) {
+	fake.aPIGetMutex.Lock()
+	defer fake.aPIGetMutex.Unlock()
+	fake.APIGetStub = stub
+}
+
 func (fake *FakeClient) APIGetArgsForCall(i int) (string, interface{}) {
 	fake.aPIGetMutex.RLock()
 	defer fake.aPIGetMutex.RUnlock()
-	return fake.aPIGetArgsForCall[i].arg1, fake.aPIGetArgsForCall[i].arg2
+	argsForCall := fake.aPIGetArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeClient) APIGetReturns(result1 error) {
+	fake.aPIGetMutex.Lock()
+	defer fake.aPIGetMutex.Unlock()
 	fake.APIGetStub = nil
 	fake.aPIGetReturns = struct {
 		result1 error
@@ -105,6 +115,8 @@ func (fake *FakeClient) APIGetReturns(result1 error) {
 }
 
 func (fake *FakeClient) APIGetReturnsOnCall(i int, result1 error) {
+	fake.aPIGetMutex.Lock()
+	defer fake.aPIGetMutex.Unlock()
 	fake.APIGetStub = nil
 	if fake.aPIGetReturnsOnCall == nil {
 		fake.aPIGetReturnsOnCall = make(map[int]struct {
@@ -132,7 +144,8 @@ func (fake *FakeClient) APIPost(arg1 string, arg2 interface{}, arg3 interface{})
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.aPIPostReturns.result1
+	fakeReturns := fake.aPIPostReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeClient) APIPostCallCount() int {
@@ -141,13 +154,22 @@ func (fake *FakeClient) APIPostCallCount() int {
 	return len(fake.aPIPostArgsForCall)
 }
 
+func (fake *FakeClient) APIPostCalls(stub func(string, interface{}, interface{}) error) {
+	fake.aPIPostMutex.Lock()
+	defer fake.aPIPostMutex.Unlock()
+	fake.APIPostStub = stub
+}
+
 func (fake *FakeClient) APIPostArgsForCall(i int) (string, interface{}, interface{}) {
 	fake.aPIPostMutex.RLock()
 	defer fake.aPIPostMutex.RUnlock()
-	return fake.aPIPostArgsForCall[i].arg1, fake.aPIPostArgsForCall[i].arg2, fake.aPIPostArgsForCall[i].arg3
+	argsForCall := fake.aPIPostArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeClient) APIPostReturns(result1 error) {
+	fake.aPIPostMutex.Lock()
+	defer fake.aPIPostMutex.Unlock()
 	fake.APIPostStub = nil
 	fake.aPIPostReturns = struct {
 		result1 error
@@ -155,6 +177,8 @@ func (fake *FakeClient) APIPostReturns(result1 error) {
 }
 
 func (fake *FakeClient) APIPostReturnsOnCall(i int, result1 error) {
+	fake.aPIPostMutex.Lock()
+	defer fake.aPIPostMutex.Unlock()
 	fake.APIPostStub = nil
 	if fake.aPIPostReturnsOnCall == nil {
 		fake.aPIPostReturnsOnCall = make(map[int]struct {
@@ -180,7 +204,8 @@ func (fake *FakeClient) Get(arg1 string) (*http.Response, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getReturns.result1, fake.getReturns.result2
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) GetCallCount() int {
@@ -189,13 +214,22 @@ func (fake *FakeClient) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
+func (fake *FakeClient) GetCalls(stub func(string) (*http.Response, error)) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
 func (fake *FakeClient) GetArgsForCall(i int) string {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeClient) GetReturns(result1 *http.Response, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 *http.Response
@@ -204,6 +238,8 @@ func (fake *FakeClient) GetReturns(result1 *http.Response, result2 error) {
 }
 
 func (fake *FakeClient) GetReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -233,7 +269,8 @@ func (fake *FakeClient) Post(arg1 string, arg2 string, arg3 io.Reader) (*http.Re
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.postReturns.result1, fake.postReturns.result2
+	fakeReturns := fake.postReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) PostCallCount() int {
@@ -242,13 +279,22 @@ func (fake *FakeClient) PostCallCount() int {
 	return len(fake.postArgsForCall)
 }
 
+func (fake *FakeClient) PostCalls(stub func(string, string, io.Reader) (*http.Response, error)) {
+	fake.postMutex.Lock()
+	defer fake.postMutex.Unlock()
+	fake.PostStub = stub
+}
+
 func (fake *FakeClient) PostArgsForCall(i int) (string, string, io.Reader) {
 	fake.postMutex.RLock()
 	defer fake.postMutex.RUnlock()
-	return fake.postArgsForCall[i].arg1, fake.postArgsForCall[i].arg2, fake.postArgsForCall[i].arg3
+	argsForCall := fake.postArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeClient) PostReturns(result1 *http.Response, result2 error) {
+	fake.postMutex.Lock()
+	defer fake.postMutex.Unlock()
 	fake.PostStub = nil
 	fake.postReturns = struct {
 		result1 *http.Response
@@ -257,6 +303,8 @@ func (fake *FakeClient) PostReturns(result1 *http.Response, result2 error) {
 }
 
 func (fake *FakeClient) PostReturnsOnCall(i int, result1 *http.Response, result2 error) {
+	fake.postMutex.Lock()
+	defer fake.postMutex.Unlock()
 	fake.PostStub = nil
 	if fake.postReturnsOnCall == nil {
 		fake.postReturnsOnCall = make(map[int]struct {
@@ -281,7 +329,11 @@ func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	defer fake.getMutex.RUnlock()
 	fake.postMutex.RLock()
 	defer fake.postMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeClient) recordInvocation(key string, args []interface{}) {

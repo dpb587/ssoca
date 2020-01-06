@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/dpb587/ssoca/client/service"
-	servicessoca "github.com/dpb587/ssoca/service"
+	servicea "github.com/dpb587/ssoca/service"
 )
 
 type FakeManager struct {
@@ -19,10 +19,10 @@ type FakeManager struct {
 	addFactoryArgsForCall []struct {
 		arg1 service.ServiceFactory
 	}
-	GetStub        func(servicessoca.Type, string) (service.Service, error)
+	GetStub        func(servicea.Type, string) (service.Service, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
-		arg1 servicessoca.Type
+		arg1 servicea.Type
 		arg2 string
 	}
 	getReturns struct {
@@ -55,10 +55,17 @@ func (fake *FakeManager) AddCallCount() int {
 	return len(fake.addArgsForCall)
 }
 
+func (fake *FakeManager) AddCalls(stub func(service.Service)) {
+	fake.addMutex.Lock()
+	defer fake.addMutex.Unlock()
+	fake.AddStub = stub
+}
+
 func (fake *FakeManager) AddArgsForCall(i int) service.Service {
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	return fake.addArgsForCall[i].arg1
+	argsForCall := fake.addArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) AddFactory(arg1 service.ServiceFactory) {
@@ -79,17 +86,24 @@ func (fake *FakeManager) AddFactoryCallCount() int {
 	return len(fake.addFactoryArgsForCall)
 }
 
+func (fake *FakeManager) AddFactoryCalls(stub func(service.ServiceFactory)) {
+	fake.addFactoryMutex.Lock()
+	defer fake.addFactoryMutex.Unlock()
+	fake.AddFactoryStub = stub
+}
+
 func (fake *FakeManager) AddFactoryArgsForCall(i int) service.ServiceFactory {
 	fake.addFactoryMutex.RLock()
 	defer fake.addFactoryMutex.RUnlock()
-	return fake.addFactoryArgsForCall[i].arg1
+	argsForCall := fake.addFactoryArgsForCall[i]
+	return argsForCall.arg1
 }
 
-func (fake *FakeManager) Get(arg1 servicessoca.Type, arg2 string) (service.Service, error) {
+func (fake *FakeManager) Get(arg1 servicea.Type, arg2 string) (service.Service, error) {
 	fake.getMutex.Lock()
 	ret, specificReturn := fake.getReturnsOnCall[len(fake.getArgsForCall)]
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
-		arg1 servicessoca.Type
+		arg1 servicea.Type
 		arg2 string
 	}{arg1, arg2})
 	fake.recordInvocation("Get", []interface{}{arg1, arg2})
@@ -100,7 +114,8 @@ func (fake *FakeManager) Get(arg1 servicessoca.Type, arg2 string) (service.Servi
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getReturns.result1, fake.getReturns.result2
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeManager) GetCallCount() int {
@@ -109,13 +124,22 @@ func (fake *FakeManager) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
-func (fake *FakeManager) GetArgsForCall(i int) (servicessoca.Type, string) {
+func (fake *FakeManager) GetCalls(stub func(servicea.Type, string) (service.Service, error)) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
+func (fake *FakeManager) GetArgsForCall(i int) (servicea.Type, string) {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1, fake.getArgsForCall[i].arg2
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeManager) GetReturns(result1 service.Service, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 service.Service
@@ -124,6 +148,8 @@ func (fake *FakeManager) GetReturns(result1 service.Service, result2 error) {
 }
 
 func (fake *FakeManager) GetReturnsOnCall(i int, result1 service.Service, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -146,7 +172,11 @@ func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	defer fake.addFactoryMutex.RUnlock()
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeManager) recordInvocation(key string, args []interface{}) {

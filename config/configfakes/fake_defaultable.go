@@ -10,14 +10,16 @@ import (
 type FakeDefaultable struct {
 	ApplyDefaultsStub        func()
 	applyDefaultsMutex       sync.RWMutex
-	applyDefaultsArgsForCall []struct{}
-	invocations              map[string][][]interface{}
-	invocationsMutex         sync.RWMutex
+	applyDefaultsArgsForCall []struct {
+	}
+	invocations      map[string][][]interface{}
+	invocationsMutex sync.RWMutex
 }
 
 func (fake *FakeDefaultable) ApplyDefaults() {
 	fake.applyDefaultsMutex.Lock()
-	fake.applyDefaultsArgsForCall = append(fake.applyDefaultsArgsForCall, struct{}{})
+	fake.applyDefaultsArgsForCall = append(fake.applyDefaultsArgsForCall, struct {
+	}{})
 	fake.recordInvocation("ApplyDefaults", []interface{}{})
 	fake.applyDefaultsMutex.Unlock()
 	if fake.ApplyDefaultsStub != nil {
@@ -31,12 +33,22 @@ func (fake *FakeDefaultable) ApplyDefaultsCallCount() int {
 	return len(fake.applyDefaultsArgsForCall)
 }
 
+func (fake *FakeDefaultable) ApplyDefaultsCalls(stub func()) {
+	fake.applyDefaultsMutex.Lock()
+	defer fake.applyDefaultsMutex.Unlock()
+	fake.ApplyDefaultsStub = stub
+}
+
 func (fake *FakeDefaultable) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.applyDefaultsMutex.RLock()
 	defer fake.applyDefaultsMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeDefaultable) recordInvocation(key string, args []interface{}) {

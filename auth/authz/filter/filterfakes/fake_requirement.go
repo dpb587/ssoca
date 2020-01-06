@@ -41,7 +41,8 @@ func (fake *FakeRequirement) VerifyAuthorization(arg1 *http.Request, arg2 *auth.
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.verifyAuthorizationReturns.result1
+	fakeReturns := fake.verifyAuthorizationReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeRequirement) VerifyAuthorizationCallCount() int {
@@ -50,13 +51,22 @@ func (fake *FakeRequirement) VerifyAuthorizationCallCount() int {
 	return len(fake.verifyAuthorizationArgsForCall)
 }
 
+func (fake *FakeRequirement) VerifyAuthorizationCalls(stub func(*http.Request, *auth.Token) error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
+	fake.VerifyAuthorizationStub = stub
+}
+
 func (fake *FakeRequirement) VerifyAuthorizationArgsForCall(i int) (*http.Request, *auth.Token) {
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.verifyAuthorizationArgsForCall[i].arg1, fake.verifyAuthorizationArgsForCall[i].arg2
+	argsForCall := fake.verifyAuthorizationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeRequirement) VerifyAuthorizationReturns(result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	fake.verifyAuthorizationReturns = struct {
 		result1 error
@@ -64,6 +74,8 @@ func (fake *FakeRequirement) VerifyAuthorizationReturns(result1 error) {
 }
 
 func (fake *FakeRequirement) VerifyAuthorizationReturnsOnCall(i int, result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	if fake.verifyAuthorizationReturnsOnCall == nil {
 		fake.verifyAuthorizationReturnsOnCall = make(map[int]struct {
@@ -80,7 +92,11 @@ func (fake *FakeRequirement) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeRequirement) recordInvocation(key string, args []interface{}) {

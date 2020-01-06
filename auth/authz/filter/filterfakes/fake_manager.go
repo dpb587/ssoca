@@ -14,6 +14,16 @@ type FakeManager struct {
 		arg1 string
 		arg2 filter.Filter
 	}
+	FiltersStub        func() []string
+	filtersMutex       sync.RWMutex
+	filtersArgsForCall []struct {
+	}
+	filtersReturns struct {
+		result1 []string
+	}
+	filtersReturnsOnCall map[int]struct {
+		result1 []string
+	}
 	GetStub        func(string) (filter.Filter, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
@@ -26,15 +36,6 @@ type FakeManager struct {
 	getReturnsOnCall map[int]struct {
 		result1 filter.Filter
 		result2 error
-	}
-	FiltersStub        func() []string
-	filtersMutex       sync.RWMutex
-	filtersArgsForCall []struct{}
-	filtersReturns     struct {
-		result1 []string
-	}
-	filtersReturnsOnCall map[int]struct {
-		result1 []string
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -59,10 +60,69 @@ func (fake *FakeManager) AddCallCount() int {
 	return len(fake.addArgsForCall)
 }
 
+func (fake *FakeManager) AddCalls(stub func(string, filter.Filter)) {
+	fake.addMutex.Lock()
+	defer fake.addMutex.Unlock()
+	fake.AddStub = stub
+}
+
 func (fake *FakeManager) AddArgsForCall(i int) (string, filter.Filter) {
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	return fake.addArgsForCall[i].arg1, fake.addArgsForCall[i].arg2
+	argsForCall := fake.addArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeManager) Filters() []string {
+	fake.filtersMutex.Lock()
+	ret, specificReturn := fake.filtersReturnsOnCall[len(fake.filtersArgsForCall)]
+	fake.filtersArgsForCall = append(fake.filtersArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Filters", []interface{}{})
+	fake.filtersMutex.Unlock()
+	if fake.FiltersStub != nil {
+		return fake.FiltersStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.filtersReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeManager) FiltersCallCount() int {
+	fake.filtersMutex.RLock()
+	defer fake.filtersMutex.RUnlock()
+	return len(fake.filtersArgsForCall)
+}
+
+func (fake *FakeManager) FiltersCalls(stub func() []string) {
+	fake.filtersMutex.Lock()
+	defer fake.filtersMutex.Unlock()
+	fake.FiltersStub = stub
+}
+
+func (fake *FakeManager) FiltersReturns(result1 []string) {
+	fake.filtersMutex.Lock()
+	defer fake.filtersMutex.Unlock()
+	fake.FiltersStub = nil
+	fake.filtersReturns = struct {
+		result1 []string
+	}{result1}
+}
+
+func (fake *FakeManager) FiltersReturnsOnCall(i int, result1 []string) {
+	fake.filtersMutex.Lock()
+	defer fake.filtersMutex.Unlock()
+	fake.FiltersStub = nil
+	if fake.filtersReturnsOnCall == nil {
+		fake.filtersReturnsOnCall = make(map[int]struct {
+			result1 []string
+		})
+	}
+	fake.filtersReturnsOnCall[i] = struct {
+		result1 []string
+	}{result1}
 }
 
 func (fake *FakeManager) Get(arg1 string) (filter.Filter, error) {
@@ -79,7 +139,8 @@ func (fake *FakeManager) Get(arg1 string) (filter.Filter, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getReturns.result1, fake.getReturns.result2
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeManager) GetCallCount() int {
@@ -88,13 +149,22 @@ func (fake *FakeManager) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
+func (fake *FakeManager) GetCalls(stub func(string) (filter.Filter, error)) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
 func (fake *FakeManager) GetArgsForCall(i int) string {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeManager) GetReturns(result1 filter.Filter, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 filter.Filter
@@ -103,6 +173,8 @@ func (fake *FakeManager) GetReturns(result1 filter.Filter, result2 error) {
 }
 
 func (fake *FakeManager) GetReturnsOnCall(i int, result1 filter.Filter, result2 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -116,56 +188,20 @@ func (fake *FakeManager) GetReturnsOnCall(i int, result1 filter.Filter, result2 
 	}{result1, result2}
 }
 
-func (fake *FakeManager) Filters() []string {
-	fake.filtersMutex.Lock()
-	ret, specificReturn := fake.filtersReturnsOnCall[len(fake.filtersArgsForCall)]
-	fake.filtersArgsForCall = append(fake.filtersArgsForCall, struct{}{})
-	fake.recordInvocation("Filters", []interface{}{})
-	fake.filtersMutex.Unlock()
-	if fake.FiltersStub != nil {
-		return fake.FiltersStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.filtersReturns.result1
-}
-
-func (fake *FakeManager) FiltersCallCount() int {
-	fake.filtersMutex.RLock()
-	defer fake.filtersMutex.RUnlock()
-	return len(fake.filtersArgsForCall)
-}
-
-func (fake *FakeManager) FiltersReturns(result1 []string) {
-	fake.FiltersStub = nil
-	fake.filtersReturns = struct {
-		result1 []string
-	}{result1}
-}
-
-func (fake *FakeManager) FiltersReturnsOnCall(i int, result1 []string) {
-	fake.FiltersStub = nil
-	if fake.filtersReturnsOnCall == nil {
-		fake.filtersReturnsOnCall = make(map[int]struct {
-			result1 []string
-		})
-	}
-	fake.filtersReturnsOnCall[i] = struct {
-		result1 []string
-	}{result1}
-}
-
 func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	fake.getMutex.RLock()
-	defer fake.getMutex.RUnlock()
 	fake.filtersMutex.RLock()
 	defer fake.filtersMutex.RUnlock()
-	return fake.invocations
+	fake.getMutex.RLock()
+	defer fake.getMutex.RUnlock()
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeManager) recordInvocation(key string, args []interface{}) {

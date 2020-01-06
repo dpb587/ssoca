@@ -1,10 +1,10 @@
 package httpauth_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestHttpauth(t *testing.T) {

@@ -10,15 +10,6 @@ import (
 )
 
 type FakeRouteHandler struct {
-	RouteStub        func() string
-	routeMutex       sync.RWMutex
-	routeArgsForCall []struct{}
-	routeReturns     struct {
-		result1 string
-	}
-	routeReturnsOnCall map[int]struct {
-		result1 string
-	}
 	ExecuteStub        func(req.Request) error
 	executeMutex       sync.RWMutex
 	executeArgsForCall []struct {
@@ -29,6 +20,16 @@ type FakeRouteHandler struct {
 	}
 	executeReturnsOnCall map[int]struct {
 		result1 error
+	}
+	RouteStub        func() string
+	routeMutex       sync.RWMutex
+	routeArgsForCall []struct {
+	}
+	routeReturns struct {
+		result1 string
+	}
+	routeReturnsOnCall map[int]struct {
+		result1 string
 	}
 	VerifyAuthorizationStub        func(*http.Request, *auth.Token) error
 	verifyAuthorizationMutex       sync.RWMutex
@@ -46,46 +47,6 @@ type FakeRouteHandler struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeRouteHandler) Route() string {
-	fake.routeMutex.Lock()
-	ret, specificReturn := fake.routeReturnsOnCall[len(fake.routeArgsForCall)]
-	fake.routeArgsForCall = append(fake.routeArgsForCall, struct{}{})
-	fake.recordInvocation("Route", []interface{}{})
-	fake.routeMutex.Unlock()
-	if fake.RouteStub != nil {
-		return fake.RouteStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.routeReturns.result1
-}
-
-func (fake *FakeRouteHandler) RouteCallCount() int {
-	fake.routeMutex.RLock()
-	defer fake.routeMutex.RUnlock()
-	return len(fake.routeArgsForCall)
-}
-
-func (fake *FakeRouteHandler) RouteReturns(result1 string) {
-	fake.RouteStub = nil
-	fake.routeReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakeRouteHandler) RouteReturnsOnCall(i int, result1 string) {
-	fake.RouteStub = nil
-	if fake.routeReturnsOnCall == nil {
-		fake.routeReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.routeReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakeRouteHandler) Execute(arg1 req.Request) error {
 	fake.executeMutex.Lock()
 	ret, specificReturn := fake.executeReturnsOnCall[len(fake.executeArgsForCall)]
@@ -100,7 +61,8 @@ func (fake *FakeRouteHandler) Execute(arg1 req.Request) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.executeReturns.result1
+	fakeReturns := fake.executeReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeRouteHandler) ExecuteCallCount() int {
@@ -109,13 +71,22 @@ func (fake *FakeRouteHandler) ExecuteCallCount() int {
 	return len(fake.executeArgsForCall)
 }
 
+func (fake *FakeRouteHandler) ExecuteCalls(stub func(req.Request) error) {
+	fake.executeMutex.Lock()
+	defer fake.executeMutex.Unlock()
+	fake.ExecuteStub = stub
+}
+
 func (fake *FakeRouteHandler) ExecuteArgsForCall(i int) req.Request {
 	fake.executeMutex.RLock()
 	defer fake.executeMutex.RUnlock()
-	return fake.executeArgsForCall[i].arg1
+	argsForCall := fake.executeArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeRouteHandler) ExecuteReturns(result1 error) {
+	fake.executeMutex.Lock()
+	defer fake.executeMutex.Unlock()
 	fake.ExecuteStub = nil
 	fake.executeReturns = struct {
 		result1 error
@@ -123,6 +94,8 @@ func (fake *FakeRouteHandler) ExecuteReturns(result1 error) {
 }
 
 func (fake *FakeRouteHandler) ExecuteReturnsOnCall(i int, result1 error) {
+	fake.executeMutex.Lock()
+	defer fake.executeMutex.Unlock()
 	fake.ExecuteStub = nil
 	if fake.executeReturnsOnCall == nil {
 		fake.executeReturnsOnCall = make(map[int]struct {
@@ -131,6 +104,58 @@ func (fake *FakeRouteHandler) ExecuteReturnsOnCall(i int, result1 error) {
 	}
 	fake.executeReturnsOnCall[i] = struct {
 		result1 error
+	}{result1}
+}
+
+func (fake *FakeRouteHandler) Route() string {
+	fake.routeMutex.Lock()
+	ret, specificReturn := fake.routeReturnsOnCall[len(fake.routeArgsForCall)]
+	fake.routeArgsForCall = append(fake.routeArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Route", []interface{}{})
+	fake.routeMutex.Unlock()
+	if fake.RouteStub != nil {
+		return fake.RouteStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.routeReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeRouteHandler) RouteCallCount() int {
+	fake.routeMutex.RLock()
+	defer fake.routeMutex.RUnlock()
+	return len(fake.routeArgsForCall)
+}
+
+func (fake *FakeRouteHandler) RouteCalls(stub func() string) {
+	fake.routeMutex.Lock()
+	defer fake.routeMutex.Unlock()
+	fake.RouteStub = stub
+}
+
+func (fake *FakeRouteHandler) RouteReturns(result1 string) {
+	fake.routeMutex.Lock()
+	defer fake.routeMutex.Unlock()
+	fake.RouteStub = nil
+	fake.routeReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeRouteHandler) RouteReturnsOnCall(i int, result1 string) {
+	fake.routeMutex.Lock()
+	defer fake.routeMutex.Unlock()
+	fake.RouteStub = nil
+	if fake.routeReturnsOnCall == nil {
+		fake.routeReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.routeReturnsOnCall[i] = struct {
+		result1 string
 	}{result1}
 }
 
@@ -149,7 +174,8 @@ func (fake *FakeRouteHandler) VerifyAuthorization(arg1 *http.Request, arg2 *auth
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.verifyAuthorizationReturns.result1
+	fakeReturns := fake.verifyAuthorizationReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeRouteHandler) VerifyAuthorizationCallCount() int {
@@ -158,13 +184,22 @@ func (fake *FakeRouteHandler) VerifyAuthorizationCallCount() int {
 	return len(fake.verifyAuthorizationArgsForCall)
 }
 
+func (fake *FakeRouteHandler) VerifyAuthorizationCalls(stub func(*http.Request, *auth.Token) error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
+	fake.VerifyAuthorizationStub = stub
+}
+
 func (fake *FakeRouteHandler) VerifyAuthorizationArgsForCall(i int) (*http.Request, *auth.Token) {
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.verifyAuthorizationArgsForCall[i].arg1, fake.verifyAuthorizationArgsForCall[i].arg2
+	argsForCall := fake.verifyAuthorizationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeRouteHandler) VerifyAuthorizationReturns(result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	fake.verifyAuthorizationReturns = struct {
 		result1 error
@@ -172,6 +207,8 @@ func (fake *FakeRouteHandler) VerifyAuthorizationReturns(result1 error) {
 }
 
 func (fake *FakeRouteHandler) VerifyAuthorizationReturnsOnCall(i int, result1 error) {
+	fake.verifyAuthorizationMutex.Lock()
+	defer fake.verifyAuthorizationMutex.Unlock()
 	fake.VerifyAuthorizationStub = nil
 	if fake.verifyAuthorizationReturnsOnCall == nil {
 		fake.verifyAuthorizationReturnsOnCall = make(map[int]struct {
@@ -186,13 +223,17 @@ func (fake *FakeRouteHandler) VerifyAuthorizationReturnsOnCall(i int, result1 er
 func (fake *FakeRouteHandler) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.routeMutex.RLock()
-	defer fake.routeMutex.RUnlock()
 	fake.executeMutex.RLock()
 	defer fake.executeMutex.RUnlock()
+	fake.routeMutex.RLock()
+	defer fake.routeMutex.RUnlock()
 	fake.verifyAuthorizationMutex.RLock()
 	defer fake.verifyAuthorizationMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeRouteHandler) recordInvocation(key string, args []interface{}) {

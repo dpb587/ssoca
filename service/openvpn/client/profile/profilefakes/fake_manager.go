@@ -8,23 +8,11 @@ import (
 )
 
 type FakeManager struct {
-	SignStub        func(data []byte) ([]byte, error)
-	signMutex       sync.RWMutex
-	signArgsForCall []struct {
-		data []byte
-	}
-	signReturns struct {
-		result1 []byte
-		result2 error
-	}
-	signReturnsOnCall map[int]struct {
-		result1 []byte
-		result2 error
-	}
 	GetProfileStub        func() (profile.Profile, error)
 	getProfileMutex       sync.RWMutex
-	getProfileArgsForCall []struct{}
-	getProfileReturns     struct {
+	getProfileArgsForCall []struct {
+	}
+	getProfileReturns struct {
 		result1 profile.Profile
 		result2 error
 	}
@@ -34,8 +22,9 @@ type FakeManager struct {
 	}
 	IsCertificateValidStub        func() bool
 	isCertificateValidMutex       sync.RWMutex
-	isCertificateValidArgsForCall []struct{}
-	isCertificateValidReturns     struct {
+	isCertificateValidArgsForCall []struct {
+	}
+	isCertificateValidReturns struct {
 		result1 bool
 	}
 	isCertificateValidReturnsOnCall map[int]struct {
@@ -43,77 +32,36 @@ type FakeManager struct {
 	}
 	RenewStub        func() error
 	renewMutex       sync.RWMutex
-	renewArgsForCall []struct{}
-	renewReturns     struct {
+	renewArgsForCall []struct {
+	}
+	renewReturns struct {
 		result1 error
 	}
 	renewReturnsOnCall map[int]struct {
 		result1 error
 	}
+	SignStub        func([]byte) ([]byte, error)
+	signMutex       sync.RWMutex
+	signArgsForCall []struct {
+		arg1 []byte
+	}
+	signReturns struct {
+		result1 []byte
+		result2 error
+	}
+	signReturnsOnCall map[int]struct {
+		result1 []byte
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
-}
-
-func (fake *FakeManager) Sign(data []byte) ([]byte, error) {
-	var dataCopy []byte
-	if data != nil {
-		dataCopy = make([]byte, len(data))
-		copy(dataCopy, data)
-	}
-	fake.signMutex.Lock()
-	ret, specificReturn := fake.signReturnsOnCall[len(fake.signArgsForCall)]
-	fake.signArgsForCall = append(fake.signArgsForCall, struct {
-		data []byte
-	}{dataCopy})
-	fake.recordInvocation("Sign", []interface{}{dataCopy})
-	fake.signMutex.Unlock()
-	if fake.SignStub != nil {
-		return fake.SignStub(data)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.signReturns.result1, fake.signReturns.result2
-}
-
-func (fake *FakeManager) SignCallCount() int {
-	fake.signMutex.RLock()
-	defer fake.signMutex.RUnlock()
-	return len(fake.signArgsForCall)
-}
-
-func (fake *FakeManager) SignArgsForCall(i int) []byte {
-	fake.signMutex.RLock()
-	defer fake.signMutex.RUnlock()
-	return fake.signArgsForCall[i].data
-}
-
-func (fake *FakeManager) SignReturns(result1 []byte, result2 error) {
-	fake.SignStub = nil
-	fake.signReturns = struct {
-		result1 []byte
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeManager) SignReturnsOnCall(i int, result1 []byte, result2 error) {
-	fake.SignStub = nil
-	if fake.signReturnsOnCall == nil {
-		fake.signReturnsOnCall = make(map[int]struct {
-			result1 []byte
-			result2 error
-		})
-	}
-	fake.signReturnsOnCall[i] = struct {
-		result1 []byte
-		result2 error
-	}{result1, result2}
 }
 
 func (fake *FakeManager) GetProfile() (profile.Profile, error) {
 	fake.getProfileMutex.Lock()
 	ret, specificReturn := fake.getProfileReturnsOnCall[len(fake.getProfileArgsForCall)]
-	fake.getProfileArgsForCall = append(fake.getProfileArgsForCall, struct{}{})
+	fake.getProfileArgsForCall = append(fake.getProfileArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetProfile", []interface{}{})
 	fake.getProfileMutex.Unlock()
 	if fake.GetProfileStub != nil {
@@ -122,7 +70,8 @@ func (fake *FakeManager) GetProfile() (profile.Profile, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getProfileReturns.result1, fake.getProfileReturns.result2
+	fakeReturns := fake.getProfileReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeManager) GetProfileCallCount() int {
@@ -131,7 +80,15 @@ func (fake *FakeManager) GetProfileCallCount() int {
 	return len(fake.getProfileArgsForCall)
 }
 
+func (fake *FakeManager) GetProfileCalls(stub func() (profile.Profile, error)) {
+	fake.getProfileMutex.Lock()
+	defer fake.getProfileMutex.Unlock()
+	fake.GetProfileStub = stub
+}
+
 func (fake *FakeManager) GetProfileReturns(result1 profile.Profile, result2 error) {
+	fake.getProfileMutex.Lock()
+	defer fake.getProfileMutex.Unlock()
 	fake.GetProfileStub = nil
 	fake.getProfileReturns = struct {
 		result1 profile.Profile
@@ -140,6 +97,8 @@ func (fake *FakeManager) GetProfileReturns(result1 profile.Profile, result2 erro
 }
 
 func (fake *FakeManager) GetProfileReturnsOnCall(i int, result1 profile.Profile, result2 error) {
+	fake.getProfileMutex.Lock()
+	defer fake.getProfileMutex.Unlock()
 	fake.GetProfileStub = nil
 	if fake.getProfileReturnsOnCall == nil {
 		fake.getProfileReturnsOnCall = make(map[int]struct {
@@ -156,7 +115,8 @@ func (fake *FakeManager) GetProfileReturnsOnCall(i int, result1 profile.Profile,
 func (fake *FakeManager) IsCertificateValid() bool {
 	fake.isCertificateValidMutex.Lock()
 	ret, specificReturn := fake.isCertificateValidReturnsOnCall[len(fake.isCertificateValidArgsForCall)]
-	fake.isCertificateValidArgsForCall = append(fake.isCertificateValidArgsForCall, struct{}{})
+	fake.isCertificateValidArgsForCall = append(fake.isCertificateValidArgsForCall, struct {
+	}{})
 	fake.recordInvocation("IsCertificateValid", []interface{}{})
 	fake.isCertificateValidMutex.Unlock()
 	if fake.IsCertificateValidStub != nil {
@@ -165,7 +125,8 @@ func (fake *FakeManager) IsCertificateValid() bool {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.isCertificateValidReturns.result1
+	fakeReturns := fake.isCertificateValidReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeManager) IsCertificateValidCallCount() int {
@@ -174,7 +135,15 @@ func (fake *FakeManager) IsCertificateValidCallCount() int {
 	return len(fake.isCertificateValidArgsForCall)
 }
 
+func (fake *FakeManager) IsCertificateValidCalls(stub func() bool) {
+	fake.isCertificateValidMutex.Lock()
+	defer fake.isCertificateValidMutex.Unlock()
+	fake.IsCertificateValidStub = stub
+}
+
 func (fake *FakeManager) IsCertificateValidReturns(result1 bool) {
+	fake.isCertificateValidMutex.Lock()
+	defer fake.isCertificateValidMutex.Unlock()
 	fake.IsCertificateValidStub = nil
 	fake.isCertificateValidReturns = struct {
 		result1 bool
@@ -182,6 +151,8 @@ func (fake *FakeManager) IsCertificateValidReturns(result1 bool) {
 }
 
 func (fake *FakeManager) IsCertificateValidReturnsOnCall(i int, result1 bool) {
+	fake.isCertificateValidMutex.Lock()
+	defer fake.isCertificateValidMutex.Unlock()
 	fake.IsCertificateValidStub = nil
 	if fake.isCertificateValidReturnsOnCall == nil {
 		fake.isCertificateValidReturnsOnCall = make(map[int]struct {
@@ -196,7 +167,8 @@ func (fake *FakeManager) IsCertificateValidReturnsOnCall(i int, result1 bool) {
 func (fake *FakeManager) Renew() error {
 	fake.renewMutex.Lock()
 	ret, specificReturn := fake.renewReturnsOnCall[len(fake.renewArgsForCall)]
-	fake.renewArgsForCall = append(fake.renewArgsForCall, struct{}{})
+	fake.renewArgsForCall = append(fake.renewArgsForCall, struct {
+	}{})
 	fake.recordInvocation("Renew", []interface{}{})
 	fake.renewMutex.Unlock()
 	if fake.RenewStub != nil {
@@ -205,7 +177,8 @@ func (fake *FakeManager) Renew() error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.renewReturns.result1
+	fakeReturns := fake.renewReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeManager) RenewCallCount() int {
@@ -214,7 +187,15 @@ func (fake *FakeManager) RenewCallCount() int {
 	return len(fake.renewArgsForCall)
 }
 
+func (fake *FakeManager) RenewCalls(stub func() error) {
+	fake.renewMutex.Lock()
+	defer fake.renewMutex.Unlock()
+	fake.RenewStub = stub
+}
+
 func (fake *FakeManager) RenewReturns(result1 error) {
+	fake.renewMutex.Lock()
+	defer fake.renewMutex.Unlock()
 	fake.RenewStub = nil
 	fake.renewReturns = struct {
 		result1 error
@@ -222,6 +203,8 @@ func (fake *FakeManager) RenewReturns(result1 error) {
 }
 
 func (fake *FakeManager) RenewReturnsOnCall(i int, result1 error) {
+	fake.renewMutex.Lock()
+	defer fake.renewMutex.Unlock()
 	fake.RenewStub = nil
 	if fake.renewReturnsOnCall == nil {
 		fake.renewReturnsOnCall = make(map[int]struct {
@@ -233,18 +216,90 @@ func (fake *FakeManager) RenewReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
+func (fake *FakeManager) Sign(arg1 []byte) ([]byte, error) {
+	var arg1Copy []byte
+	if arg1 != nil {
+		arg1Copy = make([]byte, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.signMutex.Lock()
+	ret, specificReturn := fake.signReturnsOnCall[len(fake.signArgsForCall)]
+	fake.signArgsForCall = append(fake.signArgsForCall, struct {
+		arg1 []byte
+	}{arg1Copy})
+	fake.recordInvocation("Sign", []interface{}{arg1Copy})
+	fake.signMutex.Unlock()
+	if fake.SignStub != nil {
+		return fake.SignStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.signReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeManager) SignCallCount() int {
+	fake.signMutex.RLock()
+	defer fake.signMutex.RUnlock()
+	return len(fake.signArgsForCall)
+}
+
+func (fake *FakeManager) SignCalls(stub func([]byte) ([]byte, error)) {
+	fake.signMutex.Lock()
+	defer fake.signMutex.Unlock()
+	fake.SignStub = stub
+}
+
+func (fake *FakeManager) SignArgsForCall(i int) []byte {
+	fake.signMutex.RLock()
+	defer fake.signMutex.RUnlock()
+	argsForCall := fake.signArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeManager) SignReturns(result1 []byte, result2 error) {
+	fake.signMutex.Lock()
+	defer fake.signMutex.Unlock()
+	fake.SignStub = nil
+	fake.signReturns = struct {
+		result1 []byte
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeManager) SignReturnsOnCall(i int, result1 []byte, result2 error) {
+	fake.signMutex.Lock()
+	defer fake.signMutex.Unlock()
+	fake.SignStub = nil
+	if fake.signReturnsOnCall == nil {
+		fake.signReturnsOnCall = make(map[int]struct {
+			result1 []byte
+			result2 error
+		})
+	}
+	fake.signReturnsOnCall[i] = struct {
+		result1 []byte
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeManager) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.signMutex.RLock()
-	defer fake.signMutex.RUnlock()
 	fake.getProfileMutex.RLock()
 	defer fake.getProfileMutex.RUnlock()
 	fake.isCertificateValidMutex.RLock()
 	defer fake.isCertificateValidMutex.RUnlock()
 	fake.renewMutex.RLock()
 	defer fake.renewMutex.RUnlock()
-	return fake.invocations
+	fake.signMutex.RLock()
+	defer fake.signMutex.RUnlock()
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeManager) recordInvocation(key string, args []interface{}) {

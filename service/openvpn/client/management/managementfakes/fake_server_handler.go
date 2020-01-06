@@ -56,7 +56,8 @@ func (fake *FakeServerHandler) NeedCertificate(arg1 io.Writer, arg2 string) (man
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.needCertificateReturns.result1, fake.needCertificateReturns.result2
+	fakeReturns := fake.needCertificateReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeServerHandler) NeedCertificateCallCount() int {
@@ -65,13 +66,22 @@ func (fake *FakeServerHandler) NeedCertificateCallCount() int {
 	return len(fake.needCertificateArgsForCall)
 }
 
+func (fake *FakeServerHandler) NeedCertificateCalls(stub func(io.Writer, string) (management.ServerHandlerCallback, error)) {
+	fake.needCertificateMutex.Lock()
+	defer fake.needCertificateMutex.Unlock()
+	fake.NeedCertificateStub = stub
+}
+
 func (fake *FakeServerHandler) NeedCertificateArgsForCall(i int) (io.Writer, string) {
 	fake.needCertificateMutex.RLock()
 	defer fake.needCertificateMutex.RUnlock()
-	return fake.needCertificateArgsForCall[i].arg1, fake.needCertificateArgsForCall[i].arg2
+	argsForCall := fake.needCertificateArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeServerHandler) NeedCertificateReturns(result1 management.ServerHandlerCallback, result2 error) {
+	fake.needCertificateMutex.Lock()
+	defer fake.needCertificateMutex.Unlock()
 	fake.NeedCertificateStub = nil
 	fake.needCertificateReturns = struct {
 		result1 management.ServerHandlerCallback
@@ -80,6 +90,8 @@ func (fake *FakeServerHandler) NeedCertificateReturns(result1 management.ServerH
 }
 
 func (fake *FakeServerHandler) NeedCertificateReturnsOnCall(i int, result1 management.ServerHandlerCallback, result2 error) {
+	fake.needCertificateMutex.Lock()
+	defer fake.needCertificateMutex.Unlock()
 	fake.NeedCertificateStub = nil
 	if fake.needCertificateReturnsOnCall == nil {
 		fake.needCertificateReturnsOnCall = make(map[int]struct {
@@ -108,7 +120,8 @@ func (fake *FakeServerHandler) SignRSA(arg1 io.Writer, arg2 string) (management.
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.signRSAReturns.result1, fake.signRSAReturns.result2
+	fakeReturns := fake.signRSAReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeServerHandler) SignRSACallCount() int {
@@ -117,13 +130,22 @@ func (fake *FakeServerHandler) SignRSACallCount() int {
 	return len(fake.signRSAArgsForCall)
 }
 
+func (fake *FakeServerHandler) SignRSACalls(stub func(io.Writer, string) (management.ServerHandlerCallback, error)) {
+	fake.signRSAMutex.Lock()
+	defer fake.signRSAMutex.Unlock()
+	fake.SignRSAStub = stub
+}
+
 func (fake *FakeServerHandler) SignRSAArgsForCall(i int) (io.Writer, string) {
 	fake.signRSAMutex.RLock()
 	defer fake.signRSAMutex.RUnlock()
-	return fake.signRSAArgsForCall[i].arg1, fake.signRSAArgsForCall[i].arg2
+	argsForCall := fake.signRSAArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeServerHandler) SignRSAReturns(result1 management.ServerHandlerCallback, result2 error) {
+	fake.signRSAMutex.Lock()
+	defer fake.signRSAMutex.Unlock()
 	fake.SignRSAStub = nil
 	fake.signRSAReturns = struct {
 		result1 management.ServerHandlerCallback
@@ -132,6 +154,8 @@ func (fake *FakeServerHandler) SignRSAReturns(result1 management.ServerHandlerCa
 }
 
 func (fake *FakeServerHandler) SignRSAReturnsOnCall(i int, result1 management.ServerHandlerCallback, result2 error) {
+	fake.signRSAMutex.Lock()
+	defer fake.signRSAMutex.Unlock()
 	fake.SignRSAStub = nil
 	if fake.signRSAReturnsOnCall == nil {
 		fake.signRSAReturnsOnCall = make(map[int]struct {
@@ -152,7 +176,11 @@ func (fake *FakeServerHandler) Invocations() map[string][][]interface{} {
 	defer fake.needCertificateMutex.RUnlock()
 	fake.signRSAMutex.RLock()
 	defer fake.signRSAMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeServerHandler) recordInvocation(key string, args []interface{}) {

@@ -11,8 +11,9 @@ import (
 type FakeClient struct {
 	GetAuthStub        func() (api.AuthResponse, error)
 	getAuthMutex       sync.RWMutex
-	getAuthArgsForCall []struct{}
-	getAuthReturns     struct {
+	getAuthArgsForCall []struct {
+	}
+	getAuthReturns struct {
 		result1 api.AuthResponse
 		result2 error
 	}
@@ -22,8 +23,9 @@ type FakeClient struct {
 	}
 	GetInfoStub        func() (api.InfoResponse, error)
 	getInfoMutex       sync.RWMutex
-	getInfoArgsForCall []struct{}
-	getInfoReturns     struct {
+	getInfoArgsForCall []struct {
+	}
+	getInfoReturns struct {
 		result1 api.InfoResponse
 		result2 error
 	}
@@ -38,7 +40,8 @@ type FakeClient struct {
 func (fake *FakeClient) GetAuth() (api.AuthResponse, error) {
 	fake.getAuthMutex.Lock()
 	ret, specificReturn := fake.getAuthReturnsOnCall[len(fake.getAuthArgsForCall)]
-	fake.getAuthArgsForCall = append(fake.getAuthArgsForCall, struct{}{})
+	fake.getAuthArgsForCall = append(fake.getAuthArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetAuth", []interface{}{})
 	fake.getAuthMutex.Unlock()
 	if fake.GetAuthStub != nil {
@@ -47,7 +50,8 @@ func (fake *FakeClient) GetAuth() (api.AuthResponse, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getAuthReturns.result1, fake.getAuthReturns.result2
+	fakeReturns := fake.getAuthReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) GetAuthCallCount() int {
@@ -56,7 +60,15 @@ func (fake *FakeClient) GetAuthCallCount() int {
 	return len(fake.getAuthArgsForCall)
 }
 
+func (fake *FakeClient) GetAuthCalls(stub func() (api.AuthResponse, error)) {
+	fake.getAuthMutex.Lock()
+	defer fake.getAuthMutex.Unlock()
+	fake.GetAuthStub = stub
+}
+
 func (fake *FakeClient) GetAuthReturns(result1 api.AuthResponse, result2 error) {
+	fake.getAuthMutex.Lock()
+	defer fake.getAuthMutex.Unlock()
 	fake.GetAuthStub = nil
 	fake.getAuthReturns = struct {
 		result1 api.AuthResponse
@@ -65,6 +77,8 @@ func (fake *FakeClient) GetAuthReturns(result1 api.AuthResponse, result2 error) 
 }
 
 func (fake *FakeClient) GetAuthReturnsOnCall(i int, result1 api.AuthResponse, result2 error) {
+	fake.getAuthMutex.Lock()
+	defer fake.getAuthMutex.Unlock()
 	fake.GetAuthStub = nil
 	if fake.getAuthReturnsOnCall == nil {
 		fake.getAuthReturnsOnCall = make(map[int]struct {
@@ -81,7 +95,8 @@ func (fake *FakeClient) GetAuthReturnsOnCall(i int, result1 api.AuthResponse, re
 func (fake *FakeClient) GetInfo() (api.InfoResponse, error) {
 	fake.getInfoMutex.Lock()
 	ret, specificReturn := fake.getInfoReturnsOnCall[len(fake.getInfoArgsForCall)]
-	fake.getInfoArgsForCall = append(fake.getInfoArgsForCall, struct{}{})
+	fake.getInfoArgsForCall = append(fake.getInfoArgsForCall, struct {
+	}{})
 	fake.recordInvocation("GetInfo", []interface{}{})
 	fake.getInfoMutex.Unlock()
 	if fake.GetInfoStub != nil {
@@ -90,7 +105,8 @@ func (fake *FakeClient) GetInfo() (api.InfoResponse, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getInfoReturns.result1, fake.getInfoReturns.result2
+	fakeReturns := fake.getInfoReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeClient) GetInfoCallCount() int {
@@ -99,7 +115,15 @@ func (fake *FakeClient) GetInfoCallCount() int {
 	return len(fake.getInfoArgsForCall)
 }
 
+func (fake *FakeClient) GetInfoCalls(stub func() (api.InfoResponse, error)) {
+	fake.getInfoMutex.Lock()
+	defer fake.getInfoMutex.Unlock()
+	fake.GetInfoStub = stub
+}
+
 func (fake *FakeClient) GetInfoReturns(result1 api.InfoResponse, result2 error) {
+	fake.getInfoMutex.Lock()
+	defer fake.getInfoMutex.Unlock()
 	fake.GetInfoStub = nil
 	fake.getInfoReturns = struct {
 		result1 api.InfoResponse
@@ -108,6 +132,8 @@ func (fake *FakeClient) GetInfoReturns(result1 api.InfoResponse, result2 error) 
 }
 
 func (fake *FakeClient) GetInfoReturnsOnCall(i int, result1 api.InfoResponse, result2 error) {
+	fake.getInfoMutex.Lock()
+	defer fake.getInfoMutex.Unlock()
 	fake.GetInfoStub = nil
 	if fake.getInfoReturnsOnCall == nil {
 		fake.getInfoReturnsOnCall = make(map[int]struct {
@@ -128,7 +154,11 @@ func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	defer fake.getAuthMutex.RUnlock()
 	fake.getInfoMutex.RLock()
 	defer fake.getInfoMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeClient) recordInvocation(key string, args []interface{}) {

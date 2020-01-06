@@ -53,7 +53,8 @@ func (fake *FakeStorage) Get(arg1 string, arg2 interface{}) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.getReturns.result1
+	fakeReturns := fake.getReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeStorage) GetCallCount() int {
@@ -62,13 +63,22 @@ func (fake *FakeStorage) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
+func (fake *FakeStorage) GetCalls(stub func(string, interface{}) error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
+	fake.GetStub = stub
+}
+
 func (fake *FakeStorage) GetArgsForCall(i int) (string, interface{}) {
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
-	return fake.getArgsForCall[i].arg1, fake.getArgsForCall[i].arg2
+	argsForCall := fake.getArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeStorage) GetReturns(result1 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
 		result1 error
@@ -76,6 +86,8 @@ func (fake *FakeStorage) GetReturns(result1 error) {
 }
 
 func (fake *FakeStorage) GetReturnsOnCall(i int, result1 error) {
+	fake.getMutex.Lock()
+	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
@@ -102,7 +114,8 @@ func (fake *FakeStorage) Put(arg1 string, arg2 interface{}) (string, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.putReturns.result1, fake.putReturns.result2
+	fakeReturns := fake.putReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeStorage) PutCallCount() int {
@@ -111,13 +124,22 @@ func (fake *FakeStorage) PutCallCount() int {
 	return len(fake.putArgsForCall)
 }
 
+func (fake *FakeStorage) PutCalls(stub func(string, interface{}) (string, error)) {
+	fake.putMutex.Lock()
+	defer fake.putMutex.Unlock()
+	fake.PutStub = stub
+}
+
 func (fake *FakeStorage) PutArgsForCall(i int) (string, interface{}) {
 	fake.putMutex.RLock()
 	defer fake.putMutex.RUnlock()
-	return fake.putArgsForCall[i].arg1, fake.putArgsForCall[i].arg2
+	argsForCall := fake.putArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeStorage) PutReturns(result1 string, result2 error) {
+	fake.putMutex.Lock()
+	defer fake.putMutex.Unlock()
 	fake.PutStub = nil
 	fake.putReturns = struct {
 		result1 string
@@ -126,6 +148,8 @@ func (fake *FakeStorage) PutReturns(result1 string, result2 error) {
 }
 
 func (fake *FakeStorage) PutReturnsOnCall(i int, result1 string, result2 error) {
+	fake.putMutex.Lock()
+	defer fake.putMutex.Unlock()
 	fake.PutStub = nil
 	if fake.putReturnsOnCall == nil {
 		fake.putReturnsOnCall = make(map[int]struct {
@@ -146,7 +170,11 @@ func (fake *FakeStorage) Invocations() map[string][][]interface{} {
 	defer fake.getMutex.RUnlock()
 	fake.putMutex.RLock()
 	defer fake.putMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeStorage) recordInvocation(key string, args []interface{}) {

@@ -43,7 +43,8 @@ func (fake *FakeMultiValue) Evaluate(arg1 *http.Request, arg2 *auth.Token) ([]st
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.evaluateReturns.result1, fake.evaluateReturns.result2
+	fakeReturns := fake.evaluateReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeMultiValue) EvaluateCallCount() int {
@@ -52,13 +53,22 @@ func (fake *FakeMultiValue) EvaluateCallCount() int {
 	return len(fake.evaluateArgsForCall)
 }
 
+func (fake *FakeMultiValue) EvaluateCalls(stub func(*http.Request, *auth.Token) ([]string, error)) {
+	fake.evaluateMutex.Lock()
+	defer fake.evaluateMutex.Unlock()
+	fake.EvaluateStub = stub
+}
+
 func (fake *FakeMultiValue) EvaluateArgsForCall(i int) (*http.Request, *auth.Token) {
 	fake.evaluateMutex.RLock()
 	defer fake.evaluateMutex.RUnlock()
-	return fake.evaluateArgsForCall[i].arg1, fake.evaluateArgsForCall[i].arg2
+	argsForCall := fake.evaluateArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeMultiValue) EvaluateReturns(result1 []string, result2 error) {
+	fake.evaluateMutex.Lock()
+	defer fake.evaluateMutex.Unlock()
 	fake.EvaluateStub = nil
 	fake.evaluateReturns = struct {
 		result1 []string
@@ -67,6 +77,8 @@ func (fake *FakeMultiValue) EvaluateReturns(result1 []string, result2 error) {
 }
 
 func (fake *FakeMultiValue) EvaluateReturnsOnCall(i int, result1 []string, result2 error) {
+	fake.evaluateMutex.Lock()
+	defer fake.evaluateMutex.Unlock()
 	fake.EvaluateStub = nil
 	if fake.evaluateReturnsOnCall == nil {
 		fake.evaluateReturnsOnCall = make(map[int]struct {
@@ -85,7 +97,11 @@ func (fake *FakeMultiValue) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.evaluateMutex.RLock()
 	defer fake.evaluateMutex.RUnlock()
-	return fake.invocations
+	copiedInvocations := map[string][][]interface{}{}
+	for key, value := range fake.invocations {
+		copiedInvocations[key] = value
+	}
+	return copiedInvocations
 }
 
 func (fake *FakeMultiValue) recordInvocation(key string, args []interface{}) {
