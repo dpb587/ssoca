@@ -29,6 +29,9 @@ require (
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	github.com/mattn/go-runewidth v0.0.7 // indirect
+	github.com/mattn/goveralls v0.0.4
+	github.com/maxbrunsfeld/counterfeiter/v6 v6.2.2
+	github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1

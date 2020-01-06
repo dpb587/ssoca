@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-go install ./vendor/github.com/mattn/goveralls
-go install ./vendor/github.com/maxbrunsfeld/counterfeiter
-go install ./vendor/github.com/modocache/gover
-go install ./vendor/github.com/onsi/ginkgo/ginkgo

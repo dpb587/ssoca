@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu
+
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+
+grep '	_ "' internal/tools/tools.go | cut -d'"' -f2 | xargs go install

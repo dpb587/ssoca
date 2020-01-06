@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-dep ensure
-dep prune
