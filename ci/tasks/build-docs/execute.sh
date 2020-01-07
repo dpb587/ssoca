@@ -13,9 +13,6 @@ cd hugo-site
  # accidental lightweight tag; manual, pre-CI
 echo '  v0.8.0: 2018-01-07 22:40:00 -0800' >> data/repo/tags.yml
 
-mkdir -p static/img
-wget -qO static/img/dpb587.jpg https://dpb587.me/static/img/dpb587-20140313a~256.jpg
-
 latest_version=$( grep '^  ' data/repo/tags.yml | awk '{ print $1 }' | sed -e 's/^v//' -e 's/:$//' | sort -rV | head -n1 )
 
 cat > config.local.yml <<EOF

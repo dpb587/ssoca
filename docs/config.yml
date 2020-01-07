@@ -3,7 +3,7 @@ theme:
 - balmy-release
 - balmy
 params:
-  ThemeBrandIcon: /img/dpb587.jpg
+  ThemeBrandIcon: https://github.com/dpb587.png
   ThemeIncludeMenu: "/_menu"
   ThemeNavBadges: []
   ThemeNavItems:
