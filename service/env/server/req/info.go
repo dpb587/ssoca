@@ -1,6 +1,8 @@
 package req
 
 import (
+	"sort"
+
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/req"
 	"github.com/dpb587/ssoca/service/env/api"
@@ -59,6 +61,10 @@ func (h Info) Execute(request req.Request) error {
 			response.Services = append(response.Services, svcInfo)
 		}
 	}
+
+	sort.Slice(response.Services, func(i, j int) bool {
+		return response.Services[i].Name < response.Services[j].Name
+	})
 
 	return request.WritePayload(response)
 }
