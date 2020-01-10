@@ -18,10 +18,12 @@ import (
 	"github.com/dpb587/ssoca/server/service"
 	globalservice "github.com/dpb587/ssoca/service"
 	srv_auth "github.com/dpb587/ssoca/service/auth/server"
+	"github.com/dpb587/ssoca/version"
 )
 
 type Server struct {
 	config   config.ServerConfig
+	version  version.Version
 	services service.Manager
 	logger   logrus.FieldLogger
 
@@ -30,6 +32,7 @@ type Server struct {
 
 func CreateFromConfig(
 	cfg config.Config,
+	version_ version.Version,
 	fs boshsys.FileSystem,
 	certauthFactory certauth.Factory,
 	serviceFactory service.Factory,
@@ -122,7 +125,7 @@ func CreateFromConfig(
 		serviceManager.Add(filteredService)
 	}
 
-	return NewServer(cfg.Server, serviceManager, logger), nil
+	return NewServer(cfg.Server, version_, serviceManager, logger), nil
 }
 
 func filterService(svc service.Service, config config.ServiceConfig, serverRequires []filter.RequireConfig, filterManager filter.Manager) (service.Service, error) {
@@ -158,9 +161,10 @@ func filterService(svc service.Service, config config.ServiceConfig, serverRequi
 	return authorized.NewService(svc, requirement), nil
 }
 
-func NewServer(cfg config.ServerConfig, services service.Manager, logger logrus.FieldLogger) Server {
+func NewServer(cfg config.ServerConfig, version_ version.Version, services service.Manager, logger logrus.FieldLogger) Server {
 	res := Server{
 		config:   cfg,
+		version:  version_,
 		services: services,
 		logger:   logger,
 	}
@@ -218,8 +222,12 @@ func (s Server) Run() error {
 	}
 
 	s.server = &http.Server{
-		Addr:    fmt.Sprintf("%s:%d", s.config.Host, s.config.Port),
-		Handler: mux,
+		Addr: fmt.Sprintf("%s:%d", s.config.Host, s.config.Port),
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("server", fmt.Sprintf("%s/%s", s.version.Name, s.version.Semver))
+
+			mux.ServeHTTP(w, r)
+		}),
 	}
 
 	scheme := "http"

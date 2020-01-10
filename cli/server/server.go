@@ -9,6 +9,7 @@ import (
 	"github.com/dpb587/ssoca/server/config"
 	"github.com/dpb587/ssoca/server/service"
 	"github.com/dpb587/ssoca/server/service/dynamicvalue"
+	"github.com/dpb587/ssoca/version"
 
 	certauth_fs "github.com/dpb587/ssoca/certauth/fs"
 	certauth_memory "github.com/dpb587/ssoca/certauth/memory"
@@ -38,6 +39,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
+
+var appName = "ssoca-server"
+var appSemver, appCommit, appBuilt string
 
 func main() {
 	fs := boshsys.NewOsFileSystem(boshlog.NewLogger(boshlog.LevelError))
@@ -97,6 +101,7 @@ func main() {
 
 	srv, err := server.CreateFromConfig(
 		cfg,
+		version.MustVersion(appName, appSemver, appCommit, appBuilt),
 		fs,
 		certauthFactory,
 		serviceFactory,
