@@ -1,4 +1,4 @@
-FROM golang:1.13.6-stretch
+FROM golang:1.13.7-stretch
 RUN true \
   && apt-get update \
   && apt-get install -y curl git openssl \
